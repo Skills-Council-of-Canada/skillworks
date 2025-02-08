@@ -13,6 +13,7 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
+import EmployerRegistration from "./pages/employer/EmployerRegistration";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/employer/register" element={<EmployerRegistration />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route
               path="/employer"
