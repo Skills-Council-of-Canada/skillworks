@@ -21,7 +21,7 @@ const LandingPage = () => {
               Login
             </Button>
             <Button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/login")}
               className="bg-primary hover:bg-primary/90"
             >
               Sign Up
@@ -45,7 +45,7 @@ const LandingPage = () => {
               <div className="flex gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/register")}
+                  onClick={() => navigate("/login")}
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
