@@ -8,9 +8,32 @@ import { Button } from "@/components/ui/button";
 
 type RegistrationStep = "company" | "contact" | "account";
 
+interface CompanyDetails {
+  name: string;
+  industry: string;
+  size: string;
+  location: string;
+}
+
+interface ContactInformation {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+interface AccountSetup {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const EmployerRegistration = () => {
   const [currentStep, setCurrentStep] = useState<RegistrationStep>("company");
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    company: CompanyDetails;
+    contact: ContactInformation;
+    account: AccountSetup;
+  }>({
     company: {
       name: "",
       industry: "",
@@ -31,7 +54,7 @@ const EmployerRegistration = () => {
 
   const updateFormData = (
     step: RegistrationStep,
-    data: typeof formData[keyof typeof formData]
+    data: CompanyDetails | ContactInformation | AccountSetup
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -97,7 +120,7 @@ const EmployerRegistration = () => {
         {currentStep === "company" && (
           <CompanyDetailsForm
             initialData={formData.company}
-            onSubmit={(data) => {
+            onSubmit={(data: CompanyDetails) => {
               updateFormData("company", data);
               handleNext();
             }}
@@ -107,7 +130,7 @@ const EmployerRegistration = () => {
         {currentStep === "contact" && (
           <ContactInformationForm
             initialData={formData.contact}
-            onSubmit={(data) => {
+            onSubmit={(data: ContactInformation) => {
               updateFormData("contact", data);
               handleNext();
             }}
@@ -118,7 +141,7 @@ const EmployerRegistration = () => {
         {currentStep === "account" && (
           <AccountSetupForm
             initialData={formData.account}
-            onSubmit={(data) => {
+            onSubmit={(data: AccountSetup) => {
               updateFormData("account", data);
               console.log("Final submission:", { ...formData, account: data });
             }}
