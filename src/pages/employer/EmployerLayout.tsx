@@ -55,7 +55,7 @@ const EmployerLayout = () => {
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      <Sidebar defaultCollapsed={false} collapsible>
+      <Sidebar defaultCollapsed={false} collapsible="icon">
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Menu</SidebarGroupLabel>
@@ -113,3 +113,4 @@ const EmployerLayout = () => {
 };
 
 export default EmployerLayout;
+
