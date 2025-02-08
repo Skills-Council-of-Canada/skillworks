@@ -9,7 +9,6 @@ import { PROJECT_TEMPLATES } from "@/types/project";
 import ProjectTemplatesSection from "./trade-details/ProjectTemplatesSection";
 import TradeDetailsFields from "./trade-details/TradeDetailsFields";
 
-// Define the schema using the same types as TradeDetailsFormData
 const formSchema = z.object({
   tradeType: z.enum(['Electrical', 'Plumbing', 'Carpentry', 'HVAC', 'Welding', 'Automotive', 'Other'] as const),
   subcategories: z.array(z.string()).min(1, "Select at least one subcategory"),
@@ -36,12 +35,11 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
       safetyRequirements: initialData.safetyRequirements || [],
       toolsProvided: initialData.toolsProvided || false,
       requiredTools: initialData.requiredTools || [],
-    },
+    }
   });
 
   const applyTemplate = (template: ProjectTemplate) => {
     form.setValue('tradeType', template.tradeType);
-    // You could add more template applications here
   };
 
   return (

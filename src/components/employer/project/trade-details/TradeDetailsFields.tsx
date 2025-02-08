@@ -1,6 +1,5 @@
 
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
 import {
   FormControl,
   FormField,
@@ -170,4 +169,3 @@ const TradeDetailsFields = ({ form }: Props) => {
 };
 
 export default TradeDetailsFields;
-
