@@ -29,21 +29,54 @@ export const updateEmployerProfile = async (
     logoUrl = publicUrl;
   }
 
-  const { error: updateError } = await supabase
+  // Check if employer record exists
+  const { data: existingEmployer } = await supabase
     .from('employers')
-    .update({
-      company_name: data.companyName,
-      website: data.website,
-      description: data.description,
-      primary_contact_phone: data.phone,
-      location: data.address,
-      ...(logoUrl && { logo_url: logoUrl }),
-    })
-    .eq('user_id', userId);
+    .select('id')
+    .eq('user_id', userId)
+    .maybeSingle();
 
-  if (updateError) {
-    console.error("Error updating employer profile:", updateError);
-    throw updateError;
+  if (existingEmployer) {
+    // Update existing record
+    const { error: updateError } = await supabase
+      .from('employers')
+      .update({
+        company_name: data.companyName,
+        website: data.website,
+        description: data.description,
+        primary_contact_phone: data.phone,
+        location: data.address,
+        ...(logoUrl && { logo_url: logoUrl }),
+      })
+      .eq('user_id', userId);
+
+    if (updateError) {
+      console.error("Error updating employer profile:", updateError);
+      throw updateError;
+    }
+  } else {
+    // Create new record
+    const { error: insertError } = await supabase
+      .from('employers')
+      .insert({
+        user_id: userId,
+        company_name: data.companyName,
+        website: data.website,
+        description: data.description,
+        primary_contact_phone: data.phone,
+        location: data.address,
+        ...(logoUrl && { logo_url: logoUrl }),
+        // Set required fields with default values
+        industry: 'Other', // Default value
+        company_size: 'Not specified', // Default value
+        primary_contact_name: 'Not specified', // Default value
+        primary_contact_email: 'Not specified', // Default value
+      });
+
+    if (insertError) {
+      console.error("Error creating employer profile:", insertError);
+      throw insertError;
+    }
   }
 
   return { logoUrl };
@@ -54,10 +87,12 @@ export const loadEmployerData = async (userId: string) => {
     .from('employers')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error loading employer data:", error);
+    throw error;
+  }
 
   return employerData;
 };
-
