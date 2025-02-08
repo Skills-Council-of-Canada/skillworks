@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
@@ -115,13 +115,13 @@ const EmployerLayout = () => {
                         <TooltipTrigger asChild>
                           <SidebarMenuItem>
                             <SidebarMenuButton asChild>
-                              <a
-                                href={item.url}
+                              <Link
+                                to={item.url}
                                 className="flex items-center gap-2 relative"
                               >
                                 <item.icon className="h-4 w-4" />
                                 <span>{item.title}</span>
-                              </a>
+                              </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                         </TooltipTrigger>
