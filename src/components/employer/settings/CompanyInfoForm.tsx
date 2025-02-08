@@ -72,6 +72,8 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
   };
 
   const onSubmit = async (data: CompanyInfoFormData) => {
+    console.log("Starting form submission with data:", data);
+    
     if (!user) {
       toast({
         title: "Error",
@@ -87,6 +89,8 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
 
       // Handle logo upload if a new file is selected
       if (data.logo instanceof File) {
+        console.log("Uploading logo file:", data.logo.name);
+        
         const fileExt = data.logo.name.split('.').pop();
         const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
@@ -95,8 +99,11 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
           .upload(filePath, data.logo);
 
         if (uploadError) {
+          console.error("Error uploading logo:", uploadError);
           throw uploadError;
         }
+
+        console.log("Logo upload successful, getting public URL");
 
         // Get public URL for the uploaded file
         const { data: { publicUrl } } = supabase.storage
@@ -104,7 +111,17 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
           .getPublicUrl(filePath);
 
         logoUrl = publicUrl;
+        console.log("Logo public URL:", logoUrl);
       }
+
+      console.log("Updating employer profile with data:", {
+        company_name: data.companyName,
+        website: data.website,
+        description: data.description,
+        primary_contact_phone: data.phone,
+        location: data.address,
+        ...(logoUrl && { logo_url: logoUrl }),
+      });
 
       // Update employer profile
       const { error: updateError } = await supabase
@@ -119,7 +136,12 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
         })
         .eq('user_id', user.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Error updating employer profile:", updateError);
+        throw updateError;
+      }
+
+      console.log("Profile update successful");
 
       toast({
         title: "Success",
@@ -138,6 +160,47 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
       setIsUploading(false);
     }
   };
+
+  // Load existing employer data when component mounts
+  React.useEffect(() => {
+    const loadEmployerData = async () => {
+      if (!user) return;
+
+      try {
+        const { data: employerData, error } = await supabase
+          .from('employers')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (employerData) {
+          form.reset({
+            companyName: employerData.company_name || "",
+            website: employerData.website || "",
+            description: employerData.description || "",
+            address: employerData.location || "",
+            phone: employerData.primary_contact_phone || "",
+          });
+
+          // Set logo preview if exists
+          if (employerData.logo_url) {
+            setPreviewUrl(employerData.logo_url);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading employer data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load company information",
+          variant: "destructive",
+        });
+      }
+    };
+
+    loadEmployerData();
+  }, [user, form]);
 
   return (
     <Form {...form}>
