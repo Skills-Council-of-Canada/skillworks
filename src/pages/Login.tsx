@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -29,16 +29,17 @@ const Login = () => {
   const { login, isLoading, user } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (user) {
+      const redirectPath = roleBasedRedirect(user.role);
+      navigate(redirectPath);
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(email, password);
-      // The user state will be updated in the context
-      // Use the user from context to determine redirect
-      if (user) {
-        const redirectPath = roleBasedRedirect(user.role);
-        navigate(redirectPath);
-      }
     } catch (error) {
       console.error("Login failed:", error);
     }
