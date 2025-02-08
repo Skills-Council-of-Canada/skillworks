@@ -6,6 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Loader2 } from "lucide-react";
+import { UserRole } from "@/types/auth";
+
+const roleBasedRedirect = (role: UserRole): string => {
+  switch (role) {
+    case "admin":
+      return "/admin";
+    case "employer":
+      return "/employer";
+    case "educator":
+      return "/educator";
+    case "participant":
+      return "/";
+    default:
+      return "/";
+  }
+};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +33,14 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/dashboard");
+      const user = await new Promise((resolve) => {
+        // Small delay to ensure user state is updated
+        setTimeout(() => resolve(useAuth().user), 100);
+      });
+      if (user) {
+        const redirectPath = roleBasedRedirect((user as any).role);
+        navigate(redirectPath);
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
