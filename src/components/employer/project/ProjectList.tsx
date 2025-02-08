@@ -31,13 +31,13 @@ export const ProjectList = ({ status }: ProjectListProps) => {
     {
       id: "1",
       title: "Electrical Maintenance Training",
-      status: "active",
+      status: "active" as const,
       applications: 5,
     },
     {
       id: "2",
       title: "Plumbing Apprenticeship",
-      status: "active",
+      status: "active" as const,
       applications: 3,
     },
   ].filter((project) => project.status === status);
