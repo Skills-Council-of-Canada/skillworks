@@ -22,14 +22,14 @@ import { TradeType, SkillLevel } from "@/types/project";
 const tradeTypes: TradeType[] = ['Electrical', 'Plumbing', 'Carpentry', 'HVAC', 'Welding', 'Automotive', 'Other'];
 const skillLevels: SkillLevel[] = ['Pre-Apprentice', 'Apprentice', 'Journeyman'];
 
-interface TradeDetailsFormData {
+type TradeDetailsFormData = {
   tradeType: TradeType;
   subcategories: string[];
   skillLevel: SkillLevel;
   safetyRequirements: string[];
   toolsProvided: boolean;
   requiredTools: string[];
-}
+};
 
 interface Props {
   form: UseFormReturn<TradeDetailsFormData>;
