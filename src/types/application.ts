@@ -13,6 +13,8 @@ export interface Application {
   applicationDate: Date;
   status: ApplicationStatus;
   coverLetter?: string;
+  lastMessageAt?: Date;
+  unreadMessageCount?: number;
 }
 
 export interface ApplicantProfile {
@@ -36,3 +38,4 @@ export interface ApplicantProfile {
     date: Date;
   }[];
 }
+
