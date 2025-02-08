@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import EmployerLayout from "./pages/employer/EmployerLayout";
+import EmployerDashboard from "./pages/employer/EmployerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,17 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route
+              path="/employer"
+              element={
+                <ProtectedRoute allowedRoles={["employer", "admin"]}>
+                  <EmployerLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<EmployerDashboard />} />
+              {/* Additional employer routes will be added here */}
+            </Route>
             <Route
               path="/"
               element={
