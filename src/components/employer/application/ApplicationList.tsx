@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { User, MessageCircle, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Application, ApplicationStatus } from "@/types/application";
+import { TradeType } from "@/types/project";
 
 interface ApplicationListProps {
   projectId: string;
@@ -31,7 +32,7 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
       projectId: "1",
       applicantId: "a1",
       applicantName: "John Doe",
-      tradeSkills: ["Electrical"],
+      tradeSkills: ["Electrical" as TradeType],
       skillLevel: "Intermediate",
       applicationDate: new Date("2024-02-20"),
       status: "new",
@@ -41,7 +42,7 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
       projectId: "1",
       applicantId: "a2",
       applicantName: "Jane Smith",
-      tradeSkills: ["Electrical", "HVAC"],
+      tradeSkills: ["Electrical" as TradeType, "HVAC" as TradeType],
       skillLevel: "Advanced",
       applicationDate: new Date("2024-02-21"),
       status: "reviewed",
