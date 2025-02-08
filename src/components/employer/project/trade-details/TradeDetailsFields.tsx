@@ -53,7 +53,7 @@ const TradeDetailsFields = ({ form }: Props) => {
                   <SelectValue placeholder="Select a trade type" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg">
                 {tradeTypes.map((trade) => (
                   <SelectItem key={trade} value={trade}>
                     {trade}
@@ -81,7 +81,7 @@ const TradeDetailsFields = ({ form }: Props) => {
                   <SelectValue placeholder="Select required skill level" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg">
                 {skillLevels.map((level) => (
                   <SelectItem key={level} value={level}>
                     {level}

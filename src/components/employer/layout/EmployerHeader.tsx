@@ -78,16 +78,16 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg">
-            <DropdownMenuItem className="focus:bg-gray-100">
+          <DropdownMenuContent className="w-56 bg-background border shadow-lg">
+            <DropdownMenuItem className="focus:bg-accent">
               Profile Settings
             </DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-gray-100">
+            <DropdownMenuItem className="focus:bg-accent">
               Company Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive focus:bg-gray-100"
+              className="text-destructive focus:bg-accent"
               onClick={logout}
             >
               Log Out
