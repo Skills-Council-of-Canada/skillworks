@@ -2,22 +2,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import type { ProjectFormData } from "@/types/project";
-import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
+import UploadField from "./media-uploads/UploadField";
+import { uploadFile } from "./media-uploads/uploadUtils";
 
-const MAX_FILE_SIZE = 5000000; // 5MB
+const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ACCEPTED_DOCUMENT_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
@@ -46,26 +38,6 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
       documents: [],
     },
   });
-
-  const uploadFile = async (file: File, type: 'image' | 'document', projectId: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', type);
-    formData.append('projectId', projectId);
-
-    try {
-      const { data: uploadResponse, error } = await supabase.functions.invoke('upload-project-files', {
-        body: formData,
-      });
-
-      if (error) throw error;
-
-      return uploadResponse.url;
-    } catch (error) {
-      console.error(`Error uploading ${type}:`, error);
-      throw error;
-    }
-  };
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const projectId = initialData.id;
@@ -136,66 +108,15 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6"
       >
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Images</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept={ACCEPTED_IMAGE_TYPES.join(",")}
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    field.onChange(files);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-              {field.value.map((_, index) => (
-                uploadProgress[`image-${index}`] !== undefined && (
-                  <Progress 
-                    key={`image-${index}`} 
-                    value={uploadProgress[`image-${index}`]} 
-                    className="w-full h-2"
-                  />
-                )
-              ))}
-            </FormItem>
-          )}
+        <UploadField
+          field={form.getValues("images")}
+          uploadProgress={uploadProgress}
+          type="image"
         />
-
-        <FormField
-          control={form.control}
-          name="documents"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Documents</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept={ACCEPTED_DOCUMENT_TYPES.join(",")}
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    field.onChange(files);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-              {field.value.map((_, index) => (
-                uploadProgress[`document-${index}`] !== undefined && (
-                  <Progress 
-                    key={`document-${index}`} 
-                    value={uploadProgress[`document-${index}`]} 
-                    className="w-full h-2"
-                  />
-                )
-              ))}
-            </FormItem>
-          )}
+        <UploadField
+          field={form.getValues("documents")}
+          uploadProgress={uploadProgress}
+          type="document"
         />
       </form>
     </Form>
