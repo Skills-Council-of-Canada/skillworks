@@ -35,7 +35,7 @@ const EmployerDashboard = () => {
   const navigate = useNavigate();
 
   // Fetch employer profile
-  const { data: employerProfile, isLoading, error } = useQuery({
+  const { data: employerProfile, isLoading } = useQuery({
     queryKey: ['employerProfile', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -61,29 +61,24 @@ const EmployerDashboard = () => {
     return <div>Loading...</div>;
   }
 
-  // Check if profile setup is incomplete
-  if (!employerProfile) {
-    return (
-      <div className="space-y-6">
-        <Alert variant="destructive">
+  // For development, show the dashboard even without a profile
+  const displayName = employerProfile?.primary_contact_name || user?.name || "Developer";
+
+  return (
+    <div className="space-y-8">
+      {!employerProfile && (
+        <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Please complete your profile setup before creating projects.
           </AlertDescription>
         </Alert>
-        <Button onClick={() => navigate("/employer/settings")}>
-          Complete Profile Setup
-        </Button>
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
-            Welcome back, {employerProfile.primary_contact_name}
+            Welcome back, {displayName}
           </h2>
           <p className="text-muted-foreground mt-2">
             Here's what's happening with your projects today.
@@ -92,6 +87,7 @@ const EmployerDashboard = () => {
         <Button 
           className="flex items-center gap-2"
           onClick={() => navigate("create-project")}
+          disabled={!employerProfile}
         >
           <PlusCircle className="h-4 w-4" />
           Create New Project
@@ -134,6 +130,14 @@ const EmployerDashboard = () => {
           </div>
         </Card>
       </div>
+
+      {!employerProfile && (
+        <div className="flex justify-center">
+          <Button onClick={() => navigate("/employer/settings")}>
+            Complete Profile Setup
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
