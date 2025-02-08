@@ -4,6 +4,9 @@ export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 export type LocationType = 'On-site' | 'Remote' | 'Hybrid';
 
 export interface ProjectFormData {
+  // Project ID
+  id?: string;
+
   // Step 1: Basic Information
   title: string;
   description: string;
