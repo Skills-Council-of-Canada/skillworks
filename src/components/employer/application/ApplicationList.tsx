@@ -35,7 +35,7 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
       tradeSkills: ["Electrical" as TradeType],
       skillLevel: "Intermediate" as SkillLevel,
       applicationDate: new Date("2024-02-20"),
-      status: "new",
+      status: "new" as ApplicationStatus,
     },
     {
       id: "2",
@@ -45,7 +45,7 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
       tradeSkills: ["Electrical" as TradeType, "HVAC" as TradeType],
       skillLevel: "Advanced" as SkillLevel,
       applicationDate: new Date("2024-02-21"),
-      status: "reviewed",
+      status: "reviewed" as ApplicationStatus,
     },
   ].filter(
     (app) =>
