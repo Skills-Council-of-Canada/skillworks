@@ -9,6 +9,7 @@ import { PROJECT_TEMPLATES } from "@/types/project";
 import ProjectTemplatesSection from "./trade-details/ProjectTemplatesSection";
 import TradeDetailsFields from "./trade-details/TradeDetailsFields";
 
+// Define the schema using the same types as TradeDetailsFormData
 const formSchema = z.object({
   tradeType: z.enum(['Electrical', 'Plumbing', 'Carpentry', 'HVAC', 'Welding', 'Automotive', 'Other'] as const),
   subcategories: z.array(z.string()).min(1, "Select at least one subcategory"),
@@ -18,13 +19,15 @@ const formSchema = z.object({
   requiredTools: z.array(z.string()),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 interface Props {
   initialData: Partial<ProjectFormData>;
   onSubmit: (data: Partial<ProjectFormData>) => void;
 }
 
 const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       tradeType: initialData.tradeType || 'Electrical',
@@ -62,4 +65,3 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
 };
 
 export default TradeDetailsForm;
-
