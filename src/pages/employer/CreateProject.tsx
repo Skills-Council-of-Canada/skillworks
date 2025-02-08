@@ -109,8 +109,7 @@ const CreateProject = () => {
 
         <StepProgress 
           currentStep={currentStep} 
-          totalSteps={TOTAL_STEPS} 
-          className="mb-8"
+          totalSteps={TOTAL_STEPS}
         />
         
         <Card className="p-6">
@@ -130,3 +129,4 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
+

@@ -3,7 +3,7 @@ import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/f
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
-import { FileUpload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { UploadFieldProps } from "./types";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -28,7 +28,7 @@ const UploadField = ({ field, uploadProgress, type }: UploadFieldProps) => {
                 className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/70 transition-colors"
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <FileUpload className="w-8 h-8 mb-2 text-muted-foreground" />
+                  <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
                   <p className="mb-2 text-sm text-muted-foreground">
                     <span className="font-semibold">Click to upload</span> or drag and drop
                   </p>
@@ -76,3 +76,4 @@ const UploadField = ({ field, uploadProgress, type }: UploadFieldProps) => {
 };
 
 export default UploadField;
+
