@@ -19,6 +19,7 @@ import ProjectManagement from "./pages/employer/ProjectManagement";
 import ProjectDetails from "./pages/employer/ProjectDetails";
 import ApplicationsManagement from "./pages/employer/ApplicationsManagement";
 import ApplicantProfile from "./pages/employer/ApplicantProfile";
+import MessagesPage from "./pages/employer/MessagesPage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,9 @@ const App = () => (
               <Route path="projects/:projectId" element={<ProjectDetails />} />
               <Route path="applications" element={<ApplicationsManagement />} />
               <Route path="applicants/:applicantId" element={<ApplicantProfile />} />
+              <Route path="messages" element={<MessagesPage />}>
+                <Route path=":conversationId" element={<MessagesPage />} />
+              </Route>
             </Route>
             <Route
               path="/dashboard"
