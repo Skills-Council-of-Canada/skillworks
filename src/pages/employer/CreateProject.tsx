@@ -1,48 +1,111 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import BasicInformationForm from "@/components/employer/project/BasicInformationForm";
+import TradeDetailsForm from "@/components/employer/project/TradeDetailsForm";
+import ProjectSpecificationsForm from "@/components/employer/project/ProjectSpecificationsForm";
+import LearnerRequirementsForm from "@/components/employer/project/LearnerRequirementsForm";
+import MediaUploadsForm from "@/components/employer/project/MediaUploadsForm";
+import ReviewForm from "@/components/employer/project/ReviewForm";
+import type { ProjectFormData } from "@/types/project";
 
-const formSchema = z.object({
-  title: z.string().min(5, "Project title must be at least 5 characters"),
-  description: z.string().min(50, "Project description must be at least 50 characters"),
-});
-
-type FormData = z.infer<typeof formSchema>;
+const TOTAL_STEPS = 6;
 
 const CreateProject = () => {
   const navigate = useNavigate();
-  const [progress] = useState(33); // For the first step, it's 33% complete
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<ProjectFormData>>({});
+  
+  const progress = (currentStep / TOTAL_STEPS) * 100;
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-    },
-  });
+  const handleStepSubmit = (stepData: Partial<ProjectFormData>) => {
+    setFormData(prev => ({ ...prev, ...stepData }));
+    if (currentStep < TOTAL_STEPS) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
 
-  const onSubmit = (data: FormData) => {
-    // This will be replaced with actual API call later
-    console.log("Form submitted:", data);
-    toast.success("Project details saved successfully!");
-    // For now, navigate back to dashboard
-    navigate("/employer");
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+    } else {
+      navigate("/employer");
+    }
+  };
+
+  const handlePublish = async () => {
+    try {
+      // TODO: Implement API call to save project
+      toast.success("Project published successfully!");
+      navigate("/employer");
+    } catch (error) {
+      toast.error("Failed to publish project. Please try again.");
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    try {
+      // TODO: Implement API call to save draft
+      toast.success("Project saved as draft!");
+      navigate("/employer");
+    } catch (error) {
+      toast.error("Failed to save draft. Please try again.");
+    }
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <BasicInformationForm
+            initialData={formData}
+            onSubmit={handleStepSubmit}
+          />
+        );
+      case 2:
+        return (
+          <TradeDetailsForm
+            initialData={formData}
+            onSubmit={handleStepSubmit}
+          />
+        );
+      case 3:
+        return (
+          <ProjectSpecificationsForm
+            initialData={formData}
+            onSubmit={handleStepSubmit}
+          />
+        );
+      case 4:
+        return (
+          <LearnerRequirementsForm
+            initialData={formData}
+            onSubmit={handleStepSubmit}
+          />
+        );
+      case 5:
+        return (
+          <MediaUploadsForm
+            initialData={formData}
+            onSubmit={handleStepSubmit}
+          />
+        );
+      case 6:
+        return (
+          <ReviewForm
+            data={formData}
+            onPublish={handlePublish}
+            onSaveDraft={handleSaveDraft}
+            onEdit={setCurrentStep}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -57,57 +120,29 @@ const CreateProject = () => {
       <Progress value={progress} className="h-2" />
       
       <div className="mt-8">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter project title"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        {renderStep()}
+      </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe your project in detail..."
-                      className="min-h-[200px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex justify-between">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate("/employer")}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">
-                Next Step
-              </Button>
-            </div>
-          </form>
-        </Form>
+      <div className="flex justify-between mt-6">
+        <Button
+          variant="outline"
+          onClick={handleBack}
+          className="flex items-center"
+        >
+          <ChevronLeft className="mr-2" />
+          {currentStep === 1 ? "Cancel" : "Back"}
+        </Button>
+        
+        {currentStep < TOTAL_STEPS && (
+          <Button
+            type="submit"
+            form={`step-${currentStep}-form`}
+            className="flex items-center"
+          >
+            Next
+            <ChevronRight className="ml-2" />
+          </Button>
+        )}
       </div>
     </div>
   );
