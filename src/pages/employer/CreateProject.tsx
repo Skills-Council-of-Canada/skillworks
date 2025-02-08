@@ -11,12 +11,15 @@ import ProjectSpecificationsForm from "@/components/employer/project/ProjectSpec
 import LearnerRequirementsForm from "@/components/employer/project/LearnerRequirementsForm";
 import MediaUploadsForm from "@/components/employer/project/MediaUploadsForm";
 import ReviewForm from "@/components/employer/project/ReviewForm";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import type { ProjectFormData } from "@/types/project";
 
 const TOTAL_STEPS = 6;
 
 const CreateProject = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<ProjectFormData>>({});
   
@@ -39,20 +42,118 @@ const CreateProject = () => {
 
   const handlePublish = async () => {
     try {
-      // TODO: Implement API call to save project
+      // First, get the employer_id for the current user
+      const { data: employerData, error: employerError } = await supabase
+        .from('employers')
+        .select('id')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (employerError) throw employerError;
+
+      // Create the project
+      const { data: projectData, error: projectError } = await supabase
+        .from('projects')
+        .insert({
+          employer_id: employerData.id,
+          title: formData.title,
+          description: formData.description,
+          trade_type: formData.tradeType,
+          skill_level: formData.skillLevel,
+          start_date: formData.startDate,
+          end_date: formData.endDate,
+          location_type: formData.locationType,
+          site_address: formData.address,
+          positions: formData.positions,
+          flexibility: formData.flexibility,
+          safety_requirements: formData.safetyRequirements,
+          status: 'published'
+        })
+        .select()
+        .single();
+
+      if (projectError) throw projectError;
+
+      // Handle media uploads if any
+      if (formData.images?.length || formData.documents?.length) {
+        const uploadPromises = [];
+
+        // Upload images
+        if (formData.images?.length) {
+          for (const image of formData.images) {
+            const formData = new FormData();
+            formData.append('file', image);
+            formData.append('type', 'image');
+            formData.append('projectId', projectData.id);
+
+            uploadPromises.push(
+              supabase.functions.invoke('upload-project-files', {
+                body: formData,
+              })
+            );
+          }
+        }
+
+        // Upload documents
+        if (formData.documents?.length) {
+          for (const document of formData.documents) {
+            const formData = new FormData();
+            formData.append('file', document);
+            formData.append('type', 'document');
+            formData.append('projectId', projectData.id);
+
+            uploadPromises.push(
+              supabase.functions.invoke('upload-project-files', {
+                body: formData,
+              })
+            );
+          }
+        }
+
+        await Promise.all(uploadPromises);
+      }
+
       toast.success("Project published successfully!");
       navigate("/employer");
     } catch (error) {
+      console.error('Error publishing project:', error);
       toast.error("Failed to publish project. Please try again.");
     }
   };
 
   const handleSaveDraft = async () => {
     try {
-      // TODO: Implement API call to save draft
+      // Similar to handlePublish but with status 'draft'
+      const { data: employerData, error: employerError } = await supabase
+        .from('employers')
+        .select('id')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (employerError) throw employerError;
+
+      await supabase
+        .from('projects')
+        .insert({
+          employer_id: employerData.id,
+          title: formData.title,
+          description: formData.description,
+          trade_type: formData.tradeType,
+          skill_level: formData.skillLevel,
+          start_date: formData.startDate,
+          end_date: formData.endDate,
+          location_type: formData.locationType,
+          site_address: formData.address,
+          positions: formData.positions,
+          flexibility: formData.flexibility,
+          safety_requirements: formData.safetyRequirements,
+          status: 'draft'
+        });
+
       toast.success("Project saved as draft!");
       navigate("/employer");
     } catch (error) {
+      console.error('Error saving draft:', error);
       toast.error("Failed to save draft. Please try again.");
     }
   };

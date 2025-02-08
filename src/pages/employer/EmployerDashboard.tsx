@@ -2,8 +2,11 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Users, Briefcase, Clock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PlusCircle, Users, Briefcase, Clock, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const QuickStatCard = ({
   title,
@@ -31,6 +34,22 @@ const EmployerDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // Fetch employer profile
+  const { data: employerProfile, isLoading } = useQuery({
+    queryKey: ['employerProfile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('employers')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
   // Mock data - replace with real data later
   const stats = {
     activeProjects: 3,
@@ -38,12 +57,33 @@ const EmployerDashboard = () => {
     totalApplicants: 45,
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Check if profile setup is incomplete
+  if (!employerProfile || employerProfile.registration_status === 'pending') {
+    return (
+      <div className="space-y-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please complete your profile setup before creating projects.
+          </AlertDescription>
+        </Alert>
+        <Button onClick={() => navigate("/employer/settings")}>
+          Complete Profile Setup
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
-            Welcome back, {user?.name}
+            Welcome back, {employerProfile.primary_contact_name}
           </h2>
           <p className="text-muted-foreground mt-2">
             Here's what's happening with your projects today.
