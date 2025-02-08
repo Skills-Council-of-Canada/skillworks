@@ -1,3 +1,4 @@
+
 export type TradeType = 'Electrical' | 'Plumbing' | 'Carpentry' | 'HVAC' | 'Welding' | 'Automotive' | 'Other';
 export type SkillLevel = 'Pre-Apprentice' | 'Apprentice' | 'Journeyman';
 export type LocationType = 'On-site' | 'Remote' | 'Hybrid';
@@ -32,6 +33,7 @@ export interface ProjectFormData {
   locationType: LocationType;
   address?: string;
   positions: number;
+  flexibility?: string;
 
   // Step 4: Learner Requirements
   certifications: string[];

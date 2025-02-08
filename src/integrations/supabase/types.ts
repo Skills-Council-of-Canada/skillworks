@@ -146,6 +146,7 @@ export type Database = {
           id: string
           location_type: string
           positions: number
+          safety_requirements: string[] | null
           site_address: string | null
           skill_level: string
           start_date: string
@@ -163,6 +164,7 @@ export type Database = {
           id?: string
           location_type: string
           positions: number
+          safety_requirements?: string[] | null
           site_address?: string | null
           skill_level: string
           start_date: string
@@ -180,6 +182,7 @@ export type Database = {
           id?: string
           location_type?: string
           positions?: number
+          safety_requirements?: string[] | null
           site_address?: string | null
           skill_level?: string
           start_date?: string
