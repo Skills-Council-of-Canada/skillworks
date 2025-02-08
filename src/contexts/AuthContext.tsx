@@ -25,9 +25,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Mock API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Mock user data - replace with real authentication
+      // Mock user data with proper UUID format
       const mockUser: User = {
-        id: "1",
+        id: "123e4567-e89b-12d3-a456-426614174000", // Using a proper UUID format
         email,
         role: determineUserRole(email),
         name: "John Doe",
@@ -72,3 +72,4 @@ const determineUserRole = (email: string): UserRole => {
   if (email.includes("employer")) return "employer";
   return "participant";
 };
+

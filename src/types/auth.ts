@@ -2,7 +2,7 @@
 export type UserRole = "admin" | "educator" | "employer" | "participant";
 
 export interface User {
-  id: string;
+  id: string; // This will store the UUID
   email: string;
   role: UserRole;
   name: string;
@@ -14,3 +14,4 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
 }
+
