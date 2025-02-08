@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { UserRole } from "@/types/auth";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const roleBasedRedirect = (role: UserRole): string => {
   switch (role) {
@@ -26,8 +27,9 @@ const roleBasedRedirect = (role: UserRole): string => {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLoading, user } = useAuth();
+  const { login, signup, isLoading, user } = useAuth();
   const navigate = useNavigate();
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -39,9 +41,13 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password);
+      if (isSigningUp) {
+        await signup(email, password);
+      } else {
+        await login(email, password);
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Auth failed:", error);
     }
   };
 
@@ -49,53 +55,58 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-muted px-4">
       <div className="w-full max-w-md space-y-8 animate-fadeIn">
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-secondary mb-2">Welcome Back</h2>
-          <p className="text-secondary/60">Sign in to your account</p>
+          <h2 className="text-4xl font-bold text-secondary mb-2">Welcome</h2>
+          <p className="text-secondary/60">Sign in to your account or create a new one</p>
         </div>
 
         <Card className="p-6 bg-white shadow-lg border-0">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-secondary">Email</label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full"
-                required
-              />
-            </div>
+          <Tabs defaultValue="login" className="w-full" onValueChange={(value) => setIsSigningUp(value === "signup")}>
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-secondary">
-                Password
-              </label>
-              <Input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full"
-                required
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-secondary">Email</label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                  required
+                />
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </Button>
-          </form>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-secondary">Password</label>
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    {isSigningUp ? "Sign Up" : "Sign In"}
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Tabs>
         </Card>
 
         <p className="text-center text-sm text-secondary/60">
