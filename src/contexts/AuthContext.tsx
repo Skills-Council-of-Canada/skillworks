@@ -1,7 +1,9 @@
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthContextType, User, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { AuthError, Session } from "@supabase/supabase-js";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -15,33 +17,66 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Mock login function - replace with real authentication later
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setUserFromSession(session);
+      }
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUserFromSession(session);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const setUserFromSession = (session: Session) => {
+    const userData: User = {
+      id: session.user.id,
+      email: session.user.email || "",
+      role: determineUserRole(session.user.email || ""),
+      name: session.user.user_metadata.name || "User",
+    };
+    setUser(userData);
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock user data with proper UUID format
-      const mockUser: User = {
-        id: "123e4567-e89b-12d3-a456-426614174000", // Using a proper UUID format
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        role: determineUserRole(email),
-        name: "John Doe",
-      };
-
-      setUser(mockUser);
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
+        password,
       });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+        });
+      }
     } catch (error) {
+      const authError = error as AuthError;
       toast({
         title: "Error",
-        description: "Invalid credentials",
+        description: authError.message || "An error occurred during login",
         variant: "destructive",
       });
       throw error;
@@ -50,12 +85,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred while logging out",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -72,4 +116,3 @@ const determineUserRole = (email: string): UserRole => {
   if (email.includes("employer")) return "employer";
   return "participant";
 };
-
