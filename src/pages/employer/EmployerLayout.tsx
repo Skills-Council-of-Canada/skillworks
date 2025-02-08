@@ -20,6 +20,7 @@ import {
   MessageSquare,
   BookOpen,
   LogOut,
+  Users,
 } from "lucide-react";
 
 const menuItems = [
@@ -35,7 +36,7 @@ const menuItems = [
   },
   {
     title: "Applications",
-    icon: ClipboardList,
+    icon: Users,
     url: "/employer/applications",
   },
   {
