@@ -26,19 +26,17 @@ const roleBasedRedirect = (role: UserRole): string => {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, user } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(email, password);
-      const user = await new Promise((resolve) => {
-        // Small delay to ensure user state is updated
-        setTimeout(() => resolve(useAuth().user), 100);
-      });
+      // The user state will be updated in the context
+      // Use the user from context to determine redirect
       if (user) {
-        const redirectPath = roleBasedRedirect((user as any).role);
+        const redirectPath = roleBasedRedirect(user.role);
         navigate(redirectPath);
       }
     } catch (error) {
