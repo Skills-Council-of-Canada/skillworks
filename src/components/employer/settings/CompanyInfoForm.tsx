@@ -1,8 +1,7 @@
 
+import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import * as React from "react";
 import {
   Form,
   FormControl,
@@ -15,31 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
-import { Upload, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-
-const MAX_FILE_SIZE = 5000000; // 5MB
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-
-const formSchema = z.object({
-  companyName: z.string().min(2, "Company name must be at least 2 characters"),
-  website: z.string().url("Please enter a valid URL"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  address: z.string().min(5, "Please enter a valid address"),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
-  logo: z
-    .any()
-    .refine((file) => !file || (file instanceof File && file.size <= MAX_FILE_SIZE), "Max file size is 5MB")
-    .refine(
-      (file) => !file || (file instanceof File && ACCEPTED_IMAGE_TYPES.includes(file.type)),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
-    )
-    .optional(),
-});
-
-type CompanyInfoFormData = z.infer<typeof formSchema>;
+import { LogoUpload } from "./LogoUpload";
+import { formSchema, type CompanyInfoFormData } from "./schema";
+import { loadEmployerData, updateEmployerProfile } from "./companyService";
 
 interface CompanyInfoFormProps {
   onUpdate: () => void;
@@ -62,19 +42,7 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
     },
   });
 
-  const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      form.setValue("logo", file);
-      // Create preview URL
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
-
   const onSubmit = async (data: CompanyInfoFormData) => {
-    console.log("Starting form submission with data:", data);
-    
     if (!user) {
       toast({
         title: "Error",
@@ -86,64 +54,8 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
 
     setIsUploading(true);
     try {
-      let logoUrl = null;
-
-      // Handle logo upload if a new file is selected
-      if (data.logo instanceof File) {
-        console.log("Uploading logo file:", data.logo.name);
-        
-        const fileExt = data.logo.name.split('.').pop();
-        const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('company-logos')
-          .upload(filePath, data.logo);
-
-        if (uploadError) {
-          console.error("Error uploading logo:", uploadError);
-          throw uploadError;
-        }
-
-        console.log("Logo upload successful, getting public URL");
-
-        // Get public URL for the uploaded file
-        const { data: { publicUrl } } = supabase.storage
-          .from('company-logos')
-          .getPublicUrl(filePath);
-
-        logoUrl = publicUrl;
-        console.log("Logo public URL:", logoUrl);
-      }
-
-      console.log("Updating employer profile with data:", {
-        company_name: data.companyName,
-        website: data.website,
-        description: data.description,
-        primary_contact_phone: data.phone,
-        location: data.address,
-        ...(logoUrl && { logo_url: logoUrl }),
-      });
-
-      // Update employer profile
-      const { error: updateError } = await supabase
-        .from('employers')
-        .update({
-          company_name: data.companyName,
-          website: data.website,
-          description: data.description,
-          primary_contact_phone: data.phone,
-          location: data.address,
-          ...(logoUrl && { logo_url: logoUrl }),
-        })
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        console.error("Error updating employer profile:", updateError);
-        throw updateError;
-      }
-
-      console.log("Profile update successful");
-
+      await updateEmployerProfile(user.id, data, data.logo instanceof File ? data.logo : undefined);
+      
       toast({
         title: "Success",
         description: "Company information updated successfully",
@@ -162,19 +74,12 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
     }
   };
 
-  // Load existing employer data when component mounts
   React.useEffect(() => {
-    const loadEmployerData = async () => {
+    const loadData = async () => {
       if (!user) return;
 
       try {
-        const { data: employerData, error } = await supabase
-          .from('employers')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-
-        if (error) throw error;
+        const employerData = await loadEmployerData(user.id);
 
         if (employerData) {
           form.reset({
@@ -185,7 +90,6 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
             phone: employerData.primary_contact_phone || "",
           });
 
-          // Set logo preview if exists
           if (employerData.logo_url) {
             setPreviewUrl(employerData.logo_url);
           }
@@ -200,7 +104,7 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
       }
     };
 
-    loadEmployerData();
+    loadData();
   }, [user, form]);
 
   return (
@@ -210,46 +114,11 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
           control={form.control}
           name="logo"
           render={({ field: { value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Company Logo</FormLabel>
-              <FormControl>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-center w-full">
-                    <label
-                      htmlFor="logo-upload"
-                      className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/70 transition-colors"
-                    >
-                      {previewUrl ? (
-                        <img
-                          src={previewUrl}
-                          alt="Logo preview"
-                          className="w-full h-full object-contain p-4"
-                        />
-                      ) : (
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                          <p className="mb-2 text-sm text-muted-foreground">
-                            <span className="font-semibold">Click to upload</span> or drag and drop
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            PNG, JPG or WEBP (MAX. 5MB)
-                          </p>
-                        </div>
-                      )}
-                      <Input
-                        id="logo-upload"
-                        type="file"
-                        className="hidden"
-                        accept={ACCEPTED_IMAGE_TYPES.join(",")}
-                        onChange={handleLogoChange}
-                        {...field}
-                      />
-                    </label>
-                  </div>
-                  <FormMessage />
-                </div>
-              </FormControl>
-            </FormItem>
+            <LogoUpload
+              setValue={form.setValue}
+              previewUrl={previewUrl}
+              setPreviewUrl={setPreviewUrl}
+            />
           )}
         />
 
@@ -337,3 +206,4 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
 };
 
 export default CompanyInfoForm;
+
