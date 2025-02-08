@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
 import EmployerRegistration from "./pages/employer/EmployerRegistration";
+import CreateProject from "./pages/employer/CreateProject";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,7 @@ const App = () => (
               }
             >
               <Route index element={<EmployerDashboard />} />
-              {/* Additional employer routes will be added here */}
+              <Route path="create-project" element={<CreateProject />} />
             </Route>
             <Route
               path="/dashboard"

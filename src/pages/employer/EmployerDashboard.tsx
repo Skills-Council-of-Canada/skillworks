@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Users, Briefcase, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const QuickStatCard = ({
   title,
@@ -28,6 +29,7 @@ const QuickStatCard = ({
 
 const EmployerDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock data - replace with real data later
   const stats = {
@@ -47,7 +49,10 @@ const EmployerDashboard = () => {
             Here's what's happening with your projects today.
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => navigate("create-project")}
+        >
           <PlusCircle className="h-4 w-4" />
           Create New Project
         </Button>
