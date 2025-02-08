@@ -14,6 +14,7 @@ import ReviewForm from "@/components/employer/project/ReviewForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { ProjectFormData } from "@/types/project";
+import type { Database } from "@/integrations/supabase/types";
 
 const TOTAL_STEPS = 6;
 
@@ -51,24 +52,26 @@ const CreateProject = () => {
 
       if (employerError) throw employerError;
 
-      // Create the project
-      const { data: projectData, error: projectError } = await supabase
+      // Create the project with properly typed data
+      const projectData: Database['public']['Tables']['projects']['Insert'] = {
+        employer_id: employerData.id,
+        title: formData.title!,
+        description: formData.description!,
+        trade_type: formData.tradeType!,
+        skill_level: formData.skillLevel!,
+        start_date: formData.startDate!.toISOString().split('T')[0],
+        end_date: formData.endDate!.toISOString().split('T')[0],
+        location_type: formData.locationType!,
+        site_address: formData.address,
+        positions: formData.positions!,
+        flexibility: formData.flexibility,
+        safety_requirements: formData.safetyRequirements,
+        status: 'published'
+      };
+
+      const { data: project, error: projectError } = await supabase
         .from('projects')
-        .insert({
-          employer_id: employerData.id,
-          title: formData.title,
-          description: formData.description,
-          trade_type: formData.tradeType,
-          skill_level: formData.skillLevel,
-          start_date: formData.startDate,
-          end_date: formData.endDate,
-          location_type: formData.locationType,
-          site_address: formData.address,
-          positions: formData.positions,
-          flexibility: formData.flexibility,
-          safety_requirements: formData.safetyRequirements,
-          status: 'published'
-        })
+        .insert([projectData])
         .select()
         .single();
 
@@ -84,7 +87,7 @@ const CreateProject = () => {
             const formData = new FormData();
             formData.append('file', image);
             formData.append('type', 'image');
-            formData.append('projectId', projectData.id);
+            formData.append('projectId', project.id);
 
             uploadPromises.push(
               supabase.functions.invoke('upload-project-files', {
@@ -100,7 +103,7 @@ const CreateProject = () => {
             const formData = new FormData();
             formData.append('file', document);
             formData.append('type', 'document');
-            formData.append('projectId', projectData.id);
+            formData.append('projectId', project.id);
 
             uploadPromises.push(
               supabase.functions.invoke('upload-project-files', {
@@ -123,7 +126,6 @@ const CreateProject = () => {
 
   const handleSaveDraft = async () => {
     try {
-      // Similar to handlePublish but with status 'draft'
       const { data: employerData, error: employerError } = await supabase
         .from('employers')
         .select('id')
@@ -132,23 +134,25 @@ const CreateProject = () => {
 
       if (employerError) throw employerError;
 
+      const projectData: Database['public']['Tables']['projects']['Insert'] = {
+        employer_id: employerData.id,
+        title: formData.title!,
+        description: formData.description!,
+        trade_type: formData.tradeType!,
+        skill_level: formData.skillLevel!,
+        start_date: formData.startDate!.toISOString().split('T')[0],
+        end_date: formData.endDate!.toISOString().split('T')[0],
+        location_type: formData.locationType!,
+        site_address: formData.address,
+        positions: formData.positions!,
+        flexibility: formData.flexibility,
+        safety_requirements: formData.safetyRequirements,
+        status: 'draft'
+      };
+
       await supabase
         .from('projects')
-        .insert({
-          employer_id: employerData.id,
-          title: formData.title,
-          description: formData.description,
-          trade_type: formData.tradeType,
-          skill_level: formData.skillLevel,
-          start_date: formData.startDate,
-          end_date: formData.endDate,
-          location_type: formData.locationType,
-          site_address: formData.address,
-          positions: formData.positions,
-          flexibility: formData.flexibility,
-          safety_requirements: formData.safetyRequirements,
-          status: 'draft'
-        });
+        .insert([projectData]);
 
       toast.success("Project saved as draft!");
       navigate("/employer");
