@@ -101,12 +101,48 @@ export type Database = {
         }
         Relationships: []
       }
+      project_media: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_path: string
+          file_type: string
+          id: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_path: string
+          file_type: string
+          id?: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_path?: string
+          file_type?: string
+          id?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string
           description: string
           employer_id: string
           end_date: string
+          flexibility: string | null
           id: string
           location_type: string
           positions: number
@@ -123,6 +159,7 @@ export type Database = {
           description: string
           employer_id: string
           end_date: string
+          flexibility?: string | null
           id?: string
           location_type: string
           positions: number
@@ -139,6 +176,7 @@ export type Database = {
           description?: string
           employer_id?: string
           end_date?: string
+          flexibility?: string | null
           id?: string
           location_type?: string
           positions?: number
