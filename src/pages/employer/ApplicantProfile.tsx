@@ -20,7 +20,7 @@ const ApplicantProfile = () => {
     email: "john.doe@example.com",
     phone: "(555) 123-4567",
     tradeSkills: ["Electrical", "HVAC"],
-    skillLevel: "Intermediate",
+    skillLevel: "Journeyman", // Changed from "Intermediate" to valid SkillLevel type
     certifications: ["Certified Electrician", "HVAC Technician"],
     experience: 5,
     portfolio: [
