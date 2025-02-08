@@ -9,7 +9,157 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          applicant_id: string
+          cover_letter: string | null
+          created_at: string
+          id: string
+          project_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applicant_id: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          project_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applicant_id?: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          project_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employers: {
+        Row: {
+          company_name: string
+          company_size: string
+          created_at: string
+          description: string | null
+          id: string
+          industry: string
+          location: string
+          logo_url: string | null
+          primary_contact_email: string
+          primary_contact_name: string
+          primary_contact_phone: string
+          registration_status: string
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          company_name: string
+          company_size: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry: string
+          location: string
+          logo_url?: string | null
+          primary_contact_email: string
+          primary_contact_name: string
+          primary_contact_phone: string
+          registration_status?: string
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          company_name?: string
+          company_size?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string
+          location?: string
+          logo_url?: string | null
+          primary_contact_email?: string
+          primary_contact_name?: string
+          primary_contact_phone?: string
+          registration_status?: string
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string
+          employer_id: string
+          end_date: string
+          id: string
+          location_type: string
+          positions: number
+          site_address: string | null
+          skill_level: string
+          start_date: string
+          status: string
+          title: string
+          trade_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          employer_id: string
+          end_date: string
+          id?: string
+          location_type: string
+          positions: number
+          site_address?: string | null
+          skill_level: string
+          start_date: string
+          status?: string
+          title: string
+          trade_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          employer_id?: string
+          end_date?: string
+          id?: string
+          location_type?: string
+          positions?: number
+          site_address?: string | null
+          skill_level?: string
+          start_date?: string
+          status?: string
+          title?: string
+          trade_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
