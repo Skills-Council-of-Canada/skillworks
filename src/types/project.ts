@@ -1,4 +1,3 @@
-
 export type TradeType = 'Electrical' | 'Plumbing' | 'Carpentry' | 'HVAC' | 'Welding' | 'Automotive' | 'Other';
 export type SkillLevel = 'Pre-Apprentice' | 'Apprentice' | 'Journeyman';
 export type LocationType = 'On-site' | 'Remote' | 'Hybrid';
@@ -23,9 +22,9 @@ export interface ProjectFormData {
   tradeType: TradeType;
   subcategories: string[];
   skillLevel: SkillLevel;
-  safetyRequirements: string[];
   toolsProvided: boolean;
   requiredTools: string[];
+  safetyRequirements: string[];
 
   // Step 3: Project Specifications
   startDate: Date;
@@ -36,8 +35,6 @@ export interface ProjectFormData {
 
   // Step 4: Learner Requirements
   certifications: string[];
-  toolsProvided: boolean;
-  safetyRequirements: string[];
 
   // Step 5: Media
   images: File[];
@@ -67,4 +64,3 @@ export const PROJECT_TEMPLATES: ProjectTemplate[] = [
     requirements: ['HVAC basics', 'Diagnostic skills', 'Preventive maintenance']
   }
 ];
-
