@@ -33,18 +33,24 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/employer/register" element={<EmployerRegistration />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route
-              path="/employer"
-              element={
-                <ProtectedRoute allowedRoles={["employer", "admin"]}>
-                  <EmployerLayout />
-                </ProtectedRoute>
-              }
-            >
+            
+            {/* Protected routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            
+            {/* Employer routes */}
+            <Route path="/employer" element={
+              <ProtectedRoute allowedRoles={["employer", "admin"]}>
+                <EmployerLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<EmployerDashboard />} />
               <Route path="create-project" element={<CreateProject />} />
               <Route path="projects" element={<ProjectManagement />} />
@@ -57,14 +63,7 @@ const App = () => (
               <Route path="resources" element={<ResourceCenter />} />
               <Route path="settings" element={<ProfileSettings />} />
             </Route>
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              }
-            />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

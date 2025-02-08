@@ -18,9 +18,9 @@ const roleBasedRedirect = (role: UserRole): string => {
     case "educator":
       return "/educator";
     case "participant":
-      return "/";
+      return "/dashboard";
     default:
-      return "/";
+      return "/dashboard";
   }
 };
 
