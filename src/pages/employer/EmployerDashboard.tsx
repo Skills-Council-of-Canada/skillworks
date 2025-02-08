@@ -35,14 +35,14 @@ const EmployerDashboard = () => {
   const navigate = useNavigate();
 
   // Fetch employer profile
-  const { data: employerProfile, isLoading } = useQuery({
+  const { data: employerProfile, isLoading, error } = useQuery({
     queryKey: ['employerProfile', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('employers')
         .select('*')
         .eq('user_id', user?.id)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -62,7 +62,7 @@ const EmployerDashboard = () => {
   }
 
   // Check if profile setup is incomplete
-  if (!employerProfile || employerProfile.registration_status === 'pending') {
+  if (!employerProfile) {
     return (
       <div className="space-y-6">
         <Alert variant="destructive">
