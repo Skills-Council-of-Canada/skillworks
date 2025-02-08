@@ -3,11 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
 import { useState } from "react";
 import UploadField from "./media-uploads/UploadField";
 import { uploadFile } from "./media-uploads/uploadUtils";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, Upload } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -30,6 +33,7 @@ interface Props {
 const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
   const { toast } = useToast();
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,6 +53,8 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
       });
       return;
     }
+
+    setIsUploading(true);
 
     try {
       // Upload images
@@ -98,28 +104,58 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
         description: "Failed to upload files",
         variant: "destructive",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    <Form {...form}>
-      <form
-        id="step-5-form"
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6"
-      >
-        <UploadField
-          field={form.getValues("images")}
-          uploadProgress={uploadProgress}
-          type="image"
-        />
-        <UploadField
-          field={form.getValues("documents")}
-          uploadProgress={uploadProgress}
-          type="document"
-        />
-      </form>
-    </Form>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold tracking-tight" id="upload-section-title">
+          Media Uploads
+        </h2>
+        <p className="text-muted-foreground">
+          Add photos and documents to help learners understand your project better.
+        </p>
+      </div>
+
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          Images should be clear and well-lit. Documents should be in PDF or DOC format.
+        </AlertDescription>
+      </Alert>
+
+      <Form {...form}>
+        <form
+          id="step-5-form"
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-6"
+          aria-labelledby="upload-section-title"
+        >
+          <UploadField
+            field={form.getValues("images")}
+            uploadProgress={uploadProgress}
+            type="image"
+          />
+          <UploadField
+            field={form.getValues("documents")}
+            uploadProgress={uploadProgress}
+            type="document"
+          />
+
+          <Button 
+            type="submit" 
+            className="w-full sm:w-auto"
+            disabled={isUploading}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            {isUploading ? "Uploading..." : "Upload Files"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };
 
