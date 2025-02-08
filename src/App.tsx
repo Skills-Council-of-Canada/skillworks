@@ -15,6 +15,8 @@ import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
 import EmployerRegistration from "./pages/employer/EmployerRegistration";
 import CreateProject from "./pages/employer/CreateProject";
+import ProjectManagement from "./pages/employer/ProjectManagement";
+import ProjectDetails from "./pages/employer/ProjectDetails";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
             >
               <Route index element={<EmployerDashboard />} />
               <Route path="create-project" element={<CreateProject />} />
+              <Route path="projects" element={<ProjectManagement />} />
+              <Route path="projects/:projectId" element={<ProjectDetails />} />
             </Route>
             <Route
               path="/dashboard"
