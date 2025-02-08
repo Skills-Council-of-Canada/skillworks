@@ -21,6 +21,7 @@ import {
   BookOpen,
   LogOut,
   Users,
+  Settings,
 } from "lucide-react";
 
 const menuItems = [
@@ -48,6 +49,11 @@ const menuItems = [
     title: "Resources",
     icon: BookOpen,
     url: "/employer/resources",
+  },
+  {
+    title: "Settings",
+    icon: Settings,
+    url: "/employer/settings",
   },
 ];
 
@@ -117,4 +123,3 @@ const EmployerLayout = () => {
 };
 
 export default EmployerLayout;
-

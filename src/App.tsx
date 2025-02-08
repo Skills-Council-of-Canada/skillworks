@@ -21,6 +21,7 @@ import ApplicationsManagement from "./pages/employer/ApplicationsManagement";
 import ApplicantProfile from "./pages/employer/ApplicantProfile";
 import MessagesPage from "./pages/employer/MessagesPage";
 import ResourceCenter from "./pages/employer/ResourceCenter";
+import ProfileSettings from "./pages/employer/ProfileSettings";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
                 <Route path=":conversationId" element={<MessagesPage />} />
               </Route>
               <Route path="resources" element={<ResourceCenter />} />
+              <Route path="settings" element={<ProfileSettings />} />
             </Route>
             <Route
               path="/dashboard"
