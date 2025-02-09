@@ -8,13 +8,47 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Building2 } from "lucide-react";
 import { EmployerCollaboration } from "@/types/collaboration";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
+
+interface Employer {
+  id: string;
+  company_name: string;
+  industry: string;
+  location: string;
+  logo_url?: string;
+}
 
 const CollaborationManagement = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [collaborations, setCollaborations] = useState<EmployerCollaboration[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedEmployer, setSelectedEmployer] = useState<Employer | null>(null);
+  const [message, setMessage] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Fetch employers using React Query
+  const { data: employers = [] } = useQuery({
+    queryKey: ['employers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('employers')
+        .select('id, company_name, industry, location, logo_url')
+        .eq('registration_status', 'approved');
+      
+      if (error) throw error;
+      return data as Employer[];
+    },
+  });
 
   useEffect(() => {
     if (user) {
@@ -42,7 +76,7 @@ const CollaborationManagement = () => {
       // Explicitly type and validate the status
       const validatedData: EmployerCollaboration[] = (data || []).map(item => ({
         ...item,
-        status: item.status as 'pending' | 'approved' | 'rejected', // This ensures status is one of the allowed values
+        status: item.status as 'pending' | 'approved' | 'rejected',
       }));
 
       setCollaborations(validatedData);
@@ -53,20 +87,20 @@ const CollaborationManagement = () => {
         description: "Failed to load collaborations",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  const requestCollaboration = async (employerId: string, message: string) => {
+  const requestCollaboration = async () => {
+    if (!selectedEmployer || !message.trim()) return;
+
     try {
       const { error } = await supabase
         .from('educator_employer_collaborations')
         .insert({
           educator_id: user?.id,
-          employer_id: employerId,
+          employer_id: selectedEmployer.id,
           message,
-          status: 'pending' as const, // Explicitly type the status
+          status: 'pending' as const,
         });
 
       if (error) throw error;
@@ -76,6 +110,9 @@ const CollaborationManagement = () => {
         description: "Collaboration request sent successfully",
       });
       
+      setIsDialogOpen(false);
+      setMessage("");
+      setSelectedEmployer(null);
       loadCollaborations();
     } catch (error) {
       console.error('Error requesting collaboration:', error);
@@ -87,13 +124,23 @@ const CollaborationManagement = () => {
     }
   };
 
+  const filteredEmployers = employers.filter(employer => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      employer.company_name.toLowerCase().includes(searchLower) ||
+      employer.industry.toLowerCase().includes(searchLower) ||
+      employer.location.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <div className="space-y-6">
+      {/* Employer Directory */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-6 w-6" />
-            Employer Collaborations
+            Employer Directory
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -107,6 +154,50 @@ const CollaborationManagement = () => {
             />
           </div>
 
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredEmployers.map((employer) => (
+              <Card key={employer.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4 mb-4">
+                    {employer.logo_url ? (
+                      <img
+                        src={employer.logo_url}
+                        alt={employer.company_name}
+                        className="w-12 h-12 object-contain rounded"
+                      />
+                    ) : (
+                      <Building2 className="w-12 h-12 text-muted-foreground" />
+                    )}
+                    <div>
+                      <h3 className="font-semibold">{employer.company_name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {employer.industry} • {employer.location}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedEmployer(employer);
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    Request Collaboration
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Active Collaborations */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Active Collaborations</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {collaborations.map((collab) => (
               <Card key={collab.id}>
@@ -148,6 +239,34 @@ const CollaborationManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Collaboration Request Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request Collaboration</DialogTitle>
+            <DialogDescription>
+              Send a collaboration request to {selectedEmployer?.company_name}. Include a message explaining your interest and goals.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Textarea
+              placeholder="Write your message here..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={requestCollaboration}>
+              Send Request
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
