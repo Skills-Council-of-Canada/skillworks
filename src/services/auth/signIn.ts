@@ -54,54 +54,14 @@ export const signInUser = async (email: string, password: string) => {
           console.error("Error creating profile:", profileError);
           throw profileError;
         }
-
-        // Ensure the profile was created with the correct role for special accounts
-        if (normalizedEmail === 'employer@skillscouncil.ca' || normalizedEmail === 'educator@skillscouncil.ca') {
-          const correctRole = normalizedEmail === 'employer@skillscouncil.ca' ? 'employer' : 'educator';
-          console.log(`Ensuring correct role (${correctRole}) for ${normalizedEmail}`);
-          
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ role: correctRole })
-            .eq('id', data.user.id);
-            
-          if (updateError) {
-            console.error(`Error updating ${correctRole} role:`, updateError);
-            throw updateError;
-          }
-        }
-      } else if (normalizedEmail === 'educator@skillscouncil.ca' && profile.role !== 'educator') {
-        // Force update role to educator if it's somehow incorrect
-        console.log("Correcting role to educator for educator@skillscouncil.ca");
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ role: 'educator' })
-          .eq('id', data.user.id);
-          
-        if (updateError) {
-          console.error("Error updating educator role:", updateError);
-          throw updateError;
-        }
-      } else if (normalizedEmail === 'employer@skillscouncil.ca' && profile.role !== 'employer') {
-        // Force update role to employer if it's somehow incorrect
-        console.log("Correcting role to employer for employer@skillscouncil.ca");
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ role: 'employer' })
-          .eq('id', data.user.id);
-          
-        if (updateError) {
-          console.error("Error updating employer role:", updateError);
-          throw updateError;
-        }
       }
       
       return { data, error: null };
     }
 
-    // If this is a demo account and sign in failed, try to create it
-    if (isDemoAccount && signInError) {
-      console.log("Demo account sign in failed, attempting to create account");
+    // If this is a demo account and sign in failed with invalid credentials (not user exists), try to create it
+    if (isDemoAccount && signInError?.message === "Invalid login credentials") {
+      console.log("Demo account sign in failed with invalid credentials, attempting to create account");
       let role = 'participant';
       let name = 'Participant User';
       
