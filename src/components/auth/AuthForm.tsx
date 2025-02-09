@@ -41,6 +41,8 @@ const AuthForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent multiple submissions
+    
     setError(null);
     setIsSubmitting(true);
 
