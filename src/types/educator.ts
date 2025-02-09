@@ -46,6 +46,9 @@ export interface EducatorExperience {
   }>;
   employer_approved: boolean;
   created_at: string;
+  marketplace_visibility: 'private' | 'public' | 'invite_only';
+  is_published: boolean;
+  published_at: string | null;
 }
 
 export interface ExperienceMilestone {

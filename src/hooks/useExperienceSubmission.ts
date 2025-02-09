@@ -58,7 +58,9 @@ export const useExperienceSubmission = () => {
           status: status,
           start_date: data.start_date,
           end_date: data.end_date,
-          educator_id: user.id
+          educator_id: user.id,
+          marketplace_visibility: 'private',
+          is_published: false
         })
         .select()
         .single();

@@ -194,16 +194,19 @@ export type Database = {
           example_projects: Json[] | null
           expected_outcomes: string[] | null
           id: string
+          is_published: boolean
           is_template: boolean | null
           last_saved_at: string | null
           learner_count: number | null
           learner_requirements: string[] | null
+          marketplace_visibility: string
           meta_objectives: string[] | null
           meta_outcomes: string[] | null
           meta_prerequisites: string[] | null
           milestones: string[] | null
           preferred_company_size: string | null
           preferred_industries: string[] | null
+          published_at: string | null
           required_certifications: string[] | null
           screening_questions: Json[] | null
           skill_level: string
@@ -237,16 +240,19 @@ export type Database = {
           example_projects?: Json[] | null
           expected_outcomes?: string[] | null
           id?: string
+          is_published?: boolean
           is_template?: boolean | null
           last_saved_at?: string | null
           learner_count?: number | null
           learner_requirements?: string[] | null
+          marketplace_visibility?: string
           meta_objectives?: string[] | null
           meta_outcomes?: string[] | null
           meta_prerequisites?: string[] | null
           milestones?: string[] | null
           preferred_company_size?: string | null
           preferred_industries?: string[] | null
+          published_at?: string | null
           required_certifications?: string[] | null
           screening_questions?: Json[] | null
           skill_level?: string
@@ -280,16 +286,19 @@ export type Database = {
           example_projects?: Json[] | null
           expected_outcomes?: string[] | null
           id?: string
+          is_published?: boolean
           is_template?: boolean | null
           last_saved_at?: string | null
           learner_count?: number | null
           learner_requirements?: string[] | null
+          marketplace_visibility?: string
           meta_objectives?: string[] | null
           meta_outcomes?: string[] | null
           meta_prerequisites?: string[] | null
           milestones?: string[] | null
           preferred_company_size?: string | null
           preferred_industries?: string[] | null
+          published_at?: string | null
           required_certifications?: string[] | null
           screening_questions?: Json[] | null
           skill_level?: string
