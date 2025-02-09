@@ -13,6 +13,7 @@ import ParticipantLanding from "./pages/ParticipantLanding";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import EducatorRegistration from "./pages/educator/EducatorRegistration";
 
 // Employer routes
 import EmployerLayout from "./pages/employer/EmployerLayout";
