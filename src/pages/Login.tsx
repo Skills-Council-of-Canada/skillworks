@@ -18,7 +18,6 @@ const Login = () => {
     console.log("Login component user state:", user);
     if (user) {
       console.log("User logged in, redirecting based on role:", user.role);
-      setIsSubmitting(false); // Reset loading state before redirect
       const redirectPath = user.role === 'employer' ? '/employer' : '/';
       navigate(redirectPath, { replace: true });
     }
@@ -39,9 +38,10 @@ const Login = () => {
         await login(email, password);
       }
       console.log("Auth submission successful");
+      // Don't reset isSubmitting here - let the useEffect handle it after redirect
     } catch (error) {
       console.error("Auth failed:", error);
-      setIsSubmitting(false); // Reset loading state on error
+      setIsSubmitting(false);
       if (error instanceof AuthError) {
         toast({
           variant: "destructive",
@@ -55,7 +55,6 @@ const Login = () => {
           description: "An unexpected error occurred during authentication"
         });
       }
-      throw error; // Re-throw to prevent further execution
     }
   };
 
