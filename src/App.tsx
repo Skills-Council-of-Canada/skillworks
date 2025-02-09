@@ -45,7 +45,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Routes>
-          {/* Public routes */}
+          {/* Public routes - these should be accessible without authentication */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login/*" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
