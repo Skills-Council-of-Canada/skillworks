@@ -43,27 +43,29 @@ export const signUpUser = async (email: string, password: string, portal: string
   console.log("Signing up user with portal:", portal);
   try {
     const isDemoAccount = email.toLowerCase().endsWith('@example.com');
-    let name = '';
-    
+    const normalizedEmail = email.toLowerCase();
+    const name = isDemoAccount 
+      ? email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1) + ' User'
+      : '';
+
+    // For demo accounts, try signing in first
     if (isDemoAccount) {
-      const role = email.split('@')[0];
-      name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
+      console.log("Attempting to sign in demo account first");
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      });
+
+      if (!signInError && signInData.user) {
+        console.log("Demo account exists, signing in");
+        return { data: signInData, error: null };
+      }
     }
 
-    // First check if user already exists
-    const { data: existingUser } = await supabase.auth.signInWithPassword({
-      email: email.toLowerCase(),
-      password,
-    });
-
-    if (existingUser?.user) {
-      console.log("User already exists, returning existing user");
-      return { data: existingUser, error: null };
-    }
-
-    // If user doesn't exist, create new account
+    // If sign in failed or it's not a demo account, create new account
+    console.log("Creating new account");
     const { data, error } = await supabase.auth.signUp({
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       password,
       options: {
         data: {
@@ -76,11 +78,10 @@ export const signUpUser = async (email: string, password: string, portal: string
     if (error) throw error;
     
     if (data.user?.id) {
-      // Wait longer for profile creation for demo accounts
-      const waitTime = isDemoAccount ? 3000 : 2000;
-      await new Promise(resolve => setTimeout(resolve, waitTime));
+      console.log("Account created, waiting for profile creation");
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Verify profile was created
+      // Verify profile exists
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
@@ -88,12 +89,12 @@ export const signUpUser = async (email: string, password: string, portal: string
         .maybeSingle();
         
       if (!profile) {
-        console.log("Profile not found, attempting to create one");
+        console.log("Creating profile manually");
         const { error: profileError } = await supabase
           .from('profiles')
           .insert({
             id: data.user.id,
-            email: data.user.email,
+            email: normalizedEmail,
             role: portal,
             name: name || email.split('@')[0]
           });
@@ -115,13 +116,16 @@ export const signUpUser = async (email: string, password: string, portal: string
 export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
-    // First try to sign in
+    const normalizedEmail = email.toLowerCase();
+    const isDemoAccount = normalizedEmail.endsWith('@example.com');
+
+    // Try to sign in first
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       password,
     });
 
-    // If sign in succeeds, verify profile exists
+    // If sign in succeeds, verify profile
     if (!signInError && data.user) {
       console.log("Sign in successful, verifying profile");
       const { data: profile } = await supabase
@@ -131,15 +135,15 @@ export const signInUser = async (email: string, password: string) => {
         .maybeSingle();
           
       if (!profile) {
-        console.log("No profile found, creating one");
-        const portal = email.split('@')[0];
+        console.log("Creating missing profile");
+        const portal = normalizedEmail.split('@')[0];
         const name = portal.charAt(0).toUpperCase() + portal.slice(1) + ' User';
         
         const { error: profileError } = await supabase
           .from('profiles')
           .insert({
             id: data.user.id,
-            email: data.user.email,
+            email: normalizedEmail,
             role: portal,
             name
           });
@@ -154,22 +158,18 @@ export const signInUser = async (email: string, password: string) => {
     }
 
     // If this is a demo account and sign in failed, try to create it
-    const isDemoAccount = email.toLowerCase().endsWith('@example.com');
     if (isDemoAccount && signInError) {
       console.log("Demo account sign in failed, attempting to create account");
-      const portal = email.split('@')[0];
+      const portal = normalizedEmail.split('@')[0];
       
-      const { error: signUpError } = await signUpUser(email, password, portal);
+      const { error: signUpError } = await signUpUser(normalizedEmail, password, portal);
       if (signUpError) throw signUpError;
 
       // Try signing in again after creating the account
-      const { data: newData, error: newError } = await supabase.auth.signInWithPassword({
-        email: email.toLowerCase(),
+      return supabase.auth.signInWithPassword({
+        email: normalizedEmail,
         password,
       });
-
-      if (newError) throw newError;
-      return { data: newData, error: null };
     }
 
     // If not a demo account or other error, throw the original error
