@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/auth";
-import PortalSelection, { portals } from "@/components/auth/PortalSelection";
 import AuthForm from "@/components/auth/AuthForm";
+import { portals } from "@/components/auth/PortalSelection";
 
 const roleBasedRedirect = (role: UserRole): string => {
   switch (role) {
@@ -22,7 +22,8 @@ const roleBasedRedirect = (role: UserRole): string => {
 };
 
 const Login = () => {
-  const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const portalParam = searchParams.get("portal");
   const { login, signup, isLoading, user } = useAuth();
   const navigate = useNavigate();
 
@@ -33,11 +34,17 @@ const Login = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    if (!portalParam) {
+      navigate("/");
+    }
+  }, [portalParam, navigate]);
+
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    if (!selectedPortal) return;
+    if (!portalParam) return;
 
     try {
-      const portalEmail = `${email.split('@')[0]}_${selectedPortal}@${email.split('@')[1]}`;
+      const portalEmail = `${email.split('@')[0]}_${portalParam}@${email.split('@')[1]}`;
       
       if (isSignUp) {
         await signup(portalEmail, password);
@@ -49,15 +56,11 @@ const Login = () => {
     }
   };
 
-  if (!selectedPortal) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/50 px-4">
-        <PortalSelection onPortalSelect={setSelectedPortal} />
-      </div>
-    );
+  if (!portalParam) {
+    return null;
   }
 
-  const currentPortal = portals.find(p => p.id === selectedPortal)!;
+  const currentPortal = portals.find(p => p.id === portalParam)!;
 
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
@@ -66,7 +69,7 @@ const Login = () => {
         title={currentPortal.title}
         gradient={currentPortal.gradient}
         isLoading={isLoading}
-        onBack={() => setSelectedPortal(null)}
+        onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
       />
     </div>
@@ -74,3 +77,4 @@ const Login = () => {
 };
 
 export default Login;
+
