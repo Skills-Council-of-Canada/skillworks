@@ -651,6 +651,7 @@ export type Database = {
           employer_notes: string | null
           experience_id: string
           id: string
+          match_criteria: Json | null
           match_score: number | null
           status: string
           updated_at: string
@@ -662,6 +663,7 @@ export type Database = {
           employer_notes?: string | null
           experience_id: string
           id?: string
+          match_criteria?: Json | null
           match_score?: number | null
           status?: string
           updated_at?: string
@@ -673,6 +675,7 @@ export type Database = {
           employer_notes?: string | null
           experience_id?: string
           id?: string
+          match_criteria?: Json | null
           match_score?: number | null
           status?: string
           updated_at?: string
@@ -1148,6 +1151,7 @@ export type Database = {
           positions: number
           project_type: string | null
           safety_requirements: string[] | null
+          search_vector: unknown | null
           site_address: string | null
           skill_level: string
           start_date: string
@@ -1169,6 +1173,7 @@ export type Database = {
           positions: number
           project_type?: string | null
           safety_requirements?: string[] | null
+          search_vector?: unknown | null
           site_address?: string | null
           skill_level: string
           start_date: string
@@ -1190,6 +1195,7 @@ export type Database = {
           positions?: number
           project_type?: string | null
           safety_requirements?: string[] | null
+          search_vector?: unknown | null
           site_address?: string | null
           skill_level?: string
           start_date?: string
@@ -1441,6 +1447,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_match_score: {
+        Args: {
+          experience_id: string
+          project_id: string
+        }
+        Returns: number
+      }
       cleanup_expired_verification_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
