@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +20,7 @@ interface EmployerDirectoryProps {
 }
 
 export const EmployerDirectory = ({ onSelectEmployer }: EmployerDirectoryProps) => {
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: employers = [] } = useQuery({
     queryKey: ['employers'],
