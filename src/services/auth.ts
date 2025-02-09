@@ -42,7 +42,6 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
 export const signUpUser = async (email: string, password: string, portal: string) => {
   console.log("Signing up user with portal:", portal);
   try {
-    // For demo accounts, we'll create them with a standard name based on their role
     const isDemoAccount = email.toLowerCase().endsWith('@example.com');
     let name = '';
     
@@ -63,10 +62,21 @@ export const signUpUser = async (email: string, password: string, portal: string
     });
     
     if (error) throw error;
-
-    // If this is a new user, wait a moment for the profile to be created
+    
+    // Wait for profile creation if this is a new user
     if (user?.id) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Verify profile was created
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+        
+      if (!profile) {
+        throw new Error("Profile creation failed");
+      }
     }
 
     return { data: { user }, error: null };
@@ -88,6 +98,21 @@ export const signInUser = async (email: string, password: string) => {
     // If sign in succeeds, return the result
     if (!signInError) {
       console.log("Sign in successful");
+      
+      // Verify profile exists
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', data.user.id)
+          .maybeSingle();
+          
+        if (!profile) {
+          console.log("No profile found, attempting to create one");
+          await signUpUser(email, password, email.split('@')[0]);
+        }
+      }
+      
       return { data, error: null };
     }
 
