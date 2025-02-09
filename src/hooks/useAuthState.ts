@@ -68,6 +68,7 @@ export const useAuthState = () => {
         if (event === 'SIGNED_OUT') {
           setUser(null);
           setIsLoading(false);
+          navigate('/login');
           return;
         }
 
