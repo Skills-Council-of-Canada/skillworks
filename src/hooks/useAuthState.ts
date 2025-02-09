@@ -9,7 +9,7 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export const useAuthState = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
@@ -50,16 +50,16 @@ export const useAuthState = () => {
         console.log("Session fetch complete:", session?.user?.email);
         
         if (!session?.user) {
-          console.log("No active session found, clearing loading state");
+          console.log("No active session found");
           if (mounted) {
             setUser(null);
-            setIsLoading(false);
           }
           return;
         }
 
         if (!mounted) return;
 
+        setIsLoading(true);
         console.log("Valid session found, fetching profile...");
         try {
           const profile = await getUserProfile(session);
@@ -75,7 +75,6 @@ export const useAuthState = () => {
         console.error("Auth initialization error:", error);
         if (mounted) {
           setUser(null);
-          setIsLoading(false);
         }
       }
     };
@@ -88,18 +87,17 @@ export const useAuthState = () => {
       if (event === 'SIGNED_OUT') {
         console.log("User signed out, clearing state...");
         setUser(null);
-        setIsLoading(false);
         navigate('/');
         return;
       }
 
       if (!session?.user) {
-        console.log("No session in auth change, clearing loading state");
+        console.log("No session in auth change");
         setUser(null);
-        setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
       console.log("Session detected, fetching profile...");
       try {
         const profile = await getUserProfile(session);
