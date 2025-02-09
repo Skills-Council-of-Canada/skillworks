@@ -34,6 +34,12 @@ export const signInUser = async (email: string, password: string) => {
           role = 'employer';
           name = 'Employer User';
         }
+        // Explicitly set educator role for educator@skillscouncil.ca
+        else if (normalizedEmail === 'educator@skillscouncil.ca') {
+          console.log("Setting educator role for educator@skillscouncil.ca");
+          role = 'educator';
+          name = 'Educator User';
+        }
         
         const { error: profileError } = await supabase
           .from('profiles')
@@ -49,17 +55,32 @@ export const signInUser = async (email: string, password: string) => {
           throw profileError;
         }
 
-        // Ensure the profile was created with the correct role
-        if (normalizedEmail === 'employer@skillscouncil.ca') {
+        // Ensure the profile was created with the correct role for special accounts
+        if (normalizedEmail === 'employer@skillscouncil.ca' || normalizedEmail === 'educator@skillscouncil.ca') {
+          const correctRole = normalizedEmail === 'employer@skillscouncil.ca' ? 'employer' : 'educator';
+          console.log(`Ensuring correct role (${correctRole}) for ${normalizedEmail}`);
+          
           const { error: updateError } = await supabase
             .from('profiles')
-            .update({ role: 'employer' })
+            .update({ role: correctRole })
             .eq('id', data.user.id);
             
           if (updateError) {
-            console.error("Error updating employer role:", updateError);
+            console.error(`Error updating ${correctRole} role:`, updateError);
             throw updateError;
           }
+        }
+      } else if (normalizedEmail === 'educator@skillscouncil.ca' && profile.role !== 'educator') {
+        // Force update role to educator if it's somehow incorrect
+        console.log("Correcting role to educator for educator@skillscouncil.ca");
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ role: 'educator' })
+          .eq('id', data.user.id);
+          
+        if (updateError) {
+          console.error("Error updating educator role:", updateError);
+          throw updateError;
         }
       } else if (normalizedEmail === 'employer@skillscouncil.ca' && profile.role !== 'employer') {
         // Force update role to employer if it's somehow incorrect
@@ -87,6 +108,9 @@ export const signInUser = async (email: string, password: string) => {
       if (normalizedEmail === 'employer@skillscouncil.ca') {
         role = 'employer';
         name = 'Employer User';
+      } else if (normalizedEmail === 'educator@skillscouncil.ca') {
+        role = 'educator';
+        name = 'Educator User';
       }
       
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
