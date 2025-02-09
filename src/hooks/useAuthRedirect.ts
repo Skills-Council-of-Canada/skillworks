@@ -5,7 +5,7 @@ export const useAuthRedirect = () => {
   const getRoleBasedRedirect = (role: UserRole): string => {
     switch (role) {
       case "admin":
-        return "/admin";
+        return "/dashboard";
       case "employer":
         return "/employer";
       case "educator":
@@ -13,7 +13,7 @@ export const useAuthRedirect = () => {
       case "participant":
         return "/dashboard";
       default:
-        return "/";
+        return "/dashboard";
     }
   };
 
