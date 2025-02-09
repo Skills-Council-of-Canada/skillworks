@@ -10,10 +10,20 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
   }
   
   try {
-    // Verify session is still valid
-    const { data: { session: currentSession } } = await supabase.auth.getSession();
-    if (!currentSession) {
-      console.log("Session is no longer valid");
+    // Get current auth status
+    const { data: authData } = await supabase.auth.getSession();
+    if (!authData.session) {
+      console.log("No active session found");
+      // Clear any stale session data
+      await supabase.auth.signOut();
+      return null;
+    }
+
+    // Verify access token is still valid
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    if (userError || !user?.user) {
+      console.log("Invalid or expired session");
+      await supabase.auth.signOut();
       return null;
     }
 
@@ -35,8 +45,6 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
     }
 
     console.log("Profile data retrieved:", profile);
-    console.log("Role from profile:", profile.role);
-
     return {
       id: profile.id,
       email: profile.email,
@@ -50,8 +58,14 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
 };
 
 export const updateUserProfile = async (userId: string, updates: Partial<User>) => {
-  console.log("Updating user profile:", updates);
   try {
+    // Verify session before update
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("No active session");
+    }
+
+    console.log("Updating user profile:", updates);
     const { error } = await supabase
       .from('profiles')
       .update(updates)
@@ -64,4 +78,3 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
     throw error;
   }
 };
-
