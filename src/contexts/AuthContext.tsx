@@ -25,21 +25,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
+  // Initialize auth state
   useEffect(() => {
+    let mounted = true;
+
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
+        
+        if (session && mounted) {
           const userProfile = await getUserProfile(session);
           setUser(userProfile);
-        } else {
+        } else if (mounted) {
           setUser(null);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-        setUser(null);
+        if (mounted) setUser(null);
+      } finally {
+        if (mounted) setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     initializeAuth();
@@ -47,19 +52,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (session) {
+      if (session && mounted) {
         const userProfile = await getUserProfile(session);
         setUser(userProfile);
-      } else {
+      } else if (mounted) {
         setUser(null);
+      }
+      
+      if (mounted) {
+        setIsLoading(false);
         if (event === 'SIGNED_OUT') {
           navigate('/');
         }
       }
-      setIsLoading(false);
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -130,6 +139,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
+      setIsLoading(true);
       const { error } = await signOutUser();
       if (error) throw error;
       
@@ -146,6 +156,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "An error occurred while logging out",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -160,4 +172,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 function isValidUserRole(role: string): role is UserRole {
   return ['admin', 'educator', 'employer', 'participant'].includes(role);
 }
-
