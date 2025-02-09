@@ -24,20 +24,14 @@ export const signInUser = async (email: string, password: string) => {
           
       if (!profile) {
         console.log("Creating missing profile");
-        // For demo accounts, extract role from email prefix
+        // For demo accounts, determine role
         let role = 'participant';
+        let name = 'Participant User';
         
-        if (isDemoAccount) {
-          // Special handling for known demo accounts
-          if (normalizedEmail === 'employer@skillscouncil.ca') {
-            role = 'employer';
-          } else {
-            // For other demo accounts, use email prefix as role
-            role = normalizedEmail.split('@')[0];
-          }
+        if (normalizedEmail === 'employer@skillscouncil.ca') {
+          role = 'employer';
+          name = 'Employer User';
         }
-        
-        const name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
         
         const { error: profileError } = await supabase
           .from('profiles')
@@ -61,16 +55,12 @@ export const signInUser = async (email: string, password: string) => {
     if (isDemoAccount && signInError) {
       console.log("Demo account sign in failed, attempting to create account");
       let role = 'participant';
+      let name = 'Participant User';
       
-      // Special handling for known demo accounts
       if (normalizedEmail === 'employer@skillscouncil.ca') {
         role = 'employer';
-      } else {
-        // For other demo accounts, use email prefix as role
-        role = normalizedEmail.split('@')[0];
+        name = 'Employer User';
       }
-      
-      const name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
       
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: normalizedEmail,

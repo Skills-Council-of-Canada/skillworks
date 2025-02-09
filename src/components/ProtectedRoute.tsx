@@ -16,8 +16,11 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Strictly enforce role-based access
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+    // Redirect to the appropriate dashboard based on user role
+    const roleBasedPath = `/${user.role}`;
+    return <Navigate to={roleBasedPath} state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
