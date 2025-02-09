@@ -29,7 +29,7 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("Login component state:", {
+  console.log("Login page initial state:", {
     user,
     authLoading,
     portalParam,
@@ -39,28 +39,27 @@ const Login = () => {
   });
 
   useEffect(() => {
-    const handleRedirects = () => {
-      if (!portalParam) {
-        console.log("No portal selected, redirecting to home");
-        navigate("/");
-        return true;
-      }
+    if (authLoading) {
+      console.log("Auth is still loading, waiting...");
+      return;
+    }
 
-      if (user) {
-        console.log("User authenticated, redirecting based on role:", user.role);
-        const redirectPath = user.role === "admin" && portalParam 
-          ? roleBasedRedirect(portalParam as UserRole) 
-          : roleBasedRedirect(user.role);
-        
-        navigate(redirectPath);
-        return true;
-      }
+    console.log("Handling redirects:", { user, portalParam });
 
-      return false;
-    };
+    if (!portalParam) {
+      console.log("No portal selected, redirecting to home");
+      navigate("/");
+      return;
+    }
 
-    if (!authLoading) {
-      handleRedirects();
+    if (user) {
+      console.log("User authenticated, redirecting based on role:", user.role);
+      const redirectPath = user.role === "admin" && portalParam 
+        ? roleBasedRedirect(portalParam as UserRole) 
+        : roleBasedRedirect(user.role);
+      
+      navigate(redirectPath);
+      return;
     }
   }, [user, navigate, portalParam, authLoading]);
 
@@ -85,22 +84,32 @@ const Login = () => {
     }
   };
 
-  // Early return if loading or missing required data
-  if (authLoading || !portalParam) {
-    console.log("Not rendering form - loading or missing portal:", { authLoading, portalParam });
+  // Show loading state
+  if (authLoading || isSubmitting) {
+    console.log("Loading state...");
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // Validate portal param
+  if (!portalParam) {
+    console.log("No portal param, will redirect...");
     return null;
   }
 
-  // Early return if user is authenticated
-  if (user) {
-    console.log("Not rendering form - user is authenticated:", user.email);
-    return null;
-  }
-
-  // Check for valid portal
+  // Get portal info
   const currentPortal = portals.find(p => p.id === portalParam);
   if (!currentPortal) {
-    console.log("Not rendering form - invalid portal:", portalParam);
+    console.log("Invalid portal:", portalParam);
+    return null;
+  }
+
+  // Don't show form if user is already authenticated
+  if (user) {
+    console.log("User already authenticated:", user.email);
     return null;
   }
 
