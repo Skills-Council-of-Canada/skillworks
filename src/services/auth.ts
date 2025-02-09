@@ -51,8 +51,8 @@ export const signUpUser = async (email: string, password: string, portal: string
       name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
+    const { data: { user }, error } = await supabase.auth.signUp({
+      email: email.toLowerCase(),
       password,
       options: {
         data: {
@@ -63,7 +63,13 @@ export const signUpUser = async (email: string, password: string, portal: string
     });
     
     if (error) throw error;
-    return { data, error: null };
+
+    // If this is a new user, wait a moment for the profile to be created
+    if (user?.id) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    return { data: { user }, error: null };
   } catch (error) {
     console.error("Error in signUpUser:", error);
     throw error;
@@ -73,34 +79,39 @@ export const signUpUser = async (email: string, password: string, portal: string
 export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
-    // If this is a demo account and it doesn't exist, create it first
-    const isDemoAccount = email.toLowerCase().endsWith('@example.com');
-    if (isDemoAccount) {
-      const { data: { user } } = await supabase.auth.signUp({
-        email: email.toLowerCase(),
-        password,
-        options: {
-          data: {
-            portal: email.split('@')[0], // Use the part before @ as the portal/role
-            name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1) + ' User',
-          },
-        },
-      });
-      
-      // If the user was just created, we need to wait a moment for the profile to be created
-      if (user?.id) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // First try to sign in
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: email.toLowerCase(),
       password,
     });
-    
-    if (error) throw error;
-    console.log("Sign in successful, session:", data.session);
-    return { data, error: null };
+
+    // If sign in succeeds, return the result
+    if (!signInError) {
+      console.log("Sign in successful");
+      return { data, error: null };
+    }
+
+    // If this is a demo account and sign in failed, try to create it first
+    const isDemoAccount = email.toLowerCase().endsWith('@example.com');
+    if (isDemoAccount && signInError) {
+      console.log("Demo account sign in failed, attempting to create account");
+      const role = email.split('@')[0];
+      
+      const { error: signUpError } = await signUpUser(email, password, role);
+      if (signUpError) throw signUpError;
+
+      // Try signing in again after creating the account
+      const { data: newData, error: newError } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase(),
+        password,
+      });
+
+      if (newError) throw newError;
+      return { data: newData, error: null };
+    }
+
+    // If not a demo account or other error, throw the original error
+    throw signInError;
   } catch (error) {
     console.error("Error in signInUser:", error);
     throw error;
