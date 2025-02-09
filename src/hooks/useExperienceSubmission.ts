@@ -10,7 +10,7 @@ export const useExperienceSubmission = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const submitExperience = async (data: ExperienceFormValues) => {
+  const submitExperience = async (data: ExperienceFormValues, status: 'draft' | 'pending_approval' = 'draft') => {
     setIsSubmitting(true);
     try {
       const {
@@ -20,12 +20,24 @@ export const useExperienceSubmission = () => {
 
       if (userError || !user) throw new Error("User not authenticated");
 
+      // First, check if the user is a verified educator
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (profile.role !== 'educator') throw new Error("Only educators can create experiences");
+
       const { error } = await supabase
         .from("educator_experiences")
         .insert({
           educator_id: user.id,
           title: data.title,
           description: data.description,
+          expected_outcomes: data.expected_outcomes || [],
+          example_projects: data.example_projects || [],
           trade_category: data.trade_category,
           subcategories: data.subcategories || [],
           skill_tags: data.skill_tags || [],
@@ -38,23 +50,27 @@ export const useExperienceSubmission = () => {
           company_types: data.company_types || [],
           compensation_type: data.compensation_type,
           screening_questions: data.screening_questions || [],
-          status: 'draft',
-          start_date: new Date().toISOString(),
+          status: status,
+          start_date: data.start_date,
+          end_date: data.end_date,
+          milestones: data.milestones || [],
         });
 
       if (error) throw error;
 
       toast({
-        title: "Experience created",
-        description: "Your experience has been created successfully.",
+        title: status === 'draft' ? "Draft saved" : "Experience submitted for approval",
+        description: status === 'draft' 
+          ? "Your experience has been saved as a draft."
+          : "Your experience has been submitted for approval.",
       });
       
       navigate("/educator/experiences");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating experience:", error);
       toast({
         title: "Error",
-        description: "There was an error creating your experience. Please try again.",
+        description: error.message || "There was an error creating your experience. Please try again.",
         variant: "destructive",
       });
     } finally {

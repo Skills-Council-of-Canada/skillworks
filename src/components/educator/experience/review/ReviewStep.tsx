@@ -8,7 +8,7 @@ import { AlertCircle, Edit, Save, Upload } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/hooks/use-toast";
+import { useExperienceSubmission } from "@/hooks/useExperienceSubmission";
 
 interface Props {
   form: UseFormReturn<ExperienceFormValues>;
@@ -18,6 +18,7 @@ interface Props {
 const ReviewStep = ({ form, onEdit }: Props) => {
   const navigate = useNavigate();
   const values = form.getValues();
+  const { submitExperience, isSubmitting } = useExperienceSubmission();
 
   const isComplete = Boolean(
     values.title &&
@@ -32,46 +33,12 @@ const ReviewStep = ({ form, onEdit }: Props) => {
   );
 
   const handlePublish = async () => {
-    if (!isComplete) {
-      toast({
-        title: "Cannot publish",
-        description: "Please complete all required fields before publishing.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // TODO: Implement experience publishing logic
-      toast({
-        title: "Success",
-        description: "Experience published successfully!",
-      });
-      navigate("/educator/experiences");
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to publish experience. Please try again.",
-        variant: "destructive",
-      });
-    }
+    if (!isComplete) return;
+    await submitExperience(values, 'pending_approval');
   };
 
   const handleSaveDraft = async () => {
-    try {
-      // TODO: Implement draft saving logic
-      toast({
-        title: "Success",
-        description: "Experience saved as draft.",
-      });
-      navigate("/educator/experiences");
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save draft. Please try again.",
-        variant: "destructive",
-      });
-    }
+    await submitExperience(values, 'draft');
   };
 
   return (
@@ -222,6 +189,7 @@ const ReviewStep = ({ form, onEdit }: Props) => {
         <Button
           variant="outline"
           onClick={handleSaveDraft}
+          disabled={isSubmitting}
           className="flex items-center"
         >
           <Save className="w-4 h-4 mr-2" />
@@ -229,11 +197,11 @@ const ReviewStep = ({ form, onEdit }: Props) => {
         </Button>
         <Button
           onClick={handlePublish}
-          disabled={!isComplete}
+          disabled={!isComplete || isSubmitting}
           className="bg-primary hover:bg-primary/90 flex items-center"
         >
           <Upload className="w-4 h-4 mr-2" />
-          Publish Experience
+          Submit for Approval
         </Button>
       </div>
     </div>
