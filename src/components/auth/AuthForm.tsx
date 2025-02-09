@@ -41,7 +41,7 @@ const AuthForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
     
     setError(null);
     setIsSubmitting(true);
@@ -138,9 +138,9 @@ const AuthForm = ({
             <Button
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground group"
-              disabled={isSubmitting || isLoading}
+              disabled={isLoading || isSubmitting}
             >
-              {(isSubmitting || isLoading) ? (
+              {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
