@@ -14,16 +14,17 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
-  const handleProfileError = async () => {
-    console.log("Handling profile error...");
+  const handleProfileError = async (error: Error) => {
+    console.log("Handling profile error:", error);
     await signOutUser();
     setUser(null);
     setIsLoading(false);
     toast({
       title: "Error",
-      description: "There was an error loading your profile. Please try logging in again.",
+      description: "There was an error with your account. Please try logging in again.",
       variant: "destructive",
     });
+    navigate('/login');
   };
 
   const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
@@ -35,6 +36,8 @@ export const useAuthState = () => {
       const redirectPath = getRoleBasedRedirect(profile.role);
       console.log("Redirecting to:", redirectPath);
       navigate(redirectPath);
+    } else {
+      handleProfileError(new Error("No profile found"));
     }
     setIsLoading(false);
   };
@@ -53,6 +56,7 @@ export const useAuthState = () => {
           console.log("No active session found");
           if (mounted) {
             setUser(null);
+            setIsLoading(false);
           }
           return;
         }
@@ -68,13 +72,14 @@ export const useAuthState = () => {
         } catch (error) {
           console.error("Error fetching profile:", error);
           if (mounted) {
-            await handleProfileError();
+            handleProfileError(error as Error);
           }
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
         if (mounted) {
           setUser(null);
+          setIsLoading(false);
         }
       }
     };
@@ -94,6 +99,7 @@ export const useAuthState = () => {
       if (!session?.user) {
         console.log("No session in auth change");
         setUser(null);
+        setIsLoading(false);
         return;
       }
 
@@ -105,7 +111,7 @@ export const useAuthState = () => {
         handleProfileSuccess(profile, mounted);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        await handleProfileError();
+        handleProfileError(error as Error);
       }
     });
 

@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { User, UserRole } from "@/types/auth";
 import { Session } from "@supabase/supabase-js";
@@ -15,7 +14,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       .from('profiles')
       .select('*')
       .eq('id', session.user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error fetching user profile:", error);
@@ -32,7 +31,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       };
     } else {
       console.log("No profile found for user");
-      throw new Error("No profile found for user");
+      return null;
     }
   } catch (error) {
     console.error("Error in getUserProfile:", error);
