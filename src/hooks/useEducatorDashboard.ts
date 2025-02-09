@@ -3,11 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EducatorTask, EducatorEvent, EducatorExperience } from "@/types/educator";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 export const useEducatorDashboard = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const { data: tasks, isLoading: isLoadingTasks } = useQuery({
     queryKey: ["educatorTasks", user?.id],

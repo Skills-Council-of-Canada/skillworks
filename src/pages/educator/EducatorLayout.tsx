@@ -6,6 +6,7 @@ import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { EducatorHeader } from "@/components/educator/layout/EducatorHeader";
 import { EducatorFooter } from "@/components/educator/layout/EducatorFooter";
 import { EducatorNavigation } from "@/components/educator/layout/EducatorNavigation";
+import { Toaster } from "@/components/ui/toaster";
 
 const EducatorLayout = () => {
   const { logout } = useAuth();
@@ -48,8 +49,10 @@ const EducatorLayout = () => {
           <EducatorFooter />
         </div>
       </div>
+      <Toaster />
     </SidebarProvider>
   );
 };
 
 export default EducatorLayout;
+
