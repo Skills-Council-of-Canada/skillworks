@@ -86,19 +86,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signup = async (email: string, password: string, portal: string) => {
     setIsLoading(true);
     try {
-      // For demo accounts, handle differently
+      // For demo accounts, try to sign in first
       if (email.endsWith('@example.com')) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password: 'demo123'
-        });
-        if (error) throw error;
-        return;
+        try {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password: 'demo123'
+          });
+          if (!signInError) return;
+        } catch (error) {
+          // If sign in fails, continue with signup
+          console.log("Demo account doesn't exist, creating...");
+        }
       }
 
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
+        password: email.endsWith('@example.com') ? 'demo123' : password,
         options: {
           data: {
             portal: portal,
@@ -130,19 +134,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password: email.endsWith('@example.com') ? 'demo123' : password,
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully logged in.",
+      // For demo accounts, try to create the account if it doesn't exist
+      if (email.endsWith('@example.com')) {
+        try {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password: 'demo123'
+          });
+          
+          if (signInError) {
+            // If login fails, try to create the account
+            const { error: signUpError } = await supabase.auth.signUp({
+              email,
+              password: 'demo123',
+              options: {
+                data: {
+                  portal: email.split('@')[0].replace('_', ''),
+                },
+              },
+            });
+            
+            if (signUpError) throw signUpError;
+            
+            // Try logging in again after creating the account
+            const { error: finalLoginError } = await supabase.auth.signInWithPassword({
+              email,
+              password: 'demo123'
+            });
+            
+            if (finalLoginError) throw finalLoginError;
+          }
+        } catch (error) {
+          throw error;
+        }
+      } else {
+        // Regular login for non-demo accounts
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
         });
+        if (error) throw error;
       }
+
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
     } catch (error) {
       const authError = error as AuthError;
       toast({
