@@ -59,13 +59,12 @@ export const useAuthState = () => {
             console.error("Error fetching profile:", error);
             await handleProfileError();
           }
+        } else {
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 

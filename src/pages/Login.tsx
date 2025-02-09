@@ -23,7 +23,7 @@ const Login = () => {
     setIsSubmitting(true);
     try {
       if (isSignUp) {
-        await signup(email, password, "default");
+        await signup(email, password, "participant");
       } else {
         await login(email, password);
       }

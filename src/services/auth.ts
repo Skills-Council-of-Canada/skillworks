@@ -28,7 +28,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
         id: session.user.id,
         email: profile.email,
         role: profile.role as UserRole,
-        name: profile.name || "User",
+        name: profile.name || profile.email.split('@')[0],
       };
     } else {
       console.log("No profile found for user");
@@ -48,7 +48,7 @@ export const signUpUser = async (email: string, password: string, portal: string
       password,
       options: {
         data: {
-          portal: portal,
+          portal,
         },
       },
     });
