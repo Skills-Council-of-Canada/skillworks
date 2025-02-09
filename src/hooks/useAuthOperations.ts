@@ -3,9 +3,11 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
 import { UserRole } from "@/types/auth";
+import { useNavigate } from "react-router-dom";
 
 export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const login = async (email: string, password: string) => {
     try {
@@ -70,6 +72,9 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
+      
+      // Navigate to index page after successful logout
+      navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
       toast({
