@@ -162,3 +162,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 function isValidUserRole(role: string): role is UserRole {
   return ['admin', 'educator', 'employer', 'participant'].includes(role);
 }
+
