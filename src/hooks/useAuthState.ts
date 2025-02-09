@@ -42,40 +42,27 @@ export const useAuthState = () => {
   };
 
   useEffect(() => {
-    console.log("Starting auth initialization...");
     let mounted = true;
 
     const initializeAuth = async () => {
-      try {
-        console.log("Fetching initial session...");
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
-          console.log("No active session found");
-          if (mounted) {
-            setUser(null);
-            setIsLoading(false);
-          }
-          return;
-        }
-
-        if (!mounted) return;
-
-        console.log("Valid session found, fetching profile...");
-        try {
-          const profile = await getUserProfile(session);
-          handleProfileSuccess(profile, mounted);
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-          if (mounted) {
-            handleProfileError(error as Error);
-          }
-        }
-      } catch (error) {
-        console.error("Auth initialization error:", error);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
         if (mounted) {
           setUser(null);
           setIsLoading(false);
+        }
+        return;
+      }
+
+      if (!mounted) return;
+
+      try {
+        const profile = await getUserProfile(session);
+        handleProfileSuccess(profile, mounted);
+      } catch (error) {
+        if (mounted) {
+          handleProfileError(error as Error);
         }
       }
     };
@@ -85,33 +72,26 @@ export const useAuthState = () => {
 
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email);
-      
       if (!mounted) return;
 
       if (event === 'SIGNED_OUT') {
-        console.log("User signed out, clearing state...");
         setUser(null);
         setIsLoading(false);
         return;
       }
 
-      // Only handle SIGNED_IN event for auth state changes
       if (event === 'SIGNED_IN' && session?.user) {
-        setIsLoading(true); // Only set loading when actually signing in
-        console.log("Session detected, fetching profile...");
+        setIsLoading(true);
         try {
           const profile = await getUserProfile(session);
           handleProfileSuccess(profile, mounted);
         } catch (error) {
-          console.error("Error fetching profile:", error);
           handleProfileError(error as Error);
         }
       }
     });
 
     return () => {
-      console.log("Cleaning up auth context...");
       mounted = false;
       subscription.unsubscribe();
     };

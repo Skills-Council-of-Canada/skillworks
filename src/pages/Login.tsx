@@ -23,10 +23,7 @@ const Login = () => {
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     console.log("Attempting auth submission:", { email, isSignUp });
-    if (isSubmitting) {
-      console.log("Submission already in progress, ignoring");
-      return;
-    }
+    if (isSubmitting) return;
     
     setIsSubmitting(true);
     try {
@@ -35,7 +32,6 @@ const Login = () => {
       } else {
         await login(email, password);
       }
-      console.log("Auth submission successful");
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
@@ -62,7 +58,7 @@ const Login = () => {
         icon={User}
         title="Welcome Back"
         gradient="bg-white"
-        isLoading={isSubmitting || authLoading}
+        isLoading={isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
       />
