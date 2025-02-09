@@ -15,8 +15,10 @@ export const useAuthState = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   const handleProfileError = async () => {
+    console.log("Handling profile error...");
     await signOutUser();
     setUser(null);
+    setIsLoading(false);
     toast({
       title: "Error",
       description: "There was an error loading your profile. Please try logging in again.",
@@ -24,14 +26,17 @@ export const useAuthState = () => {
     });
   };
 
-  const handleProfileSuccess = (profile: User | null) => {
+  const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
+    if (!isMounted) return;
+
     if (profile) {
-      console.log("Setting user and redirecting...");
+      console.log("Setting user profile:", profile);
       setUser(profile);
       const redirectPath = getRoleBasedRedirect(profile.role);
       console.log("Redirecting to:", redirectPath);
       navigate(redirectPath);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -51,25 +56,27 @@ export const useAuthState = () => {
           try {
             const profile = await getUserProfile(session);
             console.log("Profile fetch result:", profile);
-            
-            if (mounted) {
-              handleProfileSuccess(profile);
-            }
+            handleProfileSuccess(profile, mounted);
           } catch (error) {
             console.error("Error fetching profile:", error);
-            await handleProfileError();
+            if (mounted) {
+              await handleProfileError();
+            }
           }
         } else {
-          setIsLoading(false);
+          console.log("No active session found");
+          if (mounted) {
+            setIsLoading(false);
+          }
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-        setIsLoading(false);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    // Set up auth state change listener
-    console.log("Setting up auth state change listener...");
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
@@ -88,22 +95,18 @@ export const useAuthState = () => {
         try {
           const profile = await getUserProfile(session);
           console.log("Profile fetch complete:", profile);
-          
-          if (mounted) {
-            handleProfileSuccess(profile);
-          }
+          handleProfileSuccess(profile, mounted);
         } catch (error) {
           console.error("Error fetching profile:", error);
           await handleProfileError();
         }
+      } else {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
-    // Start initialization
     initializeAuth();
 
-    // Cleanup function
     return () => {
       console.log("Cleaning up auth context...");
       mounted = false;
