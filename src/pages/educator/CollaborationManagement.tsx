@@ -6,8 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Building2 } from "lucide-react";
-import { EmployerCollaboration } from "@/types/collaboration";
+import { Search, Building2, Send } from "lucide-react";
+import { EmployerCollaboration, CollaborationMessage } from "@/types/collaboration";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Employer {
   id: string;
@@ -35,6 +36,9 @@ const CollaborationManagement = () => {
   const [selectedEmployer, setSelectedEmployer] = useState<Employer | null>(null);
   const [message, setMessage] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedCollaboration, setSelectedCollaboration] = useState<EmployerCollaboration | null>(null);
+  const [chatMessage, setChatMessage] = useState("");
+  const [messages, setMessages] = useState<CollaborationMessage[]>([]);
 
   // Fetch employers using React Query
   const { data: employers = [] } = useQuery({
@@ -56,6 +60,54 @@ const CollaborationManagement = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (selectedCollaboration) {
+      loadMessages();
+      // Subscribe to new messages
+      const channel = supabase
+        .channel(`collaboration-${selectedCollaboration.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'collaboration_messages',
+            filter: `collaboration_id=eq.${selectedCollaboration.id}`,
+          },
+          (payload) => {
+            setMessages((prev) => [...prev, payload.new as CollaborationMessage]);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [selectedCollaboration]);
+
+  const loadMessages = async () => {
+    if (!selectedCollaboration) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('collaboration_messages')
+        .select('*')
+        .eq('collaboration_id', selectedCollaboration.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setMessages(data);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load messages",
+        variant: "destructive",
+      });
+    }
+  };
+
   const loadCollaborations = async () => {
     try {
       const { data, error } = await supabase
@@ -73,7 +125,6 @@ const CollaborationManagement = () => {
 
       if (error) throw error;
 
-      // Explicitly type and validate the status
       const validatedData: EmployerCollaboration[] = (data || []).map(item => ({
         ...item,
         status: item.status as 'pending' | 'approved' | 'rejected',
@@ -119,6 +170,31 @@ const CollaborationManagement = () => {
       toast({
         title: "Error",
         description: "Failed to send collaboration request",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!chatMessage.trim() || !selectedCollaboration) return;
+
+    try {
+      const { error } = await supabase
+        .from('collaboration_messages')
+        .insert({
+          collaboration_id: selectedCollaboration.id,
+          sender_id: user?.id,
+          content: chatMessage,
+        });
+
+      if (error) throw error;
+
+      setChatMessage("");
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive",
       });
     }
@@ -228,7 +304,11 @@ const CollaborationManagement = () => {
                       {collab.status.charAt(0).toUpperCase() + collab.status.slice(1)}
                     </span>
                     {collab.status === 'approved' && (
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setSelectedCollaboration(collab)}
+                      >
                         Message
                       </Button>
                     )}
@@ -265,6 +345,49 @@ const CollaborationManagement = () => {
               Send Request
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Chat Dialog */}
+      <Dialog 
+        open={!!selectedCollaboration} 
+        onOpenChange={(open) => !open && setSelectedCollaboration(null)}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Chat with {selectedCollaboration?.employer?.company_name}</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="space-y-4">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex ${msg.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] px-4 py-2 rounded-lg ${
+                      msg.sender_id === user?.id
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+          <div className="flex gap-2 mt-4">
+            <Input
+              placeholder="Type a message..."
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            />
+            <Button onClick={sendMessage} size="icon">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
