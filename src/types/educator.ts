@@ -68,6 +68,12 @@ export interface ExperienceAssignment {
 export interface ExperienceFormValues {
   title: string;
   description: string;
+  expected_outcomes: string[];
+  example_projects: {
+    title: string;
+    description: string;
+  }[];
+  media: File[];
   trade_category: string;
   subcategories: string[];
   skill_tags: string[];
