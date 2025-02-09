@@ -3,8 +3,16 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
-import { portals } from "@/components/auth/PortalSelection";
+import { User } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
+
+const defaultPortal = {
+  id: "default",
+  title: "Welcome Back",
+  description: "Sign in to your account",
+  icon: User,
+  gradient: "bg-gradient-to-r from-blue-600 to-blue-800"
+};
 
 const Login = () => {
   const [searchParams] = useSearchParams();
@@ -12,8 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const defaultPortal = portals[0];
-  const currentPortal = portals.find(p => p.id === portalParam) || defaultPortal;
+  const currentPortal = defaultPortal;
 
   useEffect(() => {
     if (user) {
@@ -23,11 +30,10 @@ const Login = () => {
   }, [user, navigate]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    const portal = portalParam || currentPortal.id;
     setIsSubmitting(true);
     try {
       if (isSignUp) {
-        await signup(email, password, portal);
+        await signup(email, password, "default");
       } else {
         await login(email, password);
       }
