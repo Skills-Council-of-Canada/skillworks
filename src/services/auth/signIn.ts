@@ -5,7 +5,7 @@ export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
     const normalizedEmail = email.toLowerCase();
-    const isDemoAccount = normalizedEmail.endsWith('@example.com');
+    const isDemoAccount = normalizedEmail.endsWith('@example.com') || normalizedEmail.endsWith('@skillscouncil.ca');
 
     // Try to sign in first
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -24,7 +24,8 @@ export const signInUser = async (email: string, password: string) => {
           
       if (!profile) {
         console.log("Creating missing profile");
-        const portal = normalizedEmail.split('@')[0];
+        // Extract role from email prefix for demo accounts
+        const portal = isDemoAccount ? normalizedEmail.split('@')[0] : 'participant';
         const name = portal.charAt(0).toUpperCase() + portal.slice(1) + ' User';
         
         const { error: profileError } = await supabase
