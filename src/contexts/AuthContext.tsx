@@ -72,10 +72,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .eq('id', session.user.id)
       .single();
 
+    // Ensure the role is of type UserRole by using the determineUserRole function
+    const userRole: UserRole = profile?.role ? determineUserRole(profile.role) : determineUserRole(session.user.email || "");
+
     const userData: User = {
       id: session.user.id,
       email: session.user.email || "",
-      role: profile?.role || determineUserRole(session.user.email || ""),
+      role: userRole,
       name: profile?.name || session.user.user_metadata.name || "User",
     };
     
@@ -168,10 +171,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Helper function to determine user role from email
-const determineUserRole = (email: string): UserRole => {
-  if (email.includes("_admin")) return "admin";
-  if (email.includes("_educator")) return "educator";
-  if (email.includes("_employer")) return "employer";
+// Helper function to determine user role from email or profile role
+const determineUserRole = (identifier: string): UserRole => {
+  // Handle both email and profile role cases
+  if (identifier.includes("_admin") || identifier === "admin") return "admin";
+  if (identifier.includes("_educator") || identifier === "educator") return "educator";
+  if (identifier.includes("_employer") || identifier === "employer") return "employer";
   return "participant";
 };
+
