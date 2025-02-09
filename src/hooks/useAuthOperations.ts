@@ -3,7 +3,6 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
 import { UserRole } from "@/types/auth";
-import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const { toast } = useToast();
@@ -74,8 +73,8 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
     } catch (error) {
       console.error("Logout error:", error);
       toast({
-        title: "Warning",
-        description: "There was an issue during logout, but you have been logged out locally.",
+        title: "Error",
+        description: "There was an issue during logout. Please try refreshing the page.",
         variant: "destructive",
       });
     } finally {
