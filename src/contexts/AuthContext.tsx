@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthContextType, User, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize authentication state
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -42,7 +40,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     initializeAuth();
 
-    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
@@ -65,7 +62,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const setUserFromSession = async (session: Session) => {
     if (!session?.user) return;
     
-    // Get the user's profile from the profiles table
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
@@ -83,10 +79,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const getRoleBasedRedirect = (role: UserRole): string => {
+    switch (role) {
+      case "admin":
+        return "/admin";
+      case "employer":
+        return "/employer";
+      case "educator":
+        return "/educator";
+      case "participant":
+        return "/dashboard";
+      default:
+        return "/";
+    }
+  };
+
   const signup = async (email: string, password: string, portal: string) => {
     setIsLoading(true);
     try {
-      // For demo accounts, try to sign in first
       if (email.endsWith('@example.com')) {
         try {
           const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -95,7 +105,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           });
           if (!signInError) return;
         } catch (error) {
-          // If sign in fails, continue with signup
           console.log("Demo account doesn't exist, creating...");
         }
       }
@@ -134,7 +143,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // For demo accounts, try to create the account if it doesn't exist
       if (email.endsWith('@example.com')) {
         try {
           const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -143,7 +151,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           });
           
           if (signInError) {
-            // If login fails, try to create the account
             const { error: signUpError } = await supabase.auth.signUp({
               email,
               password: 'demo123',
@@ -156,7 +163,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             
             if (signUpError) throw signUpError;
             
-            // Try logging in again after creating the account
             const { error: finalLoginError } = await supabase.auth.signInWithPassword({
               email,
               password: 'demo123'
@@ -168,12 +174,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           throw error;
         }
       } else {
-        // Regular login for non-demo accounts
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .single();
+
+      if (profile) {
+        const redirectPath = getRoleBasedRedirect(profile.role as UserRole);
+        navigate(redirectPath);
       }
 
       toast({
