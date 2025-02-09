@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +8,8 @@ import ContactVerificationForm from "@/components/educator/registration/ContactV
 import AccountSetupForm from "@/components/educator/registration/AccountSetupForm";
 import { Steps } from "@/components/educator/registration/Steps";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 export type RegistrationData = {
   fullName: string;
@@ -32,6 +33,14 @@ const EducatorRegistration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login?portal=educator');
+      return;
+    }
+  }, [user, navigate]);
 
   const handleStepSubmit = async (stepData: Partial<RegistrationData>) => {
     const updatedData = { ...formData, ...stepData };
@@ -45,46 +54,33 @@ const EducatorRegistration = () => {
   };
 
   const handleRegistration = async (data: RegistrationData) => {
+    if (!user) return;
+
     setIsLoading(true);
     try {
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            portal: 'educator',
-            name: data.fullName,
-          },
-        },
-      });
-
-      if (signUpError) throw signUpError;
-
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('educator_profiles')
-          .insert({
-            id: authData.user.id,
-            full_name: data.fullName,
-            institution_name: data.institutionName,
-            specialization: data.specialization,
-            years_experience: data.yearsExperience,
-            phone_number: data.phoneNumber,
-            preferred_contact: data.preferredContact,
-            job_title: data.jobTitle,
-            location: data.location,
-            areas_of_interest: data.areasOfInterest,
-          });
-
-        if (profileError) throw profileError;
-
-        toast({
-          title: "Registration successful!",
-          description: "Please check your email to verify your account.",
+      const { error: profileError } = await supabase
+        .from('educator_profiles')
+        .insert({
+          id: user.id,
+          full_name: data.fullName,
+          institution_name: data.institutionName,
+          specialization: data.specialization,
+          years_experience: data.yearsExperience,
+          phone_number: data.phoneNumber,
+          preferred_contact: data.preferredContact,
+          job_title: data.jobTitle,
+          location: data.location,
+          areas_of_interest: data.areasOfInterest,
         });
 
-        navigate("/login?portal=educator");
-      }
+      if (profileError) throw profileError;
+
+      toast({
+        title: "Registration successful!",
+        description: "Your educator profile has been created.",
+      });
+
+      navigate("/login?portal=educator&registered=true");
     } catch (error) {
       console.error("Registration error:", error);
       toast({

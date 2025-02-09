@@ -17,25 +17,28 @@ const Login = () => {
   const { toast } = useToast();
   const { getRoleBasedRedirect } = useAuthRedirect();
   const [searchParams] = useSearchParams();
-  const [selectedPortal, setSelectedPortal] = useState<{ id: string; role: UserRole } | null>(
-    () => {
-      const portal = searchParams.get("portal");
-      if (portal) {
-        return {
-          id: portal,
-          role: portal as UserRole,
-        };
-      }
-      return null;
+  const [selectedPortal, setSelectedPortal] = useState<{ id: string; role: UserRole } | null>(() => {
+    const portal = searchParams.get("portal");
+    if (portal) {
+      return {
+        id: portal,
+        role: portal as UserRole,
+      };
     }
-  );
+    return null;
+  });
 
   useEffect(() => {
     if (user && !isSubmitting) {
+      // If the user just signed up as an educator, redirect to registration
+      if (user.role === 'educator' && !searchParams.get('registered')) {
+        navigate('/educator/registration');
+        return;
+      }
       const redirectPath = getRoleBasedRedirect(user.role);
       navigate(redirectPath, { replace: true });
     }
-  }, [user, navigate, isSubmitting, getRoleBasedRedirect]);
+  }, [user, navigate, isSubmitting, getRoleBasedRedirect, searchParams]);
 
   const handlePortalSelect = (portalId: string, role: UserRole) => {
     setSelectedPortal({ id: portalId, role });
@@ -56,6 +59,11 @@ const Login = () => {
     try {
       if (isSignUp) {
         await signup(email, password, selectedPortal.role);
+        if (selectedPortal.role === 'educator') {
+          // Don't navigate here - let the useEffect handle it
+          // This prevents race conditions with auth state updates
+          return;
+        }
       } else {
         await login(email, password);
       }
