@@ -27,7 +27,7 @@ const Login = () => {
   const portalParam = searchParams.get("portal");
   const navigate = useNavigate();
   const auth = useAuth();
-  const { login, signup, isLoading, user } = auth || {};
+  const { login, signup, isLoading: authLoading, user } = auth || {};
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const Login = () => {
         icon={currentPortal.icon}
         title={currentPortal.title}
         gradient={currentPortal.gradient}
-        isLoading={isLoading || isSubmitting}
+        isLoading={isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
       />
