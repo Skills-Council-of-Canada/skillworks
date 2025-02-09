@@ -1,6 +1,5 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -8,15 +7,24 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefcase } from "lucide-react";
 
+interface DashboardStats {
+  educators: number;
+  employers: number;
+  participants: number;
+  pendingApprovals: number;
+  activeExperiences: number;
+  matchedProjects: number;
+}
+
 const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Fetch dashboard statistics
-  const { data: stats, isLoading } = useQuery({
+  // Fetch dashboard statistics with explicit typing
+  const { data: stats, isLoading } = useQuery<DashboardStats, Error>({
     queryKey: ["admin-stats"],
-    queryFn: async () => {
+    queryFn: async (): Promise<DashboardStats> => {
       // Verify admin role before fetching
       const { data: profile } = await supabase
         .from('profiles')
@@ -175,3 +183,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
