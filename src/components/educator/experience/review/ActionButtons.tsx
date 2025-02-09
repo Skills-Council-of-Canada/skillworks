@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ActionButtonsProps {
@@ -41,35 +40,14 @@ const ActionButtons = ({ values, isComplete }: ActionButtonsProps) => {
 
   const handlePublish = async () => {
     if (!isComplete) return;
-    
-    try {
-      const { data: experience, error: submitError } = await supabase
-        .from('educator_experiences')
-        .insert({
-          ...values,
-          status: 'pending_approval',
-          marketplace_visibility: visibility,
-          is_published: true
-        })
-        .select()
-        .single();
-
-      if (submitError) throw submitError;
-
-      toast({
-        title: "Experience Published",
-        description: "Your experience has been published successfully.",
-      });
-      
-      setIsPublishDialogOpen(false);
-    } catch (error: any) {
-      console.error('Error publishing experience:', error);
-      toast({
-        title: "Error",
-        description: "Failed to publish experience. Please try again.",
-        variant: "destructive",
-      });
-    }
+    await submitExperience(
+      {
+        ...values,
+        marketplace_visibility: visibility,
+      },
+      'pending_approval'
+    );
+    setIsPublishDialogOpen(false);
   };
 
   return (

@@ -59,8 +59,8 @@ export const useExperienceSubmission = () => {
           start_date: data.start_date,
           end_date: data.end_date,
           educator_id: user.id,
-          marketplace_visibility: 'private',
-          is_published: false
+          marketplace_visibility: data.marketplace_visibility || 'private',
+          is_published: status === 'pending_approval'
         })
         .select()
         .single();

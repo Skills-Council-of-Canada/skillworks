@@ -105,6 +105,7 @@ export interface ExperienceFormValues {
   start_date: string;
   end_date: string;
   milestones: Milestone[];
+  marketplace_visibility?: 'private' | 'public' | 'invite_only';
 }
 
 export interface EducatorRegistrationData {
