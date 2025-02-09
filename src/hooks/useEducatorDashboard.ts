@@ -3,15 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EducatorTask, EducatorEvent, EducatorExperience } from "@/types/educator";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 export const useEducatorDashboard = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const { data: tasks, isLoading: isLoadingTasks } = useQuery({
     queryKey: ["educatorTasks", user?.id],
     queryFn: async () => {
-      if (!user?.id) return [];
+      if (!user?.id) {
+        console.log("No user ID available for tasks query");
+        return [];
+      }
       
+      console.log("Fetching tasks for user:", user.id);
       const { data, error } = await supabase
         .from("educator_tasks")
         .select("*")
@@ -19,7 +25,17 @@ export const useEducatorDashboard = () => {
         .order("due_date", { ascending: true })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching tasks:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load tasks. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      }
+      
+      console.log("Tasks fetched:", data);
       return data as EducatorTask[];
     },
     enabled: !!user?.id,
@@ -28,8 +44,12 @@ export const useEducatorDashboard = () => {
   const { data: events, isLoading: isLoadingEvents } = useQuery({
     queryKey: ["educatorEvents", user?.id],
     queryFn: async () => {
-      if (!user?.id) return [];
+      if (!user?.id) {
+        console.log("No user ID available for events query");
+        return [];
+      }
 
+      console.log("Fetching events for user:", user.id);
       const { data, error } = await supabase
         .from("educator_events")
         .select("*")
@@ -38,7 +58,17 @@ export const useEducatorDashboard = () => {
         .order("event_date", { ascending: true })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching events:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load events. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      console.log("Events fetched:", data);
       return data as EducatorEvent[];
     },
     enabled: !!user?.id,
@@ -47,8 +77,12 @@ export const useEducatorDashboard = () => {
   const { data: experiences, isLoading: isLoadingExperiences } = useQuery({
     queryKey: ["educatorExperiences", user?.id],
     queryFn: async () => {
-      if (!user?.id) return [];
+      if (!user?.id) {
+        console.log("No user ID available for experiences query");
+        return [];
+      }
 
+      console.log("Fetching experiences for user:", user.id);
       const { data, error } = await supabase
         .from("educator_experiences")
         .select("*")
@@ -57,7 +91,17 @@ export const useEducatorDashboard = () => {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching experiences:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load experiences. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      console.log("Experiences fetched:", data);
       return data as EducatorExperience[];
     },
     enabled: !!user?.id,
