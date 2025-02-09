@@ -21,7 +21,8 @@ const DEMO_ACCOUNTS = [
   'admin@example.com',
   'educator@example.com',
   'employer@example.com',
-  'participant@example.com'
+  'participant@example.com',
+  'blois@skillscouncil.ca'
 ];
 
 const AuthForm = ({
@@ -46,8 +47,8 @@ const AuthForm = ({
 
     try {
       // For demo accounts, use a standard password
-      if (DEMO_ACCOUNTS.includes(email)) {
-        await onSubmit(email, "demo123", isSigningUp);
+      if (DEMO_ACCOUNTS.includes(email.toLowerCase())) {
+        await onSubmit(email.toLowerCase(), "demo123", isSigningUp);
       } else {
         await onSubmit(email, password, isSigningUp);
       }
@@ -113,7 +114,7 @@ const AuthForm = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-background/50 pr-10"
-                  required={!DEMO_ACCOUNTS.includes(email)}
+                  required={!DEMO_ACCOUNTS.includes(email.toLowerCase())}
                 />
                 <Button
                   type="button"
@@ -129,6 +130,11 @@ const AuthForm = ({
                   )}
                 </Button>
               </div>
+              {DEMO_ACCOUNTS.includes(email.toLowerCase()) && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  This is a demo account. The password field is optional.
+                </p>
+              )}
             </div>
 
             <Button
