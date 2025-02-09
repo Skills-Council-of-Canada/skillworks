@@ -31,19 +31,20 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      // If user is admin, allow access regardless of portal and redirect to admin dashboard
-      if (user.role === "admin") {
-        navigate(roleBasedRedirect(user.role));
-        return;
-      }
-      // For non-admin users, check if they're accessing the correct portal
-      if (portalParam && user.role === portalParam) {
-        navigate(roleBasedRedirect(user.role));
-      } else {
-        // If user tries to access wrong portal, redirect to their appropriate dashboard
-        navigate(roleBasedRedirect(user.role));
-      }
+    if (!user) return;
+
+    // If user is admin, allow access to any portal and redirect to admin dashboard
+    if (user.role === "admin") {
+      navigate("/admin");
+      return;
+    }
+
+    // For non-admin users, check if they're accessing the correct portal
+    if (user.role !== portalParam) {
+      // If user tries to access wrong portal, redirect to their appropriate dashboard
+      navigate(roleBasedRedirect(user.role));
+    } else {
+      navigate(roleBasedRedirect(user.role));
     }
   }, [user, navigate, portalParam]);
 
@@ -95,3 +96,4 @@ const Login = () => {
 };
 
 export default Login;
+
