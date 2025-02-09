@@ -24,16 +24,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   // If specific roles are required, check if user has one of them
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     console.log(`User role ${user.role} not in allowed roles:`, allowedRoles);
-    // Redirect to the role-specific dashboard or unauthorized page
-    if (user.role === "educator") {
-      return <Navigate to="/educator" replace />;
-    } else if (user.role === "employer") {
-      return <Navigate to="/employer" replace />;
-    } else if (user.role === "participant") {
-      return <Navigate to="/participant" replace />;
-    } else {
-      return <Navigate to="/unauthorized" replace />;
-    }
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return <>{children}</>;

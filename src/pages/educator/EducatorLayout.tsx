@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Outlet, useLocation, Navigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { EducatorHeader } from "@/components/educator/layout/EducatorHeader";
@@ -14,12 +14,6 @@ const EducatorLayout = () => {
 
   console.log("EducatorLayout - Current user:", user);
   console.log("EducatorLayout - Current path:", location.pathname);
-
-  // Check if user is an educator
-  if (!user || user.role !== "educator") {
-    console.log("User is not an educator, redirecting to unauthorized");
-    return <Navigate to="/unauthorized" replace />;
-  }
 
   const getCurrentPageTitle = () => {
     const menuItems = [
