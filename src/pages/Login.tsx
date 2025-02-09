@@ -15,13 +15,11 @@ const Login = () => {
 
   // Redirect if already logged in
   useEffect(() => {
+    console.log("Login component user state:", user);
     if (user) {
-      console.log("User already logged in, redirecting...", user);
-      if (user.role === 'employer') {
-        navigate("/employer");
-      } else {
-        navigate("/");
-      }
+      console.log("User logged in, redirecting based on role:", user.role);
+      const redirectPath = user.role === 'employer' ? '/employer' : '/';
+      navigate(redirectPath, { replace: true });
     }
   }, [user, navigate]);
 
@@ -40,7 +38,6 @@ const Login = () => {
         await login(email, password);
       }
       console.log("Auth submission successful");
-      // Loading state will be reset by the useEffect when user is set
     } catch (error) {
       console.error("Auth failed:", error);
       setIsSubmitting(false);
