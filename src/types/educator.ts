@@ -1,4 +1,3 @@
-
 export interface EducatorTask {
   id: string;
   title: string;
@@ -125,4 +124,67 @@ export interface SmsVerificationData {
   userId: string;
   phoneNumber: string;
   code: string;
+}
+
+export interface ExperienceTeam {
+  id: string;
+  experience_id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExperienceTeamMember {
+  id: string;
+  team_id: string;
+  student_id: string;
+  role: string | null;
+  joined_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExperienceCoEducator {
+  id: string;
+  experience_id: string;
+  educator_id: string;
+  role: string;
+  permissions: {
+    can_invite_students?: boolean;
+    can_manage_teams?: boolean;
+    can_post_updates?: boolean;
+    can_manage_settings?: boolean;
+  } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExperienceUpdate {
+  id: string;
+  experience_id: string;
+  author_id: string;
+  title: string;
+  content: string;
+  visibility: 'all' | 'learners' | 'employers';
+  media_urls: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExperienceSettings {
+  id: string;
+  experience_id: string;
+  notification_preferences: {
+    email: boolean;
+    push: boolean;
+  };
+  auto_approve_requests: boolean;
+  visibility_settings: Record<string, boolean>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExperienceManagementProps {
+  experienceId: string;
 }

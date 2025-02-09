@@ -553,6 +553,8 @@ export type Database = {
           created_at: string
           experience_id: string
           id: string
+          last_activity_at: string | null
+          participation_metrics: Json | null
           status: string
           student_id: string
           updated_at: string
@@ -562,6 +564,8 @@ export type Database = {
           created_at?: string
           experience_id: string
           id?: string
+          last_activity_at?: string | null
+          participation_metrics?: Json | null
           status?: string
           student_id: string
           updated_at?: string
@@ -571,6 +575,8 @@ export type Database = {
           created_at?: string
           experience_id?: string
           id?: string
+          last_activity_at?: string | null
+          participation_metrics?: Json | null
           status?: string
           student_id?: string
           updated_at?: string
@@ -578,6 +584,51 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "experience_assignments_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_co_educators: {
+        Row: {
+          created_at: string
+          educator_id: string
+          experience_id: string
+          id: string
+          permissions: Json | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          educator_id: string
+          experience_id: string
+          id?: string
+          permissions?: Json | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          educator_id?: string
+          experience_id?: string
+          id?: string
+          permissions?: Json | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_co_educators_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_co_educators_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
@@ -689,6 +740,175 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "experience_prerequisites_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_settings: {
+        Row: {
+          auto_approve_requests: boolean | null
+          created_at: string
+          experience_id: string
+          id: string
+          notification_preferences: Json | null
+          updated_at: string
+          visibility_settings: Json | null
+        }
+        Insert: {
+          auto_approve_requests?: boolean | null
+          created_at?: string
+          experience_id: string
+          id?: string
+          notification_preferences?: Json | null
+          updated_at?: string
+          visibility_settings?: Json | null
+        }
+        Update: {
+          auto_approve_requests?: boolean | null
+          created_at?: string
+          experience_id?: string
+          id?: string
+          notification_preferences?: Json | null
+          updated_at?: string
+          visibility_settings?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_settings_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: true
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_team_members: {
+        Row: {
+          created_at: string
+          id: string
+          joined_at: string
+          role: string | null
+          student_id: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          student_id: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          student_id?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_team_members_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "experience_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          experience_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          experience_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          experience_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_teams_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_updates: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          experience_id: string
+          id: string
+          media_urls: string[] | null
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          experience_id: string
+          id?: string
+          media_urls?: string[] | null
+          title: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          experience_id?: string
+          id?: string
+          media_urls?: string[] | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_updates_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
