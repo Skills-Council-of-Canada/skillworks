@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, Users, CheckCircle } from "lucide-react";
@@ -29,21 +28,6 @@ const LandingPage = () => {
       <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="text-2xl font-bold text-primary">TradesConnect</div>
-          <div className="flex gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/login")}
-              className="text-secondary hover:text-primary"
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => navigate("/login")}
-              className="bg-primary hover:bg-primary/90"
-            >
-              Sign Up
-            </Button>
-          </div>
         </div>
       </header>
 
