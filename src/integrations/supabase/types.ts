@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action_type: string
+          admin_id: string
+          changes: Json | null
+          created_at: string
+          id: string
+          ip_address: string | null
+          resource_id: string | null
+          resource_type: string
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          resource_id?: string | null
+          resource_type: string
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          resource_id?: string | null
+          resource_type?: string
+        }
+        Relationships: []
+      }
+      admin_permissions: {
+        Row: {
+          can_create: boolean | null
+          can_delete: boolean | null
+          can_read: boolean | null
+          can_update: boolean | null
+          created_at: string
+          id: string
+          permission_type: string
+          resource_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_read?: boolean | null
+          can_update?: boolean | null
+          created_at?: string
+          id?: string
+          permission_type: string
+          resource_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_read?: boolean | null
+          can_update?: boolean | null
+          created_at?: string
+          id?: string
+          permission_type?: string
+          resource_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           applicant_id: string
@@ -1456,6 +1528,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_admin_audit_log: {
+        Args: {
+          admin_id: string
+          action_type: string
+          resource_type: string
+          resource_id: string
+          changes: Json
+          ip_address: string
+        }
+        Returns: string
+      }
       calculate_match_score: {
         Args: {
           experience_id: string
