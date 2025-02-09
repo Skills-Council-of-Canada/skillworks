@@ -64,7 +64,7 @@ const App = () => (
           
           {/* Protected employer routes */}
           <Route path="/employer" element={
-            <ProtectedRoute allowedRoles={["employer", "admin"]}>
+            <ProtectedRoute allowedRoles={["employer"]}>
               <EmployerLayout />
             </ProtectedRoute>
           }>
@@ -83,7 +83,7 @@ const App = () => (
           
           {/* Protected educator routes */}
           <Route path="/educator" element={
-            <ProtectedRoute allowedRoles={["educator", "admin"]}>
+            <ProtectedRoute allowedRoles={["educator"]}>
               <EducatorLayout />
             </ProtectedRoute>
           }>
@@ -100,7 +100,7 @@ const App = () => (
 
           {/* Protected participant routes */}
           <Route path="/participant" element={
-            <ProtectedRoute allowedRoles={["participant", "admin"]}>
+            <ProtectedRoute allowedRoles={["participant"]}>
               <ParticipantLayout />
             </ProtectedRoute>
           }>
