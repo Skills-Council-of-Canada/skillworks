@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +9,7 @@ import ContactVerificationForm from "@/components/educator/registration/ContactV
 import AccountSetupForm from "@/components/educator/registration/AccountSetupForm";
 import { Steps } from "@/components/educator/registration/Steps";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 
 export type RegistrationData = {
@@ -144,3 +145,4 @@ const EducatorRegistration = () => {
 };
 
 export default EducatorRegistration;
+
