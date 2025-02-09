@@ -50,7 +50,19 @@ export const signUpUser = async (email: string, password: string, portal: string
       name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
     }
 
-    const { data: { user }, error } = await supabase.auth.signUp({
+    // First check if user already exists
+    const { data: existingUser } = await supabase.auth.signInWithPassword({
+      email: email.toLowerCase(),
+      password,
+    });
+
+    if (existingUser?.user) {
+      console.log("User already exists, returning existing user");
+      return { data: existingUser, error: null };
+    }
+
+    // If user doesn't exist, create new account
+    const { data, error } = await supabase.auth.signUp({
       email: email.toLowerCase(),
       password,
       options: {
@@ -63,23 +75,37 @@ export const signUpUser = async (email: string, password: string, portal: string
     
     if (error) throw error;
     
-    // Wait for profile creation if this is a new user
-    if (user?.id) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+    if (data.user?.id) {
+      // Wait longer for profile creation for demo accounts
+      const waitTime = isDemoAccount ? 3000 : 2000;
+      await new Promise(resolve => setTimeout(resolve, waitTime));
       
       // Verify profile was created
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('id', user.id)
+        .eq('id', data.user.id)
         .maybeSingle();
         
       if (!profile) {
-        throw new Error("Profile creation failed");
+        console.log("Profile not found, attempting to create one");
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: data.user.email,
+            role: portal,
+            name: name || email.split('@')[0]
+          });
+          
+        if (profileError) {
+          console.error("Error creating profile:", profileError);
+          throw profileError;
+        }
       }
     }
 
-    return { data: { user }, error: null };
+    return { data, error: null };
   } catch (error) {
     console.error("Error in signUpUser:", error);
     throw error;
@@ -95,34 +121,45 @@ export const signInUser = async (email: string, password: string) => {
       password,
     });
 
-    // If sign in succeeds, return the result
-    if (!signInError) {
-      console.log("Sign in successful");
-      
-      // Verify profile exists
-      if (data.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', data.user.id)
-          .maybeSingle();
+    // If sign in succeeds, verify profile exists
+    if (!signInError && data.user) {
+      console.log("Sign in successful, verifying profile");
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', data.user.id)
+        .maybeSingle();
           
-        if (!profile) {
-          console.log("No profile found, attempting to create one");
-          await signUpUser(email, password, email.split('@')[0]);
+      if (!profile) {
+        console.log("No profile found, creating one");
+        const portal = email.split('@')[0];
+        const name = portal.charAt(0).toUpperCase() + portal.slice(1) + ' User';
+        
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: data.user.email,
+            role: portal,
+            name
+          });
+          
+        if (profileError) {
+          console.error("Error creating profile:", profileError);
+          throw profileError;
         }
       }
       
       return { data, error: null };
     }
 
-    // If this is a demo account and sign in failed, try to create it first
+    // If this is a demo account and sign in failed, try to create it
     const isDemoAccount = email.toLowerCase().endsWith('@example.com');
     if (isDemoAccount && signInError) {
       console.log("Demo account sign in failed, attempting to create account");
-      const role = email.split('@')[0];
+      const portal = email.split('@')[0];
       
-      const { error: signUpError } = await signUpUser(email, password, role);
+      const { error: signUpError } = await signUpUser(email, password, portal);
       if (signUpError) throw signUpError;
 
       // Try signing in again after creating the account
@@ -136,7 +173,8 @@ export const signInUser = async (email: string, password: string) => {
     }
 
     // If not a demo account or other error, throw the original error
-    throw signInError;
+    if (signInError) throw signInError;
+    return { data, error: null };
   } catch (error) {
     console.error("Error in signInUser:", error);
     throw error;
