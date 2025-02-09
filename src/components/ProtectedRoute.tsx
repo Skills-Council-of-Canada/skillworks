@@ -12,15 +12,28 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { user } = useAuth();
   const location = useLocation();
 
+  console.log("ProtectedRoute - Current user:", user);
+  console.log("ProtectedRoute - Allowed roles:", allowedRoles);
+  console.log("ProtectedRoute - Current path:", location.pathname);
+
   if (!user) {
+    console.log("No user found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Strictly enforce role-based access
+  // If specific roles are required, check if user has one of them
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Redirect to the appropriate dashboard based on user role
-    const roleBasedPath = `/${user.role}`;
-    return <Navigate to={roleBasedPath} state={{ from: location }} replace />;
+    console.log(`User role ${user.role} not in allowed roles:`, allowedRoles);
+    // Redirect to the role-specific dashboard or unauthorized page
+    if (user.role === "educator") {
+      return <Navigate to="/educator" replace />;
+    } else if (user.role === "employer") {
+      return <Navigate to="/employer" replace />;
+    } else if (user.role === "participant") {
+      return <Navigate to="/participant" replace />;
+    } else {
+      return <Navigate to="/unauthorized" replace />;
+    }
   }
 
   return <>{children}</>;
