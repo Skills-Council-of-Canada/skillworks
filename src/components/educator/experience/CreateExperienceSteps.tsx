@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Steps } from "@/components/educator/experience/Steps";
 import { useForm } from "react-hook-form";
 import { ExperienceFormValues } from "@/types/educator";
 import DetailsStep from "./DetailsStep";
+import { Form } from "@/components/ui/form";
 
 const STEPS = [
   { id: "details", title: "Experience Details" },
@@ -83,19 +85,21 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
             ))}
           </TabsList>
 
-          <form className="mt-6">
-            <TabsContent value="details">
-              <DetailsStep form={form} onNext={handleNext} />
-            </TabsContent>
-            
-            {STEPS.filter(step => step.id !== "details").map((step) => (
-              <TabsContent key={step.id} value={step.id}>
-                <p className="text-muted-foreground">
-                  Step content for {step.title} will be implemented next
-                </p>
+          <Form {...form}>
+            <form className="mt-6">
+              <TabsContent value="details">
+                <DetailsStep form={form} onNext={handleNext} />
               </TabsContent>
-            ))}
-          </form>
+              
+              {STEPS.filter(step => step.id !== "details").map((step) => (
+                <TabsContent key={step.id} value={step.id}>
+                  <p className="text-muted-foreground">
+                    Step content for {step.title} will be implemented next
+                  </p>
+                </TabsContent>
+              ))}
+            </form>
+          </Form>
         </Tabs>
       </Card>
     </div>
