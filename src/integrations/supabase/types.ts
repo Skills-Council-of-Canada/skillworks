@@ -95,34 +95,52 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          duration_weeks: number
           educator_id: string
+          employer_approved: boolean | null
+          employer_id: string | null
           end_date: string | null
           id: string
+          required_certifications: string[] | null
+          skill_level: string
           start_date: string
           status: string
           title: string
+          trade_category: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           description: string
+          duration_weeks?: number
           educator_id: string
+          employer_approved?: boolean | null
+          employer_id?: string | null
           end_date?: string | null
           id?: string
+          required_certifications?: string[] | null
+          skill_level?: string
           start_date: string
           status?: string
           title: string
+          trade_category?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string
+          duration_weeks?: number
           educator_id?: string
+          employer_approved?: boolean | null
+          employer_id?: string | null
           end_date?: string | null
           id?: string
+          required_certifications?: string[] | null
+          skill_level?: string
           start_date?: string
           status?: string
           title?: string
+          trade_category?: string
           updated_at?: string
         }
         Relationships: [
@@ -131,6 +149,13 @@ export type Database = {
             columns: ["educator_id"]
             isOneToOne: false
             referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educator_experiences_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
             referencedColumns: ["id"]
           },
         ]
@@ -271,6 +296,82 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      experience_assignments: {
+        Row: {
+          assigned_at: string
+          created_at: string
+          experience_id: string
+          id: string
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          created_at?: string
+          experience_id: string
+          id?: string
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          created_at?: string
+          experience_id?: string
+          id?: string
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_assignments_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_milestones: {
+        Row: {
+          created_at: string
+          description: string | null
+          due_date: string
+          experience_id: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          due_date: string
+          experience_id: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          due_date?: string
+          experience_id?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_milestones_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
