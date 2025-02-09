@@ -39,6 +39,10 @@ import EducatorMessages from "./pages/educator/EducatorMessages";
 import EducatorCalendar from "./pages/educator/EducatorCalendar";
 import EducatorSettings from "./pages/educator/EducatorSettings";
 
+// Participant routes
+import ParticipantLayout from "./pages/participant/ParticipantLayout";
+import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -90,6 +94,15 @@ const App = () => (
             <Route path="messages" element={<EducatorMessages />} />
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
+          </Route>
+
+          {/* Protected participant routes */}
+          <Route path="/participant" element={
+            <ProtectedRoute allowedRoles={["participant", "admin"]}>
+              <ParticipantLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<ParticipantDashboard />} />
           </Route>
 
           {/* Catch all route */}
