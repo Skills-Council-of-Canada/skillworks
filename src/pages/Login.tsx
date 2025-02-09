@@ -29,27 +29,29 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle authenticated user redirects
   useEffect(() => {
-    if (authLoading || !user) return;
-
-    // For admin users, respect their portal choice if provided
-    if (user.role === "admin" && portalParam) {
-      navigate(roleBasedRedirect(portalParam as UserRole));
+    console.log("Auth state:", { user, authLoading, portalParam });
+    
+    if (authLoading) return;
+    
+    if (user) {
+      console.log("Redirecting user with role:", user.role);
+      if (user.role === "admin") {
+        // For admin users, allow portal override or default to admin path
+        const redirectPath = portalParam ? roleBasedRedirect(portalParam as UserRole) : "/admin";
+        navigate(redirectPath);
+      } else {
+        // For non-admin users, use their role-based redirect
+        navigate(roleBasedRedirect(user.role));
+      }
       return;
     }
 
-    // For non-admin users or admins without portal param
-    navigate(roleBasedRedirect(user.role));
-  }, [user, navigate, portalParam, authLoading]);
-
-  // Handle missing portal parameter
-  useEffect(() => {
-    if (authLoading) return;
+    // Only redirect to home if not loading and no portal parameter
     if (!portalParam) {
       navigate("/");
     }
-  }, [portalParam, navigate, authLoading]);
+  }, [user, navigate, portalParam, authLoading]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
@@ -71,6 +73,9 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
+
+  // If we're still loading auth state, show nothing
+  if (authLoading) return null;
 
   // If we don't have a portal parameter, wait for the redirect
   if (!portalParam) return null;
