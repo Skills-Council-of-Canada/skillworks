@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AuthContextType, User } from "@/types/auth";
+import { AuthContextType, User, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthError } from "@supabase/supabase-js";
@@ -102,8 +102,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       if (profile) {
-        const redirectPath = getRoleBasedRedirect(profile.role);
-        navigate(redirectPath);
+        // Validate that the role is a valid UserRole
+        const role = profile.role as UserRole;
+        if (isValidUserRole(role)) {
+          const redirectPath = getRoleBasedRedirect(role);
+          navigate(redirectPath);
+        } else {
+          console.error("Invalid role received from database:", profile.role);
+          navigate('/');
+        }
       }
 
       toast({
@@ -150,3 +157,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+// Helper function to type check UserRole
+function isValidUserRole(role: string): role is UserRole {
+  return ['admin', 'educator', 'employer', 'participant'].includes(role);
+}
