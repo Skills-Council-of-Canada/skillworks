@@ -188,13 +188,27 @@ export type Database = {
           employer_id: string | null
           end_date: string | null
           id: string
+          is_template: boolean | null
+          last_saved_at: string | null
+          learner_count: number | null
+          learner_requirements: string[] | null
+          meta_objectives: string[] | null
+          meta_outcomes: string[] | null
+          meta_prerequisites: string[] | null
+          preferred_company_size: string | null
+          preferred_industries: string[] | null
           required_certifications: string[] | null
           skill_level: string
           start_date: string
           status: string
+          template_id: string | null
+          timeline_end_date: string | null
+          timeline_start_date: string | null
           title: string
           trade_category: string
           updated_at: string
+          visibility: string
+          workflow_status: string
         }
         Insert: {
           created_at?: string
@@ -205,13 +219,27 @@ export type Database = {
           employer_id?: string | null
           end_date?: string | null
           id?: string
+          is_template?: boolean | null
+          last_saved_at?: string | null
+          learner_count?: number | null
+          learner_requirements?: string[] | null
+          meta_objectives?: string[] | null
+          meta_outcomes?: string[] | null
+          meta_prerequisites?: string[] | null
+          preferred_company_size?: string | null
+          preferred_industries?: string[] | null
           required_certifications?: string[] | null
           skill_level?: string
           start_date: string
           status?: string
+          template_id?: string | null
+          timeline_end_date?: string | null
+          timeline_start_date?: string | null
           title: string
           trade_category?: string
           updated_at?: string
+          visibility?: string
+          workflow_status?: string
         }
         Update: {
           created_at?: string
@@ -222,13 +250,27 @@ export type Database = {
           employer_id?: string | null
           end_date?: string | null
           id?: string
+          is_template?: boolean | null
+          last_saved_at?: string | null
+          learner_count?: number | null
+          learner_requirements?: string[] | null
+          meta_objectives?: string[] | null
+          meta_outcomes?: string[] | null
+          meta_prerequisites?: string[] | null
+          preferred_company_size?: string | null
+          preferred_industries?: string[] | null
           required_certifications?: string[] | null
           skill_level?: string
           start_date?: string
           status?: string
+          template_id?: string | null
+          timeline_end_date?: string | null
+          timeline_start_date?: string | null
           title?: string
           trade_category?: string
           updated_at?: string
+          visibility?: string
+          workflow_status?: string
         }
         Relationships: [
           {
@@ -243,6 +285,13 @@ export type Database = {
             columns: ["employer_id"]
             isOneToOne: false
             referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educator_experiences_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
         ]
@@ -513,6 +562,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "experience_milestones_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_prerequisites: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          experience_id: string | null
+          id: string
+          title: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          experience_id?: string | null
+          id?: string
+          title: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          experience_id?: string | null
+          id?: string
+          title?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_prerequisites_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
