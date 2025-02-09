@@ -1,4 +1,3 @@
-
 export interface EducatorTask {
   id: string;
   title: string;
@@ -54,3 +53,11 @@ export interface ExperienceAssignment {
   created_at: string;
 }
 
+export interface ExperienceFormValues {
+  title: string;
+  description: string;
+  trade_category: string;
+  skill_level: 'beginner' | 'intermediate' | 'advanced';
+  duration_weeks: number;
+  required_certifications?: string[];
+}
