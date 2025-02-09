@@ -643,6 +643,57 @@ export type Database = {
           },
         ]
       }
+      experience_matches: {
+        Row: {
+          created_at: string
+          educator_notes: string | null
+          employer_id: string
+          employer_notes: string | null
+          experience_id: string
+          id: string
+          match_score: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          educator_notes?: string | null
+          employer_id: string
+          employer_notes?: string | null
+          experience_id: string
+          id?: string
+          match_score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          educator_notes?: string | null
+          employer_id?: string
+          employer_notes?: string | null
+          experience_id?: string
+          id?: string
+          match_score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_matches_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_matches_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_media: {
         Row: {
           created_at: string
@@ -747,6 +798,54 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "experience_prerequisites_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_requests: {
+        Row: {
+          created_at: string
+          employer_id: string
+          experience_id: string
+          id: string
+          message: string | null
+          requested_modifications: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          employer_id: string
+          experience_id: string
+          id?: string
+          message?: string | null
+          requested_modifications?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          employer_id?: string
+          experience_id?: string
+          id?: string
+          message?: string | null
+          requested_modifications?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_requests_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_requests_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
