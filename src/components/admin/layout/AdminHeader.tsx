@@ -10,13 +10,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface AdminHeaderProps {
   pageTitle: string;
 }
 
 export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
-  const { user, logout } = useAuth();
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAdminLogin = async () => {
+    try {
+      await login("admin@skillscouncil.ca", "Bloiselle5!");
+      navigate("/admin");
+    } catch (error) {
+      console.error("Admin login failed:", error);
+    }
+  };
 
   return (
     <header className="border-b">
@@ -26,26 +37,34 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          {user ? (
+            <>
               <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+                <Bell className="h-5 w-5" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>
-                {user?.email}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => logout()}>
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {user?.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <Button onClick={handleAdminLogin}>
+              Admin Login
+            </Button>
+          )}
         </div>
       </div>
     </header>
