@@ -18,6 +18,7 @@ const Login = () => {
     console.log("Login component user state:", user);
     if (user) {
       console.log("User logged in, redirecting based on role:", user.role);
+      setIsSubmitting(false); // Reset loading state before redirect
       const redirectPath = user.role === 'employer' ? '/employer' : '/';
       navigate(redirectPath, { replace: true });
     }
@@ -40,7 +41,7 @@ const Login = () => {
       console.log("Auth submission successful");
     } catch (error) {
       console.error("Auth failed:", error);
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset loading state on error
       if (error instanceof AuthError) {
         toast({
           variant: "destructive",
@@ -54,6 +55,7 @@ const Login = () => {
           description: "An unexpected error occurred during authentication"
         });
       }
+      throw error; // Re-throw to prevent further execution
     }
   };
 
