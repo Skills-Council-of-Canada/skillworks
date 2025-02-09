@@ -54,10 +54,30 @@ export const loadExperienceSettings = async (experienceId: string): Promise<Expe
       throw createError;
     }
 
-    return newSettings;
+    // Transform the newSettings data to match ExperienceSettings type
+    return {
+      id: newSettings.id,
+      experience_id: newSettings.experience_id,
+      display_preferences: newSettings.display_preferences as ExperienceSettings['display_preferences'],
+      communication_settings: newSettings.communication_settings as ExperienceSettings['communication_settings'],
+      access_control: newSettings.access_control as ExperienceSettings['access_control'],
+      notification_preferences: newSettings.notification_preferences as ExperienceSettings['notification_preferences'],
+      auto_approve_requests: newSettings.auto_approve_requests,
+      visibility_settings: newSettings.visibility_settings as Record<string, boolean>,
+    };
   }
 
-  return data;
+  // Transform the data to match ExperienceSettings type
+  return {
+    id: data.id,
+    experience_id: data.experience_id,
+    display_preferences: data.display_preferences as ExperienceSettings['display_preferences'],
+    communication_settings: data.communication_settings as ExperienceSettings['communication_settings'],
+    access_control: data.access_control as ExperienceSettings['access_control'],
+    notification_preferences: data.notification_preferences as ExperienceSettings['notification_preferences'],
+    auto_approve_requests: data.auto_approve_requests,
+    visibility_settings: data.visibility_settings as Record<string, boolean>,
+  };
 };
 
 export const updateExperienceSettings = async ({
