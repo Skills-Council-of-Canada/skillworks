@@ -14,12 +14,13 @@ const Login = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      console.log("User already logged in, redirecting...");
+      console.log("User already logged in, redirecting...", user);
       navigate("/");
     }
   }, [user, navigate]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
+    console.log("Attempting auth submission:", { email, isSignUp });
     setIsSubmitting(true);
     try {
       if (isSignUp) {
@@ -27,6 +28,7 @@ const Login = () => {
       } else {
         await login(email, password);
       }
+      console.log("Auth submission successful");
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
@@ -53,4 +55,3 @@ const Login = () => {
 };
 
 export default Login;
-

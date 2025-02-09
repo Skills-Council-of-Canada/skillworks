@@ -70,6 +70,7 @@ export const signInUser = async (email: string, password: string) => {
     });
     
     if (error) throw error;
+    console.log("Sign in successful, session:", data.session);
     return { data, error: null };
   } catch (error) {
     console.error("Error in signInUser:", error);
