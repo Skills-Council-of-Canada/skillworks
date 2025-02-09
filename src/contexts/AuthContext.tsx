@@ -72,25 +72,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .eq('id', session.user.id)
       .single();
 
-    // Ensure the role is of type UserRole by using the determineUserRole function
-    const userRole: UserRole = profile?.role ? determineUserRole(profile.role) : determineUserRole(session.user.email || "");
-
-    const userData: User = {
-      id: session.user.id,
-      email: session.user.email || "",
-      role: userRole,
-      name: profile?.name || session.user.user_metadata.name || "User",
-    };
-    
-    setUser(userData);
+    if (profile) {
+      const userData: User = {
+        id: session.user.id,
+        email: profile.email,
+        role: profile.role as UserRole,
+        name: profile.name || "User",
+      };
+      setUser(userData);
+    }
   };
 
-  const signup = async (email: string, password: string) => {
+  const signup = async (email: string, password: string, portal: string) => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            portal: portal,
+          },
+        },
       });
 
       if (error) throw error;
@@ -170,13 +173,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-// Helper function to determine user role from email or profile role
-const determineUserRole = (identifier: string): UserRole => {
-  // Handle both email and profile role cases
-  if (identifier.includes("_admin") || identifier === "admin") return "admin";
-  if (identifier.includes("_educator") || identifier === "educator") return "educator";
-  if (identifier.includes("_employer") || identifier === "employer") return "employer";
-  return "participant";
-};
-

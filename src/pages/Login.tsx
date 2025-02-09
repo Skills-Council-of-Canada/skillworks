@@ -44,12 +44,10 @@ const Login = () => {
     if (!portalParam) return;
 
     try {
-      const portalEmail = `${email.split('@')[0]}_${portalParam}@${email.split('@')[1]}`;
-      
       if (isSignUp) {
-        await signup(portalEmail, password);
+        await signup(email, password, portalParam);
       } else {
-        await login(portalEmail, password);
+        await login(email, password);
       }
     } catch (error) {
       console.error("Auth failed:", error);
@@ -77,4 +75,3 @@ const Login = () => {
 };
 
 export default Login;
-
