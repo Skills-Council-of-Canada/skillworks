@@ -331,12 +331,18 @@ export type Database = {
       }
       educator_profiles: {
         Row: {
+          areas_of_interest: string[] | null
+          completed_onboarding: boolean | null
           created_at: string
           full_name: string
           id: string
           institution_name: string
+          job_title: string | null
+          location: string | null
           phone_number: string | null
+          phone_verified_at: string | null
           preferred_contact: string
+          sms_verified: boolean | null
           specialization: string
           updated_at: string
           verification_date: string | null
@@ -344,12 +350,18 @@ export type Database = {
           years_experience: number
         }
         Insert: {
+          areas_of_interest?: string[] | null
+          completed_onboarding?: boolean | null
           created_at?: string
           full_name: string
           id: string
           institution_name: string
+          job_title?: string | null
+          location?: string | null
           phone_number?: string | null
+          phone_verified_at?: string | null
           preferred_contact: string
+          sms_verified?: boolean | null
           specialization: string
           updated_at?: string
           verification_date?: string | null
@@ -357,12 +369,18 @@ export type Database = {
           years_experience: number
         }
         Update: {
+          areas_of_interest?: string[] | null
+          completed_onboarding?: boolean | null
           created_at?: string
           full_name?: string
           id?: string
           institution_name?: string
+          job_title?: string | null
+          location?: string | null
           phone_number?: string | null
+          phone_verified_at?: string | null
           preferred_contact?: string
+          sms_verified?: boolean | null
           specialization?: string
           updated_at?: string
           verification_date?: string | null
@@ -1050,12 +1068,45 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          type: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          type: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          type?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_verification_codes: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       experience_status:

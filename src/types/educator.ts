@@ -1,4 +1,3 @@
-
 export interface EducatorTask {
   id: string;
   title: string;
@@ -102,4 +101,26 @@ export interface ExperienceFormValues {
   start_date: string;
   end_date: string;
   milestones: Milestone[];
+}
+
+export interface EducatorRegistrationData {
+  fullName: string;
+  institutionName: string;
+  specialization: string;
+  yearsExperience: number;
+  jobTitle?: string;
+  location?: string;  
+  phoneNumber?: string;
+  areasOfInterest?: string[];
+  email: string;
+  preferredContact: 'email' | 'phone';
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+}
+
+export interface SmsVerificationData {
+  userId: string;
+  phoneNumber: string;
+  code: string;
 }

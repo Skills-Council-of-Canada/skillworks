@@ -15,6 +15,9 @@ export type RegistrationData = {
   institutionName: string;
   specialization: string;
   yearsExperience: number;
+  jobTitle: string;
+  location: string;
+  areasOfInterest: string[];
   email: string;
   phoneNumber?: string;
   preferredContact: 'email' | 'phone';
@@ -37,7 +40,6 @@ const EducatorRegistration = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Final step - create account
       await handleRegistration(updatedData as RegistrationData);
     }
   };
@@ -45,7 +47,6 @@ const EducatorRegistration = () => {
   const handleRegistration = async (data: RegistrationData) => {
     setIsLoading(true);
     try {
-      // Sign up with Supabase Auth
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -60,7 +61,6 @@ const EducatorRegistration = () => {
       if (signUpError) throw signUpError;
 
       if (authData.user) {
-        // Create educator profile
         const { error: profileError } = await supabase
           .from('educator_profiles')
           .insert({
@@ -71,6 +71,9 @@ const EducatorRegistration = () => {
             years_experience: data.yearsExperience,
             phone_number: data.phoneNumber,
             preferred_contact: data.preferredContact,
+            job_title: data.jobTitle,
+            location: data.location,
+            areas_of_interest: data.areasOfInterest,
           });
 
         if (profileError) throw profileError;
@@ -80,7 +83,6 @@ const EducatorRegistration = () => {
           description: "Please check your email to verify your account.",
         });
 
-        // Redirect to login page
         navigate("/login?portal=educator");
       }
     } catch (error) {
