@@ -25,46 +25,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
-  const handleRedirect = (userRole: UserRole, portalOverride?: string) => {
-    const redirectPath = portalOverride 
-      ? getRoleBasedRedirect(portalOverride as UserRole)
-      : getRoleBasedRedirect(userRole);
-    console.log("Redirecting to:", redirectPath);
-    navigate(redirectPath);
-  };
-
-  const updateUserState = async (session: any) => {
-    try {
-      console.log("Updating user state with session:", session?.user?.email);
-      if (!session) {
-        console.log("No session, setting user to null");
-        setUser(null);
-        return null;
-      }
-
-      const userProfile = await getUserProfile(session);
-      console.log("User profile fetched:", userProfile);
-      setUser(userProfile);
-      return userProfile;
-    } catch (error) {
-      console.error("Error updating user state:", error);
-      setUser(null);
-      return null;
-    }
-  };
-
+  // Initialize auth state
   useEffect(() => {
+    console.log("Initializing auth state...");
     let mounted = true;
 
     const initializeAuth = async () => {
       try {
-        console.log("Initializing auth state...");
         const { data: { session } } = await supabase.auth.getSession();
+        console.log("Initial session:", session?.user?.email);
         
-        if (session && mounted) {
-          const userProfile = await updateUserState(session);
-          if (userProfile && mounted) {
-            handleRedirect(userProfile.role);
+        if (session?.user && mounted) {
+          const profile = await getUserProfile(session);
+          console.log("Initial profile:", profile);
+          if (profile && mounted) {
+            setUser(profile);
+            navigate(getRoleBasedRedirect(profile.role));
           }
         }
       } catch (error) {
@@ -76,8 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    initializeAuth();
-
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
@@ -85,21 +60,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (event === 'SIGNED_OUT') {
         setUser(null);
+        setIsLoading(false);
         navigate('/');
         return;
       }
 
-      const userProfile = await updateUserState(session);
-      if (userProfile && mounted) {
-        handleRedirect(userProfile.role);
+      if (session?.user) {
+        const profile = await getUserProfile(session);
+        console.log("Updated profile:", profile);
+        if (profile && mounted) {
+          setUser(profile);
+          navigate(getRoleBasedRedirect(profile.role));
+        }
       }
+      setIsLoading(false);
     });
+
+    initializeAuth();
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate, getRoleBasedRedirect]);
+
+  const login = async (email: string, password: string) => {
+    try {
+      setIsLoading(true);
+      const { error } = await signInUser(email, password);
+      if (error) throw error;
+
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
+    } catch (error) {
+      const authError = error as AuthError;
+      toast({
+        title: "Error",
+        description: authError.message || "An error occurred during login",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const signup = async (email: string, password: string, portal: string) => {
     try {
@@ -118,29 +124,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast({
         title: "Error",
         description: authError.message || "An error occurred during signup",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const login = async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-      const { error } = await signInUser(email, password);
-      if (error) throw error;
-
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
-    } catch (error) {
-      const authError = error as AuthError;
-      toast({
-        title: "Error",
-        description: authError.message || "An error occurred during login",
         variant: "destructive",
       });
       throw error;
@@ -170,14 +153,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const value = {
+    user,
+    login,
+    logout,
+    signup,
+    isLoading
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup, isLoading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-// Helper function to type check UserRole
-function isValidUserRole(role: string): role is UserRole {
-  return ['admin', 'educator', 'employer', 'participant'].includes(role);
-}

@@ -6,19 +6,28 @@ import { Session } from "@supabase/supabase-js";
 export const getUserProfile = async (session: Session): Promise<User | null> => {
   if (!session?.user) return null;
   
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
+  try {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
 
-  if (profile) {
-    return {
-      id: session.user.id,
-      email: profile.email,
-      role: profile.role as UserRole,
-      name: profile.name || "User",
-    };
+    if (error) {
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
+
+    if (profile) {
+      return {
+        id: session.user.id,
+        email: profile.email,
+        role: profile.role as UserRole,
+        name: profile.name || "User",
+      };
+    }
+  } catch (error) {
+    console.error("Error in getUserProfile:", error);
   }
   
   return null;

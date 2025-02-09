@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserRole } from "@/types/auth";
 import AuthForm from "@/components/auth/AuthForm";
 import { portals } from "@/components/auth/PortalSelection";
 import { AuthError } from "@supabase/supabase-js";
@@ -13,17 +12,15 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Get portal info first to avoid multiple lookups
   const currentPortal = portals.find(p => p.id === portalParam);
 
-  console.log("Login component render:", {
-    user,
-    authLoading,
-    portalParam,
-    isSubmitting,
-    currentPortal: currentPortal?.id
-  });
+  // If user is already logged in, redirect to their dashboard
+  useEffect(() => {
+    if (user) {
+      console.log("User already logged in, redirecting...");
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // If there's no portal param or it's invalid, redirect to home
   useEffect(() => {
@@ -54,24 +51,8 @@ const Login = () => {
     }
   };
 
-  // Show global loading state while auth is initializing
-  if (authLoading && !user) {
-    console.log("Auth is initializing...");
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Initializing...</div>
-      </div>
-    );
-  }
-
-  // Don't render form if no portal is selected or portal is invalid
-  if (!portalParam || !currentPortal) {
-    console.log("No portal or invalid portal");
-    return null;
-  }
-
-  // Show loading spinner only during form submission
-  if (isSubmitting) {
+  // Show loading state while auth is initializing
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-xl">Loading...</div>
@@ -79,8 +60,12 @@ const Login = () => {
     );
   }
 
+  // Don't render form if no portal is selected or portal is invalid
+  if (!portalParam || !currentPortal) {
+    return null;
+  }
+
   // Render the auth form
-  console.log("Rendering auth form for portal:", currentPortal.id);
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
       <AuthForm
