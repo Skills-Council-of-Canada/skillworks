@@ -29,7 +29,7 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("Login page initial state:", {
+  console.log("Login component render state:", {
     user,
     authLoading,
     portalParam,
@@ -38,30 +38,27 @@ const Login = () => {
     timestamp: new Date().toISOString()
   });
 
+  // Handle redirects in useEffect
   useEffect(() => {
     if (authLoading) {
-      console.log("Auth is still loading, waiting...");
+      console.log("Auth is loading, waiting for state...");
       return;
     }
 
-    console.log("Handling redirects:", { user, portalParam });
-
     if (!portalParam) {
-      console.log("No portal selected, redirecting to home");
+      console.log("No portal param found, redirecting to home");
       navigate("/");
       return;
     }
 
     if (user) {
-      console.log("User authenticated, redirecting based on role:", user.role);
+      console.log("User is authenticated, redirecting based on role:", user.role);
       const redirectPath = user.role === "admin" && portalParam 
         ? roleBasedRedirect(portalParam as UserRole) 
         : roleBasedRedirect(user.role);
-      
       navigate(redirectPath);
-      return;
     }
-  }, [user, navigate, portalParam, authLoading]);
+  }, [user, portalParam, navigate, authLoading]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
@@ -84,9 +81,12 @@ const Login = () => {
     }
   };
 
-  // Show loading state
+  // Get portal info first
+  const currentPortal = portals.find(p => p.id === portalParam);
+
+  // Handle loading states and validation
   if (authLoading || isSubmitting) {
-    console.log("Loading state...");
+    console.log("Showing loading state...");
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-xl">Loading...</div>
@@ -94,22 +94,15 @@ const Login = () => {
     );
   }
 
-  // Validate portal param
-  if (!portalParam) {
-    console.log("No portal param, will redirect...");
-    return null;
-  }
-
-  // Get portal info
-  const currentPortal = portals.find(p => p.id === portalParam);
-  if (!currentPortal) {
-    console.log("Invalid portal:", portalParam);
+  // Validation checks
+  if (!portalParam || !currentPortal) {
+    console.log("Invalid portal or missing portal param:", { portalParam });
     return null;
   }
 
   // Don't show form if user is already authenticated
   if (user) {
-    console.log("User already authenticated:", user.email);
+    console.log("User already authenticated, not showing form:", user.email);
     return null;
   }
 
