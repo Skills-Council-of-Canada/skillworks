@@ -29,30 +29,33 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("Login component render state:", {
+  // Get portal info first to avoid multiple lookups
+  const currentPortal = portals.find(p => p.id === portalParam);
+
+  console.log("Login component state:", {
     user,
     authLoading,
     portalParam,
     isSubmitting,
+    currentPortal: currentPortal?.id,
     url: window.location.href,
     timestamp: new Date().toISOString()
   });
 
-  // Handle redirects in useEffect
   useEffect(() => {
     if (authLoading) {
-      console.log("Auth is loading, waiting for state...");
+      console.log("Auth loading, waiting...");
       return;
     }
 
     if (!portalParam) {
-      console.log("No portal param found, redirecting to home");
+      console.log("No portal param, redirecting to home");
       navigate("/");
       return;
     }
 
     if (user) {
-      console.log("User is authenticated, redirecting based on role:", user.role);
+      console.log("User authenticated, redirecting to:", user.role);
       const redirectPath = user.role === "admin" && portalParam 
         ? roleBasedRedirect(portalParam as UserRole) 
         : roleBasedRedirect(user.role);
@@ -81,12 +84,8 @@ const Login = () => {
     }
   };
 
-  // Get portal info first
-  const currentPortal = portals.find(p => p.id === portalParam);
-
-  // Handle loading states and validation
+  // Show loading spinner while auth is initializing or form is submitting
   if (authLoading || isSubmitting) {
-    console.log("Showing loading state...");
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-xl">Loading...</div>
@@ -94,20 +93,20 @@ const Login = () => {
     );
   }
 
-  // Validation checks
+  // Don't render form if no portal is selected or portal is invalid
   if (!portalParam || !currentPortal) {
-    console.log("Invalid portal or missing portal param:", { portalParam });
+    console.log("Invalid portal or missing portal param, redirecting...");
     return null;
   }
 
-  // Don't show form if user is already authenticated
+  // Don't render form if user is already authenticated
   if (user) {
-    console.log("User already authenticated, not showing form:", user.email);
+    console.log("User authenticated, redirecting...");
     return null;
   }
 
+  // Render the auth form
   console.log("Rendering auth form for portal:", currentPortal.id);
-  
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
       <AuthForm
