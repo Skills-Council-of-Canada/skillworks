@@ -21,8 +21,7 @@ const DEMO_ACCOUNTS = [
   'admin@example.com',
   'educator@example.com',
   'employer@example.com',
-  'participant@example.com',
-  'blois@skillscouncil.ca'
+  'participant@example.com'
 ];
 
 const AuthForm = ({
