@@ -32,182 +32,127 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          <NavLink to="/educator" end>
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Home className="mr-2 h-4 w-4" />
-                  Dashboard
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator" 
+            end
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Dashboard
           </NavLink>
           
-          <NavLink to="/educator/experiences">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <GraduationCap className="mr-2 h-4 w-4" />
-                  My Experiences
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/experiences"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <GraduationCap className="mr-2 h-4 w-4" />
+            My Experiences
           </NavLink>
 
-          <NavLink to="/educator/collaborations">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Building2 className="mr-2 h-4 w-4" />
-                  Collaborations
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/collaborations"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Building2 className="mr-2 h-4 w-4" />
+            Collaborations
           </NavLink>
 
-          <NavLink to="/educator/portals">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Search className="mr-2 h-4 w-4" />
-                  Find a Portal
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/portals"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Search className="mr-2 h-4 w-4" />
+            Find a Portal
           </NavLink>
 
-          <NavLink to="/educator/projects">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Briefcase className="mr-2 h-4 w-4" />
-                  Find a Project
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/projects"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Briefcase className="mr-2 h-4 w-4" />
+            Find a Project
           </NavLink>
 
-          <NavLink to="/educator/students">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Users className="mr-2 h-4 w-4" />
-                  Students
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/students"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Users className="mr-2 h-4 w-4" />
+            Students
           </NavLink>
 
-          <NavLink to="/educator/matches">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <UserCheck className="mr-2 h-4 w-4" />
-                  Match Requests
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/matches"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <UserCheck className="mr-2 h-4 w-4" />
+            Match Requests
           </NavLink>
 
-          <NavLink to="/educator/tasks">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <ClipboardList className="mr-2 h-4 w-4" />
-                  Tasks & Activities
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/tasks"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <ClipboardList className="mr-2 h-4 w-4" />
+            Tasks & Activities
           </NavLink>
 
-          <NavLink to="/educator/messages">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Messages
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/messages"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Messages
           </NavLink>
 
-          <NavLink to="/educator/calendar">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Calendar
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/calendar"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Calendar
           </NavLink>
 
-          <NavLink to="/educator/settings">
-            {({ isActive }) => (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
-                asChild
-              >
-                <div>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </div>
-              </Button>
-            )}
+          <NavLink 
+            to="/educator/settings"
+            className={({ isActive }) => 
+              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
+            }
+          >
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
           </NavLink>
         </div>
       </div>
 
       <div className="p-4">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-destructive"
+        <button
           onClick={onLogout}
+          className="flex w-full items-center text-destructive hover:bg-destructive/10 px-2 py-1.5 rounded-md transition-colors"
         >
           <LogOut className="mr-2 h-4 w-4" />
           Log Out
-        </Button>
+        </button>
       </div>
     </div>
   );
