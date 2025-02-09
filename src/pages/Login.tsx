@@ -29,34 +29,30 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    console.log("Login page render state:", { 
-      user, 
-      authLoading, 
-      portalParam,
-      isSubmitting 
-    });
+  console.log("Login component initial render:", {
+    user,
+    authLoading,
+    portalParam,
+    isSubmitting
+  });
 
-    // Don't redirect while loading auth state
-    if (authLoading) {
+  useEffect(() => {
+    // First, handle the case where we have no portal selected
+    if (!portalParam && !authLoading) {
+      console.log("No portal selected, redirecting to home");
+      navigate("/");
       return;
     }
 
-    // If user is authenticated, handle redirect
-    if (user) {
-      console.log("Handling authenticated user redirect");
+    // Then handle authenticated users
+    if (user && !authLoading) {
+      console.log("User authenticated, redirecting based on role:", user.role);
       const redirectPath = user.role === "admin" && portalParam 
         ? roleBasedRedirect(portalParam as UserRole) 
         : roleBasedRedirect(user.role);
       
       navigate(redirectPath);
       return;
-    }
-
-    // If no portal selected and not authenticated, go to portal selection
-    if (!portalParam && !authLoading && !user) {
-      console.log("No portal selected, redirecting to home");
-      navigate("/");
     }
   }, [user, navigate, portalParam, authLoading]);
 
@@ -81,27 +77,21 @@ const Login = () => {
     }
   };
 
-  // Render nothing while auth is loading
-  if (authLoading) {
-    console.log("Auth is loading, rendering nothing");
+  // Don't render anything while loading or if we have a user
+  if (authLoading || user) {
+    console.log("Not rendering - loading or authenticated:", { authLoading, user });
     return null;
   }
 
-  // If authenticated, render nothing (redirect will happen)
-  if (user) {
-    console.log("User is authenticated, rendering nothing");
-    return null;
-  }
-
-  // If no portal selected, render nothing (redirect will happen)
+  // Don't render if no portal selected
   if (!portalParam) {
-    console.log("No portal selected, rendering nothing");
+    console.log("Not rendering - no portal selected");
     return null;
   }
 
   const currentPortal = portals.find(p => p.id === portalParam);
   if (!currentPortal) {
-    console.log("Invalid portal selected, rendering nothing");
+    console.log("Not rendering - invalid portal");
     return null;
   }
 
