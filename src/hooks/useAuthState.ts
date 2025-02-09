@@ -35,7 +35,7 @@ export const useAuthState = () => {
       setUser(profile);
       const redirectPath = getRoleBasedRedirect(profile.role);
       console.log("Redirecting to:", redirectPath);
-      navigate(redirectPath);
+      navigate(redirectPath, { replace: true }); // Added replace: true to prevent navigation history issues
     } else {
       handleProfileError(new Error("No profile found"));
     }
