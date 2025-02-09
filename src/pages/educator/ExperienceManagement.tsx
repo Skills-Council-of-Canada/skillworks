@@ -7,6 +7,22 @@ import { ArrowLeft, Users, Briefcase, InboxIcon, Users2, MessageSquare, Settings
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { EducatorExperience } from "@/types/educator";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 const ExperienceManagement = () => {
   const { experienceId } = useParams();
@@ -34,7 +50,6 @@ const ExperienceManagement = () => {
         throw error;
       }
 
-      // Transform the screening_questions to match the expected interface
       const transformedData = {
         ...data,
         screening_questions: Array.isArray(data.screening_questions)
@@ -43,7 +58,6 @@ const ExperienceManagement = () => {
               required: Boolean(q.required),
             }))
           : [],
-        // Ensure other required fields have proper types
         skill_level: (data.skill_level as 'beginner' | 'intermediate' | 'advanced') || 'beginner',
         status: (data.status as 'incomplete' | 'draft' | 'pending_approval' | 'published') || 'draft',
         subcategories: Array.isArray(data.subcategories) ? data.subcategories : [],
@@ -58,6 +72,37 @@ const ExperienceManagement = () => {
     enabled: !!experienceId,
   });
 
+  // Query for learners assigned to this experience
+  const { data: learners, isLoading: isLoadingLearners } = useQuery({
+    queryKey: ["learners", experienceId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("experience_assignments")
+        .select(`
+          *,
+          students (
+            id,
+            first_name,
+            last_name,
+            email
+          )
+        `)
+        .eq("experience_id", experienceId);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load learners",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      return data;
+    },
+    enabled: !!experienceId,
+  });
+
   if (isLoading) {
     return <div className="p-8">Loading experience details...</div>;
   }
@@ -65,6 +110,16 @@ const ExperienceManagement = () => {
   if (!experience) {
     return <div className="p-8">Experience not found</div>;
   }
+
+  const getStatusBadge = (status: string) => {
+    const statusStyles = {
+      pending: "bg-yellow-500",
+      accepted: "bg-green-500",
+      completed: "bg-blue-500",
+      declined: "bg-red-500",
+    };
+    return statusStyles[status as keyof typeof statusStyles] || "bg-gray-500";
+  };
 
   return (
     <div className="space-y-6">
@@ -115,10 +170,69 @@ const ExperienceManagement = () => {
         </TabsList>
 
         <TabsContent value="learners">
-          <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold mb-4">Learners</h2>
-            {/* Learner management content will go here */}
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Learners</CardTitle>
+                  <CardDescription>
+                    Manage students enrolled in this experience
+                  </CardDescription>
+                </div>
+                <Button>
+                  <Users className="mr-2 h-4 w-4" />
+                  Add Learner
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoadingLearners ? (
+                <div className="text-center py-4">Loading learners...</div>
+              ) : !learners?.length ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  No learners enrolled yet
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {learners.map((enrollment) => (
+                      <TableRow key={enrollment.id}>
+                        <TableCell>
+                          {enrollment.students?.first_name}{" "}
+                          {enrollment.students?.last_name}
+                        </TableCell>
+                        <TableCell>{enrollment.students?.email}</TableCell>
+                        <TableCell>
+                          <Badge
+                            className={getStatusBadge(enrollment.status)}
+                          >
+                            {enrollment.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {new Date(enrollment.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm">
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="matches">
