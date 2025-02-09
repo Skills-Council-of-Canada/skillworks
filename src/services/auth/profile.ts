@@ -27,6 +27,9 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       return null;
     }
 
+    console.log("Profile data retrieved:", profile);
+    console.log("Role from profile:", profile.role);
+
     return {
       id: profile.id,
       email: profile.email,

@@ -36,12 +36,13 @@ export const useAuthState = () => {
     }
 
     console.log("Setting user profile:", profile);
+    console.log("User role from profile:", profile.role);
     setUser(profile);
     setIsLoading(false);
 
     if (profile) {
       const redirectPath = getRoleBasedRedirect(profile.role);
-      console.log("Redirecting to:", redirectPath, "for role:", profile.role);
+      console.log("Role-based redirect path:", redirectPath, "for role:", profile.role);
       navigate(redirectPath, { replace: true });
     }
   };
@@ -56,13 +57,17 @@ export const useAuthState = () => {
       if (!mounted) return;
 
       if (!session?.user) {
+        console.log("No active session found");
         setUser(null);
         setIsLoading(false);
         return;
       }
 
+      console.log("Session found for user:", session.user.id);
+      
       try {
         const profile = await getUserProfile(session);
+        console.log("Retrieved profile:", profile);
         handleProfileSuccess(profile, mounted);
       } catch (error) {
         if (mounted) {
@@ -71,9 +76,12 @@ export const useAuthState = () => {
       }
 
       authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log("Auth state change event:", event);
+        
         if (!mounted) return;
 
         if (event === 'SIGNED_OUT') {
+          console.log("User signed out");
           setUser(null);
           setIsLoading(false);
           navigate('/login');
@@ -81,8 +89,10 @@ export const useAuthState = () => {
         }
 
         if (event === 'SIGNED_IN' && session?.user) {
+          console.log("User signed in:", session.user.id);
           try {
             const profile = await getUserProfile(session);
+            console.log("Retrieved profile after sign in:", profile);
             handleProfileSuccess(profile, mounted);
           } catch (error) {
             if (mounted) {
