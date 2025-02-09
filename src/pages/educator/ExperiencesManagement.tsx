@@ -28,10 +28,16 @@ const ExperiencesManagement = () => {
 
         if (error) throw error;
 
-        // Transform and validate the skill_level before setting state
+        // Transform and validate all required fields before setting state
         const transformedData = (data || []).map(exp => ({
           ...exp,
-          skill_level: (exp.skill_level as 'beginner' | 'intermediate' | 'advanced') || 'beginner'
+          skill_level: (exp.skill_level as 'beginner' | 'intermediate' | 'advanced') || 'beginner',
+          screening_questions: Array.isArray(exp.screening_questions) 
+            ? exp.screening_questions.map((q: any) => ({
+                question: q.question || '',
+                required: Boolean(q.required)
+              }))
+            : []
         })) as EducatorExperience[];
 
         setExperiences(transformedData);
@@ -115,3 +121,4 @@ const ExperiencesManagement = () => {
 };
 
 export default ExperiencesManagement;
+
