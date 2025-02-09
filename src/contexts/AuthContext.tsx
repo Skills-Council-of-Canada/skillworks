@@ -26,48 +26,57 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   useEffect(() => {
-    // Initialize auth state
+    let mounted = true;
+
     const initializeAuth = async () => {
       try {
         console.log("Initializing auth state...");
         const { data: { session } } = await supabase.auth.getSession();
         
-        if (session) {
+        if (session && mounted) {
           console.log("Found existing session, fetching user profile...");
           const userProfile = await getUserProfile(session);
-          setUser(userProfile);
-        } else {
+          if (mounted) {
+            setUser(userProfile);
+          }
+        } else if (mounted) {
           console.log("No existing session found");
           setUser(null);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-        setUser(null);
+        if (mounted) {
+          setUser(null);
+        }
       } finally {
-        console.log("Auth initialization complete, setting loading to false");
-        setIsLoading(false);
+        if (mounted) {
+          console.log("Auth initialization complete, setting loading to false");
+          setIsLoading(false);
+        }
       }
     };
 
+    // Initialize auth state
     initializeAuth();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (session) {
+      if (session && mounted) {
         const userProfile = await getUserProfile(session);
         setUser(userProfile);
-      } else {
+      } else if (mounted) {
         setUser(null);
       }
 
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' && mounted) {
         navigate('/');
       }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
