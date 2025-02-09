@@ -64,24 +64,32 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       console.log("Attempting logout...");
       setIsLoading(true);
       const { error } = await signOutUser();
-      if (error) throw error;
       
+      // Even if there's an error, we want to clear the local state
       console.log("Logout successful");
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
+      
+      // If there was an error, we can still consider the user logged out locally
+      if (error) {
+        console.warn("Non-critical logout error:", error);
+      }
     } catch (error) {
       console.error("Logout error:", error);
       toast({
-        title: "Error",
-        description: "An error occurred while logging out",
+        title: "Warning",
+        description: "There was an issue during logout, but you have been logged out locally.",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
+      // Force clear any local session data
+      await supabase.auth.signOut({ scope: 'local' });
     }
   };
 
   return { login, signup, logout };
 };
+
