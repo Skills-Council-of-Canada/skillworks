@@ -181,6 +181,7 @@ export type Database = {
       educator_experiences: {
         Row: {
           class_size: number | null
+          company_preferences: Json | null
           company_types: string[] | null
           compensation_type: string | null
           created_at: string
@@ -222,6 +223,7 @@ export type Database = {
         }
         Insert: {
           class_size?: number | null
+          company_preferences?: Json | null
           company_types?: string[] | null
           compensation_type?: string | null
           created_at?: string
@@ -263,6 +265,7 @@ export type Database = {
         }
         Update: {
           class_size?: number | null
+          company_preferences?: Json | null
           company_types?: string[] | null
           compensation_type?: string | null
           created_at?: string
@@ -1019,6 +1022,7 @@ export type Database = {
         | "draft"
         | "pending_approval"
         | "published"
+      skill_level_enum: "beginner" | "intermediate" | "advanced"
     }
     CompositeTypes: {
       [_ in never]: never

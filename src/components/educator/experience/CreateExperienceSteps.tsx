@@ -11,6 +11,7 @@ import DetailsStep from "./DetailsStep";
 import MetaInformationStep from "./MetaInformationStep";
 import LearnerDetailsStep from "./LearnerDetailsStep";
 import TimelineStep from "./TimelineStep";
+import CompanyPreferencesStep from "./CompanyPreferencesStep";
 import { Form } from "@/components/ui/form";
 
 const STEPS = [
@@ -18,7 +19,7 @@ const STEPS = [
   { id: "category", title: "Category & Skills" },
   { id: "learners", title: "Learner Details" },
   { id: "timeline", title: "Timeline" },
-  { id: "employer", title: "Employer Details" },
+  { id: "employer", title: "Company Preferences" },
   { id: "review", title: "Review & Publish" },
 ];
 
@@ -51,6 +52,10 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
       start_date: "",
       end_date: "",
       milestones: [],
+      preferred_industries: [],
+      company_types: [],
+      compensation_type: undefined,
+      screening_questions: [],
     },
   });
 
@@ -113,13 +118,15 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
                 <TimelineStep form={form} onNext={handleNext} />
               </TabsContent>
 
-              {STEPS.filter(step => !["details", "category", "learners", "timeline"].includes(step.id)).map((step) => (
-                <TabsContent key={step.id} value={step.id}>
-                  <p className="text-muted-foreground">
-                    Step content for {step.title} will be implemented next
-                  </p>
-                </TabsContent>
-              ))}
+              <TabsContent value="employer">
+                <CompanyPreferencesStep form={form} onNext={handleNext} />
+              </TabsContent>
+
+              <TabsContent value="review">
+                <p className="text-muted-foreground">
+                  Review step will be implemented next
+                </p>
+              </TabsContent>
             </form>
           </Form>
         </Tabs>
