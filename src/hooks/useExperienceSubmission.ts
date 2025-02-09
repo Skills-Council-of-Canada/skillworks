@@ -5,12 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ExperienceFormValues } from "@/types/educator";
 
+type ExperienceSubmissionStatus = 'draft' | 'pending_approval';
+
 export const useExperienceSubmission = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const submitExperience = async (data: ExperienceFormValues, status: 'draft' | 'pending_approval' = 'draft') => {
+  const submitExperience = async (data: ExperienceFormValues, status: ExperienceSubmissionStatus = 'draft') => {
     setIsSubmitting(true);
     try {
       const {
@@ -33,7 +35,6 @@ export const useExperienceSubmission = () => {
       const { error } = await supabase
         .from("educator_experiences")
         .insert({
-          educator_id: user.id,
           title: data.title,
           description: data.description,
           expected_outcomes: data.expected_outcomes || [],
@@ -53,7 +54,11 @@ export const useExperienceSubmission = () => {
           status: status,
           start_date: data.start_date,
           end_date: data.end_date,
-          milestones: data.milestones || [],
+          milestones: data.milestones.map(m => ({
+            title: m.title,
+            description: m.description || '',
+            due_date: m.due_date
+          }))
         });
 
       if (error) throw error;
