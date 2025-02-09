@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle } from "lucide-react";
+import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
 
 const ParticipantLanding = () => {
   const navigate = useNavigate();
@@ -11,7 +11,17 @@ const ParticipantLanding = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="text-2xl font-bold text-primary">TradesConnect - Participant Portal</div>
+          <div className="flex items-center gap-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/")}
+              className="text-secondary hover:text-primary"
+            >
+              <Home className="h-5 w-5" />
+            </Button>
+            <div className="text-2xl font-bold text-primary">TradesConnect - Participant Portal</div>
+          </div>
           <div className="flex gap-4">
             <Button
               variant="ghost"
