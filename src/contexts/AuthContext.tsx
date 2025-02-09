@@ -36,31 +36,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const { data: { session } } = await supabase.auth.getSession();
         console.log("Session fetch complete:", session?.user?.email);
         
-        if (!mounted) {
-          console.log("Component unmounted during initialization");
-          return;
-        }
+        if (!mounted) return;
 
         if (session?.user) {
           console.log("Valid session found, fetching profile...");
-          const profile = await getUserProfile(session);
-          console.log("Profile fetch result:", profile);
-          
-          if (profile && mounted) {
-            console.log("Setting user and redirecting...");
-            setUser(profile);
-            const redirectPath = getRoleBasedRedirect(profile.role);
-            console.log("Redirecting to:", redirectPath);
-            navigate(redirectPath);
+          try {
+            const profile = await getUserProfile(session);
+            console.log("Profile fetch result:", profile);
+            
+            if (profile && mounted) {
+              console.log("Setting user and redirecting...");
+              setUser(profile);
+              const redirectPath = getRoleBasedRedirect(profile.role);
+              console.log("Redirecting to:", redirectPath);
+              navigate(redirectPath);
+            }
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+            // If there's an error fetching the profile, sign out the user
+            await signOutUser();
+            setUser(null);
+            toast({
+              title: "Error",
+              description: "There was an error loading your profile. Please try logging in again.",
+              variant: "destructive",
+            });
           }
-        } else {
-          console.log("No valid session found");
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
       } finally {
         if (mounted) {
-          console.log("Setting loading to false");
           setIsLoading(false);
         }
       }
@@ -71,10 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (!mounted) {
-        console.log("Component unmounted during auth state change");
-        return;
-      }
+      if (!mounted) return;
 
       if (event === 'SIGNED_OUT') {
         console.log("User signed out, clearing state...");
@@ -86,15 +89,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (session?.user) {
         console.log("Session detected, fetching profile...");
-        const profile = await getUserProfile(session);
-        console.log("Profile fetch complete:", profile);
-        
-        if (profile && mounted) {
-          console.log("Setting user and redirecting...");
-          setUser(profile);
-          const redirectPath = getRoleBasedRedirect(profile.role);
-          console.log("Redirecting to:", redirectPath);
-          navigate(redirectPath);
+        try {
+          const profile = await getUserProfile(session);
+          console.log("Profile fetch complete:", profile);
+          
+          if (profile && mounted) {
+            console.log("Setting user and redirecting...");
+            setUser(profile);
+            const redirectPath = getRoleBasedRedirect(profile.role);
+            console.log("Redirecting to:", redirectPath);
+            navigate(redirectPath);
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+          // If there's an error fetching the profile, sign out the user
+          await signOutUser();
+          setUser(null);
+          toast({
+            title: "Error",
+            description: "There was an error loading your profile. Please try logging in again.",
+            variant: "destructive",
+          });
         }
       }
       setIsLoading(false);
@@ -109,7 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate, getRoleBasedRedirect]);
+  }, [navigate, getRoleBasedRedirect, toast]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -141,16 +156,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log("Attempting signup...");
       setIsLoading(true);
-      const { data, error } = await signUpUser(email, password, portal);
+      const { error } = await signUpUser(email, password, portal);
       if (error) throw error;
 
-      if (data.user) {
-        console.log("Signup successful");
-        toast({
-          title: "Account created!",
-          description: "Please check your email to verify your account.",
-        });
-      }
+      console.log("Signup successful");
+      toast({
+        title: "Account created!",
+        description: "Please check your email to verify your account.",
+      });
     } catch (error) {
       console.error("Signup error:", error);
       const authError = error as AuthError;

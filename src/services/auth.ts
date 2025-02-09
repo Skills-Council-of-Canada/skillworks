@@ -19,7 +19,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
 
     if (error) {
       console.error("Error fetching user profile:", error);
-      return null;
+      throw error;
     }
 
     if (profile) {
@@ -32,36 +32,75 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       };
     } else {
       console.log("No profile found for user");
+      throw new Error("No profile found for user");
     }
   } catch (error) {
     console.error("Error in getUserProfile:", error);
+    throw error;
   }
-  
-  return null;
 };
 
 export const signUpUser = async (email: string, password: string, portal: string) => {
   console.log("Signing up user with portal:", portal);
-  return supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        portal: portal,
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          portal: portal,
+        },
       },
-    },
-  });
+    });
+    
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    console.error("Error in signUpUser:", error);
+    throw error;
+  }
 };
 
 export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
-  return supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    console.error("Error in signInUser:", error);
+    throw error;
+  }
 };
 
 export const signOutUser = async () => {
   console.log("Signing out user");
-  return supabase.auth.signOut();
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return { error: null };
+  } catch (error) {
+    console.error("Error in signOutUser:", error);
+    throw error;
+  }
+};
+
+export const updateUserProfile = async (userId: string, updates: Partial<User>) => {
+  console.log("Updating user profile:", updates);
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', userId);
+
+    if (error) throw error;
+    return { error: null };
+  } catch (error) {
+    console.error("Error in updateUserProfile:", error);
+    throw error;
+  }
 };
