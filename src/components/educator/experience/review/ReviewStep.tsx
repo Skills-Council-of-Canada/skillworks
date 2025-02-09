@@ -1,16 +1,15 @@
 
 import { UseFormReturn } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ExperienceFormValues } from "@/types/educator";
-import { AlertCircle, Save, Upload } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useExperienceSubmission } from "@/hooks/useExperienceSubmission";
 import BasicDetailsSection from "./sections/BasicDetailsSection";
 import CategorySkillsSection from "./sections/CategorySkillsSection";
 import LearnerDetailsSection from "./sections/LearnerDetailsSection";
 import TimelineSection from "./sections/TimelineSection";
 import CompanyPreferencesSection from "./sections/CompanyPreferencesSection";
+import ActionButtons from "./ActionButtons";
 
 interface Props {
   form: UseFormReturn<ExperienceFormValues>;
@@ -19,7 +18,6 @@ interface Props {
 
 const ReviewStep = ({ form, onEdit }: Props) => {
   const values = form.getValues();
-  const { submitExperience, isSubmitting } = useExperienceSubmission();
 
   const isComplete = Boolean(
     values.title &&
@@ -32,15 +30,6 @@ const ReviewStep = ({ form, onEdit }: Props) => {
     values.class_size &&
     values.team_size
   );
-
-  const handlePublish = async () => {
-    if (!isComplete) return;
-    await submitExperience(values, 'pending_approval');
-  };
-
-  const handleSaveDraft = async () => {
-    await submitExperience(values, 'draft');
-  };
 
   return (
     <div className="space-y-6">
@@ -63,25 +52,7 @@ const ReviewStep = ({ form, onEdit }: Props) => {
         </div>
       </ScrollArea>
 
-      <div className="flex justify-end space-x-4">
-        <Button
-          variant="outline"
-          onClick={handleSaveDraft}
-          disabled={isSubmitting}
-          className="flex items-center"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          Save as Draft
-        </Button>
-        <Button
-          onClick={handlePublish}
-          disabled={!isComplete || isSubmitting}
-          className="bg-primary hover:bg-primary/90 flex items-center"
-        >
-          <Upload className="w-4 h-4 mr-2" />
-          Submit for Approval
-        </Button>
-      </div>
+      <ActionButtons values={values} isComplete={isComplete} />
     </div>
   );
 };
