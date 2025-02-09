@@ -15,7 +15,6 @@ export const useAuthState = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   const handleProfileError = async (error: Error) => {
-    console.error("Profile error:", error);
     await signOutUser();
     setUser(null);
     setIsLoading(false);
@@ -30,32 +29,29 @@ export const useAuthState = () => {
   const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
     if (!isMounted) return;
 
-    console.log("Setting user profile:", profile);
     setUser(profile);
     setIsLoading(false);
 
     if (profile) {
       const redirectPath = getRoleBasedRedirect(profile.role);
-      console.log("Redirecting to:", redirectPath);
       navigate(redirectPath, { replace: true });
     }
   };
 
   useEffect(() => {
     let mounted = true;
+    let authSubscription: { unsubscribe: () => void } | null = null;
 
-    const initializeAuth = async () => {
+    const setupAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
+      if (!mounted) return;
+
       if (!session?.user) {
-        if (mounted) {
-          setUser(null);
-          setIsLoading(false);
-        }
+        setUser(null);
+        setIsLoading(false);
         return;
       }
-
-      if (!mounted) return;
 
       try {
         const profile = await getUserProfile(session);
@@ -65,35 +61,36 @@ export const useAuthState = () => {
           handleProfileError(error as Error);
         }
       }
+
+      authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (!mounted) return;
+
+        if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setIsLoading(false);
+          return;
+        }
+
+        if (event === 'SIGNED_IN' && session?.user) {
+          try {
+            const profile = await getUserProfile(session);
+            handleProfileSuccess(profile, mounted);
+          } catch (error) {
+            if (mounted) {
+              handleProfileError(error as Error);
+            }
+          }
+        }
+      }).data.subscription;
     };
 
-    // Initialize auth state
-    initializeAuth();
-
-    // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-
-      if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setIsLoading(false);
-        return;
-      }
-
-      if (event === 'SIGNED_IN' && session?.user) {
-        setIsLoading(true);
-        try {
-          const profile = await getUserProfile(session);
-          handleProfileSuccess(profile, mounted);
-        } catch (error) {
-          handleProfileError(error as Error);
-        }
-      }
-    });
+    setupAuth();
 
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      if (authSubscription) {
+        authSubscription.unsubscribe();
+      }
     };
   }, [navigate, getRoleBasedRedirect, toast]);
 
