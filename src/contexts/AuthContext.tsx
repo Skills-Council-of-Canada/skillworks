@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthContextType, User, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -25,35 +24,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
+  const updateUserAndRedirect = async (session: any) => {
+    try {
+      console.log("Fetching user profile...");
+      const userProfile = await getUserProfile(session);
+      console.log("User profile fetched:", userProfile);
+      setUser(userProfile);
+
+      if (userProfile) {
+        console.log("Redirecting user with role:", userProfile.role);
+        const redirectPath = getRoleBasedRedirect(userProfile.role);
+        navigate(redirectPath);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
     const initializeAuth = async () => {
       try {
         console.log("Initializing auth state...");
-        setIsLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session && mounted) {
-          console.log("Found existing session, fetching user profile...");
-          const userProfile = await getUserProfile(session);
-          if (mounted) {
-            setUser(userProfile);
-          }
-        } else if (mounted) {
-          console.log("No existing session found");
+          await updateUserAndRedirect(session);
+        } else {
           setUser(null);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-        if (mounted) {
-          setUser(null);
-        }
-      } finally {
-        if (mounted) {
-          console.log("Auth initialization complete, setting loading to false");
-          setIsLoading(false);
-        }
+        setUser(null);
+        setIsLoading(false);
       }
     };
 
@@ -64,29 +72,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (mounted) {
-        setIsLoading(true);
-        try {
-          if (session) {
-            const userProfile = await getUserProfile(session);
-            if (mounted) {
-              setUser(userProfile);
-            }
-          } else {
-            setUser(null);
-          }
-        } catch (error) {
-          console.error("Error during auth state change:", error);
-          setUser(null);
-        } finally {
-          if (mounted) {
-            setIsLoading(false);
-          }
-        }
+      if (!mounted) return;
 
-        if (event === 'SIGNED_OUT') {
-          navigate('/');
-        }
+      setIsLoading(true);
+      
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setIsLoading(false);
+        navigate('/');
+        return;
+      }
+
+      if (session) {
+        await updateUserAndRedirect(session);
+      } else {
+        setUser(null);
+        setIsLoading(false);
       }
     });
 
@@ -94,7 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, getRoleBasedRedirect]);
 
   const signup = async (email: string, password: string, portal: string) => {
     try {
@@ -192,4 +193,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 function isValidUserRole(role: string): role is UserRole {
   return ['admin', 'educator', 'employer', 'participant'].includes(role);
 }
-
