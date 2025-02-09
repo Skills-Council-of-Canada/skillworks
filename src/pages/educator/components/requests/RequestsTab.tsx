@@ -111,7 +111,7 @@ export const RequestsTab = () => {
                     <Badge
                       variant={
                         request.status === "approved"
-                          ? "success"
+                          ? "default"
                           : request.status === "rejected"
                           ? "destructive"
                           : "secondary"
@@ -155,3 +155,4 @@ export const RequestsTab = () => {
     </Card>
   );
 };
+

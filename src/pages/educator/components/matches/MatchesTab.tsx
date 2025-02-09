@@ -111,7 +111,7 @@ export const MatchesTab = () => {
                     <Badge
                       variant={
                         match.status === "accepted"
-                          ? "success"
+                          ? "default"
                           : match.status === "rejected"
                           ? "destructive"
                           : "secondary"
@@ -155,3 +155,4 @@ export const MatchesTab = () => {
     </Card>
   );
 };
+
