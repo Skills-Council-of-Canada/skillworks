@@ -155,13 +155,6 @@ const AuthForm = ({
           </form>
         </Tabs>
       </Card>
-
-      <p className="text-center text-sm text-secondary/60">
-        Demo accounts: admin@example.com, educator@example.com,
-        employer@example.com, participant@example.com
-        <br />
-        (Use any password)
-      </p>
     </div>
   );
 };
