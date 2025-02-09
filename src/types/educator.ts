@@ -33,7 +33,7 @@ export interface EducatorExperience {
   team_size: number;
   start_date: string;
   end_date: string | null;
-  status: 'draft' | 'pending_approval' | 'published';
+  status: 'incomplete' | 'draft' | 'pending_approval' | 'published';
   skill_level: 'beginner' | 'intermediate' | 'advanced';
   duration_weeks: number;
   employer_id: string | null;
