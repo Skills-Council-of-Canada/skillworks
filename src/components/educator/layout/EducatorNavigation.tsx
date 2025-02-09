@@ -1,11 +1,8 @@
 
-import { NavLink } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import {
   Calendar,
   GraduationCap,
   Home,
-  LogOut,
   MessageSquare,
   Search,
   Settings,
@@ -15,6 +12,9 @@ import {
   Users,
   Building2
 } from "lucide-react";
+import { NavigationHeader } from "./NavigationHeader";
+import { NavItem } from "./NavItem";
+import { LogoutButton } from "./LogoutButton";
 
 interface EducatorNavigationProps {
   onLogout: () => void;
@@ -23,137 +23,57 @@ interface EducatorNavigationProps {
 export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
   return (
     <div className="flex h-full flex-col gap-2">
-      <div className="flex h-16 items-center border-b px-6">
-        <NavLink to="/educator" className="flex items-center gap-2 font-semibold">
-          <GraduationCap className="h-6 w-6" />
-          <span>Education Portal</span>
-        </NavLink>
-      </div>
+      <NavigationHeader />
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          <NavLink 
-            to="/educator" 
-            end
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Home className="mr-2 h-4 w-4" />
+          <NavItem to="/educator" icon={Home} end>
             Dashboard
-          </NavLink>
+          </NavItem>
           
-          <NavLink 
-            to="/educator/experiences"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <GraduationCap className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/experiences" icon={GraduationCap}>
             My Experiences
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/collaborations"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Building2 className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/collaborations" icon={Building2}>
             Collaborations
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/portals"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Search className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/portals" icon={Search}>
             Find a Portal
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/projects"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Briefcase className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/projects" icon={Briefcase}>
             Find a Project
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/students"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Users className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/students" icon={Users}>
             Students
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/matches"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <UserCheck className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/matches" icon={UserCheck}>
             Match Requests
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/tasks"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <ClipboardList className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/tasks" icon={ClipboardList}>
             Tasks & Activities
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/messages"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <MessageSquare className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/messages" icon={MessageSquare}>
             Messages
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/calendar"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Calendar className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/calendar" icon={Calendar}>
             Calendar
-          </NavLink>
+          </NavItem>
 
-          <NavLink 
-            to="/educator/settings"
-            className={({ isActive }) => 
-              `flex w-full items-center ${isActive ? 'bg-secondary text-secondary-foreground' : 'hover:bg-secondary/50'} px-2 py-1.5 rounded-md transition-colors`
-            }
-          >
-            <Settings className="mr-2 h-4 w-4" />
+          <NavItem to="/educator/settings" icon={Settings}>
             Settings
-          </NavLink>
+          </NavItem>
         </div>
       </div>
 
-      <div className="p-4">
-        <button
-          onClick={onLogout}
-          className="flex w-full items-center text-destructive hover:bg-destructive/10 px-2 py-1.5 rounded-md transition-colors"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Log Out
-        </button>
-      </div>
+      <LogoutButton onLogout={onLogout} />
     </div>
   );
 };
