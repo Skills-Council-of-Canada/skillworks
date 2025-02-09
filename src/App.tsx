@@ -7,6 +7,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
+import EducatorLanding from "./pages/EducatorLanding";
+import EmployerLanding from "./pages/EmployerLanding";
+import ParticipantLanding from "./pages/ParticipantLanding";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
@@ -47,6 +50,9 @@ const App = () => (
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/educator-landing" element={<EducatorLanding />} />
+          <Route path="/employer-landing" element={<EmployerLanding />} />
+          <Route path="/participant-landing" element={<ParticipantLanding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           

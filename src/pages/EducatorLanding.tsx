@@ -2,33 +2,16 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, Users, CheckCircle } from "lucide-react";
-import PortalSelection from "@/components/auth/PortalSelection";
 
-const LandingPage = () => {
+const EducatorLanding = () => {
   const navigate = useNavigate();
-
-  const handlePortalSelect = (portalId: string) => {
-    switch (portalId) {
-      case "employer":
-        navigate("/employer-landing");
-        break;
-      case "educator":
-        navigate("/educator-landing");
-        break;
-      case "participant":
-        navigate("/participant-landing");
-        break;
-      default:
-        break;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="text-2xl font-bold text-primary">TradesConnect</div>
+          <div className="text-2xl font-bold text-primary">TradesConnect - Educator Portal</div>
           <div className="flex gap-4">
             <Button
               variant="ghost"
@@ -47,24 +30,16 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Portal Selection Section */}
-      <section className="pt-24 pb-8 px-4">
-        <div className="container mx-auto max-w-6xl flex justify-center">
-          <PortalSelection onPortalSelect={handlePortalSelect} />
-        </div>
-      </section>
-
       {/* Hero Section */}
-      <section className="py-16 px-4 bg-muted">
+      <section className="pt-24 pb-16 px-4 bg-muted">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
-                Connect with Skilled Trade Professionals
+                Empower Students Through Trade Education
               </h1>
               <p className="text-lg text-secondary/60">
-                Your gateway to finding and hiring qualified trade professionals.
-                Streamline your recruitment process and build your workforce efficiently.
+                Connect your students with real-world trade opportunities and shape the future workforce through hands-on learning experiences.
               </p>
               <div className="flex gap-4">
                 <Button
@@ -87,7 +62,7 @@ const LandingPage = () => {
             <div className="hidden md:block">
               <img
                 src="/placeholder.svg"
-                alt="Skilled trades professionals"
+                alt="Education in trades"
                 className="rounded-lg shadow-xl"
               />
             </div>
@@ -99,34 +74,34 @@ const LandingPage = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-3xl font-bold text-center text-secondary mb-12">
-            Why Choose TradesConnect?
+            Why Choose Our Educator Portal?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-6 space-y-4 text-center">
               <Briefcase className="h-12 w-12 text-primary mx-auto" />
               <h3 className="text-xl font-semibold text-secondary">
-                Access Top Talent
+                Industry Connections
               </h3>
               <p className="text-secondary/60">
-                Connect with verified skilled professionals ready to join your workforce
+                Connect with leading trade employers and provide real opportunities for your students
               </p>
             </div>
             <div className="p-6 space-y-4 text-center">
               <Users className="h-12 w-12 text-primary mx-auto" />
               <h3 className="text-xl font-semibold text-secondary">
-                Efficient Matching
+                Student Progress Tracking
               </h3>
               <p className="text-secondary/60">
-                Find candidates that match your specific requirements and company culture
+                Monitor your students' development and engagement with hands-on projects
               </p>
             </div>
             <div className="p-6 space-y-4 text-center">
               <CheckCircle className="h-12 w-12 text-primary mx-auto" />
               <h3 className="text-xl font-semibold text-secondary">
-                Verified Skills
+                Verified Outcomes
               </h3>
               <p className="text-secondary/60">
-                All professionals are pre-screened and their skills are verified
+                Track and verify student achievements and certifications
               </p>
             </div>
           </div>
@@ -140,22 +115,22 @@ const LandingPage = () => {
             <div>
               <h3 className="font-bold text-lg mb-4">TradesConnect</h3>
               <p className="text-white/60">
-                Connecting employers with skilled trade professionals
+                Empowering trade education and workforce development
               </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2">
-                <li><a href="/about" className="text-white/60 hover:text-white">About</a></li>
-                <li><a href="/careers" className="text-white/60 hover:text-white">Careers</a></li>
-                <li><a href="/contact" className="text-white/60 hover:text-white">Contact</a></li>
-              </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="/blog" className="text-white/60 hover:text-white">Blog</a></li>
-                <li><a href="/guides" className="text-white/60 hover:text-white">Guides</a></li>
+                <li><a href="/about" className="text-white/60 hover:text-white">About</a></li>
+                <li><a href="/contact" className="text-white/60 hover:text-white">Contact</a></li>
+                <li><a href="/support" className="text-white/60 hover:text-white">Support</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2">
+                <li><a href="/features" className="text-white/60 hover:text-white">Features</a></li>
+                <li><a href="/pricing" className="text-white/60 hover:text-white">Pricing</a></li>
                 <li><a href="/faq" className="text-white/60 hover:text-white">FAQ</a></li>
               </ul>
             </div>
@@ -176,4 +151,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default EducatorLanding;
