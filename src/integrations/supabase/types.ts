@@ -589,6 +589,13 @@ export type Database = {
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_experience_assignments_student"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
         ]
       }
       experience_co_educators: {

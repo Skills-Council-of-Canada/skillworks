@@ -79,7 +79,9 @@ const ExperienceManagement = () => {
       const { data, error } = await supabase
         .from("experience_assignments")
         .select(`
-          *,
+          id,
+          status,
+          created_at,
           students (
             id,
             first_name,
