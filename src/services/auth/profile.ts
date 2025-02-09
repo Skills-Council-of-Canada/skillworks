@@ -10,6 +10,13 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
   }
   
   try {
+    // Verify session is still valid
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (!currentSession) {
+      console.log("Session is no longer valid");
+      return null;
+    }
+
     console.log("Fetching user profile for ID:", session.user.id);
     const { data: profile, error } = await supabase
       .from('profiles')
@@ -57,3 +64,4 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
     throw error;
   }
 };
+

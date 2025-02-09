@@ -4,31 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 export const signOutUser = async () => {
   console.log("Signing out user");
   try {
-    // Check current session first
-    const { data: { session } } = await supabase.auth.getSession();
+    // First clear any stored session data
+    const { error } = await supabase.auth.signOut();
     
-    if (!session) {
-      console.log("No active session found");
-      return { error: null };
+    if (error) {
+      console.error("Error during signout:", error);
+      throw error;
     }
-
-    // Try global sign out first
-    const { error: globalError } = await supabase.auth.signOut({
-      scope: 'global'
-    });
     
-    if (globalError) {
-      console.warn("Global sign out failed:", globalError);
-      // Fallback to local sign out
-      const { error: localError } = await supabase.auth.signOut({
-        scope: 'local'
-      });
-      
-      if (localError) {
-        console.error("Local sign out also failed:", localError);
-        throw localError;
-      }
-    }
+    // Clear any local storage or state that might be persisting
+    localStorage.removeItem('supabase.auth.token');
     
     return { error: null };
   } catch (error) {
@@ -36,3 +21,4 @@ export const signOutUser = async () => {
     throw error;
   }
 };
+
