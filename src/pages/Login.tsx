@@ -1,27 +1,17 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
 import { User } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 
-const defaultPortal = {
-  id: "default",
-  title: "Welcome Back",
-  description: "Sign in to your account",
-  icon: User,
-  gradient: "bg-gradient-to-r from-blue-600 to-blue-800"
-};
-
 const Login = () => {
-  const [searchParams] = useSearchParams();
-  const portalParam = searchParams.get("portal");
   const navigate = useNavigate();
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const currentPortal = defaultPortal;
 
+  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       console.log("User already logged in, redirecting...");
@@ -57,11 +47,11 @@ const Login = () => {
   }
 
   return (
-    <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-800 px-4">
       <AuthForm
-        icon={currentPortal.icon}
-        title={currentPortal.title}
-        gradient={currentPortal.gradient}
+        icon={User}
+        title="Welcome Back"
+        gradient="bg-gradient-to-r from-blue-600 to-blue-800"
         isLoading={isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
