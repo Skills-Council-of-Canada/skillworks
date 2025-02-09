@@ -30,16 +30,15 @@ export const useAuthState = () => {
   const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
     if (!isMounted) return;
 
+    console.log("Setting user profile:", profile);
+    setUser(profile);
+    setIsLoading(false);
+
     if (profile) {
-      console.log("Setting user profile:", profile);
-      setUser(profile);
       const redirectPath = getRoleBasedRedirect(profile.role);
       console.log("Redirecting to:", redirectPath);
       navigate(redirectPath, { replace: true });
-    } else {
-      handleProfileError(new Error("No profile found"));
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -90,7 +89,6 @@ export const useAuthState = () => {
         console.log("User signed out, clearing state...");
         setUser(null);
         setIsLoading(false);
-        navigate('/login');
         return;
       }
 
