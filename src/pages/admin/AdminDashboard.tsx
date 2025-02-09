@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock } from "lucide-react";
+import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefcase } from "lucide-react";
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -53,13 +53,15 @@ const AdminDashboard = () => {
         matchedProjects: matchedProjects || 0
       };
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to load dashboard statistics",
-        variant: "destructive",
-      });
-      console.error("Dashboard stats error:", error);
+    meta: {
+      onError: (error: Error) => {
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard statistics",
+          variant: "destructive",
+        });
+        console.error("Dashboard stats error:", error);
+      }
     }
   });
 
