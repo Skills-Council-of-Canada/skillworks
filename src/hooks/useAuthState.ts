@@ -9,13 +9,13 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export const useAuthState = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   const handleProfileError = async (error: Error) => {
-    console.log("Handling profile error:", error);
+    console.error("Profile error:", error);
     await signOutUser();
     setUser(null);
     setIsLoading(false);
@@ -50,7 +50,6 @@ export const useAuthState = () => {
       try {
         console.log("Fetching initial session...");
         const { data: { session } } = await supabase.auth.getSession();
-        console.log("Session fetch complete:", session?.user?.email);
         
         if (!session?.user) {
           console.log("No active session found");
@@ -63,11 +62,9 @@ export const useAuthState = () => {
 
         if (!mounted) return;
 
-        setIsLoading(true);
         console.log("Valid session found, fetching profile...");
         try {
           const profile = await getUserProfile(session);
-          console.log("Profile fetch result:", profile);
           handleProfileSuccess(profile, mounted);
         } catch (error) {
           console.error("Error fetching profile:", error);
@@ -92,7 +89,7 @@ export const useAuthState = () => {
       if (event === 'SIGNED_OUT') {
         console.log("User signed out, clearing state...");
         setUser(null);
-        navigate('/');
+        navigate('/login');
         return;
       }
 
@@ -103,11 +100,9 @@ export const useAuthState = () => {
         return;
       }
 
-      setIsLoading(true);
       console.log("Session detected, fetching profile...");
       try {
         const profile = await getUserProfile(session);
-        console.log("Profile fetch complete:", profile);
         handleProfileSuccess(profile, mounted);
       } catch (error) {
         console.error("Error fetching profile:", error);

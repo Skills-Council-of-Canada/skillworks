@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { User, UserRole } from "@/types/auth";
 import { Session } from "@supabase/supabase-js";
@@ -21,18 +22,18 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       throw error;
     }
 
-    if (profile) {
-      console.log("Profile found:", profile);
-      return {
-        id: session.user.id,
-        email: profile.email,
-        role: profile.role as UserRole,
-        name: profile.name || profile.email.split('@')[0],
-      };
-    } else {
+    if (!profile) {
       console.log("No profile found for user");
       return null;
     }
+
+    console.log("Profile found:", profile);
+    return {
+      id: session.user.id,
+      email: profile.email,
+      role: profile.role as UserRole,
+      name: profile.name || profile.email.split('@')[0],
+    };
   } catch (error) {
     console.error("Error in getUserProfile:", error);
     throw error;
