@@ -170,6 +170,8 @@ export type Database = {
           preferred_contact: string
           specialization: string
           updated_at: string
+          verification_date: string | null
+          verified: boolean | null
           years_experience: number
         }
         Insert: {
@@ -181,6 +183,8 @@ export type Database = {
           preferred_contact: string
           specialization: string
           updated_at?: string
+          verification_date?: string | null
+          verified?: boolean | null
           years_experience: number
         }
         Update: {
@@ -192,6 +196,8 @@ export type Database = {
           preferred_contact?: string
           specialization?: string
           updated_at?: string
+          verification_date?: string | null
+          verified?: boolean | null
           years_experience?: number
         }
         Relationships: []
@@ -243,6 +249,51 @@ export type Database = {
           },
         ]
       }
+      employer_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          educator_id: string
+          employer_id: string
+          id: string
+          rating: number
+          updated_at: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          educator_id: string
+          employer_id: string
+          id?: string
+          rating: number
+          updated_at?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          educator_id?: string
+          employer_id?: string
+          id?: string
+          rating?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employer_reviews_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employer_reviews_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employers: {
         Row: {
           company_name: string
@@ -256,9 +307,12 @@ export type Database = {
           primary_contact_email: string
           primary_contact_name: string
           primary_contact_phone: string
+          rating: number | null
+          rating_count: number | null
           registration_status: string
           updated_at: string
           user_id: string
+          verified: boolean | null
           website: string | null
         }
         Insert: {
@@ -273,9 +327,12 @@ export type Database = {
           primary_contact_email: string
           primary_contact_name: string
           primary_contact_phone: string
+          rating?: number | null
+          rating_count?: number | null
           registration_status?: string
           updated_at?: string
           user_id: string
+          verified?: boolean | null
           website?: string | null
         }
         Update: {
@@ -290,9 +347,12 @@ export type Database = {
           primary_contact_email?: string
           primary_contact_name?: string
           primary_contact_phone?: string
+          rating?: number | null
+          rating_count?: number | null
           registration_status?: string
           updated_at?: string
           user_id?: string
+          verified?: boolean | null
           website?: string | null
         }
         Relationships: []
@@ -437,14 +497,17 @@ export type Database = {
       }
       projects: {
         Row: {
+          certifications_required: string[] | null
           created_at: string
           description: string
           employer_id: string
           end_date: string
           flexibility: string | null
           id: string
+          industry: string | null
           location_type: string
           positions: number
+          project_type: string | null
           safety_requirements: string[] | null
           site_address: string | null
           skill_level: string
@@ -455,14 +518,17 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          certifications_required?: string[] | null
           created_at?: string
           description: string
           employer_id: string
           end_date: string
           flexibility?: string | null
           id?: string
+          industry?: string | null
           location_type: string
           positions: number
+          project_type?: string | null
           safety_requirements?: string[] | null
           site_address?: string | null
           skill_level: string
@@ -473,14 +539,17 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          certifications_required?: string[] | null
           created_at?: string
           description?: string
           employer_id?: string
           end_date?: string
           flexibility?: string | null
           id?: string
+          industry?: string | null
           location_type?: string
           positions?: number
+          project_type?: string | null
           safety_requirements?: string[] | null
           site_address?: string | null
           skill_level?: string
