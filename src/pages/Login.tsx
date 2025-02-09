@@ -33,9 +33,10 @@ const Login = () => {
         await login(email, password);
       }
       console.log("Auth submission successful");
+      // Don't reset isSubmitting here as the redirect will unmount the component
     } catch (error) {
       console.error("Auth failed:", error);
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Only reset on error
       if (error instanceof AuthError) {
         toast({
           variant: "destructive",
