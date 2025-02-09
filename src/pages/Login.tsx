@@ -26,44 +26,28 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const portalParam = searchParams.get("portal");
   const navigate = useNavigate();
-  const auth = useAuth();
-  const { login, signup, user } = auth || {};
+  const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return; // Don't redirect while auth state is loading
     if (!user) return;
 
     // For admin users, always respect their portal choice if provided
-    if (user.role === "admin") {
-      if (portalParam) {
-        // Admin accessing a specific portal - allow it
-        navigate(roleBasedRedirect(portalParam as UserRole));
-      } else {
-        // No portal specified - go to admin dashboard
-        navigate("/admin");
-      }
+    if (user.role === "admin" && portalParam) {
+      navigate(roleBasedRedirect(portalParam as UserRole));
       return;
     }
 
-    // For non-admin users
-    if (!portalParam) {
-      navigate("/"); // Redirect to portal selection if no portal specified
-      return;
-    }
-
-    // Ensure non-admin users can only access their assigned portal
-    if (user.role !== portalParam) {
-      navigate(roleBasedRedirect(user.role));
-    } else {
-      navigate(roleBasedRedirect(user.role));
-    }
-  }, [user, navigate, portalParam]);
+    // For non-admin users or admins without portal param
+    navigate(roleBasedRedirect(user.role));
+  }, [user, navigate, portalParam, authLoading]);
 
   useEffect(() => {
-    if (!portalParam) {
+    if (!portalParam && !authLoading) {
       navigate("/");
     }
-  }, [portalParam, navigate]);
+  }, [portalParam, navigate, authLoading]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
@@ -86,9 +70,11 @@ const Login = () => {
     }
   };
 
-  if (!portalParam) {
-    return null;
-  }
+  // Show nothing while checking initial auth state
+  if (authLoading) return null;
+  
+  // Show nothing if no portal selected (will redirect to home)
+  if (!portalParam) return null;
 
   const currentPortal = portals.find(p => p.id === portalParam)!;
 
