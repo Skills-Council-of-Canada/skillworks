@@ -39,11 +39,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-800 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] px-4">
       <AuthForm
         icon={User}
         title="Welcome Back"
-        gradient="bg-gradient-to-r from-blue-600 to-blue-800"
+        gradient="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB]"
         isLoading={isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
