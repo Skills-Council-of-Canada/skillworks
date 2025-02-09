@@ -4,6 +4,7 @@ import { AuthContextType, User, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthError, Session } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -19,32 +20,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setUserFromSession(session);
+    // Initialize authentication state
+    const initializeAuth = async () => {
+      try {
+        // Check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setUserFromSession(session);
+        } else {
+          setUser(null);
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error("Auth initialization error:", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    });
+    };
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    initializeAuth();
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user?.email);
+      
       if (session) {
         setUserFromSession(session);
       } else {
         setUser(null);
+        if (event === 'SIGNED_OUT') {
+          navigate('/login');
+        }
       }
       setIsLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const setUserFromSession = (session: Session) => {
+    if (!session?.user) return;
+    
     const userData: User = {
       id: session.user.id,
       email: session.user.email || "",
@@ -62,9 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       if (data.user) {
         toast({
@@ -93,9 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       if (data.user) {
         toast({
@@ -124,6 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
+      navigate('/login');
     } catch (error) {
       toast({
         title: "Error",
@@ -147,3 +166,4 @@ const determineUserRole = (email: string): UserRole => {
   if (email.includes("employer")) return "employer";
   return "participant";
 };
+
