@@ -32,6 +32,14 @@ const Login = () => {
   // Get portal info first to avoid multiple lookups
   const currentPortal = portals.find(p => p.id === portalParam);
 
+  console.log("Login component render:", {
+    user,
+    authLoading,
+    portalParam,
+    isSubmitting,
+    currentPortal: currentPortal?.id
+  });
+
   // If there's no portal param or it's invalid, redirect to home
   useEffect(() => {
     if (!portalParam || !currentPortal) {
@@ -42,14 +50,22 @@ const Login = () => {
 
   // Handle authenticated user redirects
   useEffect(() => {
-    if (user) {
-      console.log("User authenticated, redirecting to:", user.role);
+    if (user && !authLoading) {
+      console.log("User authenticated, redirecting:", {
+        role: user.role,
+        portalParam,
+        redirectPath: user.role === "admin" && portalParam 
+          ? roleBasedRedirect(portalParam as UserRole) 
+          : roleBasedRedirect(user.role)
+      });
+      
       const redirectPath = user.role === "admin" && portalParam 
         ? roleBasedRedirect(portalParam as UserRole) 
         : roleBasedRedirect(user.role);
+      
       navigate(redirectPath);
     }
-  }, [user, portalParam, navigate]);
+  }, [user, portalParam, navigate, authLoading]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
@@ -72,14 +88,30 @@ const Login = () => {
     }
   };
 
+  // Don't show anything while auth is initializing
+  if (authLoading) {
+    console.log("Auth is still initializing...");
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-xl">Initializing...</div>
+      </div>
+    );
+  }
+
   // Don't render form if no portal is selected or portal is invalid
   if (!portalParam || !currentPortal) {
+    console.log("No portal or invalid portal");
     return null;
   }
 
   // Don't render form if user is already authenticated
   if (user) {
-    return null;
+    console.log("User is authenticated, waiting for redirect");
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-xl">Redirecting...</div>
+      </div>
+    );
   }
 
   // Show loading spinner only during form submission
