@@ -34,7 +34,26 @@ const ExperienceManagement = () => {
         throw error;
       }
 
-      return data as EducatorExperience;
+      // Transform the screening_questions to match the expected interface
+      const transformedData = {
+        ...data,
+        screening_questions: Array.isArray(data.screening_questions)
+          ? data.screening_questions.map((q: any) => ({
+              question: q.question || '',
+              required: Boolean(q.required),
+            }))
+          : [],
+        // Ensure other required fields have proper types
+        skill_level: (data.skill_level as 'beginner' | 'intermediate' | 'advanced') || 'beginner',
+        status: (data.status as 'incomplete' | 'draft' | 'pending_approval' | 'published') || 'draft',
+        subcategories: Array.isArray(data.subcategories) ? data.subcategories : [],
+        skill_tags: Array.isArray(data.skill_tags) ? data.skill_tags : [],
+        company_types: Array.isArray(data.company_types) ? data.company_types : [],
+        required_certifications: Array.isArray(data.required_certifications) ? data.required_certifications : [],
+        preferred_industries: Array.isArray(data.preferred_industries) ? data.preferred_industries : [],
+      } as EducatorExperience;
+
+      return transformedData;
     },
     enabled: !!experienceId,
   });
