@@ -7,21 +7,6 @@ import AuthForm from "@/components/auth/AuthForm";
 import { portals } from "@/components/auth/PortalSelection";
 import { AuthError } from "@supabase/supabase-js";
 
-const roleBasedRedirect = (role: UserRole): string => {
-  switch (role) {
-    case "admin":
-      return "/admin";
-    case "employer":
-      return "/employer";
-    case "educator":
-      return "/educator";
-    case "participant":
-      return "/dashboard";
-    default:
-      return "/dashboard";
-  }
-};
-
 const Login = () => {
   const [searchParams] = useSearchParams();
   const portalParam = searchParams.get("portal");
@@ -48,25 +33,6 @@ const Login = () => {
     }
   }, [portalParam, currentPortal, navigate]);
 
-  // Handle authenticated user redirects
-  useEffect(() => {
-    if (user && !authLoading) {
-      console.log("User authenticated, redirecting:", {
-        role: user.role,
-        portalParam,
-        redirectPath: user.role === "admin" && portalParam 
-          ? roleBasedRedirect(portalParam as UserRole) 
-          : roleBasedRedirect(user.role)
-      });
-      
-      const redirectPath = user.role === "admin" && portalParam 
-        ? roleBasedRedirect(portalParam as UserRole) 
-        : roleBasedRedirect(user.role);
-      
-      navigate(redirectPath);
-    }
-  }, [user, portalParam, navigate, authLoading]);
-
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
 
@@ -88,9 +54,9 @@ const Login = () => {
     }
   };
 
-  // Don't show anything while auth is initializing
-  if (authLoading) {
-    console.log("Auth is still initializing...");
+  // Show global loading state while auth is initializing
+  if (authLoading && !user) {
+    console.log("Auth is initializing...");
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-xl">Initializing...</div>
@@ -102,16 +68,6 @@ const Login = () => {
   if (!portalParam || !currentPortal) {
     console.log("No portal or invalid portal");
     return null;
-  }
-
-  // Don't render form if user is already authenticated
-  if (user) {
-    console.log("User is authenticated, waiting for redirect");
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Redirecting...</div>
-      </div>
-    );
   }
 
   // Show loading spinner only during form submission
