@@ -5,11 +5,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
 import { User } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -21,6 +23,8 @@ const Login = () => {
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     console.log("Attempting auth submission:", { email, isSignUp });
+    if (isSubmitting) return;
+    
     setIsSubmitting(true);
     try {
       if (isSignUp) {
@@ -31,12 +35,20 @@ const Login = () => {
       console.log("Auth submission successful");
     } catch (error) {
       console.error("Auth failed:", error);
-      if (error instanceof AuthError) {
-        throw new Error(error.message);
-      }
-      throw new Error("An unexpected error occurred during authentication");
-    } finally {
       setIsSubmitting(false);
+      if (error instanceof AuthError) {
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: error.message
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An unexpected error occurred during authentication"
+        });
+      }
     }
   };
 
