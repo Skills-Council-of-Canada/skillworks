@@ -80,6 +80,10 @@ export const useAuthState = () => {
       }
     };
 
+    // Initialize auth state
+    initializeAuth();
+
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
@@ -92,24 +96,18 @@ export const useAuthState = () => {
         return;
       }
 
-      if (!session?.user) {
-        console.log("No session in auth change");
-        setUser(null);
-        setIsLoading(false);
-        return;
-      }
-
-      console.log("Session detected, fetching profile...");
-      try {
-        const profile = await getUserProfile(session);
-        handleProfileSuccess(profile, mounted);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        handleProfileError(error as Error);
+      // Only handle SIGNED_IN event for auth state changes
+      if (event === 'SIGNED_IN' && session?.user) {
+        console.log("Session detected, fetching profile...");
+        try {
+          const profile = await getUserProfile(session);
+          handleProfileSuccess(profile, mounted);
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+          handleProfileError(error as Error);
+        }
       }
     });
-
-    initializeAuth();
 
     return () => {
       console.log("Cleaning up auth context...");
