@@ -27,7 +27,14 @@ const ExperiencesManagement = () => {
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setExperiences(data || []);
+
+        // Transform and validate the skill_level before setting state
+        const transformedData = (data || []).map(exp => ({
+          ...exp,
+          skill_level: (exp.skill_level as 'beginner' | 'intermediate' | 'advanced') || 'beginner'
+        })) as EducatorExperience[];
+
+        setExperiences(transformedData);
       } catch (error) {
         console.error('Error fetching experiences:', error);
         toast({
