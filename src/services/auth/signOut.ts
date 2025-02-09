@@ -8,15 +8,8 @@ export const signOutUser = async () => {
     localStorage.clear();
     sessionStorage.clear();
     
-    // Sign out from Supabase
-    const { error } = await supabase.auth.signOut({
-      scope: 'local'
-    });
-    
-    if (error) {
-      console.error("Error during signout:", error);
-      throw error;
-    }
+    // Sign out from Supabase with both local and global scope
+    await supabase.auth.signOut();
     
     console.log("Signout successful");
     return { error: null };
@@ -25,3 +18,4 @@ export const signOutUser = async () => {
     throw error;
   }
 };
+
