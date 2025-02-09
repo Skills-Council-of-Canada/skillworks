@@ -10,12 +10,12 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
   }
   
   try {
-    console.log("Fetching user profile from profiles table...");
+    console.log("Fetching user profile for ID:", session.user.id);
     const { data: profile, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select('email, role, name, id')
       .eq('id', session.user.id)
-      .maybeSingle();
+      .single();
 
     if (error) {
       console.error("Error fetching user profile:", error);
@@ -29,7 +29,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
 
     console.log("Profile found:", profile);
     return {
-      id: session.user.id,
+      id: profile.id,
       email: profile.email,
       role: profile.role as UserRole,
       name: profile.name || profile.email.split('@')[0],
