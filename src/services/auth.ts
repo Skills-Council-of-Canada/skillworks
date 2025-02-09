@@ -27,12 +27,11 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       return null;
     }
 
-    console.log("Profile found:", profile);
     return {
       id: profile.id,
       email: profile.email,
       role: profile.role as UserRole,
-      name: profile.name || profile.email.split('@')[0],
+      name: profile.name,
     };
   } catch (error) {
     console.error("Error in getUserProfile:", error);
@@ -105,4 +104,3 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
     throw error;
   }
 };
-
