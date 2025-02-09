@@ -13,9 +13,9 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
     console.log("Fetching user profile for ID:", session.user.id);
     const { data: profile, error } = await supabase
       .from('profiles')
-      .select('email, role, name, id')
+      .select('id, email, role, name')
       .eq('id', session.user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error fetching user profile:", error);
@@ -105,3 +105,4 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
     throw error;
   }
 };
+
