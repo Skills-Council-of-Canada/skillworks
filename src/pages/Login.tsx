@@ -25,8 +25,9 @@ const roleBasedRedirect = (role: UserRole): string => {
 const Login = () => {
   const [searchParams] = useSearchParams();
   const portalParam = searchParams.get("portal");
-  const { login, signup, isLoading, user } = useAuth();
   const navigate = useNavigate();
+  const auth = useAuth();
+  const { login, signup, isLoading, user } = auth || { isLoading: false };
 
   useEffect(() => {
     if (user) {
@@ -42,7 +43,7 @@ const Login = () => {
   }, [portalParam, navigate]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    if (!portalParam) return;
+    if (!portalParam || !login || !signup) return;
 
     try {
       if (isSignUp) {
