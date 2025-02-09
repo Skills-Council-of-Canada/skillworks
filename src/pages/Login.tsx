@@ -6,19 +6,21 @@ import AuthForm from "@/components/auth/AuthForm";
 import { User } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { getRoleBasedRedirect } = useAuthRedirect();
 
   useEffect(() => {
     if (user && !isSubmitting) {
-      const redirectPath = user.role === 'employer' ? '/employer' : '/';
+      const redirectPath = getRoleBasedRedirect(user.role);
       navigate(redirectPath, { replace: true });
     }
-  }, [user, navigate, isSubmitting]);
+  }, [user, navigate, isSubmitting, getRoleBasedRedirect]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (isSubmitting) return;
