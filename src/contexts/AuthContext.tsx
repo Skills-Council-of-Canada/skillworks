@@ -25,50 +25,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
-  // Initialize auth state
   useEffect(() => {
-    let mounted = true;
-
+    // Initialize auth state
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session && mounted) {
+        if (session) {
           const userProfile = await getUserProfile(session);
           setUser(userProfile);
-        } else if (mounted) {
+        } else {
           setUser(null);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-        if (mounted) setUser(null);
+        setUser(null);
       } finally {
-        if (mounted) setIsLoading(false);
+        setIsLoading(false);
       }
     };
 
     initializeAuth();
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (session && mounted) {
-        const userProfile = await getUserProfile(session);
-        setUser(userProfile);
-      } else if (mounted) {
-        setUser(null);
-      }
-      
-      if (mounted) {
-        setIsLoading(false);
+      try {
+        if (session) {
+          const userProfile = await getUserProfile(session);
+          setUser(userProfile);
+        } else {
+          setUser(null);
+        }
+
         if (event === 'SIGNED_OUT') {
           navigate('/');
         }
+      } catch (error) {
+        console.error("Auth state change error:", error);
+        setUser(null);
       }
     });
 
     return () => {
-      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -139,7 +138,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      setIsLoading(true);
       const { error } = await signOutUser();
       if (error) throw error;
       
@@ -156,8 +154,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "An error occurred while logging out",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
