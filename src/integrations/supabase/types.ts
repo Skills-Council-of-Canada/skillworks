@@ -1163,7 +1163,12 @@ export type Database = {
           id: string
           name: string
           role: string
+          status: Database["public"]["Enums"]["user_status"] | null
           updated_at: string
+          verification_details: Json | null
+          verification_documents: string[] | null
+          verification_notes: string | null
+          verification_submitted_at: string | null
         }
         Insert: {
           created_at?: string
@@ -1171,7 +1176,12 @@ export type Database = {
           id: string
           name?: string
           role?: string
+          status?: Database["public"]["Enums"]["user_status"] | null
           updated_at?: string
+          verification_details?: Json | null
+          verification_documents?: string[] | null
+          verification_notes?: string | null
+          verification_submitted_at?: string | null
         }
         Update: {
           created_at?: string
@@ -1179,7 +1189,12 @@ export type Database = {
           id?: string
           name?: string
           role?: string
+          status?: Database["public"]["Enums"]["user_status"] | null
           updated_at?: string
+          verification_details?: Json | null
+          verification_documents?: string[] | null
+          verification_notes?: string | null
+          verification_submitted_at?: string | null
         }
         Relationships: []
       }
@@ -1558,6 +1573,7 @@ export type Database = {
         | "pending_approval"
         | "published"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
+      user_status: "pending" | "approved" | "rejected" | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
