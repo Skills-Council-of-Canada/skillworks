@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { User } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getUserProfile, signOutUser } from "@/services/auth";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
@@ -12,6 +12,7 @@ export const useAuthState = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   const handleProfileError = async (error: Error) => {
@@ -40,10 +41,20 @@ export const useAuthState = () => {
     setUser(profile);
     setIsLoading(false);
 
+    // Only redirect if we're not already on a valid path for the user's role
     if (profile) {
       const redirectPath = getRoleBasedRedirect(profile.role);
-      console.log("Role-based redirect path:", redirectPath, "for role:", profile.role);
-      navigate(redirectPath, { replace: true });
+      const currentPath = location.pathname;
+      const isOnValidPath = currentPath.startsWith(redirectPath);
+      
+      console.log("Current path:", currentPath);
+      console.log("Role-based redirect path:", redirectPath);
+      console.log("Is on valid path:", isOnValidPath);
+
+      if (!isOnValidPath && currentPath !== '/login') {
+        console.log("Redirecting to:", redirectPath);
+        navigate(redirectPath, { replace: true });
+      }
     }
   };
 
@@ -111,7 +122,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect, toast]);
+  }, [navigate, getRoleBasedRedirect, toast, location.pathname]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
