@@ -569,6 +569,204 @@ export type Database = {
           },
         ]
       }
+      student_assignments: {
+        Row: {
+          completion_date: string | null
+          created_at: string
+          educator_id: string
+          feedback: string | null
+          grade: string | null
+          id: string
+          project_id: string
+          start_date: string
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          completion_date?: string | null
+          created_at?: string
+          educator_id: string
+          feedback?: string | null
+          grade?: string | null
+          id?: string
+          project_id: string
+          start_date: string
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          completion_date?: string | null
+          created_at?: string
+          educator_id?: string
+          feedback?: string | null
+          grade?: string | null
+          id?: string
+          project_id?: string
+          start_date?: string
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_assignments_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_assignments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_certifications: {
+        Row: {
+          created_at: string
+          expiry_date: string | null
+          id: string
+          issue_date: string
+          issuing_organization: string
+          name: string
+          status: string
+          student_id: string
+          updated_at: string
+          verification_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date: string
+          issuing_organization: string
+          name: string
+          status?: string
+          student_id: string
+          updated_at?: string
+          verification_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string
+          issuing_organization?: string
+          name?: string
+          status?: string
+          student_id?: string
+          updated_at?: string
+          verification_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_certifications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_progress_reports: {
+        Row: {
+          areas_for_improvement: string[] | null
+          created_at: string
+          educator_id: string
+          id: string
+          overall_progress: string
+          recommendations: string | null
+          report_date: string
+          strengths: string[] | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          areas_for_improvement?: string[] | null
+          created_at?: string
+          educator_id: string
+          id?: string
+          overall_progress: string
+          recommendations?: string | null
+          report_date: string
+          strengths?: string[] | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          areas_for_improvement?: string[] | null
+          created_at?: string
+          educator_id?: string
+          id?: string
+          overall_progress?: string
+          recommendations?: string | null
+          report_date?: string
+          strengths?: string[] | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_progress_reports_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_progress_reports_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

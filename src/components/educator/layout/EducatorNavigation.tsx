@@ -11,7 +11,8 @@ import {
   Settings,
   UserCheck,
   Briefcase,
-  ClipboardList
+  ClipboardList,
+  Users
 } from "lucide-react";
 
 interface EducatorNavigationProps {
@@ -74,6 +75,18 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               >
                 <Briefcase className="mr-2 h-4 w-4" />
                 Find a Project
+              </Button>
+            )}
+          </NavLink>
+
+          <NavLink to="/educator/students">
+            {({ isActive }) => (
+              <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className="w-full justify-start"
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Students
               </Button>
             )}
           </NavLink>
