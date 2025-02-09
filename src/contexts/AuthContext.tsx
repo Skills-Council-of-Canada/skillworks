@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         setUser(null);
         if (event === 'SIGNED_OUT') {
-          navigate('/login');
+          navigate('/');
         }
       }
       setIsLoading(false);
@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error("Logout error:", error);
       toast({

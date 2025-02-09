@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/auth";
 import AuthForm from "@/components/auth/AuthForm";
 import { portals } from "@/components/auth/PortalSelection";
+import { AuthError } from "@supabase/supabase-js";
 
 const roleBasedRedirect = (role: UserRole): string => {
   switch (role) {
@@ -51,6 +52,10 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Auth failed:", error);
+      if (error instanceof AuthError) {
+        throw new Error(error.message);
+      }
+      throw new Error("An error occurred during authentication");
     }
   };
 
