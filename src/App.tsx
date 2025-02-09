@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
@@ -45,12 +45,12 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Routes>
-          {/* Public routes - these should be accessible without authentication */}
+          {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login/*" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           
-          {/* Protected routes */}
+          {/* Protected employer routes */}
           <Route path="/employer" element={
             <ProtectedRoute allowedRoles={["employer", "admin"]}>
               <EmployerLayout />
@@ -69,7 +69,7 @@ const App = () => (
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
           
-          {/* Educator routes */}
+          {/* Protected educator routes */}
           <Route path="/educator" element={
             <ProtectedRoute allowedRoles={["educator", "admin"]}>
               <EducatorLayout />
@@ -85,7 +85,8 @@ const App = () => (
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
           </Route>
-          
+
+          {/* Catch all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

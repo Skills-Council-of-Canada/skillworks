@@ -26,13 +26,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Initialize authentication state
     const initializeAuth = async () => {
       try {
-        // Check for existing session
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          setUserFromSession(session);
+          await setUserFromSession(session);
         } else {
           setUser(null);
-          navigate('/login');
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
@@ -49,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
       if (session) {
-        setUserFromSession(session);
+        await setUserFromSession(session);
       } else {
         setUser(null);
         if (event === 'SIGNED_OUT') {
@@ -64,15 +62,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [navigate]);
 
-  const setUserFromSession = (session: Session) => {
+  const setUserFromSession = async (session: Session) => {
     if (!session?.user) return;
     
+    // Get the user's profile from the profiles table
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
+
     const userData: User = {
       id: session.user.id,
       email: session.user.email || "",
-      role: determineUserRole(session.user.email || ""),
-      name: session.user.user_metadata.name || "User",
+      role: profile?.role || determineUserRole(session.user.email || ""),
+      name: profile?.name || session.user.user_metadata.name || "User",
     };
+    
     setUser(userData);
   };
 
@@ -136,7 +142,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
       setUser(null);
       toast({
         title: "Logged out",
@@ -144,6 +152,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       navigate('/login');
     } catch (error) {
+      console.error("Logout error:", error);
       toast({
         title: "Error",
         description: "An error occurred while logging out",
@@ -161,9 +170,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 // Helper function to determine user role from email
 const determineUserRole = (email: string): UserRole => {
-  if (email.includes("admin")) return "admin";
-  if (email.includes("educator")) return "educator";
-  if (email.includes("employer")) return "employer";
+  if (email.includes("_admin")) return "admin";
+  if (email.includes("_educator")) return "educator";
+  if (email.includes("_employer")) return "employer";
   return "participant";
 };
-
