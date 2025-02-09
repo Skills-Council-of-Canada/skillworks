@@ -1,4 +1,3 @@
-
 export interface EducatorTask {
   id: string;
   title: string;
@@ -66,6 +65,12 @@ export interface ExperienceAssignment {
   created_at: string;
 }
 
+export interface Milestone {
+  title: string;
+  description: string;
+  due_date: string;
+}
+
 export interface ExperienceFormValues {
   title: string;
   description: string;
@@ -93,4 +98,7 @@ export interface ExperienceFormValues {
   program_type: 'diploma' | 'certificate' | 'bachelors';
   team_structure: 'individual' | 'team';
   matching_type: 'admin' | 'self';
+  start_date: string;
+  end_date: string;
+  milestones: Milestone[];
 }

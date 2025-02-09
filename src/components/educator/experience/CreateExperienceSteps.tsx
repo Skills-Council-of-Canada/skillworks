@@ -10,12 +10,14 @@ import { ExperienceFormValues } from "@/types/educator";
 import DetailsStep from "./DetailsStep";
 import MetaInformationStep from "./MetaInformationStep";
 import LearnerDetailsStep from "./LearnerDetailsStep";
+import TimelineStep from "./TimelineStep";
 import { Form } from "@/components/ui/form";
 
 const STEPS = [
   { id: "details", title: "Experience Details" },
   { id: "category", title: "Category & Skills" },
   { id: "learners", title: "Learner Details" },
+  { id: "timeline", title: "Timeline" },
   { id: "employer", title: "Employer Details" },
   { id: "review", title: "Review & Publish" },
 ];
@@ -46,6 +48,9 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
       program_type: "certificate",
       team_structure: "individual",
       matching_type: "admin",
+      start_date: "",
+      end_date: "",
+      milestones: [],
     },
   });
 
@@ -77,7 +82,7 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
 
       <Card className="p-6">
         <Tabs value={currentStep} onValueChange={setCurrentStep}>
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-6 w-full">
             {STEPS.map((step) => (
               <TabsTrigger
                 key={step.id}
@@ -104,7 +109,11 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
                 <LearnerDetailsStep form={form} onNext={handleNext} />
               </TabsContent>
 
-              {STEPS.filter(step => !["details", "category", "learners"].includes(step.id)).map((step) => (
+              <TabsContent value="timeline">
+                <TimelineStep form={form} onNext={handleNext} />
+              </TabsContent>
+
+              {STEPS.filter(step => !["details", "category", "learners", "timeline"].includes(step.id)).map((step) => (
                 <TabsContent key={step.id} value={step.id}>
                   <p className="text-muted-foreground">
                     Step content for {step.title} will be implemented next
