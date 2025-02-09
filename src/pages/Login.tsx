@@ -23,7 +23,10 @@ const Login = () => {
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     console.log("Attempting auth submission:", { email, isSignUp });
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      console.log("Submission already in progress, ignoring");
+      return;
+    }
     
     setIsSubmitting(true);
     try {
