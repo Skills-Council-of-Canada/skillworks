@@ -30,25 +30,32 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    console.log("Auth state:", { user, authLoading, portalParam });
-    
-    if (authLoading) return;
-    
-    if (user) {
-      console.log("Redirecting user with role:", user.role);
-      if (user.role === "admin") {
-        // For admin users, allow portal override or default to admin path
-        const redirectPath = portalParam ? roleBasedRedirect(portalParam as UserRole) : "/admin";
-        navigate(redirectPath);
-      } else {
-        // For non-admin users, use their role-based redirect
-        navigate(roleBasedRedirect(user.role));
-      }
+    console.log("Login page render state:", { 
+      user, 
+      authLoading, 
+      portalParam,
+      isSubmitting 
+    });
+
+    // Don't redirect while loading auth state
+    if (authLoading) {
       return;
     }
 
-    // Only redirect to home if not loading and no portal parameter
-    if (!portalParam) {
+    // If user is authenticated, handle redirect
+    if (user) {
+      console.log("Handling authenticated user redirect");
+      const redirectPath = user.role === "admin" && portalParam 
+        ? roleBasedRedirect(portalParam as UserRole) 
+        : roleBasedRedirect(user.role);
+      
+      navigate(redirectPath);
+      return;
+    }
+
+    // If no portal selected and not authenticated, go to portal selection
+    if (!portalParam && !authLoading && !user) {
+      console.log("No portal selected, redirecting to home");
       navigate("/");
     }
   }, [user, navigate, portalParam, authLoading]);
@@ -74,15 +81,32 @@ const Login = () => {
     }
   };
 
-  // If we're still loading auth state, show nothing
-  if (authLoading) return null;
+  // Render nothing while auth is loading
+  if (authLoading) {
+    console.log("Auth is loading, rendering nothing");
+    return null;
+  }
 
-  // If we don't have a portal parameter, wait for the redirect
-  if (!portalParam) return null;
+  // If authenticated, render nothing (redirect will happen)
+  if (user) {
+    console.log("User is authenticated, rendering nothing");
+    return null;
+  }
+
+  // If no portal selected, render nothing (redirect will happen)
+  if (!portalParam) {
+    console.log("No portal selected, rendering nothing");
+    return null;
+  }
 
   const currentPortal = portals.find(p => p.id === portalParam);
-  if (!currentPortal) return null;
+  if (!currentPortal) {
+    console.log("Invalid portal selected, rendering nothing");
+    return null;
+  }
 
+  console.log("Rendering auth form for portal:", currentPortal.id);
+  
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
       <AuthForm
