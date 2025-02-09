@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Building2, Users } from "lucide-react";
+import { Search, Building2 } from "lucide-react";
 import { EmployerCollaboration } from "@/types/collaboration";
 
 const CollaborationManagement = () => {
@@ -38,7 +38,14 @@ const CollaborationManagement = () => {
         .eq('educator_id', user?.id);
 
       if (error) throw error;
-      setCollaborations(data || []);
+
+      // Explicitly type and validate the status
+      const validatedData: EmployerCollaboration[] = (data || []).map(item => ({
+        ...item,
+        status: item.status as 'pending' | 'approved' | 'rejected', // This ensures status is one of the allowed values
+      }));
+
+      setCollaborations(validatedData);
     } catch (error) {
       console.error('Error loading collaborations:', error);
       toast({
@@ -59,6 +66,7 @@ const CollaborationManagement = () => {
           educator_id: user?.id,
           employer_id: employerId,
           message,
+          status: 'pending' as const, // Explicitly type the status
         });
 
       if (error) throw error;
