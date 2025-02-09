@@ -32,28 +32,16 @@ const Login = () => {
   // Get portal info first to avoid multiple lookups
   const currentPortal = portals.find(p => p.id === portalParam);
 
-  console.log("Login component state:", {
-    user,
-    authLoading,
-    portalParam,
-    isSubmitting,
-    currentPortal: currentPortal?.id,
-    url: window.location.href,
-    timestamp: new Date().toISOString()
-  });
-
+  // If there's no portal param or it's invalid, redirect to home
   useEffect(() => {
-    if (authLoading) {
-      console.log("Auth loading, waiting...");
-      return;
-    }
-
-    if (!portalParam) {
-      console.log("No portal param, redirecting to home");
+    if (!portalParam || !currentPortal) {
+      console.log("No portal param or invalid portal, redirecting to home");
       navigate("/");
-      return;
     }
+  }, [portalParam, currentPortal, navigate]);
 
+  // Handle authenticated user redirects
+  useEffect(() => {
     if (user) {
       console.log("User authenticated, redirecting to:", user.role);
       const redirectPath = user.role === "admin" && portalParam 
@@ -61,7 +49,7 @@ const Login = () => {
         : roleBasedRedirect(user.role);
       navigate(redirectPath);
     }
-  }, [user, portalParam, navigate, authLoading]);
+  }, [user, portalParam, navigate]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
@@ -84,25 +72,23 @@ const Login = () => {
     }
   };
 
-  // Show loading spinner while auth is initializing or form is submitting
-  if (authLoading || isSubmitting) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading...</div>
-      </div>
-    );
-  }
-
   // Don't render form if no portal is selected or portal is invalid
   if (!portalParam || !currentPortal) {
-    console.log("Invalid portal or missing portal param, redirecting...");
     return null;
   }
 
   // Don't render form if user is already authenticated
   if (user) {
-    console.log("User authenticated, redirecting...");
     return null;
+  }
+
+  // Show loading spinner only during form submission
+  if (isSubmitting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-xl">Loading...</div>
+      </div>
+    );
   }
 
   // Render the auth form
