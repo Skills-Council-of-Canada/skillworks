@@ -190,6 +190,8 @@ export type Database = {
           employer_approved: boolean | null
           employer_id: string | null
           end_date: string | null
+          example_projects: Json[] | null
+          expected_outcomes: string[] | null
           id: string
           is_template: boolean | null
           last_saved_at: string | null
@@ -229,6 +231,8 @@ export type Database = {
           employer_approved?: boolean | null
           employer_id?: string | null
           end_date?: string | null
+          example_projects?: Json[] | null
+          expected_outcomes?: string[] | null
           id?: string
           is_template?: boolean | null
           last_saved_at?: string | null
@@ -268,6 +272,8 @@ export type Database = {
           employer_approved?: boolean | null
           employer_id?: string | null
           end_date?: string | null
+          example_projects?: Json[] | null
+          expected_outcomes?: string[] | null
           id?: string
           is_template?: boolean | null
           last_saved_at?: string | null
@@ -548,6 +554,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "experience_assignments_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_media: {
+        Row: {
+          created_at: string
+          experience_id: string
+          file_name: string
+          file_path: string
+          file_type: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          experience_id: string
+          file_name: string
+          file_path: string
+          file_type: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          experience_id?: string
+          file_name?: string
+          file_path?: string
+          file_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_media_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
@@ -973,7 +1014,11 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      experience_status: "draft" | "pending_approval" | "published"
+      experience_status:
+        | "incomplete"
+        | "draft"
+        | "pending_approval"
+        | "published"
     }
     CompositeTypes: {
       [_ in never]: never
