@@ -1,9 +1,12 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AuthContextType, User, UserRole } from "@/types/auth";
+import { AuthContextType, User } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthError, Session } from "@supabase/supabase-js";
+import { AuthError } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile, signInUser, signOutUser, signUpUser } from "@/services/auth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,13 +23,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { getRoleBasedRedirect } = useAuthRedirect();
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          await setUserFromSession(session);
+          const userProfile = await getUserProfile(session);
+          setUser(userProfile);
         } else {
           setUser(null);
         }
@@ -44,7 +49,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
       if (session) {
-        await setUserFromSession(session);
+        const userProfile = await getUserProfile(session);
+        setUser(userProfile);
       } else {
         setUser(null);
         if (event === 'SIGNED_OUT') {
@@ -59,66 +65,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [navigate]);
 
-  const setUserFromSession = async (session: Session) => {
-    if (!session?.user) return;
-    
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
-
-    if (profile) {
-      const userData: User = {
-        id: session.user.id,
-        email: profile.email,
-        role: profile.role as UserRole,
-        name: profile.name || "User",
-      };
-      setUser(userData);
-    }
-  };
-
-  const getRoleBasedRedirect = (role: UserRole): string => {
-    switch (role) {
-      case "admin":
-        return "/admin";
-      case "employer":
-        return "/employer";
-      case "educator":
-        return "/educator";
-      case "participant":
-        return "/dashboard";
-      default:
-        return "/";
-    }
-  };
-
   const signup = async (email: string, password: string, portal: string) => {
     setIsLoading(true);
     try {
-      if (email.endsWith('@example.com')) {
-        try {
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email,
-            password: 'demo123'
-          });
-          if (!signInError) return;
-        } catch (error) {
-          console.log("Demo account doesn't exist, creating...");
-        }
-      }
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: email.endsWith('@example.com') ? 'demo123' : password,
-        options: {
-          data: {
-            portal: portal,
-          },
-        },
-      });
-
+      const { data, error } = await signUpUser(email, password, portal);
       if (error) throw error;
 
       if (data.user) {
@@ -143,43 +93,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      if (email.endsWith('@example.com')) {
-        try {
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email,
-            password: 'demo123'
-          });
-          
-          if (signInError) {
-            const { error: signUpError } = await supabase.auth.signUp({
-              email,
-              password: 'demo123',
-              options: {
-                data: {
-                  portal: email.split('@')[0].replace('_', ''),
-                },
-              },
-            });
-            
-            if (signUpError) throw signUpError;
-            
-            const { error: finalLoginError } = await supabase.auth.signInWithPassword({
-              email,
-              password: 'demo123'
-            });
-            
-            if (finalLoginError) throw finalLoginError;
-          }
-        } catch (error) {
-          throw error;
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-      }
+      const { error } = await signInUser(email, password);
+      if (error) throw error;
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -187,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       if (profile) {
-        const redirectPath = getRoleBasedRedirect(profile.role as UserRole);
+        const redirectPath = getRoleBasedRedirect(profile.role);
         navigate(redirectPath);
       }
 
@@ -210,7 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await signOutUser();
       if (error) throw error;
       
       setUser(null);
