@@ -17,7 +17,7 @@ interface AdminHeaderProps {
 }
 
 export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleAdminLogin = async () => {

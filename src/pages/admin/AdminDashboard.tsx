@@ -21,54 +21,55 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const fetchDashboardStats = async (): Promise<DashboardStats> => {
+    // Verify admin role before fetching
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user?.id)
+      .maybeSingle();
+
+    if (profile?.role !== 'admin') {
+      throw new Error('Unauthorized access');
+    }
+
+    const [
+      { count: educatorCount },
+      { count: employerCount },
+      { count: participantCount },
+      { count: pendingApprovals },
+      { count: activeExperiences },
+      { count: matchedProjects }
+    ] = await Promise.all([
+      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+      supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+      supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+    ]);
+
+    return {
+      educators: educatorCount || 0,
+      employers: employerCount || 0,
+      participants: participantCount || 0,
+      pendingApprovals: pendingApprovals || 0,
+      activeExperiences: activeExperiences || 0,
+      matchedProjects: matchedProjects || 0
+    };
+  };
+
   // Fetch dashboard statistics with explicit typing
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
-    queryFn: async () => {
-      try {
-        // Verify admin role before fetching
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user?.id)
-          .single();
-
-        if (profile?.role !== 'admin') {
-          throw new Error('Unauthorized access');
-        }
-
-        const [
-          { count: educatorCount },
-          { count: employerCount },
-          { count: participantCount },
-          { count: pendingApprovals },
-          { count: activeExperiences },
-          { count: matchedProjects }
-        ] = await Promise.all([
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-          supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-          supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
-        ]);
-
-        return {
-          educators: educatorCount || 0,
-          employers: employerCount || 0,
-          participants: participantCount || 0,
-          pendingApprovals: pendingApprovals || 0,
-          activeExperiences: activeExperiences || 0,
-          matchedProjects: matchedProjects || 0
-        };
-      } catch (error) {
-        console.error("Error fetching dashboard stats:", error);
+    queryFn: fetchDashboardStats,
+    meta: {
+      onError: () => {
         toast({
           title: "Error",
           description: "Failed to load dashboard statistics",
           variant: "destructive",
         });
-        throw error;
       }
     }
   });
@@ -183,4 +184,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
