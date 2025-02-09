@@ -9,12 +9,13 @@ import { useForm } from "react-hook-form";
 import { ExperienceFormValues } from "@/types/educator";
 import DetailsStep from "./DetailsStep";
 import MetaInformationStep from "./MetaInformationStep";
+import LearnerDetailsStep from "./LearnerDetailsStep";
 import { Form } from "@/components/ui/form";
 
 const STEPS = [
   { id: "details", title: "Experience Details" },
   { id: "category", title: "Category & Skills" },
-  { id: "timeline", title: "Timeline" },
+  { id: "learners", title: "Learner Details" },
   { id: "employer", title: "Employer Details" },
   { id: "review", title: "Review & Publish" },
 ];
@@ -42,6 +43,9 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
       team_size: 1,
       skill_level: "beginner",
       duration_weeks: 1,
+      program_type: "certificate",
+      team_structure: "individual",
+      matching_type: "admin",
     },
   });
 
@@ -96,7 +100,11 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
                 <MetaInformationStep form={form} onNext={handleNext} />
               </TabsContent>
 
-              {STEPS.filter(step => !["details", "category"].includes(step.id)).map((step) => (
+              <TabsContent value="learners">
+                <LearnerDetailsStep form={form} onNext={handleNext} />
+              </TabsContent>
+
+              {STEPS.filter(step => !["details", "category", "learners"].includes(step.id)).map((step) => (
                 <TabsContent key={step.id} value={step.id}>
                   <p className="text-muted-foreground">
                     Step content for {step.title} will be implemented next

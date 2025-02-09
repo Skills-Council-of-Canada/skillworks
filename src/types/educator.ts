@@ -1,3 +1,4 @@
+
 export interface EducatorTask {
   id: string;
   title: string;
@@ -89,4 +90,7 @@ export interface ExperienceFormValues {
     question: string;
     required: boolean;
   }>;
+  program_type: 'diploma' | 'certificate' | 'bachelors';
+  team_structure: 'individual' | 'team';
+  matching_type: 'admin' | 'self';
 }
