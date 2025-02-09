@@ -27,14 +27,24 @@ const Login = () => {
   const portalParam = searchParams.get("portal");
   const navigate = useNavigate();
   const auth = useAuth();
-  const { login, signup, isLoading, user } = auth || { isLoading: false };
+  const { login, signup, isLoading, user } = auth || {};
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user) {
-      const redirectPath = roleBasedRedirect(user.role);
-      navigate(redirectPath);
+      // If user is admin, allow access regardless of portal
+      if (user.role === "admin") {
+        const redirectPath = roleBasedRedirect(user.role);
+        navigate(redirectPath);
+        return;
+      }
+      // For non-admin users, check if they're accessing the correct portal
+      if (portalParam && user.role === portalParam) {
+        const redirectPath = roleBasedRedirect(user.role);
+        navigate(redirectPath);
+      }
     }
-  }, [user, navigate]);
+  }, [user, navigate, portalParam]);
 
   useEffect(() => {
     if (!portalParam) {
@@ -45,6 +55,7 @@ const Login = () => {
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     if (!portalParam || !login || !signup) return;
 
+    setIsSubmitting(true);
     try {
       if (isSignUp) {
         await signup(email, password, portalParam);
@@ -57,6 +68,8 @@ const Login = () => {
         throw new Error(error.message);
       }
       throw new Error("An error occurred during authentication");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -72,7 +85,7 @@ const Login = () => {
         icon={currentPortal.icon}
         title={currentPortal.title}
         gradient={currentPortal.gradient}
-        isLoading={isLoading}
+        isLoading={isLoading || isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
       />
