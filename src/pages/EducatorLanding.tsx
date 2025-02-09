@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
+import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
 
 const EducatorLanding = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const EducatorLanding = () => {
             >
               <Home className="h-5 w-5" />
             </Button>
-            <div className="text-2xl font-bold text-primary">TradesConnect - Educator Portal</div>
+            <div className="text-2xl font-bold text-primary">Skilled Trades Educator Portal</div>
           </div>
           <div className="flex gap-4">
             <Button
@@ -41,20 +41,20 @@ const EducatorLanding = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 bg-muted">
+      <section className="pt-32 pb-20 px-4 bg-gradient-to-br from-violet-50 to-indigo-50">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
-                Empower Students Through Trade Education
+                Empowering Educators in Skilled Trades
               </h1>
-              <p className="text-lg text-secondary/60">
-                Connect your students with real-world trade opportunities and shape the future workforce through hands-on learning experiences.
+              <p className="text-lg text-secondary/70">
+                Connect your students with real-world industry opportunities and shape the future workforce through hands-on learning experiences.
               </p>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/login?portal=educator")}
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
@@ -62,18 +62,19 @@ const EducatorLanding = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => navigate("/about")}
+                  onClick={() => navigate("#features")}
                   className="border-primary text-primary hover:bg-primary/10"
                 >
-                  Learn More
+                  Explore Features
                 </Button>
               </div>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden md:block relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg" />
               <img
-                src="/placeholder.svg"
-                alt="Education in trades"
-                className="rounded-lg shadow-xl"
+                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+                alt="Educator working with students"
+                className="rounded-lg shadow-xl w-full object-cover h-[400px]"
               />
             </div>
           </div>
@@ -81,79 +82,112 @@ const EducatorLanding = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4">
+      <section id="features" className="py-20 px-4">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-center text-secondary mb-12">
-            Why Choose Our Educator Portal?
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-secondary mb-4">
+              Why Choose Our Platform?
+            </h2>
+            <p className="text-lg text-secondary/70 max-w-2xl mx-auto">
+              Everything you need to manage and enhance your skilled trades education program.
+            </p>
+          </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 space-y-4 text-center">
-              <Briefcase className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Industry Connections
+            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
+              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <Building2 className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary mb-3">
+                Industry Partnerships
               </h3>
-              <p className="text-secondary/60">
-                Connect with leading trade employers and provide real opportunities for your students
+              <p className="text-secondary/70">
+                Connect with leading employers to provide real-world opportunities and projects for your students.
               </p>
             </div>
-            <div className="p-6 space-y-4 text-center">
-              <Users className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Student Progress Tracking
+            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
+              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <BookOpen className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary mb-3">
+                Learning Management
               </h3>
-              <p className="text-secondary/60">
-                Monitor your students' development and engagement with hands-on projects
+              <p className="text-secondary/70">
+                Comprehensive tools to track student progress, manage courses, and coordinate hands-on training.
               </p>
             </div>
-            <div className="p-6 space-y-4 text-center">
-              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Verified Outcomes
+            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
+              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <UsersRound className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary mb-3">
+                Student Engagement
               </h3>
-              <p className="text-secondary/60">
-                Track and verify student achievements and certifications
+              <p className="text-secondary/70">
+                Foster collaboration and track student participation in projects and practical assignments.
               </p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Call to Action */}
+      <section className="py-20 px-4 bg-secondary">
+        <div className="container mx-auto max-w-4xl text-center">
+          <div className="flex flex-col items-center gap-6">
+            <GraduationCap className="h-16 w-16 text-white/90" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              Ready to Transform Your Teaching?
+            </h2>
+            <p className="text-lg text-white/80 max-w-2xl">
+              Join our community of educators who are revolutionizing skilled trades education.
+            </p>
+            <Button
+              size="lg"
+              onClick={() => navigate("/login?portal=educator")}
+              className="bg-white text-secondary hover:bg-white/90 mt-4"
+            >
+              Get Started Today
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="bg-secondary text-white py-12">
+      <footer className="bg-white border-t py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4">TradesConnect</h3>
-              <p className="text-white/60">
+              <h3 className="font-bold text-lg mb-4 text-secondary">Skilled Trades Portal</h3>
+              <p className="text-secondary/70">
                 Empowering trade education and workforce development
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
+              <h4 className="font-semibold mb-4 text-secondary">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="/about" className="text-white/60 hover:text-white">About</a></li>
-                <li><a href="/contact" className="text-white/60 hover:text-white">Contact</a></li>
-                <li><a href="/support" className="text-white/60 hover:text-white">Support</a></li>
+                <li><a href="/about" className="text-secondary/70 hover:text-primary">About</a></li>
+                <li><a href="/contact" className="text-secondary/70 hover:text-primary">Contact</a></li>
+                <li><a href="/support" className="text-secondary/70 hover:text-primary">Support</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
+              <h4 className="font-semibold mb-4 text-secondary">Platform</h4>
               <ul className="space-y-2">
-                <li><a href="/features" className="text-white/60 hover:text-white">Features</a></li>
-                <li><a href="/pricing" className="text-white/60 hover:text-white">Pricing</a></li>
-                <li><a href="/faq" className="text-white/60 hover:text-white">FAQ</a></li>
+                <li><a href="#features" className="text-secondary/70 hover:text-primary">Features</a></li>
+                <li><a href="/pricing" className="text-secondary/70 hover:text-primary">Pricing</a></li>
+                <li><a href="/faq" className="text-secondary/70 hover:text-primary">FAQ</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
+              <h4 className="font-semibold mb-4 text-secondary">Legal</h4>
               <ul className="space-y-2">
-                <li><a href="/privacy" className="text-white/60 hover:text-white">Privacy Policy</a></li>
-                <li><a href="/terms" className="text-white/60 hover:text-white">Terms of Service</a></li>
+                <li><a href="/privacy" className="text-secondary/70 hover:text-primary">Privacy Policy</a></li>
+                <li><a href="/terms" className="text-secondary/70 hover:text-primary">Terms of Service</a></li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/60">
-            <p>&copy; {new Date().getFullYear()} TradesConnect. All rights reserved.</p>
+          <div className="mt-8 pt-8 border-t text-center text-secondary/70">
+            <p>&copy; {new Date().getFullYear()} Skilled Trades Portal. All rights reserved.</p>
           </div>
         </div>
       </footer>
