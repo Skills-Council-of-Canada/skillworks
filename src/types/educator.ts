@@ -21,16 +21,28 @@ export interface EducatorEvent {
 
 export interface EducatorExperience {
   id: string;
+  educator_id: string;
   title: string;
   description: string;
+  trade_category: string;
+  subcategories: string[];
+  skill_tags: string[];
+  class_size: number;
+  team_size: number;
   start_date: string;
   end_date: string | null;
-  status: 'active' | 'completed' | 'cancelled';
-  trade_category: string;
+  status: 'draft' | 'pending_approval' | 'published';
   skill_level: 'beginner' | 'intermediate' | 'advanced';
   duration_weeks: number;
   employer_id: string | null;
   required_certifications: string[];
+  preferred_industries: string[];
+  company_types: string[];
+  compensation_type: string | null;
+  screening_questions: Array<{
+    question: string;
+    required: boolean;
+  }>;
   employer_approved: boolean;
   created_at: string;
 }
@@ -57,7 +69,18 @@ export interface ExperienceFormValues {
   title: string;
   description: string;
   trade_category: string;
+  subcategories: string[];
+  skill_tags: string[];
+  class_size: number;
+  team_size: number;
   skill_level: 'beginner' | 'intermediate' | 'advanced';
   duration_weeks: number;
   required_certifications?: string[];
+  preferred_industries?: string[];
+  company_types?: string[];
+  compensation_type?: string;
+  screening_questions?: Array<{
+    question: string;
+    required: boolean;
+  }>;
 }

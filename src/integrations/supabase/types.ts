@@ -180,6 +180,9 @@ export type Database = {
       }
       educator_experiences: {
         Row: {
+          class_size: number | null
+          company_types: string[] | null
+          compensation_type: string | null
           created_at: string
           description: string
           duration_weeks: number
@@ -195,12 +198,17 @@ export type Database = {
           meta_objectives: string[] | null
           meta_outcomes: string[] | null
           meta_prerequisites: string[] | null
+          milestones: string[] | null
           preferred_company_size: string | null
           preferred_industries: string[] | null
           required_certifications: string[] | null
+          screening_questions: Json[] | null
           skill_level: string
+          skill_tags: string[] | null
           start_date: string
-          status: string
+          status: Database["public"]["Enums"]["experience_status"] | null
+          subcategories: string[] | null
+          team_size: number | null
           template_id: string | null
           timeline_end_date: string | null
           timeline_start_date: string | null
@@ -211,6 +219,9 @@ export type Database = {
           workflow_status: string
         }
         Insert: {
+          class_size?: number | null
+          company_types?: string[] | null
+          compensation_type?: string | null
           created_at?: string
           description: string
           duration_weeks?: number
@@ -226,12 +237,17 @@ export type Database = {
           meta_objectives?: string[] | null
           meta_outcomes?: string[] | null
           meta_prerequisites?: string[] | null
+          milestones?: string[] | null
           preferred_company_size?: string | null
           preferred_industries?: string[] | null
           required_certifications?: string[] | null
+          screening_questions?: Json[] | null
           skill_level?: string
+          skill_tags?: string[] | null
           start_date: string
-          status?: string
+          status?: Database["public"]["Enums"]["experience_status"] | null
+          subcategories?: string[] | null
+          team_size?: number | null
           template_id?: string | null
           timeline_end_date?: string | null
           timeline_start_date?: string | null
@@ -242,6 +258,9 @@ export type Database = {
           workflow_status?: string
         }
         Update: {
+          class_size?: number | null
+          company_types?: string[] | null
+          compensation_type?: string | null
           created_at?: string
           description?: string
           duration_weeks?: number
@@ -257,12 +276,17 @@ export type Database = {
           meta_objectives?: string[] | null
           meta_outcomes?: string[] | null
           meta_prerequisites?: string[] | null
+          milestones?: string[] | null
           preferred_company_size?: string | null
           preferred_industries?: string[] | null
           required_certifications?: string[] | null
+          screening_questions?: Json[] | null
           skill_level?: string
+          skill_tags?: string[] | null
           start_date?: string
-          status?: string
+          status?: Database["public"]["Enums"]["experience_status"] | null
+          subcategories?: string[] | null
+          team_size?: number | null
           template_id?: string | null
           timeline_end_date?: string | null
           timeline_start_date?: string | null
@@ -949,7 +973,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      experience_status: "draft" | "pending_approval" | "published"
     }
     CompositeTypes: {
       [_ in never]: never
