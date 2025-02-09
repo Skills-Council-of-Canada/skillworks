@@ -86,7 +86,7 @@ export const useEducatorDashboard = () => {
         .from("educator_experiences")
         .select("*")
         .eq("educator_id", user.id)
-        .eq("status", "active")
+        .in("status", ['draft', 'pending_approval', 'published'])
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -101,7 +101,16 @@ export const useEducatorDashboard = () => {
       }
 
       console.log("Experiences fetched:", data);
-      return data as EducatorExperience[];
+      // Cast the response to the correct type after parsing screening_questions
+      const experiences = data.map(exp => ({
+        ...exp,
+        screening_questions: exp.screening_questions?.map((q: any) => ({
+          question: q.question || '',
+          required: q.required || false
+        })) || []
+      })) as EducatorExperience[];
+
+      return experiences;
     },
     enabled: !!user?.id,
   });
