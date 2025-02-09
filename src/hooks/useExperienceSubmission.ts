@@ -32,7 +32,11 @@ export const useExperienceSubmission = () => {
       if (profileError) throw profileError;
       if (profile.role !== 'educator') throw new Error("Only educators can create experiences");
 
-      const { error } = await supabase
+      // Start a transaction by storing milestones temporarily
+      const milestones = data.milestones;
+      
+      // Create the experience first without milestones
+      const { data: experience, error: experienceError } = await supabase
         .from("educator_experiences")
         .insert({
           title: data.title,
@@ -54,14 +58,28 @@ export const useExperienceSubmission = () => {
           status: status,
           start_date: data.start_date,
           end_date: data.end_date,
-          milestones: data.milestones.map(m => ({
-            title: m.title,
-            description: m.description || '',
-            due_date: m.due_date
-          }))
-        });
+          educator_id: user.id
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (experienceError) throw experienceError;
+
+      // Now insert the milestones
+      if (milestones.length > 0) {
+        const { error: milestonesError } = await supabase
+          .from("experience_milestones")
+          .insert(
+            milestones.map(milestone => ({
+              experience_id: experience.id,
+              title: milestone.title,
+              description: milestone.description || '',
+              due_date: milestone.due_date
+            }))
+          );
+
+        if (milestonesError) throw milestonesError;
+      }
 
       toast({
         title: status === 'draft' ? "Draft saved" : "Experience submitted for approval",
