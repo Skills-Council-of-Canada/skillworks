@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
@@ -31,42 +31,40 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            
-            {/* Protected routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            } />
-            
-            {/* Employer routes */}
-            <Route path="/employer" element={
-              <ProtectedRoute allowedRoles={["employer", "admin"]}>
-                <EmployerLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<EmployerDashboard />} />
-              <Route path="create-project" element={<CreateProject />} />
-              <Route path="projects" element={<ProjectManagement />} />
-              <Route path="projects/:projectId" element={<ProjectDetails />} />
-              <Route path="applications" element={<ApplicationsManagement />} />
-              <Route path="applicants/:applicantId" element={<ApplicantProfile />} />
-              <Route path="messages" element={<MessagesPage />}>
-                <Route path=":conversationId" element={<MessagesPage />} />
-              </Route>
-              <Route path="resources" element={<ResourceCenter />} />
-              <Route path="settings" element={<ProfileSettings />} />
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          
+          {/* Protected routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Index />
+            </ProtectedRoute>
+          } />
+          
+          {/* Employer routes */}
+          <Route path="/employer" element={
+            <ProtectedRoute allowedRoles={["employer", "admin"]}>
+              <EmployerLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<EmployerDashboard />} />
+            <Route path="create-project" element={<CreateProject />} />
+            <Route path="projects" element={<ProjectManagement />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
+            <Route path="applications" element={<ApplicationsManagement />} />
+            <Route path="applicants/:applicantId" element={<ApplicantProfile />} />
+            <Route path="messages" element={<MessagesPage />}>
+              <Route path=":conversationId" element={<MessagesPage />} />
             </Route>
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+            <Route path="resources" element={<ResourceCenter />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Route>
+          
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
