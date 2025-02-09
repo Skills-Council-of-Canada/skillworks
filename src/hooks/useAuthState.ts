@@ -9,7 +9,7 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export const useAuthState = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { getRoleBasedRedirect } = useAuthRedirect();
@@ -98,6 +98,7 @@ export const useAuthState = () => {
 
       // Only handle SIGNED_IN event for auth state changes
       if (event === 'SIGNED_IN' && session?.user) {
+        setIsLoading(true); // Only set loading when actually signing in
         console.log("Session detected, fetching profile...");
         try {
           const profile = await getUserProfile(session);
