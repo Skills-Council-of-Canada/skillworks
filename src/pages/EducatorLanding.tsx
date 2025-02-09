@@ -15,13 +15,13 @@ const EducatorLanding = () => {
           <div className="flex gap-4">
             <Button
               variant="ghost"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/login?portal=educator")}
               className="text-secondary hover:text-primary"
             >
               Login
             </Button>
             <Button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/login?portal=educator")}
               className="bg-primary hover:bg-primary/90"
             >
               Sign Up
