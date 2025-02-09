@@ -32,18 +32,18 @@ const Login = () => {
       if (error instanceof AuthError) {
         throw new Error(error.message);
       }
-      throw new Error("An error occurred during authentication");
+      throw new Error("An unexpected error occurred during authentication");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <AuthForm
         icon={User}
         title="Welcome Back"
-        gradient="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB]"
+        gradient="bg-white"
         isLoading={isSubmitting}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
@@ -53,3 +53,4 @@ const Login = () => {
 };
 
 export default Login;
+
