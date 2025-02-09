@@ -12,6 +12,7 @@ import MetaInformationStep from "./MetaInformationStep";
 import LearnerDetailsStep from "./LearnerDetailsStep";
 import TimelineStep from "./TimelineStep";
 import CompanyPreferencesStep from "./CompanyPreferencesStep";
+import ReviewStep from "./review/ReviewStep";
 import { Form } from "@/components/ui/form";
 
 const STEPS = [
@@ -123,9 +124,7 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
               </TabsContent>
 
               <TabsContent value="review">
-                <p className="text-muted-foreground">
-                  Review step will be implemented next
-                </p>
+                <ReviewStep form={form} onEdit={setCurrentStep} />
               </TabsContent>
             </form>
           </Form>
