@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const currentPortal = portals.find(p => p.id === portalParam);
+  const currentPortal = portals.find(p => p.id === portalParam) || portals[0]; // Default to first portal if none specified
 
   // If user is already logged in, redirect to their dashboard
   useEffect(() => {
@@ -22,21 +22,12 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // If there's no portal param or it's invalid, redirect to home
-  useEffect(() => {
-    if (!portalParam || !currentPortal) {
-      console.log("No portal param or invalid portal, redirecting to home");
-      navigate("/");
-    }
-  }, [portalParam, currentPortal, navigate]);
-
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    if (!portalParam || !login || !signup) return;
-
+    const portal = portalParam || currentPortal.id; // Use current portal if no param
     setIsSubmitting(true);
     try {
       if (isSignUp) {
-        await signup(email, password, portalParam);
+        await signup(email, password, portal);
       } else {
         await login(email, password);
       }
@@ -58,11 +49,6 @@ const Login = () => {
         <div className="animate-pulse text-xl">Loading...</div>
       </div>
     );
-  }
-
-  // Don't render form if no portal is selected or portal is invalid
-  if (!portalParam || !currentPortal) {
-    return null;
   }
 
   // Render the auth form
