@@ -855,8 +855,11 @@ export type Database = {
       }
       experience_settings: {
         Row: {
+          access_control: Json | null
           auto_approve_requests: boolean | null
+          communication_settings: Json | null
           created_at: string
+          display_preferences: Json | null
           experience_id: string
           id: string
           notification_preferences: Json | null
@@ -864,8 +867,11 @@ export type Database = {
           visibility_settings: Json | null
         }
         Insert: {
+          access_control?: Json | null
           auto_approve_requests?: boolean | null
+          communication_settings?: Json | null
           created_at?: string
+          display_preferences?: Json | null
           experience_id: string
           id?: string
           notification_preferences?: Json | null
@@ -873,8 +879,11 @@ export type Database = {
           visibility_settings?: Json | null
         }
         Update: {
+          access_control?: Json | null
           auto_approve_requests?: boolean | null
+          communication_settings?: Json | null
           created_at?: string
+          display_preferences?: Json | null
           experience_id?: string
           id?: string
           notification_preferences?: Json | null
