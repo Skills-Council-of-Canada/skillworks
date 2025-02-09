@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
 import { UserRole } from "@/types/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const { toast } = useToast();
@@ -92,4 +93,3 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
 
   return { login, signup, logout };
 };
-
