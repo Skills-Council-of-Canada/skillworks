@@ -138,7 +138,7 @@ const AuthForm = ({
             <Button
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground group"
-              disabled={isLoading || isSubmitting}
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -157,3 +157,4 @@ const AuthForm = ({
 };
 
 export default AuthForm;
+
