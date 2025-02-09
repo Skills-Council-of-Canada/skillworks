@@ -8,6 +8,7 @@ import { Steps } from "@/components/educator/experience/Steps";
 import { useForm } from "react-hook-form";
 import { ExperienceFormValues } from "@/types/educator";
 import DetailsStep from "./DetailsStep";
+import MetaInformationStep from "./MetaInformationStep";
 import { Form } from "@/components/ui/form";
 
 const STEPS = [
@@ -91,7 +92,11 @@ export const CreateExperienceSteps = ({ mode, onCancel }: CreateExperienceStepsP
                 <DetailsStep form={form} onNext={handleNext} />
               </TabsContent>
               
-              {STEPS.filter(step => step.id !== "details").map((step) => (
+              <TabsContent value="category">
+                <MetaInformationStep form={form} onNext={handleNext} />
+              </TabsContent>
+
+              {STEPS.filter(step => !["details", "category"].includes(step.id)).map((step) => (
                 <TabsContent key={step.id} value={step.id}>
                   <p className="text-muted-foreground">
                     Step content for {step.title} will be implemented next
