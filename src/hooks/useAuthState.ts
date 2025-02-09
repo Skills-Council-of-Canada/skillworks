@@ -15,6 +15,7 @@ export const useAuthState = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
 
   const handleProfileError = async (error: Error) => {
+    console.error("Profile error:", error);
     await signOutUser();
     setUser(null);
     setIsLoading(false);
@@ -29,11 +30,18 @@ export const useAuthState = () => {
   const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
     if (!isMounted) return;
 
+    if (!profile) {
+      console.error("No profile found");
+      return;
+    }
+
+    console.log("Setting user profile:", profile);
     setUser(profile);
     setIsLoading(false);
 
     if (profile) {
       const redirectPath = getRoleBasedRedirect(profile.role);
+      console.log("Redirecting to:", redirectPath, "for role:", profile.role);
       navigate(redirectPath, { replace: true });
     }
   };

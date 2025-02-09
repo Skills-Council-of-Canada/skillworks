@@ -18,7 +18,7 @@ export const signInUser = async (email: string, password: string) => {
       console.log("Sign in successful, verifying profile");
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id')
+        .select('id, role')
         .eq('id', data.user.id)
         .maybeSingle();
           
@@ -28,7 +28,9 @@ export const signInUser = async (email: string, password: string) => {
         let role = 'participant';
         let name = 'Participant User';
         
+        // Explicitly set employer role for employer@skillscouncil.ca
         if (normalizedEmail === 'employer@skillscouncil.ca') {
+          console.log("Setting employer role for employer@skillscouncil.ca");
           role = 'employer';
           name = 'Employer User';
         }
@@ -45,6 +47,31 @@ export const signInUser = async (email: string, password: string) => {
         if (profileError) {
           console.error("Error creating profile:", profileError);
           throw profileError;
+        }
+
+        // Ensure the profile was created with the correct role
+        if (normalizedEmail === 'employer@skillscouncil.ca') {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ role: 'employer' })
+            .eq('id', data.user.id);
+            
+          if (updateError) {
+            console.error("Error updating employer role:", updateError);
+            throw updateError;
+          }
+        }
+      } else if (normalizedEmail === 'employer@skillscouncil.ca' && profile.role !== 'employer') {
+        // Force update role to employer if it's somehow incorrect
+        console.log("Correcting role to employer for employer@skillscouncil.ca");
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ role: 'employer' })
+          .eq('id', data.user.id);
+          
+        if (updateError) {
+          console.error("Error updating employer role:", updateError);
+          throw updateError;
         }
       }
       
