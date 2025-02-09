@@ -1,5 +1,6 @@
 
 import { Bell, ChevronDown, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ interface EmployerHeaderProps {
 
 export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const getInitials = (name: string) => {
     return name
@@ -79,10 +81,16 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-background border shadow-lg">
-            <DropdownMenuItem className="focus:bg-accent">
+            <DropdownMenuItem 
+              className="focus:bg-accent"
+              onClick={() => navigate('/employer/settings')}
+            >
               Profile Settings
             </DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-accent">
+            <DropdownMenuItem 
+              className="focus:bg-accent"
+              onClick={() => navigate('/employer/settings')}
+            >
               Company Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
