@@ -7,7 +7,7 @@ export const useAuthRedirect = () => {
       case "admin":
         return "/admin";
       case "employer":
-        return "/employer";  // This ensures employers go to /employer
+        return "/employer";
       case "educator":
         return "/educator";
       case "participant":
