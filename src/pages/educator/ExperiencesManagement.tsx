@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,13 +57,26 @@ const ExperiencesManagement = () => {
 
   const onSubmit = async (data: ExperienceFormValues) => {
     try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) throw new Error("User not authenticated");
+
       const { error } = await supabase
         .from("educator_experiences")
-        .insert([{
-          ...data,
+        .insert({
+          educator_id: user.id,
+          title: data.title,
+          description: data.description,
+          trade_category: data.trade_category,
+          skill_level: data.skill_level,
+          duration_weeks: data.duration_weeks,
+          required_certifications: data.required_certifications,
           status: "active",
           start_date: new Date().toISOString(),
-        }]);
+        });
 
       if (error) throw error;
 
