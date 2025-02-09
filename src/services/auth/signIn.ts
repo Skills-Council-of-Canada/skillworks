@@ -24,16 +24,27 @@ export const signInUser = async (email: string, password: string) => {
           
       if (!profile) {
         console.log("Creating missing profile");
-        // Extract role from email prefix for demo accounts
-        const portal = isDemoAccount ? normalizedEmail.split('@')[0] : 'participant';
-        const name = portal.charAt(0).toUpperCase() + portal.slice(1) + ' User';
+        // For demo accounts, extract role from email prefix
+        let role = 'participant';
+        
+        if (isDemoAccount) {
+          // Special handling for known demo accounts
+          if (normalizedEmail === 'employer@skillscouncil.ca') {
+            role = 'employer';
+          } else {
+            // For other demo accounts, use email prefix as role
+            role = normalizedEmail.split('@')[0];
+          }
+        }
+        
+        const name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
         
         const { error: profileError } = await supabase
           .from('profiles')
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: portal,
+            role: role,
             name
           });
           
@@ -49,14 +60,25 @@ export const signInUser = async (email: string, password: string) => {
     // If this is a demo account and sign in failed, try to create it
     if (isDemoAccount && signInError) {
       console.log("Demo account sign in failed, attempting to create account");
-      const portal = normalizedEmail.split('@')[0];
+      let role = 'participant';
+      
+      // Special handling for known demo accounts
+      if (normalizedEmail === 'employer@skillscouncil.ca') {
+        role = 'employer';
+      } else {
+        // For other demo accounts, use email prefix as role
+        role = normalizedEmail.split('@')[0];
+      }
+      
+      const name = role.charAt(0).toUpperCase() + role.slice(1) + ' User';
+      
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
         options: {
           data: {
-            portal,
-            name: portal.charAt(0).toUpperCase() + portal.slice(1) + ' User'
+            portal: role,
+            name
           }
         }
       });
