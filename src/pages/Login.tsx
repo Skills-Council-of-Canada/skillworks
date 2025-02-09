@@ -14,11 +14,9 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log("Login component user state:", user);
     if (user) {
       console.log("User logged in, redirecting based on role:", user.role);
       const redirectPath = user.role === 'employer' ? '/employer' : '/';
-      setIsSubmitting(false);
       navigate(redirectPath, { replace: true });
     }
   }, [user, navigate]);
@@ -40,7 +38,6 @@ const Login = () => {
       console.log("Auth submission successful");
     } catch (error) {
       console.error("Auth failed:", error);
-      setIsSubmitting(false);
       if (error instanceof AuthError) {
         toast({
           variant: "destructive",
@@ -54,6 +51,8 @@ const Login = () => {
           description: "An unexpected error occurred during authentication"
         });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
