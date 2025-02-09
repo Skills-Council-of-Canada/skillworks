@@ -2,24 +2,17 @@
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogoUpload } from "./LogoUpload";
 import { formSchema, type CompanyInfoFormData } from "./schema";
 import { loadEmployerData, updateEmployerProfile } from "./companyService";
+import { LogoSection } from "./form-sections/LogoSection";
+import { BasicInfoSection } from "./form-sections/BasicInfoSection";
+import { ContactInfoSection } from "./form-sections/ContactInfoSection";
 
 interface CompanyInfoFormProps {
   onUpdate: () => void;
@@ -110,92 +103,13 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="logo"
-          render={({ field: { value, ...field } }) => (
-            <LogoUpload
-              setValue={form.setValue}
-              previewUrl={previewUrl}
-              setPreviewUrl={setPreviewUrl}
-            />
-          )}
+        <LogoSection 
+          form={form}
+          previewUrl={previewUrl}
+          setPreviewUrl={setPreviewUrl}
         />
-
-        <FormField
-          control={form.control}
-          name="companyName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter company name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="website"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Website</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Enter company description"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter company address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <BasicInfoSection form={form} />
+        <ContactInfoSection form={form} />
         <Button type="submit" disabled={isUploading}>
           {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isUploading ? "Uploading..." : "Save Changes"}
@@ -206,4 +120,3 @@ const CompanyInfoForm = ({ onUpdate }: CompanyInfoFormProps) => {
 };
 
 export default CompanyInfoForm;
-
