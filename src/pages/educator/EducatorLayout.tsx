@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
@@ -16,23 +15,21 @@ const EducatorLayout = () => {
   console.log("EducatorLayout - Current path:", location.pathname);
 
   const getCurrentPageTitle = () => {
-    const menuItems = [
-      { url: "/educator", title: "Dashboard" },
-      { url: "/educator/experiences", title: "My Experiences" },
-      { url: "/educator/portals", title: "Find a Portal" },
-      { url: "/educator/projects", title: "Find a Project" },
-      { url: "/educator/matches", title: "Match Requests" },
-      { url: "/educator/tasks", title: "Tasks & Activities" },
-      { url: "/educator/messages", title: "Messages" },
-      { url: "/educator/calendar", title: "Calendar" },
-      { url: "/educator/settings", title: "Settings" },
-    ];
+    const paths = {
+      "/educator": "Dashboard",
+      "/educator/experiences": "My Experiences",
+      "/educator/collaborations": "Collaborations",
+      "/educator/portals": "Find a Portal",
+      "/educator/projects": "Find a Project",
+      "/educator/students": "Students",
+      "/educator/matches": "Match Requests",
+      "/educator/tasks": "Tasks & Activities",
+      "/educator/messages": "Messages",
+      "/educator/calendar": "Calendar",
+      "/educator/settings": "Settings"
+    };
     
-    const currentMenuItem = menuItems.find((item) => 
-      location.pathname === item.url || 
-      (location.pathname.startsWith(item.url) && item.url !== "/educator")
-    );
-    return currentMenuItem?.title || "Dashboard";
+    return paths[location.pathname] || "Dashboard";
   };
 
   return (

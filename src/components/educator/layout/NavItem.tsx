@@ -15,13 +15,13 @@ export const NavItem = ({ to, icon: Icon, children, end }: NavItemProps) => {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `flex w-full items-center ${
+        `flex w-full items-center gap-2 ${
           isActive ? "bg-secondary text-secondary-foreground" : "hover:bg-secondary/50"
         } px-2 py-1.5 rounded-md transition-colors`
       }
     >
-      <Icon className="mr-2 h-4 w-4" />
-      {children}
+      <Icon className="h-4 w-4" />
+      <span>{children}</span>
     </NavLink>
   );
 };
