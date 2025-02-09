@@ -38,9 +38,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         console.error("Auth initialization error:", error);
         setUser(null);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     initializeAuth();
@@ -66,8 +65,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [navigate]);
 
   const signup = async (email: string, password: string, portal: string) => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const { data, error } = await signUpUser(email, password, portal);
       if (error) throw error;
 
@@ -91,8 +90,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const { error } = await signInUser(email, password);
       if (error) throw error;
 
@@ -102,8 +101,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       if (profile) {
-        // Validate that the role is a valid UserRole
-        const role = profile.role as UserRole;
+        const role = profile.role as string;
         if (isValidUserRole(role)) {
           const redirectPath = getRoleBasedRedirect(role);
           navigate(redirectPath);

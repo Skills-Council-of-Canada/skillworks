@@ -37,33 +37,28 @@ const AuthForm = ({
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    // For demo accounts, use a standard password
-    if (DEMO_ACCOUNTS.includes(email)) {
-      try {
-        await onSubmit(email, "demo123", isSigningUp);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred");
-        }
-      }
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
-      await onSubmit(email, password, isSigningUp);
+      // For demo accounts, use a standard password
+      if (DEMO_ACCOUNTS.includes(email)) {
+        await onSubmit(email, "demo123", isSigningUp);
+      } else {
+        await onSubmit(email, password, isSigningUp);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("An unexpected error occurred");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -141,9 +136,9 @@ const AuthForm = ({
             <Button
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground group"
-              disabled={isLoading}
+              disabled={isSubmitting || isLoading}
             >
-              {isLoading ? (
+              {(isSubmitting || isLoading) ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
