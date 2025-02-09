@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -39,6 +40,7 @@ import EducatorMessages from "./pages/educator/EducatorMessages";
 import EducatorCalendar from "./pages/educator/EducatorCalendar";
 import EducatorSettings from "./pages/educator/EducatorSettings";
 import StudentManagement from "./pages/educator/StudentManagement";
+import CollaborationManagement from "./pages/educator/CollaborationManagement";
 
 // Participant routes
 import ParticipantLayout from "./pages/participant/ParticipantLayout";
@@ -89,6 +91,7 @@ const App = () => (
           }>
             <Route index element={<EducatorDashboard />} />
             <Route path="experiences" element={<ExperiencesManagement />} />
+            <Route path="collaborations" element={<CollaborationManagement />} />
             <Route path="portals" element={<PortalSearch />} />
             <Route path="projects" element={<ProjectSearch />} />
             <Route path="matches" element={<MatchRequests />} />

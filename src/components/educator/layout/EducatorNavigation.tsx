@@ -12,7 +12,8 @@ import {
   UserCheck,
   Briefcase,
   ClipboardList,
-  Users
+  Users,
+  Building2
 } from "lucide-react";
 
 interface EducatorNavigationProps {
@@ -51,6 +52,18 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               >
                 <GraduationCap className="mr-2 h-4 w-4" />
                 My Experiences
+              </Button>
+            )}
+          </NavLink>
+
+          <NavLink to="/educator/collaborations">
+            {({ isActive }) => (
+              <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className="w-full justify-start"
+              >
+                <Building2 className="mr-2 h-4 w-4" />
+                Collaborations
               </Button>
             )}
           </NavLink>

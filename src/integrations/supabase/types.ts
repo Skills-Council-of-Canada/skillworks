@@ -47,6 +47,93 @@ export type Database = {
           },
         ]
       }
+      collaboration_messages: {
+        Row: {
+          collaboration_id: string
+          content: string
+          created_at: string
+          id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          collaboration_id: string
+          content: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          collaboration_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaboration_messages_collaboration_id_fkey"
+            columns: ["collaboration_id"]
+            isOneToOne: false
+            referencedRelation: "educator_employer_collaborations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaboration_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      educator_employer_collaborations: {
+        Row: {
+          created_at: string
+          educator_id: string
+          employer_id: string
+          id: string
+          message: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          educator_id: string
+          employer_id: string
+          id?: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          educator_id?: string
+          employer_id?: string
+          id?: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educator_employer_collaborations_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educator_employer_collaborations_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       educator_events: {
         Row: {
           created_at: string
