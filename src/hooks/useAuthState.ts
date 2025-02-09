@@ -49,29 +49,32 @@ export const useAuthState = () => {
         const { data: { session } } = await supabase.auth.getSession();
         console.log("Session fetch complete:", session?.user?.email);
         
+        if (!session?.user) {
+          console.log("No active session found, clearing loading state");
+          if (mounted) {
+            setUser(null);
+            setIsLoading(false);
+          }
+          return;
+        }
+
         if (!mounted) return;
 
-        if (session?.user) {
-          console.log("Valid session found, fetching profile...");
-          try {
-            const profile = await getUserProfile(session);
-            console.log("Profile fetch result:", profile);
-            handleProfileSuccess(profile, mounted);
-          } catch (error) {
-            console.error("Error fetching profile:", error);
-            if (mounted) {
-              await handleProfileError();
-            }
-          }
-        } else {
-          console.log("No active session found");
+        console.log("Valid session found, fetching profile...");
+        try {
+          const profile = await getUserProfile(session);
+          console.log("Profile fetch result:", profile);
+          handleProfileSuccess(profile, mounted);
+        } catch (error) {
+          console.error("Error fetching profile:", error);
           if (mounted) {
-            setIsLoading(false);
+            await handleProfileError();
           }
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
         if (mounted) {
+          setUser(null);
           setIsLoading(false);
         }
       }
@@ -90,18 +93,21 @@ export const useAuthState = () => {
         return;
       }
 
-      if (session?.user) {
-        console.log("Session detected, fetching profile...");
-        try {
-          const profile = await getUserProfile(session);
-          console.log("Profile fetch complete:", profile);
-          handleProfileSuccess(profile, mounted);
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-          await handleProfileError();
-        }
-      } else {
+      if (!session?.user) {
+        console.log("No session in auth change, clearing loading state");
+        setUser(null);
         setIsLoading(false);
+        return;
+      }
+
+      console.log("Session detected, fetching profile...");
+      try {
+        const profile = await getUserProfile(session);
+        console.log("Profile fetch complete:", profile);
+        handleProfileSuccess(profile, mounted);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        await handleProfileError();
       }
     });
 
