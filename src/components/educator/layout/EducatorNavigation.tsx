@@ -30,7 +30,7 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          <NavLink to="/educator" end>
+          <NavLink to="/educator">
             {({ isActive }) => (
               <Button
                 variant={isActive ? "secondary" : "ghost"}

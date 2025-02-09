@@ -23,8 +23,7 @@ const EducatorLayout = () => {
       { url: "/educator/calendar", title: "Calendar" },
       { url: "/educator/settings", title: "Settings" },
     ];
-    // Check if the current path matches exactly or starts with the menu item URL 
-    // This handles both exact matches and nested routes
+    
     const currentMenuItem = menuItems.find((item) => 
       location.pathname === item.url || 
       (location.pathname.startsWith(item.url) && item.url !== "/educator")
