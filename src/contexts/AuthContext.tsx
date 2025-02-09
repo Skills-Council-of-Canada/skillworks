@@ -29,17 +29,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Initialize auth state
     const initializeAuth = async () => {
       try {
+        console.log("Initializing auth state...");
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (session) {
+          console.log("Found existing session, fetching user profile...");
           const userProfile = await getUserProfile(session);
           setUser(userProfile);
         } else {
+          console.log("No existing session found");
           setUser(null);
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
         setUser(null);
       } finally {
+        console.log("Auth initialization complete, setting loading to false");
         setIsLoading(false);
       }
     };
@@ -50,20 +55,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      try {
-        if (session) {
-          const userProfile = await getUserProfile(session);
-          setUser(userProfile);
-        } else {
-          setUser(null);
-        }
-
-        if (event === 'SIGNED_OUT') {
-          navigate('/');
-        }
-      } catch (error) {
-        console.error("Auth state change error:", error);
+      if (session) {
+        const userProfile = await getUserProfile(session);
+        setUser(userProfile);
+      } else {
         setUser(null);
+      }
+
+      if (event === 'SIGNED_OUT') {
+        navigate('/');
       }
     });
 
@@ -168,3 +168,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 function isValidUserRole(role: string): role is UserRole {
   return ['admin', 'educator', 'employer', 'participant'].includes(role);
 }
+
