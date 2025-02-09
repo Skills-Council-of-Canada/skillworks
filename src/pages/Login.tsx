@@ -32,16 +32,17 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      // If user is admin, allow access regardless of portal
+      // If user is admin, allow access regardless of portal and redirect to admin dashboard
       if (user.role === "admin") {
-        const redirectPath = roleBasedRedirect(user.role);
-        navigate(redirectPath);
+        navigate(roleBasedRedirect(user.role));
         return;
       }
       // For non-admin users, check if they're accessing the correct portal
       if (portalParam && user.role === portalParam) {
-        const redirectPath = roleBasedRedirect(user.role);
-        navigate(redirectPath);
+        navigate(roleBasedRedirect(user.role));
+      } else {
+        // If user tries to access wrong portal, redirect to their appropriate dashboard
+        navigate(roleBasedRedirect(user.role));
       }
     }
   }, [user, navigate, portalParam]);
