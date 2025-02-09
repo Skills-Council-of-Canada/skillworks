@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -45,6 +44,9 @@ import CollaborationManagement from "./pages/educator/CollaborationManagement";
 // Participant routes
 import ParticipantLayout from "./pages/participant/ParticipantLayout";
 import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
+
+// Add this import
+import CreateExperience from "./pages/educator/CreateExperience";
 
 const queryClient = new QueryClient();
 
@@ -100,7 +102,10 @@ const App = () => (
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="students" element={<StudentManagement />} />
-          </Route>
+          
+          <Route path="experiences/create" element={<CreateExperience />} />
+          
+        </Route>
 
           {/* Protected participant routes */}
           <Route path="/participant" element={
