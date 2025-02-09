@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initializeAuth = async () => {
       try {
         console.log("Initializing auth state...");
+        setIsLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session && mounted) {
@@ -63,15 +64,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (session && mounted) {
-        const userProfile = await getUserProfile(session);
-        setUser(userProfile);
-      } else if (mounted) {
-        setUser(null);
-      }
+      if (mounted) {
+        setIsLoading(true);
+        try {
+          if (session) {
+            const userProfile = await getUserProfile(session);
+            if (mounted) {
+              setUser(userProfile);
+            }
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Error during auth state change:", error);
+          setUser(null);
+        } finally {
+          if (mounted) {
+            setIsLoading(false);
+          }
+        }
 
-      if (event === 'SIGNED_OUT' && mounted) {
-        navigate('/');
+        if (event === 'SIGNED_OUT') {
+          navigate('/');
+        }
       }
     });
 
