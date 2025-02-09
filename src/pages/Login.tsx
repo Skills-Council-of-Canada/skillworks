@@ -12,9 +12,9 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const currentPortal = portals.find(p => p.id === portalParam) || portals[0]; // Default to first portal if none specified
+  const defaultPortal = portals[0];
+  const currentPortal = portals.find(p => p.id === portalParam) || defaultPortal;
 
-  // If user is already logged in, redirect to their dashboard
   useEffect(() => {
     if (user) {
       console.log("User already logged in, redirecting...");
@@ -23,7 +23,7 @@ const Login = () => {
   }, [user, navigate]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    const portal = portalParam || currentPortal.id; // Use current portal if no param
+    const portal = portalParam || currentPortal.id;
     setIsSubmitting(true);
     try {
       if (isSignUp) {
@@ -42,7 +42,6 @@ const Login = () => {
     }
   };
 
-  // Show loading state while auth is initializing
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -51,7 +50,6 @@ const Login = () => {
     );
   }
 
-  // Render the auth form
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
       <AuthForm
