@@ -9,17 +9,17 @@ import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, signup, user } = useAuth();
+  const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
+    if (user && !isSubmitting && !authLoading) {
       console.log("User logged in, redirecting based on role:", user.role);
       const redirectPath = user.role === 'employer' ? '/employer' : '/';
       navigate(redirectPath, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, isSubmitting, authLoading]);
 
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
     console.log("Attempting auth submission:", { email, isSignUp });
@@ -62,7 +62,7 @@ const Login = () => {
         icon={User}
         title="Welcome Back"
         gradient="bg-white"
-        isLoading={isSubmitting}
+        isLoading={isSubmitting || authLoading}
         onBack={() => navigate("/")}
         onSubmit={handleAuthSubmit}
       />
