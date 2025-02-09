@@ -27,7 +27,7 @@ const Login = () => {
   const portalParam = searchParams.get("portal");
   const navigate = useNavigate();
   const auth = useAuth();
-  const { login, signup, isLoading: authLoading, user } = auth || {};
+  const { login, signup, user } = auth || {};
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {

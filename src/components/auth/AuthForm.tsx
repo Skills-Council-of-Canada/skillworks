@@ -37,14 +37,12 @@ const AuthForm = ({
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isLoading) return;
     
     setError(null);
-    setIsSubmitting(true);
 
     try {
       // For demo accounts, use a standard password
@@ -59,8 +57,6 @@ const AuthForm = ({
       } else {
         setError("An unexpected error occurred");
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -138,9 +134,9 @@ const AuthForm = ({
             <Button
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground group"
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
@@ -157,4 +153,3 @@ const AuthForm = ({
 };
 
 export default AuthForm;
-
