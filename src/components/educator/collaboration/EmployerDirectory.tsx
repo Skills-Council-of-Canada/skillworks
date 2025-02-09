@@ -22,15 +22,21 @@ interface EmployerDirectoryProps {
 export const EmployerDirectory = ({ onSelectEmployer }: EmployerDirectoryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: employers = [] } = useQuery({
+  const { data: employers = [], isLoading } = useQuery({
     queryKey: ['employers'],
     queryFn: async () => {
+      console.log("Fetching approved employers");
       const { data, error } = await supabase
         .from('employers')
         .select('id, company_name, industry, location, logo_url')
         .eq('registration_status', 'approved');
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching employers:", error);
+        throw error;
+      }
+      
+      console.log("Fetched employers:", data);
       return data as Employer[];
     },
   });
@@ -43,6 +49,19 @@ export const EmployerDirectory = ({ onSelectEmployer }: EmployerDirectoryProps) 
       employer.location.toLowerCase().includes(searchLower)
     );
   });
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="h-6 w-6" />
+            Loading Employers...
+          </CardTitle>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -94,6 +113,12 @@ export const EmployerDirectory = ({ onSelectEmployer }: EmployerDirectoryProps) 
               </CardContent>
             </Card>
           ))}
+
+          {filteredEmployers.length === 0 && (
+            <div className="col-span-full text-center text-muted-foreground py-8">
+              No employers found matching your search criteria.
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
