@@ -13,12 +13,12 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Redirect if already logged in
   useEffect(() => {
     console.log("Login component user state:", user);
     if (user) {
       console.log("User logged in, redirecting based on role:", user.role);
       const redirectPath = user.role === 'employer' ? '/employer' : '/';
+      setIsSubmitting(false);
       navigate(redirectPath, { replace: true });
     }
   }, [user, navigate]);
@@ -38,7 +38,6 @@ const Login = () => {
         await login(email, password);
       }
       console.log("Auth submission successful");
-      // Don't reset isSubmitting here - let the useEffect handle it after redirect
     } catch (error) {
       console.error("Auth failed:", error);
       setIsSubmitting(false);

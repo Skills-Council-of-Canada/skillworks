@@ -11,7 +11,6 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const login = async (email: string, password: string) => {
     try {
       console.log("Attempting login with email:", email);
-      setIsLoading(true);
       const { error } = await signInUser(email, password);
       if (error) throw error;
 
@@ -29,15 +28,12 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         variant: "destructive",
       });
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const signup = async (email: string, password: string, portal: string) => {
     try {
       console.log("Attempting signup with email:", email);
-      setIsLoading(true);
       const { error } = await signUpUser(email, password, portal);
       if (error) throw error;
 
@@ -55,8 +51,6 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         variant: "destructive",
       });
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
