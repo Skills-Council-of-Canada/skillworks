@@ -32,14 +32,17 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          <NavLink to="/educator">
+          <NavLink to="/educator" end>
             {({ isActive }) => (
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Home className="mr-2 h-4 w-4" />
-                Dashboard
+                <div>
+                  <Home className="mr-2 h-4 w-4" />
+                  Dashboard
+                </div>
               </Button>
             )}
           </NavLink>
@@ -49,9 +52,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <GraduationCap className="mr-2 h-4 w-4" />
-                My Experiences
+                <div>
+                  <GraduationCap className="mr-2 h-4 w-4" />
+                  My Experiences
+                </div>
               </Button>
             )}
           </NavLink>
@@ -61,9 +67,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Building2 className="mr-2 h-4 w-4" />
-                Collaborations
+                <div>
+                  <Building2 className="mr-2 h-4 w-4" />
+                  Collaborations
+                </div>
               </Button>
             )}
           </NavLink>
@@ -73,9 +82,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Search className="mr-2 h-4 w-4" />
-                Find a Portal
+                <div>
+                  <Search className="mr-2 h-4 w-4" />
+                  Find a Portal
+                </div>
               </Button>
             )}
           </NavLink>
@@ -85,9 +97,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Briefcase className="mr-2 h-4 w-4" />
-                Find a Project
+                <div>
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Find a Project
+                </div>
               </Button>
             )}
           </NavLink>
@@ -97,9 +112,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Users className="mr-2 h-4 w-4" />
-                Students
+                <div>
+                  <Users className="mr-2 h-4 w-4" />
+                  Students
+                </div>
               </Button>
             )}
           </NavLink>
@@ -109,9 +127,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <UserCheck className="mr-2 h-4 w-4" />
-                Match Requests
+                <div>
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Match Requests
+                </div>
               </Button>
             )}
           </NavLink>
@@ -121,9 +142,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <ClipboardList className="mr-2 h-4 w-4" />
-                Tasks & Activities
+                <div>
+                  <ClipboardList className="mr-2 h-4 w-4" />
+                  Tasks & Activities
+                </div>
               </Button>
             )}
           </NavLink>
@@ -133,9 +157,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Messages
+                <div>
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Messages
+                </div>
               </Button>
             )}
           </NavLink>
@@ -145,9 +172,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Calendar className="mr-2 h-4 w-4" />
-                Calendar
+                <div>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Calendar
+                </div>
               </Button>
             )}
           </NavLink>
@@ -157,9 +187,12 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className="w-full justify-start"
+                asChild
               >
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+                <div>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </div>
               </Button>
             )}
           </NavLink>
