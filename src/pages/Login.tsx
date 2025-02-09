@@ -29,21 +29,21 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("Login component render state:", {
+  console.log("Login component state:", {
     user,
     authLoading,
     portalParam,
     isSubmitting,
-    url: window.location.href
+    url: window.location.href,
+    timestamp: new Date().toISOString()
   });
 
   useEffect(() => {
-    // Only redirect if we're not loading
-    if (!authLoading) {
+    const handleRedirects = () => {
       if (!portalParam) {
         console.log("No portal selected, redirecting to home");
         navigate("/");
-        return;
+        return true;
       }
 
       if (user) {
@@ -53,8 +53,14 @@ const Login = () => {
           : roleBasedRedirect(user.role);
         
         navigate(redirectPath);
-        return;
+        return true;
       }
+
+      return false;
+    };
+
+    if (!authLoading) {
+      handleRedirects();
     }
   }, [user, navigate, portalParam, authLoading]);
 
@@ -79,27 +85,22 @@ const Login = () => {
     }
   };
 
-  // Don't render while loading auth state
-  if (authLoading) {
-    console.log("Auth is loading, not rendering form");
+  // Early return if loading or missing required data
+  if (authLoading || !portalParam) {
+    console.log("Not rendering form - loading or missing portal:", { authLoading, portalParam });
     return null;
   }
 
-  // Don't render if user is authenticated (redirect will handle it)
+  // Early return if user is authenticated
   if (user) {
-    console.log("User is authenticated, not rendering form");
+    console.log("Not rendering form - user is authenticated:", user.email);
     return null;
   }
 
-  // Don't render if no portal selected (redirect will handle it)
-  if (!portalParam) {
-    console.log("No portal selected, not rendering form");
-    return null;
-  }
-
+  // Check for valid portal
   const currentPortal = portals.find(p => p.id === portalParam);
   if (!currentPortal) {
-    console.log("Invalid portal selected, not rendering form");
+    console.log("Not rendering form - invalid portal:", portalParam);
     return null;
   }
 
