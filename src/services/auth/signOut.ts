@@ -4,20 +4,22 @@ import { supabase } from "@/integrations/supabase/client";
 export const signOutUser = async () => {
   console.log("Signing out user");
   try {
-    // First check if we have a session
-    const { data: { session } } = await supabase.auth.getSession();
+    // Sign out from both server and locally
+    const { error } = await supabase.auth.signOut({
+      scope: 'global'
+    });
     
-    if (!session) {
-      console.log("No active session found, considering user already logged out");
-      return { error: null };
+    if (error) {
+      console.error("Error in signOutUser:", error);
+      // Even if server-side logout fails, clear local session
+      await supabase.auth.signOut({ scope: 'local' });
     }
-
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    
     return { error: null };
   } catch (error) {
     console.error("Error in signOutUser:", error);
+    // Ensure local session is cleared even if there's an error
+    await supabase.auth.signOut({ scope: 'local' });
     throw error;
   }
 };
-
