@@ -1,0 +1,148 @@
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import ProfileSetupForm from "@/components/educator/registration/ProfileSetupForm";
+import ContactVerificationForm from "@/components/educator/registration/ContactVerificationForm";
+import AccountSetupForm from "@/components/educator/registration/AccountSetupForm";
+import { Steps } from "@/components/educator/registration/Steps";
+import { supabase } from "@/integrations/supabase/client";
+
+export type RegistrationData = {
+  fullName: string;
+  institutionName: string;
+  specialization: string;
+  yearsExperience: number;
+  email: string;
+  phoneNumber?: string;
+  preferredContact: 'email' | 'phone';
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+}
+
+const EducatorRegistration = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<RegistrationData>>({});
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStepSubmit = async (stepData: Partial<RegistrationData>) => {
+    const updatedData = { ...formData, ...stepData };
+    setFormData(updatedData);
+
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      // Final step - create account
+      await handleRegistration(updatedData as RegistrationData);
+    }
+  };
+
+  const handleRegistration = async (data: RegistrationData) => {
+    setIsLoading(true);
+    try {
+      // Sign up with Supabase Auth
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            portal: 'educator',
+            name: data.fullName,
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      if (authData.user) {
+        // Create educator profile
+        const { error: profileError } = await supabase
+          .from('educator_profiles')
+          .insert({
+            id: authData.user.id,
+            full_name: data.fullName,
+            institution_name: data.institutionName,
+            specialization: data.specialization,
+            years_experience: data.yearsExperience,
+            phone_number: data.phoneNumber,
+            preferred_contact: data.preferredContact,
+          });
+
+        if (profileError) throw profileError;
+
+        toast({
+          title: "Registration successful!",
+          description: "Please check your email to verify your account.",
+        });
+
+        // Redirect to login page
+        navigate("/login?portal=educator");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast({
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background py-12 px-4">
+      <div className="container max-w-2xl mx-auto space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-primary">Educator Registration</h1>
+          <p className="text-muted-foreground mt-2">Join our community of skilled trades educators</p>
+        </div>
+
+        <Steps currentStep={currentStep} />
+
+        <Card className="p-6">
+          {currentStep === 1 && (
+            <ProfileSetupForm 
+              onSubmit={handleStepSubmit}
+              initialData={formData}
+              isLoading={isLoading}
+            />
+          )}
+          {currentStep === 2 && (
+            <ContactVerificationForm
+              onSubmit={handleStepSubmit}
+              initialData={formData}
+              isLoading={isLoading}
+            />
+          )}
+          {currentStep === 3 && (
+            <AccountSetupForm
+              onSubmit={handleStepSubmit}
+              initialData={formData}
+              isLoading={isLoading}
+            />
+          )}
+        </Card>
+
+        {currentStep > 1 && (
+          <div className="flex justify-center">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentStep(currentStep - 1)}
+              disabled={isLoading}
+            >
+              Back to Previous Step
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default EducatorRegistration;

@@ -47,6 +47,42 @@ export type Database = {
           },
         ]
       }
+      educator_profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          institution_name: string
+          phone_number: string | null
+          preferred_contact: string
+          specialization: string
+          updated_at: string
+          years_experience: number
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id: string
+          institution_name: string
+          phone_number?: string | null
+          preferred_contact: string
+          specialization: string
+          updated_at?: string
+          years_experience: number
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          institution_name?: string
+          phone_number?: string | null
+          preferred_contact?: string
+          specialization?: string
+          updated_at?: string
+          years_experience?: number
+        }
+        Relationships: []
+      }
       employers: {
         Row: {
           company_name: string
