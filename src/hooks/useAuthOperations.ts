@@ -2,6 +2,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
+import { UserRole } from "@/types/auth";
 
 export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const { toast } = useToast();
@@ -32,11 +33,11 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
     }
   };
 
-  const signup = async (email: string, password: string, portal: string) => {
+  const signup = async (email: string, password: string, role: UserRole) => {
     try {
-      console.log("Attempting signup with email:", email);
+      console.log("Attempting signup with email:", email, "and role:", role);
       setIsLoading(true);
-      const { error } = await signUpUser(email, password, portal);
+      const { error } = await signUpUser(email, password, role);
       if (error) throw error;
 
       console.log("Signup successful");

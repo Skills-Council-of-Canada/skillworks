@@ -34,7 +34,7 @@ export const portals = [
 ];
 
 interface PortalSelectionProps {
-  onPortalSelect: (portalId: string) => void;
+  onPortalSelect: (portalId: string, role: UserRole) => void;
 }
 
 const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
@@ -50,7 +50,7 @@ const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
           <PortalCard
             key={portal.id}
             {...portal}
-            onSelect={onPortalSelect}
+            onSelect={() => onPortalSelect(portal.id, portal.role)}
           />
         ))}
       </div>

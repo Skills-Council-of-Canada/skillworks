@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
 import { User } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { UserRole } from "@/types/auth";
+import PortalSelection from "@/components/auth/PortalSelection";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +16,19 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { getRoleBasedRedirect } = useAuthRedirect();
+  const [searchParams] = useSearchParams();
+  const [selectedPortal, setSelectedPortal] = useState<{ id: string; role: UserRole } | null>(
+    () => {
+      const portal = searchParams.get("portal");
+      if (portal) {
+        return {
+          id: portal,
+          role: portal as UserRole,
+        };
+      }
+      return null;
+    }
+  );
 
   useEffect(() => {
     if (user && !isSubmitting) {
@@ -22,13 +37,25 @@ const Login = () => {
     }
   }, [user, navigate, isSubmitting, getRoleBasedRedirect]);
 
+  const handlePortalSelect = (portalId: string, role: UserRole) => {
+    setSelectedPortal({ id: portalId, role });
+  };
+
+  const handleBack = () => {
+    if (selectedPortal) {
+      setSelectedPortal(null);
+    } else {
+      navigate("/");
+    }
+  };
+
   const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
-    if (isSubmitting) return;
+    if (isSubmitting || !selectedPortal) return;
     
     setIsSubmitting(true);
     try {
       if (isSignUp) {
-        await signup(email, password, "participant");
+        await signup(email, password, selectedPortal.role);
       } else {
         await login(email, password);
       }
@@ -54,14 +81,18 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      <AuthForm
-        icon={User}
-        title="Welcome Back"
-        gradient="bg-white"
-        isLoading={isSubmitting}
-        onBack={() => navigate("/")}
-        onSubmit={handleAuthSubmit}
-      />
+      {!selectedPortal ? (
+        <PortalSelection onPortalSelect={handlePortalSelect} />
+      ) : (
+        <AuthForm
+          icon={User}
+          title={`${selectedPortal.id.charAt(0).toUpperCase() + selectedPortal.id.slice(1)} Portal`}
+          gradient="bg-white"
+          isLoading={isSubmitting}
+          onBack={handleBack}
+          onSubmit={handleAuthSubmit}
+        />
+      )}
     </div>
   );
 };
