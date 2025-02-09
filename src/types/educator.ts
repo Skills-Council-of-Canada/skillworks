@@ -1,3 +1,4 @@
+
 export interface EducatorTask {
   id: string;
   title: string;
@@ -21,6 +22,7 @@ export interface EducatorEvent {
 
 export interface EducatorExperience {
   id: string;
+  unique_code: string;
   educator_id: string;
   title: string;
   description: string;

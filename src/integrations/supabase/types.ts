@@ -217,6 +217,7 @@ export type Database = {
           timeline_start_date: string | null
           title: string
           trade_category: string
+          unique_code: string | null
           updated_at: string
           visibility: string
           workflow_status: string
@@ -259,6 +260,7 @@ export type Database = {
           timeline_start_date?: string | null
           title: string
           trade_category?: string
+          unique_code?: string | null
           updated_at?: string
           visibility?: string
           workflow_status?: string
@@ -301,6 +303,7 @@ export type Database = {
           timeline_start_date?: string | null
           title?: string
           trade_category?: string
+          unique_code?: string | null
           updated_at?: string
           visibility?: string
           workflow_status?: string
