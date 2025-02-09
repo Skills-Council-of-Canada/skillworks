@@ -29,12 +29,11 @@ const Login = () => {
   const { login, signup, user, isLoading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Handle authenticated user redirects
   useEffect(() => {
-    // Only redirect if we have finished loading auth state and have a user
-    if (authLoading) return;
-    if (!user) return;
+    if (authLoading || !user) return;
 
-    // For admin users, always respect their portal choice if provided
+    // For admin users, respect their portal choice if provided
     if (user.role === "admin" && portalParam) {
       navigate(roleBasedRedirect(portalParam as UserRole));
       return;
@@ -44,8 +43,8 @@ const Login = () => {
     navigate(roleBasedRedirect(user.role));
   }, [user, navigate, portalParam, authLoading]);
 
+  // Handle missing portal parameter
   useEffect(() => {
-    // Only redirect if we have finished loading auth state and there's no portal
     if (authLoading) return;
     if (!portalParam) {
       navigate("/");
