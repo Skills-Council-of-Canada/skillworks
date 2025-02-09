@@ -86,6 +86,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signup = async (email: string, password: string, portal: string) => {
     setIsLoading(true);
     try {
+      // For demo accounts, handle differently
+      if (email.endsWith('@example.com')) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password: 'demo123'
+        });
+        if (error) throw error;
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -122,7 +132,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password: email.endsWith('@example.com') ? 'demo123' : password,
       });
 
       if (error) throw error;

@@ -17,6 +17,13 @@ interface AuthFormProps {
   onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
 }
 
+const DEMO_ACCOUNTS = [
+  'admin@example.com',
+  'educator@example.com',
+  'employer@example.com',
+  'participant@example.com'
+];
+
 const AuthForm = ({
   icon: Icon,
   title,
@@ -33,6 +40,21 @@ const AuthForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // For demo accounts, use a standard password
+    if (DEMO_ACCOUNTS.includes(email)) {
+      try {
+        await onSubmit(email, "demo123", isSigningUp);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred");
+        }
+      }
+      return;
+    }
+
     try {
       await onSubmit(email, password, isSigningUp);
     } catch (err) {
@@ -96,7 +118,7 @@ const AuthForm = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-background/50"
-                required
+                required={!DEMO_ACCOUNTS.includes(email)}
               />
             </div>
 
