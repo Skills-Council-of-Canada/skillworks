@@ -47,6 +47,94 @@ export type Database = {
           },
         ]
       }
+      educator_events: {
+        Row: {
+          created_at: string
+          description: string
+          educator_id: string
+          event_date: string
+          id: string
+          location: string | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          educator_id: string
+          event_date: string
+          id?: string
+          location?: string | null
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          educator_id?: string
+          event_date?: string
+          id?: string
+          location?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educator_events_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      educator_experiences: {
+        Row: {
+          created_at: string
+          description: string
+          educator_id: string
+          end_date: string | null
+          id: string
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          educator_id: string
+          end_date?: string | null
+          id?: string
+          start_date: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          educator_id?: string
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educator_experiences_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       educator_profiles: {
         Row: {
           created_at: string
@@ -82,6 +170,53 @@ export type Database = {
           years_experience?: number
         }
         Relationships: []
+      }
+      educator_tasks: {
+        Row: {
+          created_at: string
+          description: string
+          due_date: string | null
+          educator_id: string
+          id: string
+          priority: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          due_date?: string | null
+          educator_id: string
+          id?: string
+          priority?: string
+          status?: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          due_date?: string | null
+          educator_id?: string
+          id?: string
+          priority?: string
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educator_tasks_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       employers: {
         Row: {
