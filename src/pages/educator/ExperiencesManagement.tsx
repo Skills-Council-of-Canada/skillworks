@@ -10,6 +10,7 @@ import { useExperienceSubmission } from "@/hooks/useExperienceSubmission";
 import OverviewStep from "@/components/educator/experience/OverviewStep";
 import EmployerStep from "@/components/educator/experience/EmployerStep";
 import StudentsStep from "@/components/educator/experience/StudentsStep";
+import { ExperienceFormValues } from "@/types/educator";
 
 const experienceSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
@@ -19,8 +20,6 @@ const experienceSchema = z.object({
   duration_weeks: z.number().min(1, "Duration must be at least 1 week"),
   required_certifications: z.array(z.string()).optional(),
 });
-
-type ExperienceFormValues = z.infer<typeof experienceSchema>;
 
 const ExperiencesManagement = () => {
   const [currentStep, setCurrentStep] = useState("overview");
