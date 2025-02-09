@@ -30,7 +30,8 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (authLoading) return; // Don't redirect while auth state is loading
+    // Only redirect if we have finished loading auth state and have a user
+    if (authLoading) return;
     if (!user) return;
 
     // For admin users, always respect their portal choice if provided
@@ -44,7 +45,9 @@ const Login = () => {
   }, [user, navigate, portalParam, authLoading]);
 
   useEffect(() => {
-    if (!portalParam && !authLoading) {
+    // Only redirect if we have finished loading auth state and there's no portal
+    if (authLoading) return;
+    if (!portalParam) {
       navigate("/");
     }
   }, [portalParam, navigate, authLoading]);
@@ -70,13 +73,11 @@ const Login = () => {
     }
   };
 
-  // Show nothing while checking initial auth state
-  if (authLoading) return null;
-  
-  // Show nothing if no portal selected (will redirect to home)
+  // If we don't have a portal parameter, wait for the redirect
   if (!portalParam) return null;
 
-  const currentPortal = portals.find(p => p.id === portalParam)!;
+  const currentPortal = portals.find(p => p.id === portalParam);
+  if (!currentPortal) return null;
 
   return (
     <div className={`min-h-screen flex items-center justify-center ${currentPortal.gradient} px-4`}>
