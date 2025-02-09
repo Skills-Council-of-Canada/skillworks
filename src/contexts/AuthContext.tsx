@@ -27,38 +27,57 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Initialize auth state
   useEffect(() => {
-    console.log("Initializing auth state...");
+    console.log("Starting auth initialization...");
     let mounted = true;
 
     const initializeAuth = async () => {
       try {
+        console.log("Fetching initial session...");
         const { data: { session } } = await supabase.auth.getSession();
-        console.log("Initial session:", session?.user?.email);
+        console.log("Session fetch complete:", session?.user?.email);
         
-        if (session?.user && mounted) {
+        if (!mounted) {
+          console.log("Component unmounted during initialization");
+          return;
+        }
+
+        if (session?.user) {
+          console.log("Valid session found, fetching profile...");
           const profile = await getUserProfile(session);
-          console.log("Initial profile:", profile);
+          console.log("Profile fetch result:", profile);
+          
           if (profile && mounted) {
+            console.log("Setting user and redirecting...");
             setUser(profile);
-            navigate(getRoleBasedRedirect(profile.role));
+            const redirectPath = getRoleBasedRedirect(profile.role);
+            console.log("Redirecting to:", redirectPath);
+            navigate(redirectPath);
           }
+        } else {
+          console.log("No valid session found");
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
       } finally {
         if (mounted) {
+          console.log("Setting loading to false");
           setIsLoading(false);
         }
       }
     };
 
     // Set up auth state change listener
+    console.log("Setting up auth state change listener...");
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       
-      if (!mounted) return;
+      if (!mounted) {
+        console.log("Component unmounted during auth state change");
+        return;
+      }
 
       if (event === 'SIGNED_OUT') {
+        console.log("User signed out, clearing state...");
         setUser(null);
         setIsLoading(false);
         navigate('/');
@@ -66,19 +85,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (session?.user) {
+        console.log("Session detected, fetching profile...");
         const profile = await getUserProfile(session);
-        console.log("Updated profile:", profile);
+        console.log("Profile fetch complete:", profile);
+        
         if (profile && mounted) {
+          console.log("Setting user and redirecting...");
           setUser(profile);
-          navigate(getRoleBasedRedirect(profile.role));
+          const redirectPath = getRoleBasedRedirect(profile.role);
+          console.log("Redirecting to:", redirectPath);
+          navigate(redirectPath);
         }
       }
       setIsLoading(false);
     });
 
+    // Start initialization
     initializeAuth();
 
+    // Cleanup function
     return () => {
+      console.log("Cleaning up auth context...");
       mounted = false;
       subscription.unsubscribe();
     };
@@ -86,15 +113,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log("Attempting login...");
       setIsLoading(true);
       const { error } = await signInUser(email, password);
       if (error) throw error;
 
+      console.log("Login successful");
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
     } catch (error) {
+      console.error("Login error:", error);
       const authError = error as AuthError;
       toast({
         title: "Error",
@@ -109,17 +139,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signup = async (email: string, password: string, portal: string) => {
     try {
+      console.log("Attempting signup...");
       setIsLoading(true);
       const { data, error } = await signUpUser(email, password, portal);
       if (error) throw error;
 
       if (data.user) {
+        console.log("Signup successful");
         toast({
           title: "Account created!",
           description: "Please check your email to verify your account.",
         });
       }
     } catch (error) {
+      console.error("Signup error:", error);
       const authError = error as AuthError;
       toast({
         title: "Error",
@@ -134,10 +167,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
+      console.log("Attempting logout...");
       const { error } = await signOutUser();
       if (error) throw error;
       
       setUser(null);
+      console.log("Logout successful");
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
