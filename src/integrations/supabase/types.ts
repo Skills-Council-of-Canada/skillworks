@@ -42,6 +42,48 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_experience_reviews: {
+        Row: {
+          admin_id: string
+          created_at: string
+          experience_id: string
+          feedback: string | null
+          id: string
+          status: Database["public"]["Enums"]["experience_approval_status"]
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          experience_id: string
+          feedback?: string | null
+          id?: string
+          status: Database["public"]["Enums"]["experience_approval_status"]
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          experience_id?: string
+          feedback?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["experience_approval_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_experience_reviews_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_experience_reviews_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_permissions: {
         Row: {
           can_create: boolean | null
@@ -252,6 +294,11 @@ export type Database = {
       }
       educator_experiences: {
         Row: {
+          admin_feedback: string | null
+          admin_notes: string | null
+          approval_status:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
           class_size: number | null
           company_preferences: Json | null
           company_types: string[] | null
@@ -280,6 +327,8 @@ export type Database = {
           preferred_industries: string[] | null
           published_at: string | null
           required_certifications: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           screening_questions: Json[] | null
           skill_level: string
           skill_tags: string[] | null
@@ -298,6 +347,11 @@ export type Database = {
           workflow_status: string
         }
         Insert: {
+          admin_feedback?: string | null
+          admin_notes?: string | null
+          approval_status?:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
           class_size?: number | null
           company_preferences?: Json | null
           company_types?: string[] | null
@@ -326,6 +380,8 @@ export type Database = {
           preferred_industries?: string[] | null
           published_at?: string | null
           required_certifications?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           screening_questions?: Json[] | null
           skill_level?: string
           skill_tags?: string[] | null
@@ -344,6 +400,11 @@ export type Database = {
           workflow_status?: string
         }
         Update: {
+          admin_feedback?: string | null
+          admin_notes?: string | null
+          approval_status?:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
           class_size?: number | null
           company_preferences?: Json | null
           company_types?: string[] | null
@@ -372,6 +433,8 @@ export type Database = {
           preferred_industries?: string[] | null
           published_at?: string | null
           required_certifications?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           screening_questions?: Json[] | null
           skill_level?: string
           skill_tags?: string[] | null
@@ -402,6 +465,13 @@ export type Database = {
             columns: ["employer_id"]
             isOneToOne: false
             referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educator_experiences_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1582,6 +1652,11 @@ export type Database = {
       }
     }
     Enums: {
+      experience_approval_status:
+        | "pending_review"
+        | "approved"
+        | "rejected"
+        | "needs_modification"
       experience_status:
         | "incomplete"
         | "draft"

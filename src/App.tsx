@@ -15,6 +15,11 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import EducatorRegistration from "./pages/educator/EducatorRegistration";
 
+// Admin routes
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ExperienceOversight from "./pages/admin/ExperienceOversight";
+
 // Employer routes
 import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
@@ -64,6 +69,19 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           
+          {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="experiences" element={<ExperienceOversight />} />
+          </Route>
+
           {/* Protected educator registration route */}
           <Route path="/educator/register" element={
             <ProtectedRoute allowedRoles={["educator"]}>
