@@ -21,10 +21,14 @@ export const useAdminStats = (user: User | null) => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      type CountResult = { count: number | null };
+      // Define a more specific type for the count query
+      interface CountQueryResult {
+        count: number | null;
+        error: any;
+      }
 
       const fetchCount = async (query: any): Promise<number> => {
-        const { count, error } = await query;
+        const { count, error } = await query as CountQueryResult;
         if (error) throw error;
         return count || 0;
       };
