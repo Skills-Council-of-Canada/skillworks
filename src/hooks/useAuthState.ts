@@ -29,6 +29,9 @@ export const useAuthState = () => {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
+          if (location.pathname !== '/login') {
+            navigate('/login');
+          }
           return;
         }
 
@@ -41,8 +44,7 @@ export const useAuthState = () => {
           if (profile) {
             console.log("Profile found:", profile);
             setUser(profile);
-            // Redirect if we're on the login page or root
-            if (location.pathname === '/login' || location.pathname === '/') {
+            if (location.pathname === '/login') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting to:", redirectPath);
               navigate(redirectPath, { replace: true });
