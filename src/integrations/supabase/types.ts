@@ -2234,6 +2234,31 @@ export type Database = {
           completion_count: number
         }[]
       }
+      get_learner_participation_stats: {
+        Args: {
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          active_learners: number
+          ongoing_experiences: number
+          completed_experiences: number
+          month: string
+        }[]
+      }
+      get_project_match_stats: {
+        Args: {
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          total_projects: number
+          total_matches: number
+          match_rate: number
+          review_status: Database["public"]["Enums"]["project_review_status"]
+          month: string
+        }[]
+      }
       get_registration_stats: {
         Args: {
           start_date: string

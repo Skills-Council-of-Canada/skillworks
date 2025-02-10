@@ -20,6 +20,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 
 const Reports = () => {
@@ -28,6 +30,7 @@ const Reports = () => {
     to: new Date(),
   });
 
+  // Registration stats query
   const { data: registrationStats } = useQuery({
     queryKey: ["registration-stats", date],
     queryFn: async () => {
@@ -43,12 +46,45 @@ const Reports = () => {
     },
   });
 
+  // Experience stats query
   const { data: experienceStats } = useQuery({
     queryKey: ["experience-stats", date],
     queryFn: async () => {
       if (!date?.from || !date?.to) return null;
 
       const { data, error } = await supabase.rpc("get_experience_stats", {
+        start_date: date.from.toISOString(),
+        end_date: date.to.toISOString(),
+      });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Project match stats query
+  const { data: projectMatchStats } = useQuery({
+    queryKey: ["project-match-stats", date],
+    queryFn: async () => {
+      if (!date?.from || !date?.to) return null;
+
+      const { data, error } = await supabase.rpc("get_project_match_stats", {
+        start_date: date.from.toISOString(),
+        end_date: date.to.toISOString(),
+      });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Learner participation stats query
+  const { data: learnerStats } = useQuery({
+    queryKey: ["learner-stats", date],
+    queryFn: async () => {
+      if (!date?.from || !date?.to) return null;
+
+      const { data, error } = await supabase.rpc("get_learner_participation_stats", {
         start_date: date.from.toISOString(),
         end_date: date.to.toISOString(),
       });
@@ -105,6 +141,7 @@ const Reports = () => {
           <TabsTrigger value="registrations">Registrations</TabsTrigger>
           <TabsTrigger value="experiences">Experiences</TabsTrigger>
           <TabsTrigger value="matches">Matches</TabsTrigger>
+          <TabsTrigger value="learners">Learner Participation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -212,16 +249,180 @@ const Reports = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="registrations">
-          {/* Add detailed registration analytics */}
+        <TabsContent value="registrations" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Registration Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={registrationStats}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="month"
+                      tickFormatter={(value) => format(new Date(value), "MMM yy")}
+                    />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={(value) =>
+                        format(new Date(value), "MMMM yyyy")
+                      }
+                    />
+                    <Legend />
+                    <Bar
+                      dataKey="educators_count"
+                      name="Educators"
+                      fill="#8884d8"
+                    />
+                    <Bar
+                      dataKey="employers_count"
+                      name="Employers"
+                      fill="#82ca9d"
+                    />
+                    <Bar
+                      dataKey="participants_count"
+                      name="Participants"
+                      fill="#ffc658"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="experiences">
-          {/* Add detailed experience analytics */}
+        <TabsContent value="experiences" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">
+                  Active Experiences
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {experienceStats?.[0]?.active_experiences || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">
+                  Total Learners
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {experienceStats?.[0]?.total_learners || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">
+                  Completion Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {experienceStats?.[0]?.avg_completion_rate || 0}%
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="matches">
-          {/* Add detailed match analytics */}
+        <TabsContent value="matches" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Project Match Statistics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={projectMatchStats}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="month"
+                      tickFormatter={(value) => format(new Date(value), "MMM yy")}
+                    />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={(value) =>
+                        format(new Date(value), "MMMM yyyy")
+                      }
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="total_projects"
+                      name="Total Projects"
+                      stroke="#8884d8"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="total_matches"
+                      name="Total Matches"
+                      stroke="#82ca9d"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="match_rate"
+                      name="Match Rate (%)"
+                      stroke="#ffc658"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="learners" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Learner Participation Trends</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={learnerStats}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="month"
+                      tickFormatter={(value) => format(new Date(value), "MMM yy")}
+                    />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={(value) =>
+                        format(new Date(value), "MMMM yyyy")
+                      }
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="active_learners"
+                      name="Active Learners"
+                      stroke="#8884d8"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="ongoing_experiences"
+                      name="Ongoing Experiences"
+                      stroke="#82ca9d"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="completed_experiences"
+                      name="Completed Experiences"
+                      stroke="#ffc658"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
