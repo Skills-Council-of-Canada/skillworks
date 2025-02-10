@@ -12,7 +12,7 @@ const ExperienceOversight = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
-  const { data: experiences, isLoading } = useExperiences({
+  const { data: experiences, isLoading, refetch } = useExperiences({
     statusFilter,
     categoryFilter,
     searchQuery,
@@ -46,6 +46,7 @@ const ExperienceOversight = () => {
             <ExperienceCard
               key={experience.id}
               experience={experience}
+              onStatusChange={refetch}
             />
           ))
         )}

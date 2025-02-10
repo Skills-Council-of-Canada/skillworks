@@ -1054,6 +1054,50 @@ export type Database = {
           },
         ]
       }
+      experience_status_changes: {
+        Row: {
+          admin_id: string
+          created_at: string
+          experience_id: string
+          feedback: string | null
+          id: string
+          new_status: Database["public"]["Enums"]["experience_approval_status"]
+          old_status:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          experience_id: string
+          feedback?: string | null
+          id?: string
+          new_status: Database["public"]["Enums"]["experience_approval_status"]
+          old_status?:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          experience_id?: string
+          feedback?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["experience_approval_status"]
+          old_status?:
+            | Database["public"]["Enums"]["experience_approval_status"]
+            | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_status_changes_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_team_members: {
         Row: {
           created_at: string
