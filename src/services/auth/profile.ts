@@ -19,9 +19,9 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
     // Get the public profile data directly
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('id, email, role, name')
+      .select('*')
       .eq('id', session.user.id)
-      .maybeSingle();
+      .single();
 
     if (profileError) {
       const now = Date.now();
@@ -34,14 +34,16 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
 
     if (!profile) {
       console.log("No profile found for user, attempting to create one");
+      
+      // Create a new profile
       const { data: newProfile, error: insertError } = await supabase
         .from('profiles')
-        .insert({
+        .insert([{
           id: session.user.id,
           email: session.user.email,
           role: 'employer',
           name: session.user.email?.split('@')[0] || 'User'
-        })
+        }])
         .select()
         .single();
 
@@ -50,6 +52,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
         return null;
       }
 
+      console.log("Created new profile:", newProfile);
       return newProfile as User;
     }
 
