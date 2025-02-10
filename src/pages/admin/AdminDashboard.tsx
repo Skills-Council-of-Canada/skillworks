@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefcase } from "lucide-react";
-import { PostgrestSingleResponse, PostgrestFilterBuilder } from "@supabase/supabase-js";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 interface DashboardStats {
   educators: number;
@@ -17,7 +17,7 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
-type CountQueryResponse = PostgrestSingleResponse<{ count: number }>;
+type CountQueryResponse = { count: number | null };
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -37,8 +37,8 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
-      const fetchCount = async (query: PostgrestFilterBuilder<any>): Promise<number> => {
-        const { count } = await query;
+      const fetchCount = async (query: ReturnType<SupabaseClient['from']>): Promise<number> => {
+        const { count } = await query.count();
         return count || 0;
       };
 
@@ -50,12 +50,12 @@ const AdminDashboard = () => {
         activeExperiencesCount,
         matchedProjectsCount
       ] = await Promise.all([
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false)),
-        fetchCount(supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published')),
-        fetchCount(supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched'))
+        fetchCount(supabase.from('profiles').select('*').eq('role', 'educator')),
+        fetchCount(supabase.from('profiles').select('*').eq('role', 'employer')),
+        fetchCount(supabase.from('profiles').select('*').eq('role', 'participant')),
+        fetchCount(supabase.from('profiles').select('*').eq('verified', false)),
+        fetchCount(supabase.from('educator_experiences').select('*').eq('status', 'published')),
+        fetchCount(supabase.from('experience_matches').select('*').eq('status', 'matched'))
       ]);
 
       return {
