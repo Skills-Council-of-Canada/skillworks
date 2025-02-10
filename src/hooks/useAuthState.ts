@@ -50,7 +50,7 @@ export const useAuthState = () => {
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
-              navigate(redirectPath, { replace: true });
+              navigate(redirectPath);
             }
           } else {
             console.log("No profile found for user");
@@ -89,14 +89,13 @@ export const useAuthState = () => {
           }
 
           if (event === 'SIGNED_IN' && session?.user) {
-            setIsLoading(true);
             try {
               const profile = await getUserProfile(session);
               if (mounted && profile) {
                 setUser(profile);
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
-                navigate(redirectPath, { replace: true });
+                navigate(redirectPath);
               }
             } catch (error) {
               console.error("Error after sign in:", error);

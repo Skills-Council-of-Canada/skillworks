@@ -29,7 +29,6 @@ const Login = () => {
   });
 
   useEffect(() => {
-    // Only redirect if we have a user and we're not in the middle of submitting
     if (user && !isSubmitting) {
       console.log("Login - User detected:", user);
       if (user.role === 'educator' && !searchParams.get('registered')) {
@@ -39,7 +38,7 @@ const Login = () => {
       }
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Login - Redirecting to:", redirectPath);
-      navigate(redirectPath, { replace: true });
+      navigate(redirectPath);
     }
   }, [user, navigate, isSubmitting, getRoleBasedRedirect, searchParams]);
 
@@ -66,7 +65,8 @@ const Login = () => {
           return;
         }
       } else {
-        await login(email, password);
+        const { error } = await login(email, password);
+        if (error) throw error;
       }
     } catch (error) {
       console.error("Auth failed:", error);
