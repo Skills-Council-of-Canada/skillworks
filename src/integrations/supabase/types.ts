@@ -1320,6 +1320,45 @@ export type Database = {
           },
         ]
       }
+      knowledge_base_articles: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          is_published: boolean
+          tags: string[] | null
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          is_published?: boolean
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_published?: boolean
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -1855,6 +1894,51 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: Database["public"]["Enums"]["ticket_category"]
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          priority: Database["public"]["Enums"]["ticket_priority"]
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: Database["public"]["Enums"]["ticket_category"]
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: Database["public"]["Enums"]["ticket_category"]
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       system_settings: {
         Row: {
           category: string
@@ -1894,6 +1978,71 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           value?: Json
+        }
+        Relationships: []
+      }
+      ticket_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_internal: boolean
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          message?: string
+          sender_id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_support_notes: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          note_type: string
+          severity: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          note_type: string
+          severity?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          note_type?: string
+          severity?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -2048,6 +2197,9 @@ export type Database = {
         | "rejected"
         | "needs_modification"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
+      ticket_category: "technical" | "approval" | "experience" | "other"
+      ticket_priority: "low" | "medium" | "high" | "urgent"
+      ticket_status: "open" | "in_progress" | "resolved" | "closed"
       user_status: "pending" | "approved" | "rejected" | "suspended"
       visibility_rule: "public" | "registered" | "verified" | "admin_approved"
     }

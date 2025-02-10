@@ -18,7 +18,7 @@ interface AdminNavigationProps {
 
 export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
   const navItems = [
-    { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
     { to: "/admin/users", icon: Users, label: "User Management" },
     { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
@@ -34,10 +34,11 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
           <h2 className="text-lg font-semibold">Admin Portal</h2>
         </div>
         <nav className="space-y-1">
-          {navItems.map(({ to, icon: Icon, label }) => (
+          {navItems.map(({ to, icon: Icon, label, end }) => (
             <NavLink
               key={to}
               to={to}
+              end={end}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent ${
                   isActive ? 'bg-accent' : ''
