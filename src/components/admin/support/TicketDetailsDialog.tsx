@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -110,8 +111,8 @@ export function TicketDetailsDialog({
               </Badge>
               <Select
                 value={ticket.status}
-                onValueChange={(value) =>
-                  updateTicketStatus.mutate({ id: ticket.id, status: value })
+                onValueChange={(value: string) =>
+                  updateTicketStatus.mutate({ id: ticket.id, status: value as TicketStatus })
                 }
               >
                 <SelectTrigger className="w-32">

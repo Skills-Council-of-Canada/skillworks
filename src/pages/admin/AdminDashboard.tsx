@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,19 +28,19 @@ const AdminDashboard = () => {
         .from('profiles')
         .select('role')
         .eq('id', user?.id)
-        .maybeSingle();
+        .single();
 
       if (profile?.role !== 'admin') {
         throw new Error('Unauthorized access');
       }
 
       const [
-        { count: educatorCount },
-        { count: employerCount },
-        { count: participantCount },
-        { count: pendingApprovalsCount },
-        { count: activeExperiencesCount },
-        { count: matchedProjectsCount }
+        educatorCount,
+        employerCount,
+        participantCount,
+        pendingApprovalsCount,
+        activeExperiencesCount,
+        matchedProjectsCount
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
@@ -50,12 +51,12 @@ const AdminDashboard = () => {
       ]);
 
       return {
-        educators: educatorCount || 0,
-        employers: employerCount || 0,
-        participants: participantCount || 0,
-        pendingApprovals: pendingApprovalsCount || 0,
-        activeExperiences: activeExperiencesCount || 0,
-        matchedProjects: matchedProjectsCount || 0
+        educators: educatorCount.count || 0,
+        employers: employerCount.count || 0,
+        participants: participantCount.count || 0,
+        pendingApprovals: pendingApprovalsCount.count || 0,
+        activeExperiences: activeExperiencesCount.count || 0,
+        matchedProjects: matchedProjectsCount.count || 0
       };
     },
     meta: {
