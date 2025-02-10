@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
-    const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase().trim();
     
     // Try to sign in
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: normalizedEmail,
-      password,
+      password: password.trim(),
     });
 
     if (signInError) {
@@ -38,7 +38,7 @@ export const signInUser = async (email: string, password: string) => {
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: 'participant',
+            role: 'employer',
             name: email.split('@')[0]
           });
           
