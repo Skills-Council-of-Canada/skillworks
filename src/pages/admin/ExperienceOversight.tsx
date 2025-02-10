@@ -7,8 +7,8 @@ import { useExperiences } from "./hooks/useExperiences";
 import { Experience } from "./types/experience";
 
 const ExperienceOversight = () => {
-  const [statusFilter, setStatusFilter] = useState<Experience['approval_status'] | ''>('');
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<Experience['approval_status'] | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
