@@ -20,56 +20,36 @@ export const signInUser = async (email: string, password: string) => {
       
       // Special handling for unconfirmed emails
       if (signInError.message.includes('Email not confirmed')) {
-        const { data: resendData, error: resendError } = await supabase.auth.resend({
-          email: normalizedEmail,
-          type: 'signup'
+        console.log("Attempting to resend confirmation email");
+        const { error: resendError } = await supabase.auth.resend({
+          type: 'signup',
+          email: normalizedEmail
         });
         
         if (resendError) {
           console.error("Error resending confirmation email:", resendError);
         } else {
-          console.log("Confirmation email resent");
+          console.log("Confirmation email resent successfully");
         }
       }
       
       throw signInError;
     }
 
-    // If sign in succeeds, verify profile exists
+    // If sign in succeeds, get profile but don't create if missing
     if (data.user) {
-      try {
-        console.log("Sign in successful, verifying profile");
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('id, role')
-          .eq('id', data.user.id)
-          .single();
-          
-        if (profileError) {
-          console.error("Profile fetch error:", profileError);
-          throw profileError;
-        }
-
-        if (!profile) {
-          console.log("No profile found, creating one");
-          const { error: insertError } = await supabase
-            .from('profiles')
-            .insert({
-              id: data.user.id,
-              email: normalizedEmail,
-              role: 'employer',
-              name: email.split('@')[0]
-            });
-            
-          if (insertError) {
-            console.error("Error creating profile:", insertError);
-            throw insertError;
-          }
-        }
-      } catch (profileError) {
-        console.error("Profile verification error:", profileError);
-        throw profileError;
+      console.log("Sign in successful, checking profile for user:", data.user.id);
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+        
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
       }
+
+      console.log("Profile data:", profile);
     }
       
     return { data, error: null };
