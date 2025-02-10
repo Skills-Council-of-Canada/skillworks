@@ -32,35 +32,25 @@ export const useAuthState = () => {
           return;
         }
 
-        // Only fetch profile if we're not on the index page
-        if (location.pathname !== '/') {
-          try {
-            const profile = await getUserProfile(session);
-            if (mounted) {
-              if (profile) {
-                setUser(profile);
-                // Only redirect if we're not already on a valid path for the user's role
-                const redirectPath = getRoleBasedRedirect(profile.role);
-                const currentPath = location.pathname;
-                const isOnValidPath = currentPath.startsWith(redirectPath);
-                
-                if (!isOnValidPath && currentPath !== '/login') {
-                  navigate(redirectPath, { replace: true });
-                }
-              }
-              setIsLoading(false);
-            }
-          } catch (error) {
-            if (mounted) {
-              console.error("Profile error:", error);
-              setUser(null);
-              setIsLoading(false);
-            }
+        try {
+          const profile = await getUserProfile(session);
+          if (mounted && profile) {
+            setUser(profile);
+            const redirectPath = getRoleBasedRedirect(profile.role);
+            console.log("Redirecting to:", redirectPath);
+            navigate(redirectPath, { replace: true });
           }
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Profile error:", error);
+          setUser(null);
+          setIsLoading(false);
         }
 
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
+
+          console.log("Auth state changed:", event);
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
@@ -69,19 +59,18 @@ export const useAuthState = () => {
             return;
           }
 
-          if (event === 'SIGNED_IN' && session?.user && location.pathname !== '/') {
+          if (event === 'SIGNED_IN' && session?.user) {
             try {
               const profile = await getUserProfile(session);
               if (mounted && profile) {
                 setUser(profile);
                 const redirectPath = getRoleBasedRedirect(profile.role);
+                console.log("Redirecting after sign in to:", redirectPath);
                 navigate(redirectPath, { replace: true });
               }
             } catch (error) {
-              if (mounted) {
-                console.error("Error after sign in:", error);
-                setUser(null);
-              }
+              console.error("Error after sign in:", error);
+              setUser(null);
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -106,7 +95,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect, toast, location.pathname]);
+  }, [navigate, getRoleBasedRedirect]);
 
   return { user, setUser, isLoading, setIsLoading };
 };

@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,31 +16,54 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
+interface QueryResponse {
+  educators: number;
+  employers: number;
+  participants: number;
+  pendingApprovals: number;
+  activeExperiences: number;
+  matchedProjects: number;
+}
+
 const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery<DashboardStats>({
+  const { data: stats, isLoading } = useQuery<QueryResponse>({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const [
-        educatorsCount,
-        employersCount,
-        participantsCount,
-        unverifiedCount,
-        experiencesCount,
-        matchesCount
-      ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
-      ]);
+      const educatorsCount = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'educator');
+
+      const employersCount = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'employer');
+
+      const participantsCount = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'participant');
+
+      const unverifiedCount = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('verified', false);
+
+      const experiencesCount = await supabase
+        .from('educator_experiences')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'published');
+
+      const matchesCount = await supabase
+        .from('experience_matches')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'matched');
 
       return {
         educators: educatorsCount.count || 0,
