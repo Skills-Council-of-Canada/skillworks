@@ -130,6 +130,41 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_role_permissions: {
+        Row: {
+          admin_id: string
+          created_at: string
+          id: string
+          permission_level: Database["public"]["Enums"]["admin_permission_level"]
+          resource_type: Database["public"]["Enums"]["admin_resource_type"]
+          updated_at: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          id?: string
+          permission_level: Database["public"]["Enums"]["admin_permission_level"]
+          resource_type: Database["public"]["Enums"]["admin_resource_type"]
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          id?: string
+          permission_level?: Database["public"]["Enums"]["admin_permission_level"]
+          resource_type?: Database["public"]["Enums"]["admin_resource_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_role_permissions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           applicant_id: string
