@@ -63,7 +63,13 @@ const App = () => (
           <Route path="/participant-landing" element={<ParticipantLanding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/educator/register" element={<EducatorRegistration />} />
+          
+          {/* Protected educator registration route */}
+          <Route path="/educator/register" element={
+            <ProtectedRoute allowedRoles={["educator"]}>
+              <EducatorRegistration />
+            </ProtectedRoute>
+          } />
           
           {/* Protected employer routes */}
           <Route path="/employer" element={
