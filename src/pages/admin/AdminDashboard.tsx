@@ -16,9 +16,7 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
-interface CountResponse {
-  count: number | null;
-}
+type TableNames = 'profiles' | 'educator_experiences' | 'experience_matches';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -38,14 +36,14 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
-      const fetchCount = async (table: string, condition?: Record<string, any>): Promise<number> => {
-        const query = supabase.from(table).select('*', { count: 'exact', head: true });
+      const fetchCount = async (table: TableNames, condition?: Record<string, any>): Promise<number> => {
+        let query = supabase.from(table).select('*', { count: 'exact', head: true });
         if (condition) {
           Object.entries(condition).forEach(([key, value]) => {
-            query.eq(key, value);
+            query = query.eq(key, value);
           });
         }
-        const { count } = (await query) as { count: number | null };
+        const { count } = await query;
         return count || 0;
       };
 
