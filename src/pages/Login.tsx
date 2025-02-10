@@ -18,6 +18,7 @@ const Login = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
   const [searchParams] = useSearchParams();
   const [selectedPortal, setSelectedPortal] = useState<{ id: string; role: UserRole } | null>(() => {
+    // Get portal from URL param or previous selection
     const portal = searchParams.get("portal");
     if (portal) {
       return {
@@ -25,25 +26,29 @@ const Login = () => {
         role: portal as UserRole,
       };
     }
+    // If no portal in URL, redirect to index
+    navigate("/");
     return null;
   });
 
   useEffect(() => {
+    if (!selectedPortal) {
+      // If there's no portal selected, redirect to index
+      navigate("/");
+      return;
+    }
+
     if (user) {
       console.log("User detected in Login component:", user);
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Redirecting to:", redirectPath);
       navigate(redirectPath);
     }
-  }, [user, navigate, getRoleBasedRedirect]);
-
-  const handlePortalSelect = (portalId: string, role: UserRole) => {
-    setSelectedPortal({ id: portalId, role });
-  };
+  }, [user, selectedPortal, navigate, getRoleBasedRedirect]);
 
   const handleBack = () => {
+    // Always navigate back to the landing page for the selected portal
     if (selectedPortal) {
-      // Instead of going back to portal selection, navigate to the landing page
       navigate(`/${selectedPortal.id}-landing`);
     } else {
       navigate("/");
@@ -91,24 +96,24 @@ const Login = () => {
     }
   };
 
+  // If no portal is selected, we shouldn't render anything as useEffect will redirect
+  if (!selectedPortal) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      {!selectedPortal ? (
-        <PortalSelection onPortalSelect={handlePortalSelect} />
-      ) : (
-        <AuthForm
-          icon={User}
-          title={`${selectedPortal.id.charAt(0).toUpperCase() + selectedPortal.id.slice(1)} Portal`}
-          gradient="bg-white"
-          isLoading={isSubmitting}
-          onBack={handleBack}
-          onSubmit={handleAuthSubmit}
-          defaultEmail="employ@skillscouncil.ca"
-        />
-      )}
+      <AuthForm
+        icon={User}
+        title={`${selectedPortal.id.charAt(0).toUpperCase() + selectedPortal.id.slice(1)} Portal`}
+        gradient="bg-white"
+        isLoading={isSubmitting}
+        onBack={handleBack}
+        onSubmit={handleAuthSubmit}
+        defaultEmail="employ@skillscouncil.ca"
+      />
     </div>
   );
 };
 
 export default Login;
-
