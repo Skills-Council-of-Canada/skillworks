@@ -1,23 +1,41 @@
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
-  const { getRoleBasedRedirect } = useAuthRedirect();
 
   useEffect(() => {
-    // Only attempt to redirect if there is a user
-    if (user) {
-      const redirectPath = getRoleBasedRedirect(user.role);
-      navigate(redirectPath, { replace: true });
-    }
-  }, [user, navigate, getRoleBasedRedirect]);
+    // Only check if there's an active session, don't try to load profile
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        // If user is authenticated, redirect to their default route based on role
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile?.role) {
+          const redirectPath = profile.role === 'admin' 
+            ? '/admin/dashboard'
+            : profile.role === 'educator'
+            ? '/educator/dashboard'
+            : profile.role === 'employer'
+            ? '/employer/dashboard'
+            : '/participant/dashboard';
+            
+          navigate(redirectPath, { replace: true });
+        }
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
 
   // Show welcome screen for non-authenticated users without trying to load profile
   return (
