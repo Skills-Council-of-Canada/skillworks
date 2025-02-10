@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,34 +25,36 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery<DashboardStats>({
+  const fetchStats = async (): Promise<DashboardStats> => {
+    if (!user?.id) throw new Error('Not authenticated');
+
+    const fetchCount = async (query: any): Promise<number> => {
+      const { count } = (await query) as CountResult;
+      return count || 0;
+    };
+
+    const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
+      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator')),
+      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer')),
+      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant')),
+      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false)),
+      fetchCount(supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published')),
+      fetchCount(supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched'))
+    ]);
+
+    return {
+      educators,
+      employers,
+      participants,
+      pendingApprovals: unverified,
+      activeExperiences: experiences,
+      matchedProjects: matches
+    };
+  };
+
+  const { data: stats, isLoading } = useQuery({
     queryKey: ["admin-stats"],
-    queryFn: async () => {
-      if (!user?.id) throw new Error('Not authenticated');
-
-      const fetchCount = async (query: any): Promise<number> => {
-        const { count } = (await query) as CountResult;
-        return count || 0;
-      };
-
-      const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant')),
-        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false)),
-        fetchCount(supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published')),
-        fetchCount(supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched'))
-      ]);
-
-      return {
-        educators,
-        employers,
-        participants,
-        pendingApprovals: unverified,
-        activeExperiences: experiences,
-        matchedProjects: matches
-      };
-    },
+    queryFn: fetchStats,
     enabled: !!user?.id,
     meta: {
       onSettled: (data, error) => {
@@ -177,3 +180,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
