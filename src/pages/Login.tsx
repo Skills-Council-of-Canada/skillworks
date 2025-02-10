@@ -30,7 +30,6 @@ const Login = () => {
 
   useEffect(() => {
     if (user && !isSubmitting) {
-      // If the user just signed up as an educator, redirect to registration
       if (user.role === 'educator' && !searchParams.get('registered')) {
         navigate('/educator/registration');
         return;
@@ -60,8 +59,6 @@ const Login = () => {
       if (isSignUp) {
         await signup(email, password, selectedPortal.role);
         if (selectedPortal.role === 'educator') {
-          // Don't navigate here - let the useEffect handle it
-          // This prevents race conditions with auth state updates
           return;
         }
       } else {
@@ -70,11 +67,19 @@ const Login = () => {
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
-        toast({
-          variant: "destructive",
-          title: "Authentication Error",
-          description: error.message
-        });
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            variant: "destructive",
+            title: "Invalid Credentials",
+            description: "Please try using employ@skillscouncil.ca as the test account email."
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Authentication Error",
+            description: error.message
+          });
+        }
       } else {
         toast({
           variant: "destructive",
@@ -99,6 +104,7 @@ const Login = () => {
           isLoading={isSubmitting}
           onBack={handleBack}
           onSubmit={handleAuthSubmit}
+          defaultEmail="employ@skillscouncil.ca"
         />
       )}
     </div>

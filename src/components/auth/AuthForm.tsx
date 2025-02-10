@@ -15,6 +15,7 @@ interface AuthFormProps {
   isLoading: boolean;
   onBack: () => void;
   onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
+  defaultEmail?: string;
 }
 
 const AuthForm = ({
@@ -24,8 +25,9 @@ const AuthForm = ({
   isLoading,
   onBack,
   onSubmit,
+  defaultEmail = "",
 }: AuthFormProps) => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
