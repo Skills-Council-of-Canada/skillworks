@@ -27,7 +27,7 @@ const AdminLoginDialog = ({ showAdminLogin, setShowAdminLogin }: AdminLoginDialo
     setIsLoading(true);
     try {
       const response = await login(email, password);
-      if (response?.user?.role === 'admin') {
+      if (response && response.role === 'admin') {
         navigate("/admin", { replace: true });
         toast({
           title: "Welcome Admin",
