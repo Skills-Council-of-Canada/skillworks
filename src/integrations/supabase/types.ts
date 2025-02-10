@@ -79,6 +79,13 @@ export type Database = {
             foreignKeyName: "admin_experience_reviews_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "admin_experience_reviews_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -478,6 +485,13 @@ export type Database = {
             foreignKeyName: "educator_experiences_template_id_fkey"
             columns: ["template_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "educator_experiences_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -737,6 +751,13 @@ export type Database = {
             foreignKeyName: "experience_assignments_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_assignments_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -784,6 +805,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "educator_profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_co_educators_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
           },
           {
             foreignKeyName: "experience_co_educators_experience_id_fkey"
@@ -843,6 +871,13 @@ export type Database = {
             foreignKeyName: "experience_matches_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_matches_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -874,6 +909,13 @@ export type Database = {
           id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "experience_media_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
           {
             foreignKeyName: "experience_media_experience_id_fkey"
             columns: ["experience_id"]
@@ -916,6 +958,13 @@ export type Database = {
             foreignKeyName: "experience_milestones_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_milestones_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -950,6 +999,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "experience_prerequisites_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
           {
             foreignKeyName: "experience_prerequisites_experience_id_fkey"
             columns: ["experience_id"]
@@ -1002,6 +1058,13 @@ export type Database = {
             foreignKeyName: "experience_requests_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_requests_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -1049,6 +1112,13 @@ export type Database = {
             foreignKeyName: "experience_settings_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: true
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_settings_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: true
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -1089,6 +1159,13 @@ export type Database = {
             | null
         }
         Relationships: [
+          {
+            foreignKeyName: "experience_status_changes_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
           {
             foreignKeyName: "experience_status_changes_experience_id_fkey"
             columns: ["experience_id"]
@@ -1173,6 +1250,13 @@ export type Database = {
             foreignKeyName: "experience_teams_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_teams_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -1224,6 +1308,13 @@ export type Database = {
             foreignKeyName: "experience_updates_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "experience_updates_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
@@ -1261,6 +1352,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
           {
             foreignKeyName: "notifications_experience_id_fkey"
             columns: ["experience_id"]
@@ -1739,7 +1837,56 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      analytics_experiences: {
+        Row: {
+          completed_learners: number | null
+          completion_rate: number | null
+          created_at: string | null
+          educator_id: string | null
+          experience_id: string | null
+          status: Database["public"]["Enums"]["experience_status"] | null
+          title: string | null
+          total_learners: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educator_experiences_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_learner_participation: {
+        Row: {
+          active_learners: number | null
+          completed_experiences: number | null
+          month: string | null
+          ongoing_experiences: number | null
+        }
+        Relationships: []
+      }
+      analytics_project_matches: {
+        Row: {
+          match_rate: number | null
+          month: string | null
+          review_status:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          total_matches: number | null
+          total_projects: number | null
+        }
+        Relationships: []
+      }
+      analytics_user_registrations: {
+        Row: {
+          count: number | null
+          month: string | null
+          role: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_admin_audit_log: {
@@ -1763,6 +1910,32 @@ export type Database = {
       cleanup_expired_verification_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_experience_stats: {
+        Args: {
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          total_experiences: number
+          active_experiences: number
+          total_learners: number
+          avg_completion_rate: number
+          completion_count: number
+        }[]
+      }
+      get_registration_stats: {
+        Args: {
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          month: string
+          educators_count: number
+          employers_count: number
+          participants_count: number
+          total_count: number
+        }[]
       }
     }
     Enums: {

@@ -83,11 +83,7 @@ const App = () => (
           </Route>
 
           {/* Protected educator registration route */}
-          <Route path="/educator/register" element={
-            <ProtectedRoute allowedRoles={["educator"]}>
-              <EducatorRegistration />
-            </ProtectedRoute>
-          } />
+          <Route path="/educator/registration" element={<EducatorRegistration />} />
           
           {/* Protected employer routes */}
           <Route path="/employer" element={
