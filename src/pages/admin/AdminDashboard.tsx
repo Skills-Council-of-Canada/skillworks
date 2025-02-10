@@ -45,12 +45,12 @@ const AdminDashboard = () => {
         { data: activeExperiencesCount },
         { data: matchedProjectsCount }
       ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator') as Promise<CountQueryResponse>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer') as Promise<CountQueryResponse>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant') as Promise<CountQueryResponse>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false) as Promise<CountQueryResponse>,
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published') as Promise<CountQueryResponse>,
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched') as Promise<CountQueryResponse>
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator').then(result => result as CountQueryResponse),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer').then(result => result as CountQueryResponse),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant').then(result => result as CountQueryResponse),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false).then(result => result as CountQueryResponse),
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published').then(result => result as CountQueryResponse),
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched').then(result => result as CountQueryResponse)
       ]);
 
       return {
