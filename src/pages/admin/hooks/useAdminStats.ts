@@ -13,8 +13,6 @@ export interface DashboardStats {
   matchedProjects: number;
 }
 
-type CountResult = Promise<{ count: number | null; error: any }>;
-
 export const useAdminStats = (user: User | null) => {
   const { toast } = useToast();
 
@@ -23,7 +21,10 @@ export const useAdminStats = (user: User | null) => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const fetchCount = async (table: string, condition = {}): Promise<number> => {
+      const fetchCount = async (
+        table: "profiles" | "educator_experiences" | "experience_matches",
+        condition = {}
+      ): Promise<number> => {
         const { count, error } = await supabase
           .from(table)
           .select('*', { count: 'exact', head: true })
