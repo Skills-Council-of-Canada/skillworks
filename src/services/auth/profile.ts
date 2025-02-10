@@ -27,29 +27,39 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       if (now - lastErrorTime > ERROR_DEBOUNCE_MS) {
         console.error("Error fetching user profile:", error);
         lastErrorTime = now;
-        throw error;
       }
       return null;
     }
 
     if (!profile) {
-      console.log("No profile found for user");
-      return null;
+      console.log("No profile found for user, creating default profile");
+      // Create a default profile if none exists
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          id: session.user.id,
+          email: session.user.email,
+          role: session.user.user_metadata?.portal || 'participant',
+          name: session.user.email?.split('@')[0] || 'User'
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error("Error creating default profile:", createError);
+        return null;
+      }
+
+      return newProfile as User;
     }
 
     console.log("Profile data retrieved:", profile);
-    return {
-      id: profile.id,
-      email: profile.email,
-      role: profile.role as User['role'],
-      name: profile.name,
-    };
+    return profile as User;
   } catch (error) {
     const now = Date.now();
     if (now - lastErrorTime > ERROR_DEBOUNCE_MS) {
       console.error("Error in getUserProfile:", error);
       lastErrorTime = now;
-      throw error;
     }
     return null;
   }
