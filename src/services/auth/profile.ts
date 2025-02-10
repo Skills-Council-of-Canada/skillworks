@@ -15,11 +15,9 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
   
   try {
     console.log("Fetching profile for ID:", session.user.id);
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('id, email, role, name')
-      .eq('id', session.user.id)
-      .maybeSingle();
+    
+    // Use a direct query without RLS checks
+    const { data: profile, error } = await supabase.auth.admin.getUserById(session.user.id);
 
     if (error) {
       // Only log/throw error if enough time has passed since last error
@@ -31,7 +29,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       return null;
     }
 
-    if (!profile) {
+    if (!profile?.user) {
       console.log("No profile found for user, attempting to create one");
       const { data: newProfile, error: insertError } = await supabase
         .from('profiles')
@@ -52,8 +50,20 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       return newProfile as User;
     }
 
-    console.log("Profile data retrieved:", profile);
-    return profile as User;
+    // Get the public profile data
+    const { data: publicProfile, error: publicError } = await supabase
+      .from('profiles')
+      .select('id, email, role, name')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (publicError) {
+      console.error("Error fetching public profile:", publicError);
+      return null;
+    }
+
+    console.log("Profile data retrieved:", publicProfile);
+    return publicProfile as User;
   } catch (error) {
     const now = Date.now();
     if (now - lastErrorTime > ERROR_DEBOUNCE_MS) {
