@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -97,8 +98,20 @@ const AdminSettings = () => {
     },
   });
 
+  const parseSettingValue = (setting: SystemSetting) => {
+    try {
+      if (typeof setting.value === "string") {
+        return JSON.parse(setting.value);
+      }
+      return setting.value;
+    } catch (error) {
+      console.error("Error parsing setting value:", error);
+      return "";
+    }
+  };
+
   const renderSettingInput = (setting: SystemSetting) => {
-    const value = typeof setting.value === "string" ? JSON.parse(setting.value) : setting.value;
+    const value = parseSettingValue(setting);
 
     switch (setting.key) {
       case "global_notification_level":
@@ -136,7 +149,7 @@ const AdminSettings = () => {
           <div className="space-y-2">
             <Input
               type="number"
-              value={value.min_length}
+              value={value?.min_length || 8}
               onChange={(e) =>
                 updateSetting.mutate({
                   settingId: setting.id,
@@ -147,7 +160,7 @@ const AdminSettings = () => {
             />
             <div className="flex items-center space-x-2">
               <Switch
-                checked={value.require_special}
+                checked={value?.require_special || false}
                 onCheckedChange={(checked) =>
                   updateSetting.mutate({
                     settingId: setting.id,
