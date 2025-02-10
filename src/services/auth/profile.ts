@@ -31,6 +31,27 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       return null;
     }
 
+    if (!profile) {
+      console.log("No profile found for user, attempting to create one");
+      const { data: newProfile, error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          id: session.user.id,
+          email: session.user.email,
+          role: 'employer',
+          name: session.user.email?.split('@')[0] || 'User'
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error("Error creating profile:", insertError);
+        return null;
+      }
+
+      return newProfile as User;
+    }
+
     console.log("Profile data retrieved:", profile);
     return profile as User;
   } catch (error) {
