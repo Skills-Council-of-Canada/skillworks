@@ -23,22 +23,20 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
 
   const handleAdminLogin = async () => {
     try {
-      await login("admin@skillscouncil.ca", "Bloiselle5!")
-        .then((result) => {
-          if (result?.user?.role === 'admin') {
-            navigate("/admin", { replace: true });
-            toast({
-              title: "Success",
-              description: "Logged in as admin successfully",
-            });
-          } else {
-            toast({
-              title: "Error",
-              description: "Unauthorized access",
-              variant: "destructive",
-            });
-          }
+      const response = await login("admin@skillscouncil.ca", "Bloiselle5!");
+      if (response?.user?.role === 'admin') {
+        navigate("/admin", { replace: true });
+        toast({
+          title: "Success",
+          description: "Logged in as admin successfully",
         });
+      } else {
+        toast({
+          title: "Error",
+          description: "Unauthorized access",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Admin login failed:", error);
       toast({
