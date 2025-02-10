@@ -26,37 +26,43 @@ const AdminDashboard = () => {
     queryFn: async (): Promise<DashboardStats> => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      // Fetch each count separately to avoid complex joins
-      const fetchCount = async (table: string, condition?: string): Promise<number> => {
-        const query = supabase
-          .from(table)
-          .select('*', { count: 'exact', head: true });
-          
-        if (condition) {
-          query.eq(condition.split('=')[0], condition.split('=')[1]);
-        }
-        
-        const { count, error } = await query;
-        if (error) throw error;
-        return count || 0;
-      };
+      const educatorsQuery = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'educator');
 
-      const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
-        fetchCount('profiles', 'role=educator'),
-        fetchCount('profiles', 'role=employer'),
-        fetchCount('profiles', 'role=participant'),
-        fetchCount('profiles', 'verified=false'),
-        fetchCount('educator_experiences', 'status=published'),
-        fetchCount('experience_matches', 'status=matched')
-      ]);
+      const employersQuery = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'employer');
+
+      const participantsQuery = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'participant');
+
+      const unverifiedQuery = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('verified', false);
+
+      const experiencesQuery = await supabase
+        .from('educator_experiences')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'published');
+
+      const matchesQuery = await supabase
+        .from('experience_matches')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'matched');
 
       return {
-        educators,
-        employers,
-        participants,
-        pendingApprovals: unverified,
-        activeExperiences: experiences,
-        matchedProjects: matches
+        educators: educatorsQuery.count || 0,
+        employers: employersQuery.count || 0,
+        participants: participantsQuery.count || 0,
+        pendingApprovals: unverifiedQuery.count || 0,
+        activeExperiences: experiencesQuery.count || 0,
+        matchedProjects: matchesQuery.count || 0
       };
     },
     enabled: !!user?.id,
@@ -166,26 +172,7 @@ const AdminDashboard = () => {
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
         <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              title: "Approve Users",
-              icon: UserCheck,
-              onClick: () => navigate("/admin/users"),
-              description: `${stats?.pendingApprovals || 0} pending approvals`
-            },
-            {
-              title: "Review Experiences",
-              icon: ClipboardList,
-              onClick: () => navigate("/admin/experiences"),
-              description: "Review and manage experiences"
-            },
-            {
-              title: "View Reports",
-              icon: BarChart,
-              onClick: () => navigate("/admin/reports"),
-              description: "Access system analytics"
-            }
-          ].map((action, index) => (
+          {quickActions.map((action, index) => (
             <Card key={index} className="hover:bg-accent cursor-pointer" onClick={action.onClick}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{action.title}</CardTitle>
