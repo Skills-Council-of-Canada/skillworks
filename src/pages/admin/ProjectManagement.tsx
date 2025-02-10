@@ -56,14 +56,17 @@ const ProjectManagement = () => {
     }
   });
 
-  const handleStatusChange = async (projectId: string, newStatus: ProjectReviewStatus) => {
+  const handleStatusChange = async (projectId: string, newStatus: ProjectReviewStatus, feedback?: string) => {
     try {
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from("projects")
-        .update({ review_status: newStatus })
+        .update({ 
+          review_status: newStatus,
+          admin_feedback: feedback || null 
+        })
         .eq("id", projectId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       toast({
         title: "Success",
