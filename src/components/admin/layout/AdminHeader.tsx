@@ -23,8 +23,8 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
 
   const handleAdminLogin = async () => {
     try {
-      const response = await login("admin@skillscouncil.ca", "Bloiselle5!");
-      if (response && response.role === 'admin') {
+      const userResponse = await login("admin@skillscouncil.ca", "Bloiselle5!");
+      if (userResponse && userResponse.role === 'admin') {
         navigate("/admin", { replace: true });
         toast({
           title: "Success",
@@ -91,3 +91,4 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
     </header>
   );
 };
+
