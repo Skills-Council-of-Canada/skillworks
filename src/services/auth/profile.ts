@@ -10,22 +10,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
   }
   
   try {
-    // First verify the session is still valid
-    const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
-    
-    if (sessionError) {
-      console.error("Session error:", sessionError);
-      await supabase.auth.signOut();
-      return null;
-    }
-
-    if (!currentSession) {
-      console.log("No current session found");
-      await supabase.auth.signOut();
-      return null;
-    }
-
-    console.log("Session verified, fetching profile for ID:", session.user.id);
+    console.log("Fetching profile for ID:", session.user.id);
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('id, email, role, name')

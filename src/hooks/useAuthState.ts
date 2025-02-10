@@ -17,15 +17,14 @@ export const useAuthState = () => {
 
   const handleProfileError = async (error: Error) => {
     console.error("Profile error:", error);
-    await signOutUser();
+    // Don't automatically sign out, just show the error
     setUser(null);
     setIsLoading(false);
     toast({
-      title: "Error",
-      description: "There was an error with your account. Please try logging in again.",
+      title: "Profile Error",
+      description: "There was an error loading your profile. Please try again.",
       variant: "destructive",
     });
-    navigate('/login');
   };
 
   const handleProfileSuccess = (profile: User | null, isMounted: boolean) => {
@@ -33,6 +32,11 @@ export const useAuthState = () => {
 
     if (!profile) {
       console.error("No profile found");
+      toast({
+        title: "Profile Error",
+        description: "No profile found for your account. Please contact support.",
+        variant: "destructive",
+      });
       return;
     }
 
