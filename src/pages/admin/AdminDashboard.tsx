@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,20 +20,12 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      // Destructure the responses directly to avoid type recursion
-      const [
-        { count: educatorCount }, 
-        { count: employerCount }, 
-        { count: participantCount },
-        { count: unverifiedCount },
-        { count: experienceCount },
-        { count: matchCount }
-      ] = await Promise.all([
+      const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
@@ -44,12 +35,12 @@ const AdminDashboard = () => {
       ]);
 
       return {
-        educators: educatorCount || 0,
-        employers: employerCount || 0,
-        participants: participantCount || 0,
-        pendingApprovals: unverifiedCount || 0,
-        activeExperiences: experienceCount || 0,
-        matchedProjects: matchCount || 0
+        educators: educators.count || 0,
+        employers: employers.count || 0,
+        participants: participants.count || 0,
+        pendingApprovals: unverified.count || 0,
+        activeExperiences: experiences.count || 0,
+        matchedProjects: matches.count || 0
       };
     },
     enabled: !!user?.id,
