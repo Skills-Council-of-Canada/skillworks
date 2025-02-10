@@ -29,6 +29,7 @@ export const useAuthState = () => {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
+          // Only redirect if NOT on login or root path
           if (location.pathname !== '/login' && location.pathname !== '/') {
             navigate('/login');
           }
@@ -45,26 +46,19 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Only redirect if we're on login or root path
-            if (location.pathname === '/login' || location.pathname === '/') {
+            // Only redirect if we're on login or root path AND have a valid profile
+            if ((location.pathname === '/login' || location.pathname === '/') && profile.role) {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
               navigate(redirectPath, { replace: true });
             }
           } else {
-            console.log("No profile found for user, logging out");
-            await supabase.auth.signOut();
+            console.log("No profile found for user");
             setUser(null);
-            if (location.pathname !== '/login' && location.pathname !== '/') {
-              navigate('/login');
-            }
           }
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
-          if (location.pathname !== '/login' && location.pathname !== '/') {
-            navigate('/login');
-          }
         } finally {
           if (mounted) {
             setIsLoading(false);
@@ -79,7 +73,8 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            if (location.pathname !== '/login' && location.pathname !== '/') {
+            // Only redirect if NOT already on login
+            if (location.pathname !== '/login') {
               navigate('/login');
             }
             return;
@@ -97,9 +92,6 @@ export const useAuthState = () => {
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
-              if (location.pathname !== '/login' && location.pathname !== '/') {
-                navigate('/login');
-              }
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -112,9 +104,6 @@ export const useAuthState = () => {
         if (mounted) {
           setUser(null);
           setIsLoading(false);
-          if (location.pathname !== '/login' && location.pathname !== '/') {
-            navigate('/login');
-          }
         }
       }
     };
@@ -131,4 +120,3 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
-
