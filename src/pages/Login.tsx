@@ -29,12 +29,16 @@ const Login = () => {
   });
 
   useEffect(() => {
+    // Only redirect if we have a user and we're not in the middle of submitting
     if (user && !isSubmitting) {
+      console.log("Login - User detected:", user);
       if (user.role === 'educator' && !searchParams.get('registered')) {
+        console.log("Login - Redirecting to educator registration");
         navigate('/educator/registration');
         return;
       }
       const redirectPath = getRoleBasedRedirect(user.role);
+      console.log("Login - Redirecting to:", redirectPath);
       navigate(redirectPath, { replace: true });
     }
   }, [user, navigate, isSubmitting, getRoleBasedRedirect, searchParams]);
@@ -71,7 +75,7 @@ const Login = () => {
           toast({
             variant: "destructive",
             title: "Invalid Credentials",
-            description: "Please try using employ@skillscouncil.ca as the test account email."
+            description: "Please check your email and password and try again."
           });
         } else {
           toast({
