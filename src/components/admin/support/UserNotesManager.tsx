@@ -54,7 +54,16 @@ export function UserNotesManager() {
 
   const addNote = useMutation({
     mutationFn: async (note: Partial<UserSupportNote>) => {
-      const { error } = await supabase.from("user_support_notes").insert(note);
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
+      const { error } = await supabase.from("user_support_notes").insert({
+        user_id: note.user_id!,
+        note_type: note.note_type!,
+        content: note.content!,
+        severity: note.severity,
+        created_by: userData.user.id,
+      });
       if (error) throw error;
     },
     onSuccess: () => {

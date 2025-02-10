@@ -1,7 +1,7 @@
 
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
-export type TicketCategory = 'technical' | 'approval' | 'experience' | 'other';
+export type TicketCategory = 'technical' | 'billing' | 'feature_request' | 'other';
 
 export interface SupportTicket {
   id: string;
@@ -37,7 +37,7 @@ export interface KnowledgeBaseArticle {
   view_count: number;
   created_at: string;
   updated_at: string;
-  tags: string[];
+  tags?: string[];
 }
 
 export interface UserSupportNote {

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Send } from "lucide-react";
-import type { SupportTicket, TicketMessage } from "@/types/support";
+import type { SupportTicket, TicketMessage, TicketStatus } from "@/types/support";
 
 interface TicketDetailsDialogProps {
   ticket: SupportTicket | null;
@@ -56,7 +55,7 @@ export function TicketDetailsDialog({
   });
 
   const updateTicketStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status }: { id: string; status: TicketStatus }) => {
       const { error } = await supabase
         .from("support_tickets")
         .update({ status })
@@ -75,10 +74,14 @@ export function TicketDetailsDialog({
   const sendMessage = useMutation({
     mutationFn: async () => {
       if (!ticket) return;
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
       const { error } = await supabase.from("ticket_messages").insert({
         ticket_id: ticket.id,
         message: newMessage,
         is_internal: isInternal,
+        sender_id: userData.user.id,
       });
       if (error) throw error;
     },

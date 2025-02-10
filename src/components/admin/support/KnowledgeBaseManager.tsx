@@ -66,16 +66,30 @@ export function KnowledgeBaseManager() {
 
   const handleSave = useMutation({
     mutationFn: async (article: Partial<KnowledgeBaseArticle>) => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
       if (editingArticle) {
         const { error } = await supabase
           .from("knowledge_base_articles")
-          .update(article)
+          .update({
+            title: article.title,
+            content: article.content,
+            category: article.category,
+            is_published: article.is_published,
+          })
           .eq("id", editingArticle.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("knowledge_base_articles")
-          .insert(article);
+          .insert({
+            title: article.title!,
+            content: article.content!,
+            category: article.category!,
+            created_by: userData.user.id,
+            is_published: article.is_published || false,
+          });
         if (error) throw error;
       }
     },
