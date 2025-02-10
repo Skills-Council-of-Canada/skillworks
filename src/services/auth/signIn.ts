@@ -38,7 +38,7 @@ export const signInUser = async (email: string, password: string) => {
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: 'employer',
+            role: 'participant', // Default to participant role if none specified
             name: email.split('@')[0]
           });
           
