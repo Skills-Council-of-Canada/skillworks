@@ -25,11 +25,11 @@ export const useAuthState = () => {
         
         if (!mounted) return;
 
+        // If no session, only redirect if not on public routes
         if (!session?.user) {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
-          // Only redirect if NOT on login or root path
           if (location.pathname !== '/login' && location.pathname !== '/') {
             navigate('/login');
           }
@@ -46,19 +46,22 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Only redirect if we're on login or root path AND have a valid profile
-            if ((location.pathname === '/login' || location.pathname === '/') && profile.role) {
+            // Only redirect if we're on login/root AND have a valid profile
+            if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
-              navigate(redirectPath, { replace: true });
+              navigate(redirectPath);
             }
           } else {
             console.log("No profile found for user");
             setUser(null);
+            // Don't redirect here, let the component handle no-profile state
           }
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
+          // On profile error, clear session to force re-auth
+          await supabase.auth.signOut();
         } finally {
           if (mounted) {
             setIsLoading(false);
@@ -73,7 +76,6 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            // Only redirect if NOT already on login
             if (location.pathname !== '/login') {
               navigate('/login');
             }
@@ -87,11 +89,12 @@ export const useAuthState = () => {
                 setUser(profile);
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
-                navigate(redirectPath, { replace: true });
+                navigate(redirectPath);
               }
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
+              await supabase.auth.signOut();
             } finally {
               if (mounted) {
                 setIsLoading(false);
