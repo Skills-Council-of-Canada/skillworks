@@ -59,8 +59,8 @@ const App = () => (
         <Sonner />
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/home" element={<Index />} />
           <Route path="/educator-landing" element={<EducatorLanding />} />
           <Route path="/employer-landing" element={<EmployerLanding />} />
           <Route path="/participant-landing" element={<ParticipantLanding />} />
@@ -137,4 +137,3 @@ const App = () => (
 );
 
 export default App;
-
