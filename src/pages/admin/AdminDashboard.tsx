@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +23,6 @@ const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      // Verify admin role before fetching
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')

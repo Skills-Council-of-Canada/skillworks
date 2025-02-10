@@ -41,7 +41,7 @@ interface Experience {
 
 const ExperienceOversight = () => {
   const { toast } = useToast();
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<Experience['approval_status'] | ''>('');
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
