@@ -1362,8 +1362,51 @@ export type Database = {
           },
         ]
       }
+      project_reviews: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          id: string
+          project_id: string
+          reviewer_id: string
+          status: Database["public"]["Enums"]["project_review_status"]
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          project_id: string
+          reviewer_id: string
+          status: Database["public"]["Enums"]["project_review_status"]
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          project_id?: string
+          reviewer_id?: string
+          status?: Database["public"]["Enums"]["project_review_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
+          admin_feedback: string | null
           certifications_required: string[] | null
           created_at: string
           description: string
@@ -1373,8 +1416,14 @@ export type Database = {
           id: string
           industry: string | null
           location_type: string
+          modification_requested: string | null
           positions: number
           project_type: string | null
+          review_status:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           safety_requirements: string[] | null
           search_vector: unknown | null
           site_address: string | null
@@ -1386,6 +1435,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_feedback?: string | null
           certifications_required?: string[] | null
           created_at?: string
           description: string
@@ -1395,8 +1445,14 @@ export type Database = {
           id?: string
           industry?: string | null
           location_type: string
+          modification_requested?: string | null
           positions: number
           project_type?: string | null
+          review_status?:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           safety_requirements?: string[] | null
           search_vector?: unknown | null
           site_address?: string | null
@@ -1408,6 +1464,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_feedback?: string | null
           certifications_required?: string[] | null
           created_at?: string
           description?: string
@@ -1417,8 +1474,14 @@ export type Database = {
           id?: string
           industry?: string | null
           location_type?: string
+          modification_requested?: string | null
           positions?: number
           project_type?: string | null
+          review_status?:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           safety_requirements?: string[] | null
           search_vector?: unknown | null
           site_address?: string | null
@@ -1435,6 +1498,13 @@ export type Database = {
             columns: ["employer_id"]
             isOneToOne: false
             referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1706,6 +1776,11 @@ export type Database = {
         | "draft"
         | "pending_approval"
         | "published"
+      project_review_status:
+        | "pending_review"
+        | "approved"
+        | "rejected"
+        | "needs_modification"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
       user_status: "pending" | "approved" | "rejected" | "suspended"
     }
