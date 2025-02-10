@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
@@ -26,7 +27,13 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       if (error) {
         console.error("Login error details:", error);
         // Handle specific error cases
-        if (error.message === "Invalid login credentials") {
+        if (error.message.includes('Email not confirmed')) {
+          toast({
+            title: "Email Not Confirmed",
+            description: "Please check your email for a confirmation link. A new confirmation email has been sent.",
+            variant: "destructive",
+          });
+        } else if (error.message === "Invalid login credentials") {
           toast({
             title: "Login Failed",
             description: "Invalid email or password. Please try again.",
@@ -48,7 +55,6 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: "You have successfully logged in.",
       });
       
-      // Navigate to the appropriate route after successful login
       navigate("/employer");
     } catch (error) {
       console.error("Login error:", error);
