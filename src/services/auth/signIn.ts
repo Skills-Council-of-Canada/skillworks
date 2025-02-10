@@ -33,7 +33,7 @@ export const signInUser = async (email: string, password: string) => {
         }
       }
       
-      throw signInError;
+      return { data: null, error: signInError };
     }
 
     // If sign in succeeds, get profile but don't create if missing

@@ -1,14 +1,15 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
-import { UserRole } from "@/types/auth";
+import { User, UserRole } from "@/types/auth";
 import { useNavigate } from "react-router-dom";
 
 export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User | null> => {
     try {
       console.log("Attempting login with email:", email);
       setIsLoading(true);
@@ -19,10 +20,10 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
           description: "Please enter both email and password",
           variant: "destructive",
         });
-        return;
+        return null;
       }
 
-      const { error } = await signInUser(email, password);
+      const { data, error } = await signInUser(email, password);
       if (error) {
         console.error("Login error details:", error);
         
@@ -46,17 +47,28 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
             variant: "destructive",
           });
         }
-        return;
+        return null;
       }
 
-      console.log("Login successful");
+      if (!data.user) {
+        return null;
+      }
+
+      // Create user object from the response
+      const user: User = {
+        id: data.user.id,
+        email: data.user.email || '',
+        role: 'admin', // This should be fetched from your profiles table in a real app
+        name: data.user.email || 'Admin User'
+      };
+
+      console.log("Login successful", user);
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
       
-      // After successful login, navigate based on role
-      navigate("/employer");
+      return user;
     } catch (error) {
       console.error("Login error:", error);
       const authError = error as AuthError;
@@ -65,6 +77,7 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: authError.message || "An error occurred during login",
         variant: "destructive",
       });
+      return null;
     } finally {
       setIsLoading(false);
     }
