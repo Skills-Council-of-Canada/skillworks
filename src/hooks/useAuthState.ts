@@ -15,6 +15,11 @@ export const useAuthState = () => {
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
+  // Define public routes that don't require authentication
+  const isPublicRoute = (path: string) => {
+    return path.match(/^\/(login|employer-landing|educator-landing|participant-landing|)$/);
+  };
+
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
@@ -29,7 +34,8 @@ export const useAuthState = () => {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
-          if (!location.pathname.match(/^\/(login|)$/)) {
+          // Only redirect to login if we're not on a public route
+          if (!isPublicRoute(location.pathname)) {
             navigate('/login');
           }
           return;
@@ -54,15 +60,14 @@ export const useAuthState = () => {
           } else {
             console.log("No profile found for user");
             setUser(null);
-            if (!location.pathname.match(/^\/(login|)$/)) {
+            if (!isPublicRoute(location.pathname)) {
               navigate('/login');
             }
           }
         } catch (error) {
           console.error("Profile error:", error);
-          // Don't clear the session on profile errors, just set user to null
           setUser(null);
-          if (!location.pathname.match(/^\/(login|)$/)) {
+          if (!isPublicRoute(location.pathname)) {
             navigate('/login');
           }
         } finally {
@@ -79,7 +84,7 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            if (!location.pathname.match(/^\/(login|)$/)) {
+            if (!isPublicRoute(location.pathname)) {
               navigate('/login');
             }
             return;
@@ -97,7 +102,7 @@ export const useAuthState = () => {
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
-              if (!location.pathname.match(/^\/(login|)$/)) {
+              if (!isPublicRoute(location.pathname)) {
                 navigate('/login');
               }
             } finally {
