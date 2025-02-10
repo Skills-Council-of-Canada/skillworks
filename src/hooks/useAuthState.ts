@@ -41,9 +41,8 @@ export const useAuthState = () => {
           if (profile) {
             console.log("Profile found:", profile);
             setUser(profile);
-            
-            // Only redirect if we're on the login page
-            if (location.pathname === '/login') {
+            // Redirect if we're on the login page or root
+            if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting to:", redirectPath);
               navigate(redirectPath, { replace: true });
@@ -51,10 +50,21 @@ export const useAuthState = () => {
           } else {
             console.log("No profile found for user");
             setUser(null);
+            if (location.pathname !== '/login') {
+              navigate('/login');
+            }
           }
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
+          toast({
+            title: "Error",
+            description: "Failed to load user profile. Please try logging in again.",
+            variant: "destructive",
+          });
+          if (location.pathname !== '/login') {
+            navigate('/login');
+          }
         } finally {
           if (mounted) {
             setIsLoading(false);
@@ -82,15 +92,18 @@ export const useAuthState = () => {
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
                 navigate(redirectPath, { replace: true });
+              } else {
+                throw new Error("No profile found after sign in");
               }
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
               toast({
                 title: "Error",
-                description: "Failed to load user profile",
+                description: "Failed to load user profile. Please try logging in again.",
                 variant: "destructive",
               });
+              navigate('/login');
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -103,6 +116,9 @@ export const useAuthState = () => {
         if (mounted) {
           setUser(null);
           setIsLoading(false);
+          if (location.pathname !== '/login') {
+            navigate('/login');
+          }
         }
       }
     };
@@ -115,7 +131,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect, location.pathname]);
+  }, [navigate, getRoleBasedRedirect, location.pathname, toast]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
