@@ -52,7 +52,7 @@ export const useAuthState = () => {
             setUser(profile);
             
             // Only redirect from login/root when we have a valid profile
-            if (location.pathname.match(/^\/(login|)$/)) {
+            if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
               navigate(redirectPath);
