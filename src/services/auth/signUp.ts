@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { UserRole } from "@/types/auth";
 
 export const signUpUser = async (email: string, password: string, portal: string) => {
   console.log("Signing up user with portal:", portal);

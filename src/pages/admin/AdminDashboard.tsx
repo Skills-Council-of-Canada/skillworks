@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,23 +26,27 @@ const AdminDashboard = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
-      ]);
+      const fetchCounts = async () => {
+        const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+          supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+          supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+        ]);
 
-      return {
-        educators: educators.count || 0,
-        employers: employers.count || 0,
-        participants: participants.count || 0,
-        pendingApprovals: unverified.count || 0,
-        activeExperiences: experiences.count || 0,
-        matchedProjects: matches.count || 0
+        return {
+          educators: educators.count || 0,
+          employers: employers.count || 0,
+          participants: participants.count || 0,
+          pendingApprovals: unverified.count || 0,
+          activeExperiences: experiences.count || 0,
+          matchedProjects: matches.count || 0
+        };
       };
+
+      return fetchCounts();
     },
     enabled: !!user?.id,
     meta: {
