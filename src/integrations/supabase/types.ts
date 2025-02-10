@@ -1606,6 +1606,50 @@ export type Database = {
           },
         ]
       }
+      project_status_changes: {
+        Row: {
+          admin_id: string
+          created_at: string
+          feedback: string | null
+          id: string
+          new_status: Database["public"]["Enums"]["project_review_status"]
+          old_status:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          project_id: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          new_status: Database["public"]["Enums"]["project_review_status"]
+          old_status?:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          project_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["project_review_status"]
+          old_status?:
+            | Database["public"]["Enums"]["project_review_status"]
+            | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_status_changes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           admin_feedback: string | null
