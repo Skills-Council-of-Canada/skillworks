@@ -11,7 +11,7 @@ const Index = () => {
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      if (session) {
         navigate("/login", { replace: true });
       }
     };

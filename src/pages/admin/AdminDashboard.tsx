@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,53 +20,39 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
-    queryFn: async (): Promise<DashboardStats> => {
+    queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const educatorsQuery = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'educator');
-
-      const employersQuery = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'employer');
-
-      const participantsQuery = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'participant');
-
-      const unverifiedQuery = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('verified', false);
-
-      const experiencesQuery = await supabase
-        .from('educator_experiences')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'published');
-
-      const matchesQuery = await supabase
-        .from('experience_matches')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'matched');
+      const [
+        educatorsCount,
+        employersCount,
+        participantsCount,
+        unverifiedCount,
+        experiencesCount,
+        matchesCount
+      ] = await Promise.all([
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+      ]);
 
       return {
-        educators: educatorsQuery.count || 0,
-        employers: employersQuery.count || 0,
-        participants: participantsQuery.count || 0,
-        pendingApprovals: unverifiedQuery.count || 0,
-        activeExperiences: experiencesQuery.count || 0,
-        matchedProjects: matchesQuery.count || 0
+        educators: educatorsCount.count || 0,
+        employers: employersCount.count || 0,
+        participants: participantsCount.count || 0,
+        pendingApprovals: unverifiedCount.count || 0,
+        activeExperiences: experiencesCount.count || 0,
+        matchedProjects: matchesCount.count || 0
       };
     },
     enabled: !!user?.id,
     meta: {
-      onSettled: (data, error) => {
+      onSettled: (_, error) => {
         if (error) {
           console.error('Error loading stats:', error);
           toast({
@@ -172,7 +157,26 @@ const AdminDashboard = () => {
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
         <div className="grid gap-4 md:grid-cols-3">
-          {quickActions.map((action, index) => (
+          {[
+            {
+              title: "Approve Users",
+              icon: UserCheck,
+              onClick: () => navigate("/admin/users"),
+              description: `${stats?.pendingApprovals || 0} pending approvals`
+            },
+            {
+              title: "Review Experiences",
+              icon: ClipboardList,
+              onClick: () => navigate("/admin/experiences"),
+              description: "Review and manage experiences"
+            },
+            {
+              title: "View Reports",
+              icon: BarChart,
+              onClick: () => navigate("/admin/reports"),
+              description: "Access system analytics"
+            }
+          ].map((action, index) => (
             <Card key={index} className="hover:bg-accent cursor-pointer" onClick={action.onClick}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{action.title}</CardTitle>
