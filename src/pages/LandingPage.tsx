@@ -5,10 +5,18 @@ import { ArrowRight, Briefcase, Users, CheckCircle, LogIn } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePortalSelect = (portalId: string) => {
     switch (portalId) {
@@ -26,14 +34,17 @@ const LandingPage = () => {
     }
   };
 
-  const handleAdminLogin = async () => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
     try {
-      await login("admin@skillscouncil.ca", "Bloiselle5!");
+      await login(email, password);
       navigate("/admin");
       toast({
         title: "Welcome Admin",
         description: "You have successfully logged in.",
       });
+      setShowAdminLogin(false);
     } catch (error) {
       console.error("Admin login failed:", error);
       toast({
@@ -41,6 +52,8 @@ const LandingPage = () => {
         description: "Please check your credentials and try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,13 +67,48 @@ const LandingPage = () => {
             variant="ghost"
             size="sm"
             className="gap-2"
-            onClick={handleAdminLogin}
+            onClick={() => setShowAdminLogin(true)}
           >
             <LogIn className="h-4 w-4" />
             Admin Login
           </Button>
         </div>
       </header>
+
+      {/* Admin Login Dialog */}
+      <Dialog open={showAdminLogin} onOpenChange={setShowAdminLogin}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Admin Login</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Portal Selection Section */}
       <section className="pt-24 pb-8 px-4">
@@ -192,3 +240,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
