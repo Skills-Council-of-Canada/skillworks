@@ -2207,6 +2207,14 @@ export type Database = {
       }
     }
     Enums: {
+      admin_permission_level: "read" | "write" | "manage"
+      admin_resource_type:
+        | "users"
+        | "experiences"
+        | "projects"
+        | "reports"
+        | "settings"
+        | "support"
       experience_approval_status:
         | "pending_review"
         | "approved"
