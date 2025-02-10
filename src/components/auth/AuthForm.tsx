@@ -17,13 +17,6 @@ interface AuthFormProps {
   onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
 }
 
-const DEMO_ACCOUNTS = [
-  'admin@example.com',
-  'educator@example.com',
-  'employer@example.com',
-  'participant@example.com'
-];
-
 const AuthForm = ({
   icon: Icon,
   title,
@@ -45,12 +38,7 @@ const AuthForm = ({
     setError(null);
 
     try {
-      // For demo accounts, use a standard password
-      if (DEMO_ACCOUNTS.includes(email.toLowerCase())) {
-        await onSubmit(email.toLowerCase(), "demo123", isSigningUp);
-      } else {
-        await onSubmit(email, password, isSigningUp);
-      }
+      await onSubmit(email, password, isSigningUp);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -113,7 +101,7 @@ const AuthForm = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-background/50 pr-10"
-                  required={!DEMO_ACCOUNTS.includes(email.toLowerCase())}
+                  required
                 />
                 <Button
                   type="button"
@@ -129,11 +117,6 @@ const AuthForm = ({
                   )}
                 </Button>
               </div>
-              {DEMO_ACCOUNTS.includes(email.toLowerCase()) && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  This is a demo account. The password field is optional.
-                </p>
-              )}
             </div>
 
             <Button

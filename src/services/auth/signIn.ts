@@ -41,7 +41,7 @@ export const signInUser = async (email: string, password: string) => {
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: 'employer', // Set correct default role based on sign in context
+            role: 'participant', // Default role if none specified
             name: email.split('@')[0]
           });
           
