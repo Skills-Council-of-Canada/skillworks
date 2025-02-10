@@ -20,35 +20,35 @@ export const signInUser = async (email: string, password: string) => {
       throw signInError;
     }
 
-    // If sign in succeeds, verify profile exists
+    // If sign in succeeds, verify profile exists but handle errors gracefully
     if (data.user) {
-      console.log("Sign in successful, verifying profile");
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, role')
-        .eq('id', data.user.id)
-        .maybeSingle();
-          
-      if (profileError) {
-        console.error("Error fetching profile:", profileError);
-        throw profileError;
-      }
-
-      if (!profile) {
-        console.log("Creating missing profile");
-        const { error: insertError } = await supabase
+      try {
+        console.log("Sign in successful, verifying profile");
+        const { data: profile } = await supabase
           .from('profiles')
-          .insert({
-            id: data.user.id,
-            email: normalizedEmail,
-            role: 'participant', // Default role if none specified
-            name: email.split('@')[0]
-          });
+          .select('id, role')
+          .eq('id', data.user.id)
+          .single();
           
-        if (insertError) {
-          console.error("Error creating profile:", insertError);
-          throw insertError;
+        if (!profile) {
+          console.log("Creating missing profile");
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: data.user.id,
+              email: normalizedEmail,
+              role: 'participant', // Default role if none specified
+              name: email.split('@')[0]
+            });
+            
+          if (insertError) {
+            console.error("Error creating profile:", insertError);
+            // Continue even if profile creation fails - don't block login
+          }
         }
+      } catch (profileError) {
+        console.error("Profile verification error:", profileError);
+        // Continue even if profile check fails - don't block login
       }
     }
       
