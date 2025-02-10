@@ -45,13 +45,15 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
+            // Only redirect if we're on login or root path
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
-              navigate(redirectPath);
+              navigate(redirectPath, { replace: true });
             }
           } else {
-            console.log("No profile found for user");
+            console.log("No profile found for user, logging out");
+            await supabase.auth.signOut();
             setUser(null);
             if (location.pathname !== '/login' && location.pathname !== '/') {
               navigate('/login');
@@ -90,7 +92,7 @@ export const useAuthState = () => {
                 setUser(profile);
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
-                navigate(redirectPath);
+                navigate(redirectPath, { replace: true });
               }
             } catch (error) {
               console.error("Error after sign in:", error);
@@ -129,3 +131,4 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
+

@@ -16,19 +16,18 @@ export interface DashboardStats {
 export const useAdminStats = (user: User | null) => {
   const { toast } = useToast();
 
-  return useQuery<DashboardStats>({
+  return useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const queries = [
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
-      ];
+      type CountResult = { count: number | null };
+
+      const fetchCount = async (query: any): Promise<number> => {
+        const { count, error } = await query;
+        if (error) throw error;
+        return count || 0;
+      };
 
       const [
         educatorsCount,
@@ -37,15 +36,22 @@ export const useAdminStats = (user: User | null) => {
         unverifiedCount,
         experiencesCount,
         matchesCount
-      ] = await Promise.all(queries);
+      ] = await Promise.all([
+        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator')),
+        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer')),
+        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant')),
+        fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false)),
+        fetchCount(supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published')),
+        fetchCount(supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched'))
+      ]);
 
       return {
-        educators: educatorsCount.count || 0,
-        employers: employersCount.count || 0,
-        participants: participantsCount.count || 0,
-        pendingApprovals: unverifiedCount.count || 0,
-        activeExperiences: experiencesCount.count || 0,
-        matchedProjects: matchesCount.count || 0
+        educators: educatorsCount,
+        employers: employersCount,
+        participants: participantsCount,
+        pendingApprovals: unverifiedCount,
+        activeExperiences: experiencesCount,
+        matchedProjects: matchesCount
       };
     },
     enabled: !!user?.id,
