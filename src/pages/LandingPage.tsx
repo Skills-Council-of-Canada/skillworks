@@ -1,10 +1,14 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle } from "lucide-react";
+import { ArrowRight, Briefcase, Users, CheckCircle, LogIn } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handlePortalSelect = (portalId: string) => {
     switch (portalId) {
@@ -22,12 +26,39 @@ const LandingPage = () => {
     }
   };
 
+  const handleAdminLogin = async () => {
+    try {
+      await login("admin@skillscouncil.ca", "Bloiselle5!");
+      navigate("/admin");
+      toast({
+        title: "Welcome Admin",
+        description: "You have successfully logged in.",
+      });
+    } catch (error) {
+      console.error("Admin login failed:", error);
+      toast({
+        title: "Login Failed",
+        description: "Please check your credentials and try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="text-2xl font-bold text-primary">TradesConnect</div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2"
+            onClick={handleAdminLogin}
+          >
+            <LogIn className="h-4 w-4" />
+            Admin Login
+          </Button>
         </div>
       </header>
 
