@@ -65,8 +65,7 @@ const Login = () => {
           return;
         }
       } else {
-        const { error } = await login(email, password);
-        if (error) throw error;
+        await login(email, password);
       }
     } catch (error) {
       console.error("Auth failed:", error);

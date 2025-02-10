@@ -21,35 +21,39 @@ export const useAdminStats = (user: User | null) => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const educatorsCount = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'educator');
-
-      const employersCount = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'employer');
-
-      const participantsCount = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'participant');
-
-      const unverifiedCount = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('verified', false);
-
-      const experiencesCount = await supabase
-        .from('educator_experiences')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'published');
-
-      const matchesCount = await supabase
-        .from('experience_matches')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'matched');
+      const [
+        educatorsCount,
+        employersCount,
+        participantsCount,
+        unverifiedCount,
+        experiencesCount,
+        matchesCount
+      ] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'educator'),
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'employer'),
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'participant'),
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('verified', false),
+        supabase
+          .from('educator_experiences')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'published'),
+        supabase
+          .from('experience_matches')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'matched')
+      ]);
 
       return {
         educators: educatorsCount.count || 0,
