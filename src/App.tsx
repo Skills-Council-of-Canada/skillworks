@@ -25,6 +25,14 @@ import AdminSupport from "./pages/admin/AdminSupport";
 
 // Employer routes
 import EmployerLayout from "./pages/employer/EmployerLayout";
+import EmployerDashboard from "./pages/employer/EmployerDashboard";
+import ProjectManagement from "./pages/employer/ProjectManagement";
+import ApplicationsManagement from "./pages/employer/ApplicationsManagement";
+import MessagesPage from "./pages/employer/MessagesPage";
+import ResourceCenter from "./pages/employer/ResourceCenter";
+import ProfileSettings from "./pages/employer/ProfileSettings";
+import CreateProject from "./pages/employer/CreateProject";
+import ProjectDetails from "./pages/employer/ProjectDetails";
 
 const queryClient = new QueryClient();
 
@@ -71,7 +79,15 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/employer/dashboard" />} />
+            <Route index element={<EmployerDashboard />} />
+            <Route path="dashboard" element={<EmployerDashboard />} />
+            <Route path="projects" element={<ProjectManagement />} />
+            <Route path="applications" element={<ApplicationsManagement />} />
+            <Route path="messages" element={<MessagesPage />} />
+            <Route path="resources" element={<ResourceCenter />} />
+            <Route path="settings" element={<ProfileSettings />} />
+            <Route path="create-project" element={<CreateProject />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
           </Route>
 
           {/* Catch all route */}
