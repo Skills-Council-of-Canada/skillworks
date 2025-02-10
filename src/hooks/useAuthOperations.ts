@@ -62,21 +62,12 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       console.log("Attempting signup with email:", email, "and role:", role);
       setIsLoading(true);
       
-      // First check if user exists
-      const { data: signInData, error: signInError } = await signInUser(email, password);
+      // First attempt to sign up
+      const { error: signUpError } = await signUpUser(email, password, role);
       
-      if (!signInError && signInData) {
-        toast({
-          title: "Account Exists",
-          description: "This email is already registered. Please login instead.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await signUpUser(email, password, role);
-      if (error) {
-        if (error.message === "User already registered") {
+      if (signUpError) {
+        // If user already exists, show appropriate message
+        if (signUpError.message.includes("User already registered")) {
           toast({
             title: "Account Exists",
             description: "This email is already registered. Please login instead.",
@@ -84,7 +75,7 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
           });
           return;
         }
-        throw error;
+        throw signUpError;
       }
 
       console.log("Signup successful");
