@@ -2210,6 +2210,10 @@ export type Database = {
         }
         Returns: number
       }
+      check_user_auth: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       cleanup_expired_verification_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
