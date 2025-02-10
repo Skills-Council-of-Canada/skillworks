@@ -5,14 +5,35 @@ export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
     const normalizedEmail = email.toLowerCase();
+    const isDemoAccount = normalizedEmail.endsWith('@example.com') || 
+                         normalizedEmail.endsWith('@skillscouncil.ca');
+    
+    // Use demo password for demo accounts if no password provided
+    const finalPassword = isDemoAccount && !password ? "demo123" : password;
     
     // Try to sign in
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: normalizedEmail,
-      password,
+      password: finalPassword,
     });
 
     if (signInError) {
+      // For demo accounts, try with the default password
+      if (isDemoAccount && password !== "demo123") {
+        console.log("Demo account login failed, trying with default password");
+        const { data: demoData, error: demoError } = await supabase.auth.signInWithPassword({
+          email: normalizedEmail,
+          password: "demo123",
+        });
+        
+        if (demoError) {
+          console.error("Demo account login failed:", demoError);
+          throw demoError;
+        }
+        
+        return { data: demoData, error: null };
+      }
+      
       console.error("Sign in error:", signInError);
       throw signInError;
     }
@@ -38,8 +59,8 @@ export const signInUser = async (email: string, password: string) => {
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: 'participant',
-            name: email.split('@')[0]
+            role: isDemoAccount ? 'admin' : 'participant',
+            name: isDemoAccount ? 'Admin User' : email.split('@')[0]
           });
           
         if (insertError) {
