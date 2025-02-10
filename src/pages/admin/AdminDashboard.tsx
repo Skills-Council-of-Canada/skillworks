@@ -25,14 +25,7 @@ const AdminDashboard = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const [
-        educatorCount,
-        employerCount,
-        participantCount,
-        pendingCount,
-        experienceCount,
-        matchCount
-      ] = await Promise.all([
+      const counts = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
@@ -42,12 +35,12 @@ const AdminDashboard = () => {
       ]);
 
       return {
-        educators: educatorCount.count || 0,
-        employers: employerCount.count || 0,
-        participants: participantCount.count || 0,
-        pendingApprovals: pendingCount.count || 0,
-        activeExperiences: experienceCount.count || 0,
-        matchedProjects: matchCount.count || 0
+        educators: counts[0].count || 0,
+        employers: counts[1].count || 0,
+        participants: counts[2].count || 0,
+        pendingApprovals: counts[3].count || 0,
+        activeExperiences: counts[4].count || 0,
+        matchedProjects: counts[5].count || 0
       };
     },
     enabled: !!user?.id,
