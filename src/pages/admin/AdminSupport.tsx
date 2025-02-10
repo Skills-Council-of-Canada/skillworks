@@ -27,11 +27,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2, MessageSquare, Book, AlertCircle } from "lucide-react";
+import { TicketDetailsDialog } from "@/components/admin/support/TicketDetailsDialog";
+import { KnowledgeBaseManager } from "@/components/admin/support/KnowledgeBaseManager";
+import { UserNotesManager } from "@/components/admin/support/UserNotesManager";
 import type { SupportTicket } from "@/types/support";
 
 const AdminSupport = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("tickets");
+  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
 
   const { data: tickets, isLoading } = useQuery({
     queryKey: ["support-tickets"],
@@ -133,7 +137,11 @@ const AdminSupport = () => {
                         {new Date(ticket.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedTicket(ticket)}
+                        >
                           View Details
                         </Button>
                       </TableCell>
@@ -147,33 +155,26 @@ const AdminSupport = () => {
 
         <TabsContent value="knowledge">
           <Card>
-            <CardHeader>
-              <CardTitle>Knowledge Base</CardTitle>
-              <CardDescription>
-                Manage help articles and documentation
-              </CardDescription>
-            </CardHeader>
             <CardContent>
-              <Button className="mb-4">Create New Article</Button>
-              {/* Knowledge base content will be implemented here */}
+              <KnowledgeBaseManager />
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="user-notes">
           <Card>
-            <CardHeader>
-              <CardTitle>User Notes</CardTitle>
-              <CardDescription>
-                Track user warnings and resolution history
-              </CardDescription>
-            </CardHeader>
             <CardContent>
-              {/* User notes content will be implemented here */}
+              <UserNotesManager />
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      <TicketDetailsDialog
+        ticket={selectedTicket}
+        open={!!selectedTicket}
+        onOpenChange={(open) => !open && setSelectedTicket(null)}
+      />
     </div>
   );
 };
