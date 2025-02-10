@@ -38,30 +38,29 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
-      // Explicitly type the query results
       const [
-        educatorResult,
-        employerResult,
-        participantResult,
-        pendingApprovalsResult,
-        activeExperiencesResult,
-        matchedProjectsResult
+        { data: educatorData },
+        { data: employerData },
+        { data: participantData },
+        { data: pendingApprovalsData },
+        { data: activeExperiencesData },
+        { data: matchedProjectsData }
       ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator') as Promise<{ count: number | null }>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer') as Promise<{ count: number | null }>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant') as Promise<{ count: number | null }>,
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false) as Promise<{ count: number | null }>,
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published') as Promise<{ count: number | null }>,
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched') as Promise<{ count: number | null }>
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
       ]);
 
       return {
-        educators: educatorResult.count || 0,
-        employers: employerResult.count || 0,
-        participants: participantResult.count || 0,
-        pendingApprovals: pendingApprovalsResult.count || 0,
-        activeExperiences: activeExperiencesResult.count || 0,
-        matchedProjects: matchedProjectsResult.count || 0
+        educators: educatorData?.count || 0,
+        employers: employerData?.count || 0,
+        participants: participantData?.count || 0,
+        pendingApprovals: pendingApprovalsData?.count || 0,
+        activeExperiences: activeExperiencesData?.count || 0,
+        matchedProjects: matchedProjectsData?.count || 0
       };
     },
     meta: {
