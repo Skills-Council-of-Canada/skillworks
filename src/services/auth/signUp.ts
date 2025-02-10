@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const signUpUser = async (email: string, password: string, portal: string) => {
   console.log("Signing up user with portal:", portal);
   try {
-    const isDemoAccount = email.toLowerCase().endsWith('@example.com');
+    const isDemoAccount = email.toLowerCase().endsWith('@example.com') || 
+                         email.toLowerCase().endsWith('@skillscouncil.ca');
     const normalizedEmail = email.toLowerCase();
     const name = isDemoAccount 
       ? email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1) + ' User'
@@ -37,11 +38,15 @@ export const signUpUser = async (email: string, password: string, portal: string
       },
     });
     
-    if (error) throw error;
+    if (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
     
+    // Give some time for the trigger to create the profile
     if (data.user?.id) {
       console.log("Account created, waiting for profile creation");
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Verify profile exists
       const { data: profile } = await supabase

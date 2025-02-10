@@ -14,7 +14,19 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       console.log("Attempting login with email:", email);
       setIsLoading(true);
       const { error } = await signInUser(email, password);
-      if (error) throw error;
+      if (error) {
+        // Handle specific error cases
+        if (error.message === "Invalid login credentials") {
+          toast({
+            title: "Login Failed",
+            description: "Invalid email or password. Please try again.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
 
       console.log("Login successful");
       toast({
@@ -39,8 +51,31 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
     try {
       console.log("Attempting signup with email:", email, "and role:", role);
       setIsLoading(true);
+      
+      // First check if user exists
+      const { data: signInData, error: signInError } = await signInUser(email, password);
+      
+      if (!signInError && signInData) {
+        toast({
+          title: "Account Exists",
+          description: "This email is already registered. Please login instead.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await signUpUser(email, password, role);
-      if (error) throw error;
+      if (error) {
+        if (error.message === "User already registered") {
+          toast({
+            title: "Account Exists",
+            description: "This email is already registered. Please login instead.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
 
       console.log("Signup successful");
       toast({
@@ -73,7 +108,6 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: "You have been successfully logged out.",
       });
       
-      // Changed from /login to / to return to index page
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
