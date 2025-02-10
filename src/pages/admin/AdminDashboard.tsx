@@ -16,45 +16,49 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
-type CountResult = {
-  count: number | null;
-};
-
 const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const fetchStats = async (): Promise<DashboardStats> => {
-    if (!user?.id) throw new Error('Not authenticated');
-
-    const fetchCount = async (query: any): Promise<number> => {
-      const { count } = (await query) as CountResult;
-      return count || 0;
-    };
-
-    const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
-      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator')),
-      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer')),
-      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant')),
-      fetchCount(supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false)),
-      fetchCount(supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published')),
-      fetchCount(supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched'))
-    ]);
-
-    return {
-      educators,
-      employers,
-      participants,
-      pendingApprovals: unverified,
-      activeExperiences: experiences,
-      matchedProjects: matches
-    };
-  };
-
   const { data: stats, isLoading } = useQuery({
     queryKey: ["admin-stats"],
-    queryFn: fetchStats,
+    queryFn: async (): Promise<DashboardStats> => {
+      if (!user?.id) throw new Error('Not authenticated');
+
+      // Fetch each count separately to avoid complex joins
+      const fetchCount = async (table: string, condition?: string): Promise<number> => {
+        const query = supabase
+          .from(table)
+          .select('*', { count: 'exact', head: true });
+          
+        if (condition) {
+          query.eq(condition.split('=')[0], condition.split('=')[1]);
+        }
+        
+        const { count, error } = await query;
+        if (error) throw error;
+        return count || 0;
+      };
+
+      const [educators, employers, participants, unverified, experiences, matches] = await Promise.all([
+        fetchCount('profiles', 'role=educator'),
+        fetchCount('profiles', 'role=employer'),
+        fetchCount('profiles', 'role=participant'),
+        fetchCount('profiles', 'verified=false'),
+        fetchCount('educator_experiences', 'status=published'),
+        fetchCount('experience_matches', 'status=matched')
+      ]);
+
+      return {
+        educators,
+        employers,
+        participants,
+        pendingApprovals: unverified,
+        activeExperiences: experiences,
+        matchedProjects: matches
+      };
+    },
     enabled: !!user?.id,
     meta: {
       onSettled: (data, error) => {
@@ -162,7 +166,26 @@ const AdminDashboard = () => {
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
         <div className="grid gap-4 md:grid-cols-3">
-          {quickActions.map((action, index) => (
+          {[
+            {
+              title: "Approve Users",
+              icon: UserCheck,
+              onClick: () => navigate("/admin/users"),
+              description: `${stats?.pendingApprovals || 0} pending approvals`
+            },
+            {
+              title: "Review Experiences",
+              icon: ClipboardList,
+              onClick: () => navigate("/admin/experiences"),
+              description: "Review and manage experiences"
+            },
+            {
+              title: "View Reports",
+              icon: BarChart,
+              onClick: () => navigate("/admin/reports"),
+              description: "Access system analytics"
+            }
+          ].map((action, index) => (
             <Card key={index} className="hover:bg-accent cursor-pointer" onClick={action.onClick}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{action.title}</CardTitle>
@@ -180,4 +203,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
