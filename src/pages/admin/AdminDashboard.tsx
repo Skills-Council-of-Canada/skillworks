@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefcase } from "lucide-react";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
+import { PostgrestSingleResponse, PostgrestFilterBuilder } from "@supabase/supabase-js";
 
 interface DashboardStats {
   educators: number;
@@ -37,9 +37,9 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
-      const fetchCount = async (tableQuery: any): Promise<number> => {
-        const response = await tableQuery;
-        return (response as CountQueryResponse).count || 0;
+      const fetchCount = async (query: PostgrestFilterBuilder<any>): Promise<number> => {
+        const { count } = await query;
+        return count || 0;
       };
 
       const [
