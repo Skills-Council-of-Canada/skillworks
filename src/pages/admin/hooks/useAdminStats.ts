@@ -38,7 +38,7 @@ export const useAdminStats = (user: User | null) => {
         educators: await fetchCount('profiles', { role: 'educator' }),
         employers: await fetchCount('profiles', { role: 'employer' }),
         participants: await fetchCount('profiles', { role: 'participant' }),
-        pendingApprovals: await fetchCount('profiles', { verified: false }),
+        pendingApprovals: await fetchCount('profiles', { status: 'pending' }),
         activeExperiences: await fetchCount('educator_experiences', { status: 'published' }),
         matchedProjects: await fetchCount('experience_matches', { status: 'matched' })
       };
