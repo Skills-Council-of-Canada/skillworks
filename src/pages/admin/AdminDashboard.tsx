@@ -16,6 +16,10 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
+interface CountResponse {
+  count: number | null;
+}
+
 const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -34,29 +38,40 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
+      const fetchCount = async (table: string, condition?: Record<string, any>): Promise<number> => {
+        const query = supabase.from(table).select('*', { count: 'exact', head: true });
+        if (condition) {
+          Object.entries(condition).forEach(([key, value]) => {
+            query.eq(key, value);
+          });
+        }
+        const { count } = (await query) as { count: number | null };
+        return count || 0;
+      };
+
       const [
-        educatorCount,
-        employerCount,
-        participantCount,
-        pendingApprovalsCount,
-        activeExperiencesCount,
-        matchedProjectsCount
+        educators,
+        employers,
+        participants,
+        pendingApprovals,
+        activeExperiences,
+        matchedProjects
       ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+        fetchCount('profiles', { role: 'educator' }),
+        fetchCount('profiles', { role: 'employer' }),
+        fetchCount('profiles', { role: 'participant' }),
+        fetchCount('profiles', { verified: false }),
+        fetchCount('educator_experiences', { status: 'published' }),
+        fetchCount('experience_matches', { status: 'matched' })
       ]);
 
       return {
-        educators: educatorCount.count || 0,
-        employers: employerCount.count || 0,
-        participants: participantCount.count || 0,
-        pendingApprovals: pendingApprovalsCount.count || 0,
-        activeExperiences: activeExperiencesCount.count || 0,
-        matchedProjects: matchedProjectsCount.count || 0
+        educators,
+        employers,
+        participants,
+        pendingApprovals,
+        activeExperiences,
+        matchedProjects
       };
     },
     meta: {
