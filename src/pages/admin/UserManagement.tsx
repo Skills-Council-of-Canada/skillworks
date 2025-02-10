@@ -24,10 +24,20 @@ import { Badge } from "@/components/ui/badge";
 import { Search, UserCheck, UserX } from "lucide-react";
 
 type UserStatus = "approved" | "rejected" | "pending" | "suspended";
+type UserRole = "educator" | "employer" | "participant" | "admin";
+
+interface Profile {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  status: UserStatus;
+  created_at: string;
+}
 
 const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<UserRole | "">("");
   const { toast } = useToast();
 
   const { data: users, isLoading } = useQuery({
@@ -53,7 +63,7 @@ const UserManagement = () => {
         throw error;
       }
 
-      return data;
+      return data as Profile[];
     },
     meta: {
       onSettled: (_, error) => {
@@ -91,6 +101,21 @@ const UserManagement = () => {
     }
   };
 
+  const getBadgeVariant = (status: UserStatus) => {
+    switch (status) {
+      case "approved":
+        return "default";
+      case "rejected":
+        return "destructive";
+      case "pending":
+        return "secondary";
+      case "suspended":
+        return "outline";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -107,7 +132,7 @@ const UserManagement = () => {
             className="pl-10"
           />
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
+        <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | "")}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by role" />
           </SelectTrigger>
@@ -156,13 +181,7 @@ const UserManagement = () => {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={
-                        user.status === "approved"
-                          ? "default"
-                          : user.status === "rejected"
-                          ? "destructive"
-                          : "secondary"
-                      }
+                      variant={getBadgeVariant(user.status)}
                     >
                       {user.status}
                     </Badge>
