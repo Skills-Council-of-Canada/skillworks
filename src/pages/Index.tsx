@@ -11,35 +11,8 @@ const Index = () => {
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
-
-      try {
-        // Only fetch the role field from profiles
-        const { data: roleData, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching role:", error);
-          return;
-        }
-
-        // Redirect based on role if available
-        if (roleData?.role) {
-          const redirectMap = {
-            admin: '/admin/dashboard',
-            educator: '/educator/dashboard',
-            employer: '/employer/dashboard',
-            participant: '/participant/dashboard'
-          };
-          
-          const redirectPath = redirectMap[roleData.role] || '/login';
-          navigate(redirectPath, { replace: true });
-        }
-      } catch (error) {
-        console.error("Session check error:", error);
+      if (session?.user) {
+        navigate("/login", { replace: true });
       }
     };
 
