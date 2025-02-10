@@ -25,12 +25,11 @@ export const useAuthState = () => {
         
         if (!mounted) return;
 
-        // If no session, only redirect if not on public routes
         if (!session?.user) {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
-          if (location.pathname !== '/login' && location.pathname !== '/') {
+          if (!location.pathname.match(/^\/(login|)$/)) {
             navigate('/login');
           }
           return;
@@ -46,8 +45,8 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Only redirect if we're on login/root AND have a valid profile
-            if (location.pathname === '/login' || location.pathname === '/') {
+            // Only redirect from login/root when we have a valid profile
+            if (location.pathname.match(/^\/(login|)$/)) {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
               navigate(redirectPath);
@@ -55,13 +54,19 @@ export const useAuthState = () => {
           } else {
             console.log("No profile found for user");
             setUser(null);
-            // Don't redirect here, let the component handle no-profile state
+            // Clear session if no valid profile found
+            await supabase.auth.signOut();
+            if (!location.pathname.match(/^\/(login|)$/)) {
+              navigate('/login');
+            }
           }
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
-          // On profile error, clear session to force re-auth
           await supabase.auth.signOut();
+          if (!location.pathname.match(/^\/(login|)$/)) {
+            navigate('/login');
+          }
         } finally {
           if (mounted) {
             setIsLoading(false);
@@ -76,7 +81,7 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            if (location.pathname !== '/login') {
+            if (!location.pathname.match(/^\/(login|)$/)) {
               navigate('/login');
             }
             return;
