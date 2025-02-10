@@ -29,18 +29,13 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (user && !isSubmitting) {
-      console.log("Login - User detected:", user);
-      if (user.role === 'educator' && !searchParams.get('registered')) {
-        console.log("Login - Redirecting to educator registration");
-        navigate('/educator/registration');
-        return;
-      }
+    if (user) {
+      console.log("User detected in Login component:", user);
       const redirectPath = getRoleBasedRedirect(user.role);
-      console.log("Login - Redirecting to:", redirectPath);
+      console.log("Redirecting to:", redirectPath);
       navigate(redirectPath);
     }
-  }, [user, navigate, isSubmitting, getRoleBasedRedirect, searchParams]);
+  }, [user, navigate, getRoleBasedRedirect]);
 
   const handlePortalSelect = (portalId: string, role: UserRole) => {
     setSelectedPortal({ id: portalId, role });
@@ -115,3 +110,4 @@ const Login = () => {
 };
 
 export default Login;
+

@@ -21,6 +21,15 @@ export const useAdminStats = (user: User | null) => {
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
+      const queries = [
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+      ];
+
       const [
         educatorsCount,
         employersCount,
@@ -28,32 +37,7 @@ export const useAdminStats = (user: User | null) => {
         unverifiedCount,
         experiencesCount,
         matchesCount
-      ] = await Promise.all([
-        supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true })
-          .eq('role', 'educator'),
-        supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true })
-          .eq('role', 'employer'),
-        supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true })
-          .eq('role', 'participant'),
-        supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true })
-          .eq('verified', false),
-        supabase
-          .from('educator_experiences')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'published'),
-        supabase
-          .from('experience_matches')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'matched')
-      ]);
+      ] = await Promise.all(queries);
 
       return {
         educators: educatorsCount.count || 0,

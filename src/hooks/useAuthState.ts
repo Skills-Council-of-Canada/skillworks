@@ -29,8 +29,7 @@ export const useAuthState = () => {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
-          // Only redirect to login if we're not already there
-          if (location.pathname !== '/login') {
+          if (location.pathname !== '/login' && location.pathname !== '/') {
             navigate('/login');
           }
           return;
@@ -46,7 +45,6 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Handle redirects for authenticated users
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
@@ -55,19 +53,14 @@ export const useAuthState = () => {
           } else {
             console.log("No profile found for user");
             setUser(null);
-            if (location.pathname !== '/login') {
+            if (location.pathname !== '/login' && location.pathname !== '/') {
               navigate('/login');
             }
           }
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
-          toast({
-            title: "Error",
-            description: "Failed to load user profile. Please try logging in again.",
-            variant: "destructive",
-          });
-          if (location.pathname !== '/login') {
+          if (location.pathname !== '/login' && location.pathname !== '/') {
             navigate('/login');
           }
         } finally {
@@ -84,7 +77,9 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            navigate('/login');
+            if (location.pathname !== '/login' && location.pathname !== '/') {
+              navigate('/login');
+            }
             return;
           }
 
@@ -100,12 +95,9 @@ export const useAuthState = () => {
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
-              toast({
-                title: "Error",
-                description: "Failed to load user profile. Please try logging in again.",
-                variant: "destructive",
-              });
-              navigate('/login');
+              if (location.pathname !== '/login' && location.pathname !== '/') {
+                navigate('/login');
+              }
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -118,7 +110,7 @@ export const useAuthState = () => {
         if (mounted) {
           setUser(null);
           setIsLoading(false);
-          if (location.pathname !== '/login') {
+          if (location.pathname !== '/login' && location.pathname !== '/') {
             navigate('/login');
           }
         }
