@@ -23,6 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, UserCheck, UserX } from "lucide-react";
 
+type UserStatus = "approved" | "rejected" | "pending" | "suspended";
+
 const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("");
@@ -66,7 +68,7 @@ const UserManagement = () => {
     }
   });
 
-  const handleStatusChange = async (userId: string, newStatus: string) => {
+  const handleStatusChange = async (userId: string, newStatus: UserStatus) => {
     try {
       const { error } = await supabase
         .from("profiles")
@@ -154,7 +156,13 @@ const UserManagement = () => {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={user.status === "active" ? "success" : "warning"}
+                      variant={
+                        user.status === "approved"
+                          ? "default"
+                          : user.status === "rejected"
+                          ? "destructive"
+                          : "secondary"
+                      }
                     >
                       {user.status}
                     </Badge>
@@ -170,11 +178,11 @@ const UserManagement = () => {
                         onClick={() =>
                           handleStatusChange(
                             user.id,
-                            user.status === "active" ? "suspended" : "active"
+                            user.status === "approved" ? "suspended" : "approved"
                           )
                         }
                       >
-                        {user.status === "active" ? (
+                        {user.status === "approved" ? (
                           <UserX className="h-4 w-4" />
                         ) : (
                           <UserCheck className="h-4 w-4" />

@@ -23,9 +23,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Check, X } from "lucide-react";
 
+type ProjectReviewStatus = "pending_review" | "approved" | "rejected" | "needs_modification";
+
 const ProjectManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<ProjectReviewStatus | "">("");
   const { toast } = useToast();
 
   const { data: projects, isLoading } = useQuery({
@@ -71,7 +73,7 @@ const ProjectManagement = () => {
     }
   });
 
-  const handleStatusChange = async (projectId: string, newStatus: string) => {
+  const handleStatusChange = async (projectId: string, newStatus: ProjectReviewStatus) => {
     try {
       const { error } = await supabase
         .from("projects")
@@ -110,7 +112,7 @@ const ProjectManagement = () => {
             className="pl-10"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as ProjectReviewStatus | "")}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
@@ -159,10 +161,10 @@ const ProjectManagement = () => {
                     <Badge
                       variant={
                         project.review_status === "approved"
-                          ? "success"
+                          ? "default"
                           : project.review_status === "rejected"
                           ? "destructive"
-                          : "warning"
+                          : "secondary"
                       }
                     >
                       {project.review_status}
