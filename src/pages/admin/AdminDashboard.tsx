@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, FileText, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefcase } from "lucide-react";
+import { PostgrestSingleResponse } from "@supabase/supabase-js";
 
 interface DashboardStats {
   educators: number;
@@ -16,9 +17,7 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
-type CountResult = {
-  count: number | null;
-};
+type CountQueryResponse = PostgrestSingleResponse<{ count: number }>;
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -39,28 +38,28 @@ const AdminDashboard = () => {
       }
 
       const [
-        { data: educatorData },
-        { data: employerData },
-        { data: participantData },
-        { data: pendingApprovalsData },
-        { data: activeExperiencesData },
-        { data: matchedProjectsData }
+        { data: educatorCount },
+        { data: employerCount },
+        { data: participantCount },
+        { data: pendingApprovalsCount },
+        { data: activeExperiencesCount },
+        { data: matchedProjectsCount }
       ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator') as Promise<CountQueryResponse>,
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer') as Promise<CountQueryResponse>,
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant') as Promise<CountQueryResponse>,
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false) as Promise<CountQueryResponse>,
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published') as Promise<CountQueryResponse>,
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched') as Promise<CountQueryResponse>
       ]);
 
       return {
-        educators: educatorData?.count || 0,
-        employers: employerData?.count || 0,
-        participants: participantData?.count || 0,
-        pendingApprovals: pendingApprovalsData?.count || 0,
-        activeExperiences: activeExperiencesData?.count || 0,
-        matchedProjects: matchedProjectsData?.count || 0
+        educators: educatorCount?.count || 0,
+        employers: employerCount?.count || 0,
+        participants: participantCount?.count || 0,
+        pendingApprovals: pendingApprovalsCount?.count || 0,
+        activeExperiences: activeExperiencesCount?.count || 0,
+        matchedProjects: matchedProjectsCount?.count || 0
       };
     },
     meta: {
