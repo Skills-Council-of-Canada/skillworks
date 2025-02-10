@@ -37,9 +37,9 @@ const AdminDashboard = () => {
         throw new Error('Unauthorized access');
       }
 
-      const fetchCount = async (query: Promise<PostgrestSingleResponse<any>>): Promise<number> => {
-        const response = await query;
-        return response.count || 0;
+      const fetchCount = async (tableQuery: any): Promise<number> => {
+        const response = await tableQuery;
+        return (response as CountQueryResponse).count || 0;
       };
 
       const [
