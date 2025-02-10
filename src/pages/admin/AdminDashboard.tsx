@@ -20,9 +20,9 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
-    queryFn: async (): Promise<DashboardStats> => {
+    queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
 
       const [
@@ -50,9 +50,11 @@ const AdminDashboard = () => {
         matchedProjects: matchCount.count || 0
       };
     },
+    enabled: !!user?.id,
     meta: {
       onSettled: (data, error) => {
         if (error) {
+          console.error('Error loading stats:', error);
           toast({
             title: "Error",
             description: "Failed to load dashboard statistics",
