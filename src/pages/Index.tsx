@@ -9,35 +9,43 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Only check if there's an active session, don't try to load profile
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        // If user is authenticated, redirect to their default route based on role
-        const { data: profile } = await supabase
+      if (!session?.user) return;
+
+      try {
+        // Only fetch the role field from profiles
+        const { data: roleData, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
           .single();
 
-        if (profile?.role) {
-          const redirectPath = profile.role === 'admin' 
-            ? '/admin/dashboard'
-            : profile.role === 'educator'
-            ? '/educator/dashboard'
-            : profile.role === 'employer'
-            ? '/employer/dashboard'
-            : '/participant/dashboard';
-            
+        if (error) {
+          console.error("Error fetching role:", error);
+          return;
+        }
+
+        // Redirect based on role if available
+        if (roleData?.role) {
+          const redirectMap = {
+            admin: '/admin/dashboard',
+            educator: '/educator/dashboard',
+            employer: '/employer/dashboard',
+            participant: '/participant/dashboard'
+          };
+          
+          const redirectPath = redirectMap[roleData.role] || '/login';
           navigate(redirectPath, { replace: true });
         }
+      } catch (error) {
+        console.error("Session check error:", error);
       }
     };
 
     checkSession();
   }, [navigate]);
 
-  // Show welcome screen for non-authenticated users without trying to load profile
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <h1 className="text-4xl font-bold text-center mb-6">Welcome to TradesConnect</h1>
