@@ -13,6 +13,16 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
     try {
       console.log("Attempting login with email:", email);
       setIsLoading(true);
+      
+      if (!email || !password) {
+        toast({
+          title: "Login Failed",
+          description: "Please enter both email and password",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await signInUser(email, password);
       if (error) {
         // Handle specific error cases

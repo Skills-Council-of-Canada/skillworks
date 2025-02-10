@@ -5,11 +5,14 @@ export const signInUser = async (email: string, password: string) => {
   console.log("Signing in user:", email);
   try {
     const normalizedEmail = email.toLowerCase().trim();
+    const trimmedPassword = password.trim();
+    
+    console.log("Attempting sign in with normalized email:", normalizedEmail);
     
     // Try to sign in
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: normalizedEmail,
-      password: password.trim(),
+      password: trimmedPassword,
     });
 
     if (signInError) {
@@ -38,7 +41,7 @@ export const signInUser = async (email: string, password: string) => {
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: 'participant', // Default to participant role if none specified
+            role: 'employer', // Set correct default role based on sign in context
             name: email.split('@')[0]
           });
           
