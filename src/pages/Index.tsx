@@ -1,25 +1,13 @@
 
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/login");
-      }
-    };
-
-    checkSession();
-  }, [navigate]);
 
   const handlePortalSelect = (portalId: string, role: UserRole) => {
     switch (portalId) {
@@ -49,3 +37,4 @@ const Index = () => {
 };
 
 export default Index;
+
