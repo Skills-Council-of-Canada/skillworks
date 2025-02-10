@@ -59,11 +59,14 @@ const App = () => (
           <Route path="/educator/registration" element={<EducatorRegistration />} />
           
           {/* Protected employer routes */}
-          <Route path="/employer" element={
-            <ProtectedRoute allowedRoles={["employer"]}>
-              <EmployerLayout />
-            </ProtectedRoute>
-          }>
+          <Route
+            path="/employer"
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <EmployerLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Navigate to="/employer/dashboard" />} />
           </Route>
 

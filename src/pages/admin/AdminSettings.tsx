@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Card,
   CardContent,
@@ -34,6 +34,7 @@ const AdminSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("notifications");
+  const { user } = useAuth();
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ["system-settings"],
@@ -65,6 +66,7 @@ const AdminSettings = () => {
           old_value: setting.value,
           new_value: newValue,
           reason: "Updated via admin panel",
+          requested_by: user?.id,
         });
         if (error) throw error;
         toast({
