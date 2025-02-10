@@ -34,6 +34,21 @@ import ProfileSettings from "./pages/employer/ProfileSettings";
 import CreateProject from "./pages/employer/CreateProject";
 import ProjectDetails from "./pages/employer/ProjectDetails";
 
+// Educator routes
+import EducatorLayout from "./pages/educator/EducatorLayout";
+import EducatorDashboard from "./pages/educator/EducatorDashboard";
+import ExperienceManagement from "./pages/educator/ExperienceManagement";
+import CollaborationManagement from "./pages/educator/CollaborationManagement";
+import PortalSearch from "./pages/educator/PortalSearch";
+import ProjectSearch from "./pages/educator/ProjectSearch";
+import StudentManagement from "./pages/educator/StudentManagement";
+import MatchRequests from "./pages/educator/MatchRequests";
+import TasksActivities from "./pages/educator/TasksActivities";
+import EducatorMessages from "./pages/educator/EducatorMessages";
+import EducatorCalendar from "./pages/educator/EducatorCalendar";
+import EducatorSettings from "./pages/educator/EducatorSettings";
+import CreateExperience from "./pages/educator/CreateExperience";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -65,6 +80,29 @@ const App = () => (
             <Route path="experiences" element={<ExperienceOversight />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="support" element={<AdminSupport />} />
+          </Route>
+
+          {/* Protected educator routes */}
+          <Route
+            path="/educator"
+            element={
+              <ProtectedRoute allowedRoles={["educator"]}>
+                <EducatorLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<EducatorDashboard />} />
+            <Route path="experiences" element={<ExperienceManagement />} />
+            <Route path="collaborations" element={<CollaborationManagement />} />
+            <Route path="portals" element={<PortalSearch />} />
+            <Route path="projects" element={<ProjectSearch />} />
+            <Route path="students" element={<StudentManagement />} />
+            <Route path="matches" element={<MatchRequests />} />
+            <Route path="tasks" element={<TasksActivities />} />
+            <Route path="messages" element={<EducatorMessages />} />
+            <Route path="calendar" element={<EducatorCalendar />} />
+            <Route path="settings" element={<EducatorSettings />} />
+            <Route path="create-experience" element={<CreateExperience />} />
           </Route>
 
           {/* Protected educator registration route */}
