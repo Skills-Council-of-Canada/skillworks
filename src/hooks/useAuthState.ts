@@ -29,6 +29,7 @@ export const useAuthState = () => {
           console.log("No active session found");
           setUser(null);
           setIsLoading(false);
+          // Only redirect to login if we're not already there
           if (location.pathname !== '/login') {
             navigate('/login');
           }
@@ -44,9 +45,11 @@ export const useAuthState = () => {
           if (profile) {
             console.log("Profile found:", profile);
             setUser(profile);
-            if (location.pathname === '/login') {
+            
+            // Handle redirects for authenticated users
+            if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
-              console.log("Redirecting to:", redirectPath);
+              console.log("Redirecting authenticated user to:", redirectPath);
               navigate(redirectPath, { replace: true });
             }
           } else {
@@ -94,8 +97,6 @@ export const useAuthState = () => {
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
                 navigate(redirectPath, { replace: true });
-              } else {
-                throw new Error("No profile found after sign in");
               }
             } catch (error) {
               console.error("Error after sign in:", error);
