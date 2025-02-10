@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import EducatorLanding from "./pages/EducatorLanding";
 import EmployerLanding from "./pages/EmployerLanding";
@@ -35,7 +36,8 @@ const App = () => (
         <Sonner />
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/educator-landing" element={<EducatorLanding />} />
           <Route path="/employer-landing" element={<EmployerLanding />} />
           <Route path="/participant-landing" element={<ParticipantLanding />} />
@@ -81,3 +83,4 @@ const App = () => (
 );
 
 export default App;
+
