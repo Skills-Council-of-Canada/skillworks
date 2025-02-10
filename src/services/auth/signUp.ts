@@ -4,28 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export const signUpUser = async (email: string, password: string, portal: string) => {
   console.log("Signing up user with portal:", portal);
   try {
-    const isDemoAccount = email.toLowerCase().endsWith('@example.com') || 
-                         email.toLowerCase().endsWith('@skillscouncil.ca');
     const normalizedEmail = email.toLowerCase();
-    const name = isDemoAccount 
-      ? email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1) + ' User'
-      : '';
-
-    // For demo accounts, try signing in first
-    if (isDemoAccount) {
-      console.log("Attempting to sign in demo account first");
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: normalizedEmail,
-        password,
-      });
-
-      if (!signInError && signInData.user) {
-        console.log("Demo account exists, signing in");
-        return { data: signInData, error: null };
-      }
-    }
-
-    // If sign in failed or it's not a demo account, create new account
+    
+    // Create new account
     console.log("Creating new account");
     const { data, error } = await supabase.auth.signUp({
       email: normalizedEmail,
@@ -33,7 +14,6 @@ export const signUpUser = async (email: string, password: string, portal: string
       options: {
         data: {
           portal,
-          name,
         },
       },
     });
@@ -63,7 +43,7 @@ export const signUpUser = async (email: string, password: string, portal: string
             id: data.user.id,
             email: normalizedEmail,
             role: portal,
-            name: name || email.split('@')[0]
+            name: email.split('@')[0]
           });
           
         if (profileError) {
