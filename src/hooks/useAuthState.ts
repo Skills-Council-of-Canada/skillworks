@@ -51,11 +51,16 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Only redirect from login/root when we have a valid profile
+            // Redirect logic for profile
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
-              navigate(redirectPath, { replace: true });
+              // Add a small delay to ensure state updates have propagated
+              setTimeout(() => {
+                if (mounted) {
+                  navigate(redirectPath, { replace: true });
+                }
+              }, 500);
             }
           } else {
             console.log("No profile found for user");
@@ -97,7 +102,12 @@ export const useAuthState = () => {
                 setUser(profile);
                 const redirectPath = getRoleBasedRedirect(profile.role);
                 console.log("Redirecting after sign in to:", redirectPath);
-                navigate(redirectPath, { replace: true });
+                // Add a small delay to ensure state updates have propagated
+                setTimeout(() => {
+                  if (mounted) {
+                    navigate(redirectPath, { replace: true });
+                  }
+                }, 500);
               }
             } catch (error) {
               console.error("Error after sign in:", error);
