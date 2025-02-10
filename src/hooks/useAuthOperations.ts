@@ -73,7 +73,7 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: "You have been successfully logged out.",
       });
       
-      // Navigate to index page after successful logout
+      // Changed from /login to / to return to index page
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
