@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils";
 import { Experience } from "../../types/experience";
 
 interface ExperienceFiltersProps {
-  statusFilter: Experience['approval_status'] | '';
-  setStatusFilter: (value: Experience['approval_status'] | '') => void;
+  statusFilter: Experience['approval_status'] | null;
+  setStatusFilter: (value: Experience['approval_status'] | null) => void;
   categoryFilter: string;
   setCategoryFilter: (value: string) => void;
   searchQuery: string;
@@ -43,12 +43,12 @@ export const ExperienceFilters = ({
 }: ExperienceFiltersProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as Experience['approval_status'] | '')}>
+      <Select value={statusFilter || "all"} onValueChange={(value) => setStatusFilter(value === "all" ? null : value as Experience['approval_status'])}>
         <SelectTrigger>
           <SelectValue placeholder="Filter by Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Statuses</SelectItem>
+          <SelectItem value="all">All Statuses</SelectItem>
           <SelectItem value="pending_review">Pending Review</SelectItem>
           <SelectItem value="approved">Approved</SelectItem>
           <SelectItem value="rejected">Rejected</SelectItem>
@@ -56,12 +56,12 @@ export const ExperienceFilters = ({
         </SelectContent>
       </Select>
 
-      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+      <Select value={categoryFilter || "all"} onValueChange={setCategoryFilter}>
         <SelectTrigger>
           <SelectValue placeholder="Filter by Category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Categories</SelectItem>
+          <SelectItem value="all">All Categories</SelectItem>
           <SelectItem value="general">General</SelectItem>
           <SelectItem value="trades">Trades</SelectItem>
           <SelectItem value="technology">Technology</SelectItem>
@@ -116,3 +116,4 @@ export const ExperienceFilters = ({
     </div>
   );
 };
+
