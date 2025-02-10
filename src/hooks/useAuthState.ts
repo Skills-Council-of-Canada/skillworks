@@ -54,16 +54,14 @@ export const useAuthState = () => {
           } else {
             console.log("No profile found for user");
             setUser(null);
-            // Clear session if no valid profile found
-            await supabase.auth.signOut();
             if (!location.pathname.match(/^\/(login|)$/)) {
               navigate('/login');
             }
           }
         } catch (error) {
           console.error("Profile error:", error);
+          // Don't clear the session on profile errors, just set user to null
           setUser(null);
-          await supabase.auth.signOut();
           if (!location.pathname.match(/^\/(login|)$/)) {
             navigate('/login');
           }
@@ -99,7 +97,9 @@ export const useAuthState = () => {
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
-              await supabase.auth.signOut();
+              if (!location.pathname.match(/^\/(login|)$/)) {
+                navigate('/login');
+              }
             } finally {
               if (mounted) {
                 setIsLoading(false);
