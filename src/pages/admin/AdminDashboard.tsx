@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,55 +20,45 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const fetchStats = async (): Promise<DashboardStats> => {
-    if (!user?.id) throw new Error('Not authenticated');
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'admin') {
-      throw new Error('Unauthorized access');
-    }
-
-    const [
-      educatorCount,
-      employerCount,
-      participantCount,
-      pendingCount,
-      experienceCount,
-      matchCount
-    ] = await Promise.all([
-      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
-      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
-      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
-      supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
-      supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-      supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
-    ]);
-
-    return {
-      educators: educatorCount.count || 0,
-      employers: employerCount.count || 0,
-      participants: participantCount.count || 0,
-      pendingApprovals: pendingCount.count || 0,
-      activeExperiences: experienceCount.count || 0,
-      matchedProjects: matchCount.count || 0
-    };
-  };
-
   const { data: stats, isLoading } = useQuery({
     queryKey: ["admin-stats"],
-    queryFn: fetchStats,
+    queryFn: async (): Promise<DashboardStats> => {
+      if (!user?.id) throw new Error('Not authenticated');
+
+      const [
+        educatorCount,
+        employerCount,
+        participantCount,
+        pendingCount,
+        experienceCount,
+        matchCount
+      ] = await Promise.all([
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'educator'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'employer'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'participant'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('verified', false),
+        supabase.from('educator_experiences').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('experience_matches').select('*', { count: 'exact', head: true }).eq('status', 'matched')
+      ]);
+
+      return {
+        educators: educatorCount.count || 0,
+        employers: employerCount.count || 0,
+        participants: participantCount.count || 0,
+        pendingApprovals: pendingCount.count || 0,
+        activeExperiences: experienceCount.count || 0,
+        matchedProjects: matchCount.count || 0
+      };
+    },
     meta: {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard statistics",
-          variant: "destructive",
-        });
+      onSettled: (data, error) => {
+        if (error) {
+          toast({
+            title: "Error",
+            description: "Failed to load dashboard statistics",
+            variant: "destructive",
+          });
+        }
       }
     }
   });
