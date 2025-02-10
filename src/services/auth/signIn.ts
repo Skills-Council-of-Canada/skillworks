@@ -20,7 +20,7 @@ export const signInUser = async (email: string, password: string) => {
       
       // Special handling for unconfirmed emails
       if (signInError.message.includes('Email not confirmed')) {
-        const { data: resendData, error: resendError } = await supabase.auth.resendOtp({
+        const { data: resendData, error: resendError } = await supabase.auth.resend({
           email: normalizedEmail,
           type: 'signup'
         });
