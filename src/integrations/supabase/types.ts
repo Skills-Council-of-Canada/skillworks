@@ -1607,6 +1607,56 @@ export type Database = {
           },
         ]
       }
+      settings_change_requests: {
+        Row: {
+          created_at: string
+          id: string
+          new_value: Json
+          old_value: Json
+          reason: string | null
+          requested_by: string
+          review_notes: string | null
+          reviewed_by: string | null
+          setting_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          new_value: Json
+          old_value: Json
+          reason?: string | null
+          requested_by: string
+          review_notes?: string | null
+          reviewed_by?: string | null
+          setting_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          new_value?: Json
+          old_value?: Json
+          reason?: string | null
+          requested_by?: string
+          review_notes?: string | null
+          reviewed_by?: string | null
+          setting_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settings_change_requests_setting_id_fkey"
+            columns: ["setting_id"]
+            isOneToOne: false
+            referencedRelation: "system_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_assignments: {
         Row: {
           completion_date: string | null
@@ -1805,6 +1855,48 @@ export type Database = {
         }
         Relationships: []
       }
+      system_settings: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          key: string
+          requires_approval: boolean | null
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          requires_approval?: boolean | null
+          updated_at?: string
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          requires_approval?: boolean | null
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       verification_codes: {
         Row: {
           code: string
@@ -1949,6 +2041,7 @@ export type Database = {
         | "draft"
         | "pending_approval"
         | "published"
+      notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
         | "pending_review"
         | "approved"
@@ -1956,6 +2049,7 @@ export type Database = {
         | "needs_modification"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
       user_status: "pending" | "approved" | "rejected" | "suspended"
+      visibility_rule: "public" | "registered" | "verified" | "admin_approved"
     }
     CompositeTypes: {
       [_ in never]: never

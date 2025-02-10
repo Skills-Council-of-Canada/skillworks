@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,38 +18,7 @@ import EducatorRegistration from "./pages/educator/EducatorRegistration";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ExperienceOversight from "./pages/admin/ExperienceOversight";
-
-// Employer routes
-import EmployerLayout from "./pages/employer/EmployerLayout";
-import EmployerDashboard from "./pages/employer/EmployerDashboard";
-import EmployerRegistration from "./pages/employer/EmployerRegistration";
-import CreateProject from "./pages/employer/CreateProject";
-import ProjectManagement from "./pages/employer/ProjectManagement";
-import ProjectDetails from "./pages/employer/ProjectDetails";
-import ApplicationsManagement from "./pages/employer/ApplicationsManagement";
-import ApplicantProfile from "./pages/employer/ApplicantProfile";
-import MessagesPage from "./pages/employer/MessagesPage";
-import ResourceCenter from "./pages/employer/ResourceCenter";
-import ProfileSettings from "./pages/employer/ProfileSettings";
-
-// Educator routes
-import EducatorLayout from "./pages/educator/EducatorLayout";
-import EducatorDashboard from "./pages/educator/EducatorDashboard";
-import ExperiencesManagement from "./pages/educator/ExperiencesManagement";
-import PortalSearch from "./pages/educator/PortalSearch";
-import ProjectSearch from "./pages/educator/ProjectSearch";
-import MatchRequests from "./pages/educator/MatchRequests";
-import TasksActivities from "./pages/educator/TasksActivities";
-import EducatorMessages from "./pages/educator/EducatorMessages";
-import EducatorCalendar from "./pages/educator/EducatorCalendar";
-import EducatorSettings from "./pages/educator/EducatorSettings";
-import StudentManagement from "./pages/educator/StudentManagement";
-import CollaborationManagement from "./pages/educator/CollaborationManagement";
-import CreateExperience from "./pages/educator/CreateExperience";
-
-// Participant routes
-import ParticipantLayout from "./pages/participant/ParticipantLayout";
-import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +48,7 @@ const App = () => (
           >
             <Route index element={<AdminDashboard />} />
             <Route path="experiences" element={<ExperienceOversight />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
 
           {/* Protected educator registration route */}

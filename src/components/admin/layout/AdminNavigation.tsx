@@ -23,7 +23,7 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
     { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
     { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
-    { to: "/admin/settings", icon: Settings, label: "Settings" },
+    { to: "/admin/settings", icon: Settings, label: "System Settings" },
     { to: "/admin/support", icon: HeadphonesIcon, label: "Support & Helpdesk" },
   ];
 
