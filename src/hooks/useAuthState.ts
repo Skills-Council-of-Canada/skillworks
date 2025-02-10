@@ -4,12 +4,12 @@ import { User } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getUserProfile, signOutUser } from "@/services/auth";
+import { getUserProfile } from "@/services/auth";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export const useAuthState = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,18 +33,32 @@ export const useAuthState = () => {
         }
 
         try {
+          console.log("Fetching profile for user:", session.user.id);
           const profile = await getUserProfile(session);
-          if (mounted && profile) {
+          
+          if (!mounted) return;
+
+          if (profile) {
+            console.log("Profile found:", profile);
             setUser(profile);
-            const redirectPath = getRoleBasedRedirect(profile.role);
-            console.log("Redirecting to:", redirectPath);
-            navigate(redirectPath, { replace: true });
+            
+            // Only redirect if we're on the login page
+            if (location.pathname === '/login') {
+              const redirectPath = getRoleBasedRedirect(profile.role);
+              console.log("Redirecting to:", redirectPath);
+              navigate(redirectPath, { replace: true });
+            }
+          } else {
+            console.log("No profile found for user");
+            setUser(null);
           }
-          setIsLoading(false);
         } catch (error) {
           console.error("Profile error:", error);
           setUser(null);
-          setIsLoading(false);
+        } finally {
+          if (mounted) {
+            setIsLoading(false);
+          }
         }
 
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -60,6 +74,7 @@ export const useAuthState = () => {
           }
 
           if (event === 'SIGNED_IN' && session?.user) {
+            setIsLoading(true);
             try {
               const profile = await getUserProfile(session);
               if (mounted && profile) {
@@ -71,6 +86,11 @@ export const useAuthState = () => {
             } catch (error) {
               console.error("Error after sign in:", error);
               setUser(null);
+              toast({
+                title: "Error",
+                description: "Failed to load user profile",
+                variant: "destructive",
+              });
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -95,7 +115,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect]);
+  }, [navigate, getRoleBasedRedirect, location.pathname]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
