@@ -43,7 +43,8 @@ const Login = () => {
 
   const handleBack = () => {
     if (selectedPortal) {
-      setSelectedPortal(null);
+      // Instead of going back to portal selection, navigate to the landing page
+      navigate(`/${selectedPortal.id}-landing`);
     } else {
       navigate("/");
     }
