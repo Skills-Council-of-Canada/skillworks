@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,21 +15,12 @@ interface DashboardStats {
   matchedProjects: number;
 }
 
-interface QueryResponse {
-  educators: number;
-  employers: number;
-  participants: number;
-  pendingApprovals: number;
-  activeExperiences: number;
-  matchedProjects: number;
-}
-
 const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: stats, isLoading } = useQuery<QueryResponse>({
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       if (!user?.id) throw new Error('Not authenticated');
@@ -114,7 +104,6 @@ const AdminDashboard = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
       
-      {/* Summary Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -177,7 +166,6 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
         <div className="grid gap-4 md:grid-cols-3">
