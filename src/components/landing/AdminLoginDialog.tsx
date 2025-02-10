@@ -26,13 +26,21 @@ const AdminLoginDialog = ({ showAdminLogin, setShowAdminLogin }: AdminLoginDialo
     e.preventDefault();
     setIsLoading(true);
     try {
-      await login(email, password);
-      navigate("/admin");
-      toast({
-        title: "Welcome Admin",
-        description: "You have successfully logged in.",
-      });
-      setShowAdminLogin(false);
+      const result = await login(email, password);
+      if (result?.user?.role === 'admin') {
+        navigate("/admin", { replace: true });
+        toast({
+          title: "Welcome Admin",
+          description: "You have successfully logged in.",
+        });
+        setShowAdminLogin(false);
+      } else {
+        toast({
+          title: "Unauthorized",
+          description: "This login is restricted to admin users only.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Admin login failed:", error);
       toast({

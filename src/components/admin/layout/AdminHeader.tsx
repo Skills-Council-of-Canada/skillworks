@@ -22,8 +22,10 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
 
   const handleAdminLogin = async () => {
     try {
-      await login("admin@skillscouncil.ca", "Bloiselle5!");
-      navigate("/admin");
+      const result = await login("admin@skillscouncil.ca", "Bloiselle5!");
+      if (result?.user?.role === 'admin') {
+        navigate("/admin", { replace: true });
+      }
     } catch (error) {
       console.error("Admin login failed:", error);
     }
@@ -54,7 +56,10 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                     {user?.email}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => logout()}>
+                  <DropdownMenuItem onClick={() => {
+                    logout();
+                    navigate('/login');
+                  }}>
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
