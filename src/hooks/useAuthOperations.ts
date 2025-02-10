@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
 import { signInUser, signOutUser, signUpUser } from "@/services/auth";
@@ -25,6 +24,7 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
 
       const { error } = await signInUser(email, password);
       if (error) {
+        console.error("Login error details:", error);
         // Handle specific error cases
         if (error.message === "Invalid login credentials") {
           toast({
@@ -33,7 +33,11 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
             variant: "destructive",
           });
         } else {
-          throw error;
+          toast({
+            title: "Login Error",
+            description: error.message || "An error occurred during login",
+            variant: "destructive",
+          });
         }
         return;
       }
@@ -43,6 +47,9 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
+      
+      // Navigate to the appropriate route after successful login
+      navigate("/employer");
     } catch (error) {
       console.error("Login error:", error);
       const authError = error as AuthError;
@@ -51,7 +58,6 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: authError.message || "An error occurred during login",
         variant: "destructive",
       });
-      throw error;
     } finally {
       setIsLoading(false);
     }
