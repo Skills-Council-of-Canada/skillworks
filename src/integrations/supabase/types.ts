@@ -1653,6 +1653,7 @@ export type Database = {
       projects: {
         Row: {
           admin_feedback: string | null
+          approval_notes: string | null
           certifications_required: string[] | null
           created_at: string
           description: string
@@ -1662,6 +1663,7 @@ export type Database = {
           id: string
           industry: string | null
           location_type: string
+          match_history: Json | null
           modification_requested: string | null
           positions: number
           project_type: string | null
@@ -1682,6 +1684,7 @@ export type Database = {
         }
         Insert: {
           admin_feedback?: string | null
+          approval_notes?: string | null
           certifications_required?: string[] | null
           created_at?: string
           description: string
@@ -1691,6 +1694,7 @@ export type Database = {
           id?: string
           industry?: string | null
           location_type: string
+          match_history?: Json | null
           modification_requested?: string | null
           positions: number
           project_type?: string | null
@@ -1711,6 +1715,7 @@ export type Database = {
         }
         Update: {
           admin_feedback?: string | null
+          approval_notes?: string | null
           certifications_required?: string[] | null
           created_at?: string
           description?: string
@@ -1720,6 +1725,7 @@ export type Database = {
           id?: string
           industry?: string | null
           location_type?: string
+          match_history?: Json | null
           modification_requested?: string | null
           positions?: number
           project_type?: string | null
