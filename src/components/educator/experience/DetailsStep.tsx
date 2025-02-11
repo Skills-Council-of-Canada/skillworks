@@ -68,23 +68,56 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
       if (error) throw error;
 
       if (data) {
-        const draft = data as ExperienceDraft;
-        setDraftId(draft.id);
+        // First set the ID since it's safe
+        setDraftId(data.id);
         
-        // Safely set form values with type checking
-        if (draft.title) form.setValue('title', draft.title);
-        if (draft.description) form.setValue('description', draft.description);
-        if (Array.isArray(draft.expected_outcomes)) {
-          form.setValue('expected_outcomes', draft.expected_outcomes);
+        // Handle title and description
+        if (typeof data.title === 'string') {
+          form.setValue('title', data.title);
         }
-        if (Array.isArray(draft.example_projects)) {
-          const validProjects = draft.example_projects.filter(
+        if (typeof data.description === 'string') {
+          form.setValue('description', data.description);
+        }
+
+        // Handle expected outcomes
+        if (Array.isArray(data.expected_outcomes)) {
+          const validOutcomes = data.expected_outcomes.filter((outcome): outcome is string => 
+            typeof outcome === 'string'
+          );
+          form.setValue('expected_outcomes', validOutcomes);
+        }
+
+        // Handle example projects with type validation
+        if (Array.isArray(data.example_projects)) {
+          const validProjects = data.example_projects.filter(
             (project): project is ExampleProject => 
-              typeof project === 'object' && 
-              typeof project.title === 'string' && 
+              project !== null &&
+              typeof project === 'object' &&
+              'title' in project &&
+              'description' in project &&
+              typeof project.title === 'string' &&
               typeof project.description === 'string'
           );
           form.setValue('example_projects', validProjects);
+        }
+
+        // Handle media files
+        if (Array.isArray(data.media_files)) {
+          const validMediaFiles = data.media_files.filter(
+            (file): file is { name: string; type: string; size: number } =>
+              file !== null &&
+              typeof file === 'object' &&
+              'name' in file &&
+              'type' in file &&
+              'size' in file &&
+              typeof file.name === 'string' &&
+              typeof file.type === 'string' &&
+              typeof file.size === 'number'
+          );
+          if (validMediaFiles.length > 0) {
+            // Only update if there are valid files
+            form.setValue('media', []); // Reset media array as we can't convert JSON to File objects
+          }
         }
       } else {
         // Create new draft
