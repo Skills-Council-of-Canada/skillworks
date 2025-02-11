@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form";
 import { ExperienceFormValues } from "@/types/educator";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -16,7 +17,25 @@ interface DetailsStepProps {
   onNext: () => void;
 }
 
-const exampleProjectSuggestions = [
+interface ExampleProject {
+  title: string;
+  description: string;
+}
+
+interface ExperienceDraft {
+  id: string;
+  title?: string;
+  description?: string;
+  expected_outcomes?: string[];
+  example_projects?: ExampleProject[];
+  media_files?: Array<{
+    name: string;
+    type: string;
+    size: number;
+  }>;
+}
+
+const exampleProjectSuggestions: ExampleProject[] = [
   {
     title: "Basic Home Renovation",
     description: "Complete a basic home renovation project including painting, flooring, and minor repairs."
@@ -49,11 +68,24 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
       if (error) throw error;
 
       if (data) {
-        setDraftId(data.id);
-        form.setValue('title', data.title || '');
-        form.setValue('description', data.description || '');
-        form.setValue('expected_outcomes', data.expected_outcomes || []);
-        form.setValue('example_projects', data.example_projects || []);
+        const draft = data as ExperienceDraft;
+        setDraftId(draft.id);
+        
+        // Safely set form values with type checking
+        if (draft.title) form.setValue('title', draft.title);
+        if (draft.description) form.setValue('description', draft.description);
+        if (Array.isArray(draft.expected_outcomes)) {
+          form.setValue('expected_outcomes', draft.expected_outcomes);
+        }
+        if (Array.isArray(draft.example_projects)) {
+          const validProjects = draft.example_projects.filter(
+            (project): project is ExampleProject => 
+              typeof project === 'object' && 
+              typeof project.title === 'string' && 
+              typeof project.description === 'string'
+          );
+          form.setValue('example_projects', validProjects);
+        }
       } else {
         // Create new draft
         const { data: newDraft, error: createError } = await supabase
@@ -166,11 +198,12 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
   const addExampleProject = () => {
     const currentProjects = form.getValues('example_projects') || [];
-    form.setValue('example_projects', [...currentProjects, { title: '', description: '' }]);
+    const newProject: ExampleProject = { title: '', description: '' };
+    form.setValue('example_projects', [...currentProjects, newProject]);
     saveDraft();
   };
 
-  const useExampleProject = (project: typeof exampleProjectSuggestions[0]) => {
+  const useExampleProject = (project: ExampleProject) => {
     const currentProjects = form.getValues('example_projects') || [];
     form.setValue('example_projects', [...currentProjects, project]);
     saveDraft();
