@@ -26,7 +26,7 @@ const ProjectManagement = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (statusFilter) {
+      if (statusFilter && statusFilter !== "all") {
         query = query.eq("review_status", statusFilter);
       }
 
