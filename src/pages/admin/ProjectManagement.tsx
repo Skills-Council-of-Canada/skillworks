@@ -58,6 +58,23 @@ const ProjectManagement = () => {
 
   const handleStatusChange = async (projectId: string, newStatus: ProjectReviewStatus, feedback?: string) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) throw new Error("No authenticated user");
+
+      // Create project approval record
+      const { error: approvalError } = await supabase
+        .from("project_approvals")
+        .insert({
+          project_id: projectId,
+          admin_id: user.id,
+          status: newStatus,
+          feedback
+        });
+
+      if (approvalError) throw approvalError;
+
+      // Update project status
       const { error: updateError } = await supabase
         .from("projects")
         .update({ 

@@ -25,7 +25,7 @@ interface Project {
 interface ProjectsTableProps {
   projects: Project[] | undefined;
   isLoading: boolean;
-  onStatusChange: (projectId: string, newStatus: ProjectReviewStatus) => Promise<void>;
+  onStatusChange: (projectId: string, newStatus: ProjectReviewStatus, feedback?: string) => Promise<void>;
 }
 
 export function ProjectsTable({ projects, isLoading, onStatusChange }: ProjectsTableProps) {

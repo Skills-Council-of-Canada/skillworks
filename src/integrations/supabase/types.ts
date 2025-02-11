@@ -1529,6 +1529,51 @@ export type Database = {
         }
         Relationships: []
       }
+      project_approvals: {
+        Row: {
+          admin_id: string | null
+          created_at: string | null
+          feedback: string | null
+          id: string
+          project_id: string | null
+          status: Database["public"]["Enums"]["project_review_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          project_id?: string | null
+          status: Database["public"]["Enums"]["project_review_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          project_id?: string | null
+          status?: Database["public"]["Enums"]["project_review_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_approvals_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_approvals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_media: {
         Row: {
           created_at: string | null
