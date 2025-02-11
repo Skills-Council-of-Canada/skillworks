@@ -89,33 +89,34 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
         // Handle example projects with type validation
         if (Array.isArray(data.example_projects)) {
-          const validProjects = data.example_projects.filter(
-            (project): project is ExampleProject => 
-              project !== null &&
-              typeof project === 'object' &&
-              'title' in project &&
-              'description' in project &&
-              typeof project.title === 'string' &&
-              typeof project.description === 'string'
-          );
+          const validProjects = data.example_projects.filter((project): project is { title: string; description: string } => {
+            if (!project || typeof project !== 'object') return false;
+            const p = project as Record<string, unknown>;
+            return (
+              'title' in p &&
+              'description' in p &&
+              typeof p.title === 'string' &&
+              typeof p.description === 'string'
+            );
+          });
           form.setValue('example_projects', validProjects);
         }
 
         // Handle media files
         if (Array.isArray(data.media_files)) {
-          const validMediaFiles = data.media_files.filter(
-            (file): file is { name: string; type: string; size: number } =>
-              file !== null &&
-              typeof file === 'object' &&
-              'name' in file &&
-              'type' in file &&
-              'size' in file &&
-              typeof file.name === 'string' &&
-              typeof file.type === 'string' &&
-              typeof file.size === 'number'
-          );
+          const validMediaFiles = data.media_files.filter((file): file is { name: string; type: string; size: number } => {
+            if (!file || typeof file !== 'object') return false;
+            const f = file as Record<string, unknown>;
+            return (
+              'name' in f &&
+              'type' in f &&
+              'size' in f &&
+              typeof f.name === 'string' &&
+              typeof f.type === 'string' &&
+              typeof f.size === 'number'
+            );
+          });
           if (validMediaFiles.length > 0) {
-            // Only update if there are valid files
             form.setValue('media', []); // Reset media array as we can't convert JSON to File objects
           }
         }
