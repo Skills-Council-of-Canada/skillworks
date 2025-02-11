@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
   Card,
@@ -34,20 +35,34 @@ import type { SupportTicket } from "@/types/support";
 
 const AdminSupport = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("tickets");
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
 
   const { data: tickets, isLoading } = useQuery({
     queryKey: ["support-tickets"],
     queryFn: async () => {
+      if (!user || user.role !== 'admin') {
+        throw new Error('Unauthorized');
+      }
+
       const { data, error } = await supabase
         .from("support_tickets")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching tickets:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load support tickets",
+          variant: "destructive",
+        });
+        throw error;
+      }
       return data as SupportTicket[];
     },
+    enabled: !!user && user.role === 'admin',
   });
 
   const getPriorityColor = (priority: string) => {
@@ -69,6 +84,15 @@ const AdminSupport = () => {
     };
     return colors[status as keyof typeof colors] || colors.open;
   };
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <div className="container mx-auto py-6">
+        <h1 className="text-3xl font-bold mb-6">Unauthorized Access</h1>
+        <p>You do not have permission to view this page.</p>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
