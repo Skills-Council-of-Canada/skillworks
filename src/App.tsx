@@ -19,6 +19,7 @@ import EducatorRegistration from "./pages/educator/EducatorRegistration";
 // Admin routes
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserManagement from "./pages/admin/UserManagement";
 import ExperienceOversight from "./pages/admin/ExperienceOversight";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSupport from "./pages/admin/AdminSupport";
@@ -77,6 +78,7 @@ const App = () => (
             }
           >
             <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<UserManagement />} />
             <Route path="experiences" element={<ExperienceOversight />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="support" element={<AdminSupport />} />
@@ -137,3 +139,4 @@ const App = () => (
 );
 
 export default App;
+
