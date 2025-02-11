@@ -9,7 +9,7 @@ import { Profile, UserRole, UserStatus } from "./types/user";
 
 const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<UserRole | "">("");
+  const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");
   const { toast } = useToast();
 
   const { data: users, isLoading } = useQuery({
@@ -20,7 +20,7 @@ const UserManagement = () => {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (roleFilter) {
+      if (roleFilter !== "all") {
         query = query.eq("role", roleFilter);
       }
 

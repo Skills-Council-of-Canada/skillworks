@@ -13,8 +13,8 @@ import { UserRole } from "../../types/user";
 interface UserFiltersProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  roleFilter: UserRole | "";
-  setRoleFilter: (role: UserRole | "") => void;
+  roleFilter: UserRole | "all";
+  setRoleFilter: (role: UserRole | "all") => void;
 }
 
 export function UserFilters({
@@ -34,12 +34,12 @@ export function UserFilters({
           className="pl-10"
         />
       </div>
-      <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | "")}>
+      <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | "all")}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Filter by role" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All roles</SelectItem>
+          <SelectItem value="all">All roles</SelectItem>
           <SelectItem value="educator">Educator</SelectItem>
           <SelectItem value="employer">Employer</SelectItem>
           <SelectItem value="participant">Participant</SelectItem>
