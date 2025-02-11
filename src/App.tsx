@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import EducatorRegistration from "./pages/educator/EducatorRegistration";
+import Reports from "./pages/admin/Reports";
 
 // Admin routes
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -82,6 +82,7 @@ const App = () => (
             <Route path="users" element={<UserManagement />} />
             <Route path="experiences" element={<ExperienceOversight />} />
             <Route path="projects" element={<AdminProjectManagement />} />
+            <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="support" element={<AdminSupport />} />
           </Route>
@@ -141,4 +142,3 @@ const App = () => (
 );
 
 export default App;
-
