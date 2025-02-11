@@ -8,13 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ProjectReviewStatus } from "../../ProjectManagement";
+import type { ProjectReviewStatus, StatusFilterType } from "../../ProjectManagement";
 
 interface ProjectFiltersProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  statusFilter: ProjectReviewStatus | "";
-  setStatusFilter: (status: ProjectReviewStatus | "") => void;
+  statusFilter: StatusFilterType;
+  setStatusFilter: (status: StatusFilterType) => void;
 }
 
 export function ProjectFilters({
@@ -34,7 +34,7 @@ export function ProjectFilters({
           className="pl-10"
         />
       </div>
-      <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as ProjectReviewStatus | "")}>
+      <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilterType)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>

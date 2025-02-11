@@ -7,10 +7,11 @@ import { ProjectFilters } from "./components/project-management/ProjectFilters";
 import { ProjectsTable } from "./components/project-management/ProjectsTable";
 
 export type ProjectReviewStatus = "pending_review" | "approved" | "rejected" | "needs_modification";
+export type StatusFilterType = ProjectReviewStatus | "all";
 
 const ProjectManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<ProjectReviewStatus | "">("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilterType>("all");
   const { toast } = useToast();
 
   const { data: projects, isLoading } = useQuery({
