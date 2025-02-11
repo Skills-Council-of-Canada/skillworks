@@ -106,24 +106,24 @@ const AdminSupport = () => {
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">Support & Helpdesk</h1>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
-          <TabsTrigger value="tickets" className="flex items-center gap-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-background">
+        <TabsList className="mb-6 bg-card">
+          <TabsTrigger value="tickets" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <MessageSquare className="w-4 h-4" />
             Support Tickets
           </TabsTrigger>
-          <TabsTrigger value="knowledge" className="flex items-center gap-2">
+          <TabsTrigger value="knowledge" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Book className="w-4 h-4" />
             Knowledge Base
           </TabsTrigger>
-          <TabsTrigger value="user-notes" className="flex items-center gap-2">
+          <TabsTrigger value="user-notes" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <AlertCircle className="w-4 h-4" />
             User Notes
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="tickets">
-          <Card>
+          <Card className="bg-card">
             <CardHeader>
               <CardTitle>Support Tickets</CardTitle>
               <CardDescription>
@@ -165,6 +165,7 @@ const AdminSupport = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => setSelectedTicket(ticket)}
+                          className="hover:bg-primary hover:text-primary-foreground"
                         >
                           View Details
                         </Button>
@@ -178,7 +179,7 @@ const AdminSupport = () => {
         </TabsContent>
 
         <TabsContent value="knowledge">
-          <Card>
+          <Card className="bg-card">
             <CardContent>
               <KnowledgeBaseManager />
             </CardContent>
@@ -186,7 +187,7 @@ const AdminSupport = () => {
         </TabsContent>
 
         <TabsContent value="user-notes">
-          <Card>
+          <Card className="bg-card">
             <CardContent>
               <UserNotesManager />
             </CardContent>
