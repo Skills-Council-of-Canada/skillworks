@@ -10,6 +10,7 @@ import { RegistrationsTab } from "./components/reports/RegistrationsTab";
 import { ExperiencesTab } from "./components/reports/ExperiencesTab";
 import { MatchesTab } from "./components/reports/MatchesTab";
 import { LearnersTab } from "./components/reports/LearnersTab";
+import { ExportButton } from "./components/reports/ExportButton";
 
 const Reports = () => {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -85,7 +86,14 @@ const Reports = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Reports & Analytics</h1>
-        <DateRangePicker date={date} setDate={setDate} />
+        <div className="flex items-center gap-4">
+          <DateRangePicker date={date} setDate={setDate} />
+          <ExportButton
+            data={registrationStats || []}
+            filename="registration-stats"
+            type="csv"
+          />
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
