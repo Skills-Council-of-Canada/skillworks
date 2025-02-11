@@ -23,12 +23,12 @@ import UserManagement from "./pages/admin/UserManagement";
 import ExperienceOversight from "./pages/admin/ExperienceOversight";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSupport from "./pages/admin/AdminSupport";
-import ProjectManagement from "./pages/admin/ProjectManagement";
+import { default as AdminProjectManagement } from "./pages/admin/ProjectManagement";
 
 // Employer routes
 import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
-import ProjectManagement as EmployerProjectManagement from "./pages/employer/ProjectManagement";
+import { default as EmployerProjectManagement } from "./pages/employer/ProjectManagement";
 import ApplicationsManagement from "./pages/employer/ApplicationsManagement";
 import MessagesPage from "./pages/employer/MessagesPage";
 import ResourceCenter from "./pages/employer/ResourceCenter";
@@ -81,7 +81,7 @@ const App = () => (
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="experiences" element={<ExperienceOversight />} />
-            <Route path="projects" element={<ProjectManagement />} />
+            <Route path="projects" element={<AdminProjectManagement />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="support" element={<AdminSupport />} />
           </Route>
@@ -141,3 +141,4 @@ const App = () => (
 );
 
 export default App;
+
