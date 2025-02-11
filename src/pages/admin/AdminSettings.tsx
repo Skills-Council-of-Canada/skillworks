@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import { NotificationsSettings } from "./components/settings/NotificationsSettings";
 import { SecuritySettings } from "./components/settings/SecuritySettings";
+import { ExperienceVisibilitySettings } from "./components/settings/ExperienceVisibilitySettings";
+import { BrandingSettings } from "./components/settings/BrandingSettings";
 import type { SystemSetting } from "@/types/admin";
 
 const AdminSettings = () => {
@@ -58,6 +61,13 @@ const AdminSettings = () => {
           />
         </TabsContent>
 
+        <TabsContent value="experience_visibility">
+          <ExperienceVisibilitySettings 
+            settings={settingsByCategory?.experience_visibility || []}
+            isLoading={isLoading}
+          />
+        </TabsContent>
+
         <TabsContent value="security">
           <SecuritySettings 
             settings={settingsByCategory?.security || []}
@@ -65,8 +75,12 @@ const AdminSettings = () => {
           />
         </TabsContent>
 
-        {/* Additional tabs content will be similar components */}
-        {/* We can implement ExperienceVisibilitySettings and BrandingSettings components as needed */}
+        <TabsContent value="branding">
+          <BrandingSettings 
+            settings={settingsByCategory?.branding || []}
+            isLoading={isLoading}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );
