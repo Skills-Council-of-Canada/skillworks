@@ -1,4 +1,3 @@
-
 import { UseFormReturn } from "react-hook-form";
 import { ExperienceFormValues } from "@/types/educator";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -7,8 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { X, Plus, Upload } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DetailsStepProps {
   form: UseFormReturn<ExperienceFormValues>;
@@ -28,6 +29,87 @@ const exampleProjectSuggestions = [
 
 const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { user } = useAuth();
+  const [draftId, setDraftId] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadDraft();
+  }, []);
+
+  const loadDraft = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('experience_drafts')
+        .select('*')
+        .eq('educator_id', user?.id)
+        .eq('status', 'in_progress')
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setDraftId(data.id);
+        form.setValue('title', data.title || '');
+        form.setValue('description', data.description || '');
+        form.setValue('expected_outcomes', data.expected_outcomes || []);
+        form.setValue('example_projects', data.example_projects || []);
+      } else {
+        // Create new draft
+        const { data: newDraft, error: createError } = await supabase
+          .from('experience_drafts')
+          .insert([
+            { educator_id: user?.id }
+          ])
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        setDraftId(newDraft.id);
+      }
+    } catch (error) {
+      console.error('Error loading draft:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load draft",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const saveDraft = async () => {
+    if (!draftId) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('experience_drafts')
+        .update({
+          title: form.getValues('title'),
+          description: form.getValues('description'),
+          expected_outcomes: form.getValues('expected_outcomes'),
+          example_projects: form.getValues('example_projects'),
+          last_saved_at: new Date().toISOString()
+        })
+        .eq('id', draftId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Draft saved successfully",
+      });
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save draft",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -35,15 +117,34 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
     setIsUploading(true);
     try {
+      const mediaFiles = files.map(file => ({
+        name: file.name,
+        type: file.type,
+        size: file.size
+      }));
+
+      if (!draftId) return;
+
+      const { error } = await supabase
+        .from('experience_drafts')
+        .update({
+          media_files: mediaFiles
+        })
+        .eq('id', draftId);
+
+      if (error) throw error;
+
       form.setValue('media', [...(form.getValues('media') || []), ...files]);
+      
       toast({
         title: "Files added",
         description: `${files.length} file(s) have been added to the experience.`,
       });
     } catch (error) {
+      console.error('Error uploading files:', error);
       toast({
-        title: "Error adding files",
-        description: "There was an error adding your files. Please try again.",
+        title: "Error",
+        description: "Failed to upload files",
         variant: "destructive",
       });
     } finally {
@@ -54,21 +155,25 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
   const addOutcome = () => {
     const currentOutcomes = form.getValues('expected_outcomes') || [];
     form.setValue('expected_outcomes', [...currentOutcomes, '']);
+    saveDraft();
   };
 
   const removeOutcome = (index: number) => {
     const currentOutcomes = form.getValues('expected_outcomes') || [];
     form.setValue('expected_outcomes', currentOutcomes.filter((_, i) => i !== index));
+    saveDraft();
   };
 
   const addExampleProject = () => {
     const currentProjects = form.getValues('example_projects') || [];
     form.setValue('example_projects', [...currentProjects, { title: '', description: '' }]);
+    saveDraft();
   };
 
   const useExampleProject = (project: typeof exampleProjectSuggestions[0]) => {
     const currentProjects = form.getValues('example_projects') || [];
     form.setValue('example_projects', [...currentProjects, project]);
+    saveDraft();
   };
 
   const validateForm = () => {
@@ -92,8 +197,9 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
     return true;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateForm()) {
+      await saveDraft();
       onNext();
     }
   };
@@ -107,7 +213,14 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
           <FormItem>
             <FormLabel>Experience Title</FormLabel>
             <FormControl>
-              <Input placeholder="Enter a clear, descriptive title" {...field} />
+              <Input 
+                placeholder="Enter a clear, descriptive title" 
+                {...field} 
+                onChange={(e) => {
+                  field.onChange(e);
+                  saveDraft();
+                }}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -125,6 +238,10 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
                 placeholder="Describe the learning objectives and experience goals (2-3 sentences)"
                 className="min-h-[100px]"
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  saveDraft();
+                }}
               />
             </FormControl>
             <FormMessage />
@@ -149,7 +266,14 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder="Enter an expected outcome" {...field} />
+                    <Input 
+                      placeholder="Enter an expected outcome" 
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        saveDraft();
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -202,7 +326,13 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
                 <FormItem>
                   <FormLabel>Project Title</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input 
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        saveDraft();
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,7 +345,13 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
                 <FormItem>
                   <FormLabel>Project Description</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea 
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        saveDraft();
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -258,6 +394,7 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
                 onClick={() => {
                   const currentFiles = form.getValues('media');
                   form.setValue('media', currentFiles.filter((_, i) => i !== index));
+                  saveDraft();
                 }}
               >
                 <X className="w-4 h-4" />
@@ -268,8 +405,12 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
       </div>
 
       <div className="flex justify-end mt-6">
-        <Button type="button" onClick={handleNext}>
-          Next: Category & Skills
+        <Button 
+          type="button" 
+          onClick={handleNext}
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Next: Category & Skills"}
         </Button>
       </div>
     </div>

@@ -884,6 +884,59 @@ export type Database = {
           },
         ]
       }
+      experience_drafts: {
+        Row: {
+          created_at: string
+          current_step: string
+          description: string | null
+          educator_id: string
+          example_projects: Json[] | null
+          expected_outcomes: string[] | null
+          id: string
+          last_saved_at: string
+          media_files: Json[] | null
+          status: Database["public"]["Enums"]["experience_draft_status"] | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_step?: string
+          description?: string | null
+          educator_id: string
+          example_projects?: Json[] | null
+          expected_outcomes?: string[] | null
+          id?: string
+          last_saved_at?: string
+          media_files?: Json[] | null
+          status?: Database["public"]["Enums"]["experience_draft_status"] | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_step?: string
+          description?: string | null
+          educator_id?: string
+          example_projects?: Json[] | null
+          expected_outcomes?: string[] | null
+          id?: string
+          last_saved_at?: string
+          media_files?: Json[] | null
+          status?: Database["public"]["Enums"]["experience_draft_status"] | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_drafts_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_matches: {
         Row: {
           created_at: string
@@ -2382,6 +2435,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "needs_modification"
+      experience_draft_status: "in_progress" | "completed"
       experience_status:
         | "incomplete"
         | "draft"
