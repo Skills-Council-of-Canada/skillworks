@@ -1,41 +1,14 @@
-
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
+import { NotificationsSettings } from "./components/settings/NotificationsSettings";
+import { SecuritySettings } from "./components/settings/SecuritySettings";
 import type { SystemSetting } from "@/types/admin";
 
 const AdminSettings = () => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("notifications");
-  const { user } = useAuth();
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ["system-settings"],
@@ -49,144 +22,6 @@ const AdminSettings = () => {
       return data as SystemSetting[];
     },
   });
-
-  const updateSetting = useMutation({
-    mutationFn: async ({
-      settingId,
-      newValue,
-    }: {
-      settingId: string;
-      newValue: any;
-    }) => {
-      const setting = settings?.find((s) => s.id === settingId);
-      if (!setting) throw new Error("Setting not found");
-
-      if (setting.requires_approval) {
-        const { error } = await supabase.from("settings_change_requests").insert({
-          setting_id: settingId,
-          old_value: setting.value,
-          new_value: newValue,
-          reason: "Updated via admin panel",
-          requested_by: user?.id,
-        });
-        if (error) throw error;
-        toast({
-          title: "Change request submitted",
-          description: "Your changes will be reviewed by an administrator.",
-        });
-      } else {
-        const { error } = await supabase
-          .from("system_settings")
-          .update({ value: newValue })
-          .eq("id", settingId);
-        if (error) throw error;
-        toast({
-          title: "Settings updated",
-          description: "Your changes have been saved successfully.",
-        });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["system-settings"] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error updating settings",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const parseSettingValue = (setting: SystemSetting) => {
-    try {
-      if (typeof setting.value === "string") {
-        return JSON.parse(setting.value);
-      }
-      return setting.value;
-    } catch (error) {
-      console.error("Error parsing setting value:", error);
-      return "";
-    }
-  };
-
-  const renderSettingInput = (setting: SystemSetting) => {
-    const value = parseSettingValue(setting);
-
-    switch (setting.key) {
-      case "global_notification_level":
-        return (
-          <Select
-            value={value}
-            onValueChange={(newValue) =>
-              updateSetting.mutate({ settingId: setting.id, newValue: JSON.stringify(newValue) })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select notification level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="important">Important</SelectItem>
-              <SelectItem value="critical">Critical</SelectItem>
-              <SelectItem value="none">None</SelectItem>
-            </SelectContent>
-          </Select>
-        );
-
-      case "require_admin_approval":
-        return (
-          <Switch
-            checked={value === true}
-            onCheckedChange={(checked) =>
-              updateSetting.mutate({ settingId: setting.id, newValue: checked })
-            }
-          />
-        );
-
-      case "password_policy":
-        return (
-          <div className="space-y-2">
-            <Input
-              type="number"
-              value={value?.min_length || 8}
-              onChange={(e) =>
-                updateSetting.mutate({
-                  settingId: setting.id,
-                  newValue: { ...value, min_length: parseInt(e.target.value) },
-                })
-              }
-              placeholder="Minimum length"
-            />
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={value?.require_special || false}
-                onCheckedChange={(checked) =>
-                  updateSetting.mutate({
-                    settingId: setting.id,
-                    newValue: { ...value, require_special: checked },
-                  })
-                }
-              />
-              <Label>Require special characters</Label>
-            </div>
-          </div>
-        );
-
-      default:
-        return (
-          <Input
-            value={typeof value === "string" ? value : JSON.stringify(value)}
-            onChange={(e) =>
-              updateSetting.mutate({
-                settingId: setting.id,
-                newValue: e.target.value,
-              })
-            }
-          />
-        );
-    }
-  };
 
   if (isLoading) {
     return (
@@ -216,28 +51,22 @@ const AdminSettings = () => {
           <TabsTrigger value="branding">Branding</TabsTrigger>
         </TabsList>
 
-        {Object.entries(settingsByCategory || {}).map(([category, categorySettings]) => (
-          <TabsContent key={category} value={category}>
-            <div className="grid gap-6">
-              {categorySettings.map((setting) => (
-                <Card key={setting.id}>
-                  <CardHeader>
-                    <CardTitle>{setting.key.replace(/_/g, " ").toUpperCase()}</CardTitle>
-                    <CardDescription>{setting.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {renderSettingInput(setting)}
-                    {setting.requires_approval && (
-                      <p className="text-sm text-muted-foreground mt-2">
-                        * Changes require admin approval
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        ))}
+        <TabsContent value="notifications">
+          <NotificationsSettings 
+            settings={settingsByCategory?.notifications || []}
+            isLoading={isLoading}
+          />
+        </TabsContent>
+
+        <TabsContent value="security">
+          <SecuritySettings 
+            settings={settingsByCategory?.security || []}
+            isLoading={isLoading}
+          />
+        </TabsContent>
+
+        {/* Additional tabs content will be similar components */}
+        {/* We can implement ExperienceVisibilitySettings and BrandingSettings components as needed */}
       </Tabs>
     </div>
   );
