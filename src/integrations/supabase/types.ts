@@ -2318,8 +2318,8 @@ export type Database = {
       }
       get_experience_stats: {
         Args: {
-          start_date: string
-          end_date: string
+          p_start_date: string
+          p_end_date: string
         }
         Returns: {
           total_experiences: number
@@ -2343,8 +2343,8 @@ export type Database = {
       }
       get_project_match_stats: {
         Args: {
-          start_date: string
-          end_date: string
+          p_start_date: string
+          p_end_date: string
         }
         Returns: {
           total_projects: number

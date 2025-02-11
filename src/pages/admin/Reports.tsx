@@ -41,8 +41,8 @@ const Reports = () => {
       if (!date?.from || !date?.to) return null;
 
       const { data, error } = await supabase.rpc("get_experience_stats", {
-        start_date: date.from.toISOString(),
-        end_date: date.to.toISOString(),
+        p_start_date: date.from.toISOString(),
+        p_end_date: date.to.toISOString(),
       });
 
       if (error) throw error;
@@ -57,8 +57,8 @@ const Reports = () => {
       if (!date?.from || !date?.to) return null;
 
       const { data, error } = await supabase.rpc("get_project_match_stats", {
-        start_date: date.from.toISOString(),
-        end_date: date.to.toISOString(),
+        p_start_date: date.from.toISOString(),
+        p_end_date: date.to.toISOString(),
       });
 
       if (error) throw error;
