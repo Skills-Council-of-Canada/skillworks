@@ -66,6 +66,11 @@ export const useAuthState = () => {
           }
         } catch (error) {
           console.error("Profile error:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load user profile. Please try logging in again.",
+            variant: "destructive",
+          });
           setUser(null);
           if (!isPublicRoute(location.pathname)) {
             navigate('/login');
@@ -102,6 +107,11 @@ export const useAuthState = () => {
               }
             } catch (error) {
               console.error("Error after sign in:", error);
+              toast({
+                title: "Error",
+                description: "Failed to load user profile. Please try logging in again.",
+                variant: "destructive",
+              });
               setUser(null);
               if (!isPublicRoute(location.pathname)) {
                 navigate('/login');
@@ -116,6 +126,11 @@ export const useAuthState = () => {
 
       } catch (error) {
         console.error("Error in setupAuth:", error);
+        toast({
+          title: "Authentication Error",
+          description: "There was a problem with the authentication service. Please try again.",
+          variant: "destructive",
+        });
         if (mounted) {
           setUser(null);
           setIsLoading(false);
