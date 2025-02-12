@@ -4,10 +4,9 @@ import { Calendar, MessageSquare, BookOpen, Trophy } from "lucide-react";
 
 const ParticipantDashboard = () => {
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-8">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to your learning journey</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -60,7 +59,7 @@ const ParticipantDashboard = () => {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 mt-8">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-6">
           <h3 className="font-semibold mb-4">Recent Activity</h3>
           <div className="space-y-4">
