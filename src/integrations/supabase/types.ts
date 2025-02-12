@@ -943,6 +943,7 @@ export type Database = {
           created_at: string | null
           experience_id: string
           id: string
+          participant_experience_id: string | null
           rating: number
           reviewer_id: string
           updated_at: string | null
@@ -952,6 +953,7 @@ export type Database = {
           created_at?: string | null
           experience_id: string
           id?: string
+          participant_experience_id?: string | null
           rating: number
           reviewer_id: string
           updated_at?: string | null
@@ -961,6 +963,7 @@ export type Database = {
           created_at?: string | null
           experience_id?: string
           id?: string
+          participant_experience_id?: string | null
           rating?: number
           reviewer_id?: string
           updated_at?: string | null
@@ -969,6 +972,13 @@ export type Database = {
           {
             foreignKeyName: "experience_feedback_experience_id_fkey"
             columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_feedback_participant_experience_id_fkey"
+            columns: ["participant_experience_id"]
             isOneToOne: false
             referencedRelation: "participant_experiences"
             referencedColumns: ["id"]
@@ -1134,6 +1144,7 @@ export type Database = {
           due_date: string
           experience_id: string
           id: string
+          participant_experience_id: string | null
           title: string
           updated_at: string
         }
@@ -1143,6 +1154,7 @@ export type Database = {
           due_date: string
           experience_id: string
           id?: string
+          participant_experience_id?: string | null
           title: string
           updated_at?: string
         }
@@ -1152,6 +1164,7 @@ export type Database = {
           due_date?: string
           experience_id?: string
           id?: string
+          participant_experience_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -1168,6 +1181,13 @@ export type Database = {
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_milestones_participant_experience_id_fkey"
+            columns: ["participant_experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
             referencedColumns: ["id"]
           },
         ]

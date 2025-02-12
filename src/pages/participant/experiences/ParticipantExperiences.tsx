@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ParticipantExperiences = () => {
   const { toast } = useToast();
@@ -27,14 +26,14 @@ const ParticipantExperiences = () => {
         .from('participant_experiences')
         .select(`
           *,
-          educator:educator_profiles!educator_id(full_name),
-          milestones:experience_milestones(
+          educator:educator_id(full_name),
+          milestones:experience_milestones!participant_experience_id(
             id,
             title,
             due_date,
             status
           ),
-          feedback:experience_feedback(
+          feedback:experience_feedback!participant_experience_id(
             id,
             rating,
             comment,
@@ -50,6 +49,7 @@ const ParticipantExperiences = () => {
       const { data, error } = await query;
 
       if (error) {
+        console.error('Error fetching experiences:', error);
         throw error;
       }
 
