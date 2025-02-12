@@ -40,8 +40,11 @@ const Login = () => {
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Redirecting to:", redirectPath);
       navigate(redirectPath, { replace: true });
+    } else {
+      // Auto login when portal is selected
+      handleAuthSubmit(selectedPortal.id, "password123", false);
     }
-  }, [user, selectedPortal, navigate, getRoleBasedRedirect]);
+  }, [user, selectedPortal]);
 
   const handleBack = () => {
     if (selectedPortal) {
@@ -57,13 +60,13 @@ const Login = () => {
     setIsSubmitting(true);
     try {
       const portalUsername = selectedPortal.id; // This will be 'employ', 'educator', etc.
-      const user = await login(username || portalUsername, password);
+      const user = await login(portalUsername, password);
       console.log("Login successful, user:", user);
       if (!user) {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Please check your username and password and try again."
+          description: "Automatic login failed. Please contact the administrator."
         });
       }
     } catch (error) {
@@ -101,6 +104,7 @@ const Login = () => {
         onSubmit={handleAuthSubmit}
         defaultUsername={selectedPortal.id}
         showEmailField={false}
+        autoLogin={true}
       />
     </div>
   );
