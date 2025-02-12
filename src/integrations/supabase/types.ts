@@ -2020,6 +2020,44 @@ export type Database = {
           },
         ]
       }
+      participant_integrations: {
+        Row: {
+          created_at: string | null
+          google_calendar_connected: boolean | null
+          google_oauth_token: Json | null
+          id: string
+          linkedin_oauth_token: Json | null
+          participant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          google_calendar_connected?: boolean | null
+          google_oauth_token?: Json | null
+          id?: string
+          linkedin_oauth_token?: Json | null
+          participant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          google_calendar_connected?: boolean | null
+          google_oauth_token?: Json | null
+          id?: string
+          linkedin_oauth_token?: Json | null
+          participant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_integrations_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_messages: {
         Row: {
           created_at: string | null
