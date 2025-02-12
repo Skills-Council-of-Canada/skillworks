@@ -1,7 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
 
 interface DashboardStats {
   activeExperiences: number;
@@ -46,22 +45,21 @@ export const useParticipantDashboard = () => {
         .select("status")
         .eq("participant_id", user.id) as { data: { status: string }[] | null };
 
-      // Fetch recent activities using raw query to bypass type checking
-      const { data: activities } = await (supabase
-        .from('participant_activities')
-        .select('id, title, description, activity_type, created_at')
-        .eq('participant_id', user.id)
+      // Fetch recent activities (using notifications as activities)
+      const { data: activities } = await supabase
+        .from("notifications")
+        .select('id, title, message as description, type as activity_type, created_at')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(5)) as unknown as { data: Activity[] | null };
+        .limit(5) as { data: Activity[] | null };
 
-      // Fetch upcoming events using raw query to bypass type checking
-      const { data: events } = await (supabase
+      // Fetch upcoming events
+      const { data: events } = await supabase
         .from('participant_events')
         .select('id, title, description, start_time, event_type')
         .eq('participant_id', user.id)
-        .eq('status', 'upcoming')
         .order('start_time', { ascending: true })
-        .limit(5)) as unknown as { data: Event[] | null };
+        .limit(5) as { data: Event[] | null };
 
       // Calculate stats
       const stats: DashboardStats = {
