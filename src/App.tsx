@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -50,6 +51,10 @@ import EducatorMessages from "./pages/educator/EducatorMessages";
 import EducatorCalendar from "./pages/educator/EducatorCalendar";
 import EducatorSettings from "./pages/educator/EducatorSettings";
 import CreateExperience from "./pages/educator/CreateExperience";
+
+// Participant routes
+import ParticipantLayout from "./pages/participant/ParticipantLayout";
+import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
 
 const queryClient = new QueryClient();
 
@@ -131,6 +136,19 @@ const App = () => (
             <Route path="settings" element={<ProfileSettings />} />
             <Route path="create-project" element={<CreateProject />} />
             <Route path="projects/:projectId" element={<ProjectDetails />} />
+          </Route>
+
+          {/* Protected participant routes */}
+          <Route
+            path="/participant"
+            element={
+              <ProtectedRoute allowedRoles={["participant"]}>
+                <ParticipantLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ParticipantDashboard />} />
+            <Route path="dashboard" element={<ParticipantDashboard />} />
           </Route>
 
           {/* Catch all route */}
