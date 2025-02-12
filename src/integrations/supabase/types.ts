@@ -1649,6 +1649,41 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          participant_id: string
+          read: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          participant_id: string
+          read?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          participant_id?: string
+          read?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_messages_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_notifications: {
         Row: {
           created_at: string
