@@ -2411,6 +2411,44 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_workflow_status: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_status_change: string | null
+          needs_admin_review: boolean | null
+          participant_id: string
+          registration_status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_status_change?: string | null
+          needs_admin_review?: boolean | null
+          participant_id: string
+          registration_status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_status_change?: string | null
+          needs_admin_review?: boolean | null
+          participant_id?: string
+          registration_status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_workflow_status_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
