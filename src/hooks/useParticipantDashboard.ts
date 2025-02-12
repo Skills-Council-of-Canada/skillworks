@@ -1,7 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
 
 interface DashboardStats {
   activeExperiences: number;
@@ -10,12 +9,21 @@ interface DashboardStats {
   unreadMessages: number;
 }
 
-type ParticipantActivity = Database["public"]["Tables"]["participant_activities"]["Row"];
-type ParticipantEvent = Database["public"]["Tables"]["participant_events"]["Row"];
-type ParticipantExperience = Database["public"]["Tables"]["participant_experiences"]["Row"];
+interface Activity {
+  id: string;
+  title: string;
+  description: string | null;
+  activity_type: string;
+  created_at: string;
+}
 
-interface Activity extends Pick<ParticipantActivity, "id" | "title" | "description" | "activity_type" | "created_at"> {}
-interface Event extends Pick<ParticipantEvent, "id" | "title" | "description" | "start_time" | "event_type"> {}
+interface Event {
+  id: string;
+  title: string;
+  description: string | null;
+  start_time: string;
+  event_type: string;
+}
 
 interface DashboardData {
   stats: DashboardStats;
