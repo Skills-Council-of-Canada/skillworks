@@ -39,11 +39,7 @@ const Login = () => {
       console.log("User detected in Login component:", user);
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Redirecting to:", redirectPath);
-      if (redirectPath === "/participant") {
-        navigate("/participant/dashboard", { replace: true });
-      } else {
-        navigate(redirectPath, { replace: true });
-      }
+      navigate(redirectPath, { replace: true });
     }
   }, [user, selectedPortal, navigate, getRoleBasedRedirect]);
 
