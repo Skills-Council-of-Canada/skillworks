@@ -55,13 +55,11 @@ export const useMentorMessages = () => {
 
       if (!relationship) throw new Error("No mentor relationship found");
 
-      const { error } = await supabase
-        .from("mentor_messages")
-        .insert({
-          relationship_id: relationship.id,
-          sender_id: user?.id,
-          content,
-        });
+      const { error } = await supabase.from("mentor_messages").insert({
+        relationship_id: relationship.id,
+        sender_id: user?.id,
+        content,
+      });
 
       if (error) throw error;
     },

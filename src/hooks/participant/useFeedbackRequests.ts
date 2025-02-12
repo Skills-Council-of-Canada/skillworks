@@ -55,14 +55,12 @@ export const useFeedbackRequests = () => {
 
       if (!relationship) throw new Error("No mentor relationship found");
 
-      const { error } = await supabase
-        .from("mentor_feedback_requests")
-        .insert({
-          relationship_id: relationship.id,
-          participant_id: user?.id,
-          title,
-          description,
-        });
+      const { error } = await supabase.from("mentor_feedback_requests").insert({
+        relationship_id: relationship.id,
+        participant_id: user?.id,
+        title,
+        description,
+      });
 
       if (error) throw error;
     },

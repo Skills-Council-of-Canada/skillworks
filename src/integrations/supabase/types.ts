@@ -1637,6 +1637,200 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_feedback_requests: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          participant_id: string
+          relationship_id: string
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          participant_id: string
+          relationship_id: string
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          participant_id?: string
+          relationship_id?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_relationship"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_feedback_requests_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_feedback_requests_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          relationship_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          relationship_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          relationship_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_relationship"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_messages_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_relationships: {
+        Row: {
+          created_at: string | null
+          id: string
+          mentor_id: string
+          participant_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mentor_id: string
+          participant_id: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mentor_id?: string
+          participant_id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_relationships_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_relationships_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_skill_assessments: {
+        Row: {
+          created_at: string | null
+          current_level: number
+          id: string
+          next_assessment_date: string
+          notes: string | null
+          relationship_id: string
+          skill_name: string
+          target_level: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_level: number
+          id?: string
+          next_assessment_date: string
+          notes?: string | null
+          relationship_id: string
+          skill_name: string
+          target_level: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_level?: number
+          id?: string
+          next_assessment_date?: string
+          notes?: string | null
+          relationship_id?: string
+          skill_name?: string
+          target_level?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_relationship"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_skill_assessments_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_relationships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string | null
