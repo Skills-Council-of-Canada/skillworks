@@ -1,6 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 
 interface DashboardStats {
   activeExperiences: number;
@@ -9,7 +10,7 @@ interface DashboardStats {
   unreadMessages: number;
 }
 
-interface Activity {
+type Activity = {
   id: string;
   title: string;
   description: string | null;
@@ -17,13 +18,7 @@ interface Activity {
   created_at: string;
 }
 
-interface Event {
-  id: string;
-  title: string;
-  description: string | null;
-  start_time: string;
-  event_type: string;
-}
+type Event = Database['public']['Tables']['participant_events']['Row'];
 
 interface DashboardData {
   stats: DashboardStats;
@@ -42,8 +37,7 @@ export const useParticipantDashboard = () => {
       // Fetch experiences stats
       const { data: experiences } = await supabase
         .from("participant_experiences")
-        .select("status")
-        .eq("participant_id", user.id);
+        .select("status");
 
       // Fetch unread messages count
       const { count: unreadCount } = await supabase
@@ -55,7 +49,7 @@ export const useParticipantDashboard = () => {
       // Fetch recent activities (using notifications as activities)
       const { data: activities } = await supabase
         .from("notifications")
-        .select("id, title, message as description, type as activity_type, created_at")
+        .select("id, title, message:message as description, type:type as activity_type, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(5);
@@ -63,7 +57,7 @@ export const useParticipantDashboard = () => {
       // Fetch upcoming events
       const { data: events } = await supabase
         .from("participant_events")
-        .select("id, title, description, start_time, event_type")
+        .select("*")
         .eq("participant_id", user.id)
         .gte("start_time", new Date().toISOString())
         .order("start_time", { ascending: true })
@@ -79,7 +73,7 @@ export const useParticipantDashboard = () => {
 
       return {
         stats,
-        recentActivities: activities || [],
+        recentActivities: (activities || []) as Activity[],
         upcomingEvents: events || [],
       };
     }
