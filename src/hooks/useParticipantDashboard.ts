@@ -50,36 +50,36 @@ export const useParticipantDashboard = () => {
       // Fetch recent activities
       const { data: activities, error: activitiesError } = await supabase
         .from("participant_activities")
-        .select("*")
+        .select("id, title, description, activity_type, created_at")
         .eq("participant_id", user.id)
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(5) as { data: Activity[] | null; error: any };
 
       if (activitiesError) throw activitiesError;
 
       // Fetch upcoming events
       const { data: events, error: eventsError } = await supabase
         .from("participant_events")
-        .select("*")
+        .select("id, title, description, start_time, event_type")
         .eq("participant_id", user.id)
         .eq("status", "upcoming")
         .order("start_time", { ascending: true })
-        .limit(5);
+        .limit(5) as { data: Event[] | null; error: any };
 
       if (eventsError) throw eventsError;
 
       // Calculate stats
       const stats: DashboardStats = {
-        activeExperiences: experiences.filter(e => e.status === "in_progress").length,
-        completedExperiences: experiences.filter(e => e.status === "completed").length,
-        upcomingEvents: events.length,
+        activeExperiences: experiences?.filter(e => e.status === "in_progress").length || 0,
+        completedExperiences: experiences?.filter(e => e.status === "completed").length || 0,
+        upcomingEvents: events?.length || 0,
         unreadMessages: 0, // This will be implemented with the messaging system
       };
 
       return {
         stats,
-        recentActivities: activities,
-        upcomingEvents: events,
+        recentActivities: activities || [],
+        upcomingEvents: events || [],
       };
     }
   });
