@@ -3,8 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 const usernameToEmail: Record<string, string> = {
   employ: "employ@skillscouncil.ca",
+  employer: "employ@skillscouncil.ca", // Add alias for employer
   educator: "educator@skillscouncil.ca",
   participate: "participate@skillscouncil.ca",
+  participant: "participate@skillscouncil.ca", // Add alias for participant
   admin: "admin@skillscouncil.ca"
 };
 
@@ -15,7 +17,7 @@ export const signInUser = async (username: string, password: string) => {
     if (!email) {
       return { 
         data: null, 
-        error: new Error("Invalid username. Please use: employ, educator, participate, or admin") 
+        error: new Error("Invalid username. Please use: employer/employ, educator, participate/participant, or admin") 
       };
     }
     
