@@ -1525,6 +1525,127 @@ export type Database = {
           },
         ]
       }
+      participant_achievements: {
+        Row: {
+          badge_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          issued_at: string
+          issuer: string | null
+          metadata: Json | null
+          participant_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          badge_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          issued_at?: string
+          issuer?: string | null
+          metadata?: Json | null
+          participant_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          badge_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          issued_at?: string
+          issuer?: string | null
+          metadata?: Json | null
+          participant_id?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_achievements_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participant_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          participant_id: string | null
+          read: boolean | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          participant_id?: string | null
+          read?: boolean | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          participant_id?: string | null
+          read?: boolean | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_notifications_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participant_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          certifications: Json[] | null
+          created_at: string
+          full_name: string | null
+          id: string
+          interests: string[] | null
+          skills: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          certifications?: Json[] | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          interests?: string[] | null
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          certifications?: Json[] | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          interests?: string[] | null
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
