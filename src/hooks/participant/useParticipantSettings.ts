@@ -3,20 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface ParticipantSettings {
-  id: string;
-  mentorship_mode: 'self_guided' | 'mentor_assisted';
-  privacy_settings: {
-    work_visibility: 'mentor' | 'employer' | 'public';
-    profile_visibility: 'public' | 'private';
-  };
-  notification_preferences: {
-    mentor_feedback: boolean;
-    project_approvals: boolean;
-    experience_milestones: boolean;
-  };
-}
+import { ParticipantSettings } from "@/types/participant";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
@@ -26,26 +13,47 @@ export const useParticipantSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["participant-settings", user?.id],
     queryFn: async () => {
-      const { data: settings, error } = await supabase
+      const { data, error } = await supabase
         .from("participant_settings")
         .select("*")
         .eq("participant_id", user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return settings as ParticipantSettings;
+      
+      if (!data) {
+        // Return default settings if none exist
+        return {
+          id: "",
+          participant_id: user?.id || "",
+          mentorship_mode: "self_guided" as const,
+          privacy_settings: {
+            work_visibility: "mentor" as const,
+            profile_visibility: "public" as const,
+          },
+          notification_preferences: {
+            mentor_feedback: true,
+            project_approvals: true,
+            experience_milestones: true,
+          }
+        };
+      }
+      
+      return data as ParticipantSettings;
     },
     enabled: !!user?.id,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
     mutationFn: async (newSettings: Partial<ParticipantSettings>) => {
+      const updatedSettings = {
+        participant_id: user?.id,
+        ...newSettings,
+      };
+
       const { error } = await supabase
         .from("participant_settings")
-        .upsert({
-          participant_id: user?.id,
-          ...newSettings,
-        });
+        .upsert(updatedSettings);
 
       if (error) throw error;
     },

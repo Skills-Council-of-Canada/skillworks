@@ -36,6 +36,23 @@ export interface ParticipantAchievement {
   created_at: string;
 }
 
+export interface ParticipantSettings {
+  id: string;
+  participant_id: string;
+  mentorship_mode: 'self_guided' | 'mentor_assisted';
+  privacy_settings: {
+    work_visibility: 'mentor' | 'employer' | 'public';
+    profile_visibility: 'public' | 'private';
+  };
+  notification_preferences: {
+    mentor_feedback: boolean;
+    project_approvals: boolean;
+    experience_milestones: boolean;
+  };
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface UploadedFile {
   id: string;
   name: string;
