@@ -20,7 +20,8 @@ export const useParticipantWorkflow = (participantId: string) => {
       if (error) throw error;
       if (!workflowData) throw new Error("No workflow status found");
       
-      return workflowData as ParticipantWorkflowStatus;
+      // Using double type assertion to safely convert the unknown data type
+      return workflowData as unknown as ParticipantWorkflowStatus;
     },
   });
 
@@ -36,7 +37,8 @@ export const useParticipantWorkflow = (participantId: string) => {
       if (error) throw error;
       if (!integrationsData) throw new Error("No integrations found");
       
-      return integrationsData as ParticipantIntegrations;
+      // Using double type assertion to safely convert the unknown data type
+      return integrationsData as unknown as ParticipantIntegrations;
     },
   });
 
@@ -46,7 +48,7 @@ export const useParticipantWorkflow = (participantId: string) => {
         ...newStatus,
         last_status_change: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      };
+      } as unknown as Partial<ParticipantWorkflowStatus>;
 
       const { error } = await supabase
         .from("participant_workflow_status")
@@ -74,13 +76,15 @@ export const useParticipantWorkflow = (participantId: string) => {
 
   const connectGoogleCalendar = useMutation({
     mutationFn: async (token: any) => {
+      const updates = {
+        google_calendar_connected: true,
+        google_oauth_token: token,
+        updated_at: new Date().toISOString(),
+      } as unknown as Partial<ParticipantIntegrations>;
+
       const { error } = await supabase
         .from("participant_integrations")
-        .update({
-          google_calendar_connected: true,
-          google_oauth_token: token,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updates)
         .eq("participant_id", participantId);
 
       if (error) throw error;
