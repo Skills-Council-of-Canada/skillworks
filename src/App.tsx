@@ -56,6 +56,7 @@ import ParticipantLayout from "./pages/participant/ParticipantLayout";
 import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
 import ParticipantRegistration from "./pages/participant/ParticipantRegistration";
 import ParticipantExperiences from "./pages/participant/experiences/ParticipantExperiences";
+import MyMentors from "./pages/participant/MyMentors";
 
 const queryClient = new QueryClient();
 
@@ -152,6 +153,7 @@ const App = () => (
             <Route index element={<ParticipantDashboard />} />
             <Route path="dashboard" element={<ParticipantDashboard />} />
             <Route path="experiences" element={<ParticipantExperiences />} />
+            <Route path="mentors" element={<MyMentors />} />
           </Route>
 
           {/* Catch all route */}

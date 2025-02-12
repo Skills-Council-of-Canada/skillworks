@@ -9,7 +9,8 @@ import {
   Calendar,
   BookOpen,
   Activity,
-  CheckSquare
+  CheckSquare,
+  Users
 } from "lucide-react";
 
 interface NavItemProps {
@@ -45,6 +46,9 @@ export const ParticipantNavigation = () => {
       </NavItem>
       <NavItem to="/participant/experiences" icon={BookOpen}>
         My Experiences
+      </NavItem>
+      <NavItem to="/participant/mentors" icon={Users}>
+        My Mentors
       </NavItem>
       <NavItem to="/participant/calendar" icon={Calendar}>
         Calendar
