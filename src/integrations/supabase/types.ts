@@ -1896,6 +1896,240 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_project_deliverables: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          due_date: string
+          feedback: string | null
+          feedback_at: string | null
+          feedback_by: string | null
+          id: string
+          participant_project_id: string
+          status: string
+          submission_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          due_date: string
+          feedback?: string | null
+          feedback_at?: string | null
+          feedback_by?: string | null
+          id?: string
+          participant_project_id: string
+          status?: string
+          submission_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          due_date?: string
+          feedback?: string | null
+          feedback_at?: string | null
+          feedback_by?: string | null
+          id?: string
+          participant_project_id?: string
+          status?: string
+          submission_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_project_deliverables_feedback_by_fkey"
+            columns: ["feedback_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_project_deliverables_participant_project_id_fkey"
+            columns: ["participant_project_id"]
+            isOneToOne: false
+            referencedRelation: "participant_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_project_documents: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_type: string
+          file_url: string
+          id: string
+          participant_project_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_type: string
+          file_url: string
+          id?: string
+          participant_project_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          participant_project_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_project_documents_participant_project_id_fkey"
+            columns: ["participant_project_id"]
+            isOneToOne: false
+            referencedRelation: "participant_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_project_documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_project_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          participant_project_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          participant_project_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          participant_project_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_project_messages_participant_project_id_fkey"
+            columns: ["participant_project_id"]
+            isOneToOne: false
+            referencedRelation: "participant_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_project_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_project_team_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          joined_at: string | null
+          member_id: string
+          participant_project_id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          joined_at?: string | null
+          member_id: string
+          participant_project_id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          joined_at?: string | null
+          member_id?: string
+          participant_project_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_project_team_members_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_project_team_members_participant_project_id_fkey"
+            columns: ["participant_project_id"]
+            isOneToOne: false
+            referencedRelation: "participant_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_projects: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          participant_id: string
+          project_id: string
+          started_at: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          participant_id: string
+          project_id: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          participant_id?: string
+          project_id?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_projects_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_projects_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_registrations: {
         Row: {
           availability: string
