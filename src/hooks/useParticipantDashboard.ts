@@ -47,12 +47,21 @@ export const useParticipantDashboard = () => {
         .eq("read", false);
 
       // Fetch recent activities (using notifications as activities)
-      const { data: activities } = await supabase
+      const { data: notificationsData } = await supabase
         .from("notifications")
-        .select("id, title, message:description, type:activity_type, created_at")
+        .select("id, title, message, type, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(5);
+
+      // Transform notifications into activities
+      const activities: Activity[] = (notificationsData || []).map(notification => ({
+        id: notification.id,
+        title: notification.title,
+        description: notification.message,
+        activity_type: notification.type,
+        created_at: notification.created_at
+      }));
 
       // Fetch upcoming events
       const { data: events } = await supabase
@@ -73,7 +82,7 @@ export const useParticipantDashboard = () => {
 
       return {
         stats,
-        recentActivities: (activities || []) as Activity[],
+        recentActivities: activities,
         upcomingEvents: events || [],
       };
     }
