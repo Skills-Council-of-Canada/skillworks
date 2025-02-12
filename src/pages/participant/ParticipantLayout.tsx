@@ -50,10 +50,10 @@ const ParticipantLayout = () => {
               Dashboard
             </Button>
           </Link>
-          <Link to="/participant/learning">
+          <Link to="/participant/experiences">
             <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
               <BookOpen className="mr-2 h-4 w-4" />
-              Learning
+              My Experiences
             </Button>
           </Link>
           <Link to="/participant/messages">
