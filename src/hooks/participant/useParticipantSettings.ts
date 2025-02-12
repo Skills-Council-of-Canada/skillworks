@@ -4,18 +4,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { ParticipantSettings } from "@/types/participant";
+import { Database } from "@/types/supabase";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: settings, isLoading } = useQuery({
+  const { data: settings, isLoading } = useQuery<ParticipantSettings | null>({
     queryKey: ["participant-settings", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("participant_settings")
-        .select("*")
+        .select()
         .eq("participant_id", user?.id)
         .maybeSingle();
 
@@ -53,7 +54,8 @@ export const useParticipantSettings = () => {
 
       const { error } = await supabase
         .from("participant_settings")
-        .upsert(updatedSettings);
+        .upsert(updatedSettings)
+        .eq('participant_id', user?.id);
 
       if (error) throw error;
     },
