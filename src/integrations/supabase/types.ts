@@ -1617,6 +1617,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          educator_id: string | null
           end_date: string | null
           id: string
           participant_id: string
@@ -1628,6 +1629,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          educator_id?: string | null
           end_date?: string | null
           id?: string
           participant_id: string
@@ -1639,6 +1641,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          educator_id?: string | null
           end_date?: string | null
           id?: string
           participant_id?: string
@@ -1647,7 +1650,15 @@ export type Database = {
           title?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "participant_experiences_educator_id_fkey"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       participant_messages: {
         Row: {
