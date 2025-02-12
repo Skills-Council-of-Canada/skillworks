@@ -937,6 +937,51 @@ export type Database = {
           },
         ]
       }
+      experience_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          experience_id: string
+          id: string
+          rating: number
+          reviewer_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          experience_id: string
+          id?: string
+          rating: number
+          reviewer_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          experience_id?: string
+          id?: string
+          rating?: number
+          reviewer_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_feedback_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_feedback_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_matches: {
         Row: {
           created_at: string
@@ -1036,6 +1081,48 @@ export type Database = {
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_messages: {
+        Row: {
+          created_at: string | null
+          experience_id: string
+          id: string
+          is_read: boolean | null
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          experience_id: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          experience_id?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_messages_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2733,6 +2820,7 @@ export type Database = {
         | "draft"
         | "pending_approval"
         | "published"
+      milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
         | "pending_review"
