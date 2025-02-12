@@ -1730,6 +1730,7 @@ export type Database = {
           educator_id: string | null
           end_date: string | null
           id: string
+          mentor_feedback_status: string | null
           participant_id: string
           start_date: string | null
           status: string
@@ -1742,6 +1743,7 @@ export type Database = {
           educator_id?: string | null
           end_date?: string | null
           id?: string
+          mentor_feedback_status?: string | null
           participant_id: string
           start_date?: string | null
           status?: string
@@ -1754,6 +1756,7 @@ export type Database = {
           educator_id?: string | null
           end_date?: string | null
           id?: string
+          mentor_feedback_status?: string | null
           participant_id?: string
           start_date?: string | null
           status?: string
