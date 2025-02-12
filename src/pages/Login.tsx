@@ -42,7 +42,7 @@ const Login = () => {
       console.log("User detected in Login component:", user);
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Redirecting to:", redirectPath);
-      navigate(redirectPath);
+      navigate(redirectPath, { replace: true });
     }
   }, [user, selectedPortal, navigate, getRoleBasedRedirect]);
 
@@ -67,6 +67,7 @@ const Login = () => {
         }
       } else {
         const user = await login(email, password);
+        console.log("Login successful, user:", user);
         // Only show error if login actually failed (no user returned)
         if (!user) {
           toast({
