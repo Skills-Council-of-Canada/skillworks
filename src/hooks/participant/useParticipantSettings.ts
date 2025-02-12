@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { ParticipantSettings } from "@/types/participant";
+import { Database } from "@/integrations/supabase/types";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
@@ -30,10 +31,9 @@ export const useParticipantSettings = () => {
     queryFn: async () => {
       if (!user?.id) return defaultSettings;
 
-      const { data, error } = await supabase
-        .from('participant_settings')
-        .select('*')
-        .eq('participant_id', user.id)
+      const { data, error } = await supabase.from("participant_settings")
+        .select()
+        .eq("participant_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
@@ -52,8 +52,7 @@ export const useParticipantSettings = () => {
         ...newSettings,
       };
 
-      const { error } = await supabase
-        .from('participant_settings')
+      const { error } = await supabase.from("participant_settings")
         .upsert(updatedSettings);
 
       if (error) throw error;
