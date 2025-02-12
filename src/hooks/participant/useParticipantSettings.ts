@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { ParticipantSettings } from "@/types/participant";
-import { Database } from "@/types/supabase";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
@@ -47,15 +46,16 @@ export const useParticipantSettings = () => {
 
   const { mutateAsync: updateSettings } = useMutation({
     mutationFn: async (newSettings: Partial<ParticipantSettings>) => {
+      if (!user?.id) throw new Error("No user ID found");
+
       const updatedSettings = {
-        participant_id: user?.id,
+        participant_id: user.id,
         ...newSettings,
       };
 
       const { error } = await supabase
         .from("participant_settings")
-        .upsert(updatedSettings)
-        .eq('participant_id', user?.id);
+        .upsert(updatedSettings);
 
       if (error) throw error;
     },
@@ -66,7 +66,8 @@ export const useParticipantSettings = () => {
         description: "Settings updated successfully",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Error updating settings:', error);
       toast({
         title: "Error",
         description: "Failed to update settings",
