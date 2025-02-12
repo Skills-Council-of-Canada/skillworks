@@ -26,7 +26,7 @@ const ParticipantExperiences = () => {
         .from('participant_experiences')
         .select(`
           *,
-          educator:educator_profiles(full_name)
+          educator:educator_id(full_name)
         `);
 
       if (statusFilter !== 'all') {
