@@ -49,7 +49,7 @@ export const useParticipantDashboard = () => {
       // Fetch recent activities (using notifications as activities)
       const { data: activities } = await supabase
         .from("notifications")
-        .select("id, title, message:message as description, type:type as activity_type, created_at")
+        .select("id, title, message:description, type:activity_type, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(5);
