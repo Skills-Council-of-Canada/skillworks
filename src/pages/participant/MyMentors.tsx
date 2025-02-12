@@ -29,7 +29,7 @@ const MyMentors = () => {
             <TabsContent value="assessments">
               <SkillAssessments />
             </TabsContent>
-          </CardContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
