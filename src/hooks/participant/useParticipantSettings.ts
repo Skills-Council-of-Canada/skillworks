@@ -31,20 +31,21 @@ export const useParticipantSettings = () => {
     queryFn: async () => {
       if (!user?.id) return defaultSettings;
 
-      const { data, error } = await supabase.from("participant_settings")
-        .select()
-        .eq("participant_id", user.id)
+      const { data, error } = await supabase
+        .from('participant_settings')
+        .select('id, participant_id, mentorship_mode, privacy_settings, notification_preferences')
+        .eq('participant_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
       
-      return data ? (data as ParticipantSettings) : defaultSettings;
+      return data || defaultSettings;
     },
     enabled: !!user?.id,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
-    mutationFn: async (newSettings: Partial<ParticipantSettings>) => {
+    mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, 'id'>>) => {
       if (!user?.id) throw new Error("No user ID found");
 
       const updatedSettings = {
@@ -52,8 +53,11 @@ export const useParticipantSettings = () => {
         ...newSettings,
       };
 
-      const { error } = await supabase.from("participant_settings")
-        .upsert(updatedSettings);
+      const { error } = await supabase
+        .from('participant_settings')
+        .upsert(updatedSettings)
+        .select()
+        .single();
 
       if (error) throw error;
     },
