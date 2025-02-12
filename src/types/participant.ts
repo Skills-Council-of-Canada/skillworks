@@ -1,4 +1,3 @@
-
 import { User } from "./auth";
 
 export type ParticipantRegistrationStatus = "pending" | "email_verified" | "profile_completed" | "admin_approved" | "active";
@@ -36,9 +35,13 @@ export interface ParticipantAchievement {
   created_at: string;
 }
 
+export type MentorshipMode = 'self_guided' | 'mentor_assisted';
+export type WorkVisibility = 'mentor' | 'public' | 'private';
+export type ProfileVisibility = 'public' | 'private';
+
 export interface ParticipantPrivacySettings {
-  work_visibility: 'mentor' | 'employer' | 'public';
-  profile_visibility: 'public' | 'private';
+  work_visibility: WorkVisibility;
+  profile_visibility: ProfileVisibility;
 }
 
 export interface ParticipantNotificationPreferences {
@@ -50,7 +53,7 @@ export interface ParticipantNotificationPreferences {
 export interface ParticipantSettings {
   id: string;
   participant_id: string;
-  mentorship_mode: 'self_guided' | 'mentor_assisted';
+  mentorship_mode: MentorshipMode;
   privacy_settings: ParticipantPrivacySettings;
   notification_preferences: ParticipantNotificationPreferences;
   created_at?: string;

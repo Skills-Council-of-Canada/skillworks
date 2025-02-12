@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -23,12 +22,12 @@ import {
 } from "@/components/ui/select";
 import { useParticipantSettings } from "@/hooks/participant/useParticipantSettings";
 import { Brain, Eye, Bell } from "lucide-react";
-import { ParticipantSettings, ParticipantPrivacySettings, ParticipantNotificationPreferences } from "@/types/participant";
+import { ParticipantSettings } from "@/types/participant";
 
 const formSchema = z.object({
   mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
   privacy_settings: z.object({
-    work_visibility: z.enum(["mentor", "employer", "public"]),
+    work_visibility: z.enum(["mentor", "public", "private"]),
     profile_visibility: z.enum(["public", "private"]),
   }),
   notification_preferences: z.object({
@@ -60,12 +59,7 @@ export function ParticipantSettingsForm() {
   });
 
   async function onSubmit(values: FormData) {
-    const updatedSettings: Partial<ParticipantSettings> = {
-      mentorship_mode: values.mentorship_mode,
-      privacy_settings: values.privacy_settings as ParticipantPrivacySettings,
-      notification_preferences: values.notification_preferences as ParticipantNotificationPreferences,
-    };
-    await updateSettings(updatedSettings);
+    await updateSettings(values as Partial<ParticipantSettings>);
   }
 
   if (isLoading) {
@@ -140,8 +134,8 @@ export function ParticipantSettingsForm() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="mentor">Mentor Only</SelectItem>
-                      <SelectItem value="employer">Employers</SelectItem>
                       <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>

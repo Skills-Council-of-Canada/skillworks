@@ -3,21 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-
-type ParticipantSettings = {
-  id: string;
-  participant_id: string;
-  mentorship_mode: 'self_guided' | 'mentor_led';
-  privacy_settings: {
-    work_visibility: 'mentor' | 'public' | 'private';
-    profile_visibility: 'public' | 'private';
-  };
-  notification_preferences: {
-    mentor_feedback: boolean;
-    project_approvals: boolean;
-    experience_milestones: boolean;
-  };
-};
+import { ParticipantSettings } from "@/types/participant";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
