@@ -18,7 +18,6 @@ const Login = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
   const [searchParams] = useSearchParams();
   const [selectedPortal, setSelectedPortal] = useState<{ id: string; role: UserRole } | null>(() => {
-    // Get portal from URL param or previous selection
     const portal = searchParams.get("portal");
     if (portal) {
       return {
@@ -26,14 +25,12 @@ const Login = () => {
         role: portal as UserRole,
       };
     }
-    // If no portal in URL, redirect to index
     navigate("/");
     return null;
   });
 
   useEffect(() => {
     if (!selectedPortal) {
-      // If there's no portal selected, redirect to index
       navigate("/");
       return;
     }
@@ -42,12 +39,15 @@ const Login = () => {
       console.log("User detected in Login component:", user);
       const redirectPath = getRoleBasedRedirect(user.role);
       console.log("Redirecting to:", redirectPath);
-      navigate(redirectPath, { replace: true });
+      if (redirectPath === "/participant") {
+        navigate("/participant/dashboard", { replace: true });
+      } else {
+        navigate(redirectPath, { replace: true });
+      }
     }
   }, [user, selectedPortal, navigate, getRoleBasedRedirect]);
 
   const handleBack = () => {
-    // Always navigate back to the landing page for the selected portal
     if (selectedPortal) {
       navigate(`/${selectedPortal.id}-landing`);
     } else {
@@ -68,7 +68,6 @@ const Login = () => {
       } else {
         const user = await login(email, password);
         console.log("Login successful, user:", user);
-        // Only show error if login actually failed (no user returned)
         if (!user) {
           toast({
             variant: "destructive",
@@ -105,7 +104,6 @@ const Login = () => {
     }
   };
 
-  // If no portal is selected, we shouldn't render anything as useEffect will redirect
   if (!selectedPortal) {
     return null;
   }

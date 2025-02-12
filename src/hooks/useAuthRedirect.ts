@@ -12,7 +12,7 @@ export const useAuthRedirect = () => {
       case "educator":
         return "/educator";
       case "participant":
-        return "/participant";
+        return "/participant/dashboard";
       default:
         console.log("No matching role found, defaulting to login");
         return "/login";
