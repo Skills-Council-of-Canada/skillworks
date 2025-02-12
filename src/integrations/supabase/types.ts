@@ -1145,6 +1145,7 @@ export type Database = {
           experience_id: string
           id: string
           participant_experience_id: string | null
+          status: string | null
           title: string
           updated_at: string
         }
@@ -1155,6 +1156,7 @@ export type Database = {
           experience_id: string
           id?: string
           participant_experience_id?: string | null
+          status?: string | null
           title: string
           updated_at?: string
         }
@@ -1165,6 +1167,7 @@ export type Database = {
           experience_id?: string
           id?: string
           participant_experience_id?: string | null
+          status?: string | null
           title?: string
           updated_at?: string
         }
