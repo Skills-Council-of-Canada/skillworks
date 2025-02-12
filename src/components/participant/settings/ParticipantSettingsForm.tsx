@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useParticipantSettings } from "@/hooks/participant/useParticipantSettings";
 import { Brain, Eye, Bell } from "lucide-react";
+import { ParticipantSettings, ParticipantPrivacySettings, ParticipantNotificationPreferences } from "@/types/participant";
 
 const formSchema = z.object({
   mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
@@ -37,10 +38,12 @@ const formSchema = z.object({
   }),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 export function ParticipantSettingsForm() {
   const { settings, updateSettings, isLoading } = useParticipantSettings();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: settings || {
       mentorship_mode: "self_guided",
@@ -56,8 +59,13 @@ export function ParticipantSettingsForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await updateSettings(values);
+  async function onSubmit(values: FormData) {
+    const updatedSettings: Partial<ParticipantSettings> = {
+      mentorship_mode: values.mentorship_mode,
+      privacy_settings: values.privacy_settings as ParticipantPrivacySettings,
+      notification_preferences: values.notification_preferences as ParticipantNotificationPreferences,
+    };
+    await updateSettings(updatedSettings);
   }
 
   if (isLoading) {

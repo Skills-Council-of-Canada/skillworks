@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParticipantWorkflow } from "@/hooks/participant/useParticipantWorkflow";
 import { CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { ParticipantRegistrationStatus } from "@/types/participant";
 
 export function WorkflowStatus() {
   const { workflowStatus, isLoading } = useParticipantWorkflow();
@@ -12,9 +13,11 @@ export function WorkflowStatus() {
 
   const getStatusIcon = () => {
     switch (workflowStatus?.registration_status) {
-      case "completed":
+      case "admin_approved":
+      case "active":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
       case "pending":
+      case "email_verified":
         return <Clock className="h-5 w-5 text-yellow-500" />;
       default:
         return <AlertCircle className="h-5 w-5 text-red-500" />;
