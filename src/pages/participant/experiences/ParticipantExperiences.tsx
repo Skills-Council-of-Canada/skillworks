@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ExperienceCard } from '@/components/participant/experiences/ExperienceCard';
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ParticipantExperiences = () => {
   const { toast } = useToast();
@@ -26,7 +27,20 @@ const ParticipantExperiences = () => {
         .from('participant_experiences')
         .select(`
           *,
-          educator:educator_profiles!educator_id(full_name)
+          educator:educator_profiles!educator_id(full_name),
+          milestones:experience_milestones(
+            id,
+            title,
+            due_date,
+            status
+          ),
+          feedback:experience_feedback(
+            id,
+            rating,
+            comment,
+            created_at,
+            reviewer:profiles(full_name)
+          )
         `);
 
       if (statusFilter !== 'all') {
@@ -51,10 +65,6 @@ const ParticipantExperiences = () => {
       }
     }
   });
-
-  const handleViewDetails = (id: string) => {
-    navigate(`/participant/experiences/${id}`);
-  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -82,6 +92,9 @@ const ParticipantExperiences = () => {
       ) : !experiences?.length ? (
         <div className="text-center py-8">
           <p className="text-muted-foreground mb-4">No experiences found</p>
+          <Button onClick={() => navigate('/participant/portals')}>
+            Browse Available Experiences
+          </Button>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -93,15 +106,21 @@ const ParticipantExperiences = () => {
                 educator: {
                   name: experience.educator?.full_name || 'Unknown Educator'
                 },
-                progress: 0 // This should be calculated based on milestones/tasks
+                progress: calculateProgress(experience.milestones || [])
               }}
-              onViewDetails={handleViewDetails}
+              onViewDetails={() => navigate(`/participant/experiences/${experience.id}`)}
             />
           ))}
         </div>
       )}
     </div>
   );
+};
+
+const calculateProgress = (milestones: any[]) => {
+  if (!milestones.length) return 0;
+  const completed = milestones.filter(m => m.status === 'completed').length;
+  return Math.round((completed / milestones.length) * 100);
 };
 
 export default ParticipantExperiences;
