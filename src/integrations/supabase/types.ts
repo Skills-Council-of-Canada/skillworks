@@ -1135,6 +1135,20 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_experience_id"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_sender_id"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       experience_milestones: {
