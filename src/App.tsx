@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -55,6 +54,7 @@ import CreateExperience from "./pages/educator/CreateExperience";
 // Participant routes
 import ParticipantLayout from "./pages/participant/ParticipantLayout";
 import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
+import ParticipantRegistration from "./pages/participant/ParticipantRegistration";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +73,7 @@ const App = () => (
           <Route path="/participant-landing" element={<ParticipantLanding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/participant/registration" element={<ParticipantRegistration />} />
           
           {/* Admin routes */}
           <Route

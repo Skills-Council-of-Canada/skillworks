@@ -1758,6 +1758,54 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_registrations: {
+        Row: {
+          availability: string
+          created_at: string | null
+          date_of_birth: string
+          educational_background: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          preferred_learning_areas: string[] | null
+          registration_completed: boolean | null
+          skill_level: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          availability: string
+          created_at?: string | null
+          date_of_birth: string
+          educational_background?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          preferred_learning_areas?: string[] | null
+          registration_completed?: boolean | null
+          skill_level: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          availability?: string
+          created_at?: string | null
+          date_of_birth?: string
+          educational_background?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          preferred_learning_areas?: string[] | null
+          registration_completed?: boolean | null
+          skill_level?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
