@@ -14,8 +14,9 @@ interface AuthFormProps {
   gradient: string;
   isLoading: boolean;
   onBack: () => void;
-  onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
-  defaultEmail?: string;
+  onSubmit: (username: string, password: string, isSignUp: boolean) => Promise<void>;
+  defaultUsername?: string;
+  showEmailField?: boolean;
 }
 
 const AuthForm = ({
@@ -25,9 +26,10 @@ const AuthForm = ({
   isLoading,
   onBack,
   onSubmit,
-  defaultEmail = "",
+  defaultUsername = "",
+  showEmailField = true,
 }: AuthFormProps) => {
-  const [email, setEmail] = useState(defaultEmail);
+  const [username, setUsername] = useState(defaultUsername);
   const [password, setPassword] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ const AuthForm = ({
     setError(null);
 
     try {
-      await onSubmit(email, password, isSigningUp);
+      await onSubmit(username, password, isSigningUp);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -64,15 +66,14 @@ const AuthForm = ({
         <div className="flex flex-col items-center gap-4">
           <Icon className="h-16 w-16 text-primary" />
           <h2 className="text-4xl font-bold text-secondary">{title}</h2>
-          <p className="text-secondary/60">Sign in to your account or create a new one</p>
+          <p className="text-secondary/60">Sign in to your account</p>
         </div>
       </div>
 
       <Card className="p-6 bg-card/50 backdrop-blur-sm shadow-xl border-0">
-        <Tabs defaultValue="login" className="w-full" onValueChange={(value) => setIsSigningUp(value === "signup")}>
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid w-full grid-cols-1 mb-6">
+            <TabsTrigger value="login" className="w-full">Login</TabsTrigger>
           </TabsList>
 
           {error && (
@@ -82,17 +83,19 @@ const AuthForm = ({
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-secondary">Email</label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-background/50"
-                required
-              />
-            </div>
+            {showEmailField && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-secondary">Email</label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-background/50"
+                  required
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-secondary">Password</label>
@@ -130,7 +133,7 @@ const AuthForm = ({
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  {isSigningUp ? "Sign Up" : "Sign In"}
+                  Sign In
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </>
               )}

@@ -51,43 +51,29 @@ const Login = () => {
     }
   };
 
-  const handleAuthSubmit = async (email: string, password: string, isSignUp: boolean) => {
+  const handleAuthSubmit = async (username: string, password: string, isSignUp: boolean) => {
     if (isSubmitting || !selectedPortal) return;
     
     setIsSubmitting(true);
     try {
-      if (isSignUp) {
-        await signup(email, password, selectedPortal.role);
-        if (selectedPortal.role === 'educator') {
-          return;
-        }
-      } else {
-        const user = await login(email, password);
-        console.log("Login successful, user:", user);
-        if (!user) {
-          toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: "Please check your email and password and try again."
-          });
-        }
+      const portalUsername = selectedPortal.id; // This will be 'employ', 'educator', etc.
+      const user = await login(username || portalUsername, password);
+      console.log("Login successful, user:", user);
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Please check your username and password and try again."
+        });
       }
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
-        if (error.message.includes("Email not confirmed")) {
-          toast({
-            title: "Email Not Confirmed",
-            description: "Please check your email for a confirmation link. A new confirmation email has been sent.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Authentication Error",
-            description: error.message
-          });
-        }
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: error.message
+        });
       } else {
         toast({
           variant: "destructive",
@@ -113,7 +99,8 @@ const Login = () => {
         isLoading={isSubmitting}
         onBack={handleBack}
         onSubmit={handleAuthSubmit}
-        defaultEmail="employ@skillscouncil.ca"
+        defaultUsername={selectedPortal.id}
+        showEmailField={false}
       />
     </div>
   );

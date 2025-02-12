@@ -1,42 +1,38 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-export const signInUser = async (email: string, password: string) => {
-  console.log("Signing in user:", email);
+const usernameToEmail: Record<string, string> = {
+  employ: "employ@skillscouncil.ca",
+  educator: "educator@skillscouncil.ca",
+  participate: "participate@skillscouncil.ca",
+  admin: "admin@skillscouncil.ca"
+};
+
+export const signInUser = async (username: string, password: string) => {
+  console.log("Signing in user:", username);
   try {
-    const normalizedEmail = email.toLowerCase().trim();
-    const trimmedPassword = password.trim();
+    const email = usernameToEmail[username.toLowerCase()];
+    if (!email) {
+      return { 
+        data: null, 
+        error: new Error("Invalid username. Please use: employ, educator, participate, or admin") 
+      };
+    }
     
-    console.log("Attempting sign in with normalized email:", normalizedEmail);
+    console.log("Using email for login:", email);
     
     // Try to sign in
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: normalizedEmail,
-      password: trimmedPassword,
+      email,
+      password: password.trim(),
     });
 
     if (signInError) {
       console.error("Sign in error:", signInError);
-      
-      // Special handling for unconfirmed emails
-      if (signInError.message.includes('Email not confirmed')) {
-        console.log("Attempting to resend confirmation email");
-        const { error: resendError } = await supabase.auth.resend({
-          type: 'signup',
-          email: normalizedEmail
-        });
-        
-        if (resendError) {
-          console.error("Error resending confirmation email:", resendError);
-        } else {
-          console.log("Confirmation email resent successfully");
-        }
-      }
-      
       return { data: null, error: signInError };
     }
 
-    // If sign in succeeds, get profile but don't create if missing
+    // If sign in succeeds, get profile
     if (data.user) {
       console.log("Sign in successful, checking profile for user:", data.user.id);
       const { data: profile, error: profileError } = await supabase
