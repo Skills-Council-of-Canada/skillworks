@@ -11,36 +11,46 @@ export const useParticipantWorkflow = (participantId: string) => {
   const { data: workflowStatus, isLoading: isLoadingWorkflow } = useQuery({
     queryKey: ["participant-workflow", participantId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: workflowData, error } = await supabase
         .from("participant_workflow_status")
         .select("*")
         .eq("participant_id", participantId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return data as ParticipantWorkflowStatus;
+      if (!workflowData) throw new Error("No workflow status found");
+      
+      return workflowData as ParticipantWorkflowStatus;
     },
   });
 
   const { data: integrations, isLoading: isLoadingIntegrations } = useQuery({
     queryKey: ["participant-integrations", participantId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: integrationsData, error } = await supabase
         .from("participant_integrations")
         .select("*")
         .eq("participant_id", participantId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return data as ParticipantIntegrations;
+      if (!integrationsData) throw new Error("No integrations found");
+      
+      return integrationsData as ParticipantIntegrations;
     },
   });
 
   const updateWorkflowStatus = useMutation({
     mutationFn: async (newStatus: Partial<ParticipantWorkflowStatus>) => {
+      const updates = {
+        ...newStatus,
+        last_status_change: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
       const { error } = await supabase
         .from("participant_workflow_status")
-        .update(newStatus)
+        .update(updates)
         .eq("participant_id", participantId);
 
       if (error) throw error;
@@ -69,6 +79,7 @@ export const useParticipantWorkflow = (participantId: string) => {
         .update({
           google_calendar_connected: true,
           google_oauth_token: token,
+          updated_at: new Date().toISOString(),
         })
         .eq("participant_id", participantId);
 
