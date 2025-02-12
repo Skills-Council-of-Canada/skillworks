@@ -66,16 +66,24 @@ const Login = () => {
           return;
         }
       } else {
-        await login(email, password);
+        const user = await login(email, password);
+        // Only show error if login actually failed (no user returned)
+        if (!user) {
+          toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Please check your email and password and try again."
+          });
+        }
       }
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
-        if (error.message.includes("Invalid login credentials")) {
+        if (error.message.includes("Email not confirmed")) {
           toast({
+            title: "Email Not Confirmed",
+            description: "Please check your email for a confirmation link. A new confirmation email has been sent.",
             variant: "destructive",
-            title: "Invalid Credentials",
-            description: "Please check your email and password and try again."
           });
         } else {
           toast({
