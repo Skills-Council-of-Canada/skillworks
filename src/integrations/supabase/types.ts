@@ -272,6 +272,45 @@ export type Database = {
           },
         ]
       }
+      educational_portals: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_restricted: boolean | null
+          location: string | null
+          name: string
+          organization_name: string
+          prerequisites: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_restricted?: boolean | null
+          location?: string | null
+          name: string
+          organization_name: string
+          prerequisites?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_restricted?: boolean | null
+          location?: string | null
+          name?: string
+          organization_name?: string
+          prerequisites?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       educator_employer_collaborations: {
         Row: {
           created_at: string
