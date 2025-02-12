@@ -7,7 +7,9 @@ import {
   MessageSquare,
   Settings,
   Calendar,
-  BookOpen
+  BookOpen,
+  Activity,
+  CheckSquare
 } from "lucide-react";
 
 interface NavItemProps {
@@ -38,17 +40,17 @@ export const ParticipantNavigation = () => {
       <NavItem to="/participant/dashboard" icon={Home}>
         Dashboard
       </NavItem>
+      <NavItem to="/participant/tasks" icon={CheckSquare}>
+        Tasks & Activity
+      </NavItem>
       <NavItem to="/participant/experiences" icon={BookOpen}>
         My Experiences
       </NavItem>
-      <NavItem to="/participant/learning" icon={GraduationCap}>
-        Learning Path
+      <NavItem to="/participant/calendar" icon={Calendar}>
+        Calendar
       </NavItem>
       <NavItem to="/participant/messages" icon={MessageSquare}>
         Messages
-      </NavItem>
-      <NavItem to="/participant/calendar" icon={Calendar}>
-        Calendar
       </NavItem>
       <NavItem to="/participant/settings" icon={Settings}>
         Settings
