@@ -1572,6 +1572,47 @@ export type Database = {
           },
         ]
       }
+      participant_events: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          event_type: string
+          id: string
+          participant_id: string
+          start_time: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          event_type: string
+          id?: string
+          participant_id: string
+          start_time: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          event_type?: string
+          id?: string
+          participant_id?: string
+          start_time?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_events_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_experiences: {
         Row: {
           created_at: string | null
