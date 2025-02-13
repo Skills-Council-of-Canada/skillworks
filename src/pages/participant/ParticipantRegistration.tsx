@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -90,13 +89,13 @@ const ParticipantRegistration = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-background flex items-center justify-center p-4 mt-16">
-        <Card className="w-full max-w-lg">
+      <div className="min-h-screen bg-background px-4 py-8 sm:py-12 mt-16">
+        <Card className="w-full max-w-lg mx-auto">
           <CardHeader>
-            <CardTitle>Participant Registration</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl text-center">Participant Registration</CardTitle>
             <div className="space-y-4 mt-4">
               <Progress value={progress} className="h-2" />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {steps.map((step, index) => {
                   const stepNumber = index + 1;
                   const isCompleted = stepNumber < currentStep;
@@ -105,13 +104,13 @@ const ParticipantRegistration = () => {
                   return (
                     <div key={index} className="flex items-center gap-3">
                       {isCompleted ? (
-                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       ) : isCurrent ? (
-                        <CircleDot className="h-5 w-5 text-primary" />
+                        <CircleDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       ) : (
-                        <Circle className="h-5 w-5 text-muted-foreground" />
+                        <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                       )}
-                      <span className={isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}>
+                      <span className={`text-sm sm:text-base ${isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                         {step.label}
                       </span>
                     </div>
@@ -120,7 +119,7 @@ const ParticipantRegistration = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 p-4 sm:p-6">
             {currentStep === 1 && (
               <PersonalInfoForm
                 onSubmit={handlePersonalInfoSubmit}

@@ -96,18 +96,18 @@ const EmployerRegistration = () => {
   return (
     <>
       <Header />
-      <div className="container max-w-2xl mx-auto py-8 mt-16">
-        <Card className="p-6">
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold">Employer Registration</h1>
-              <Button variant="outline" onClick={handleSaveAndExit}>
+      <div className="container max-w-2xl mx-auto px-4 py-6 sm:py-8 mt-16">
+        <Card className="p-4 sm:p-6">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+              <h1 className="text-xl sm:text-2xl font-bold">Employer Registration</h1>
+              <Button variant="outline" onClick={handleSaveAndExit} className="w-full sm:w-auto">
                 Save & Exit
               </Button>
             </div>
             <div className="space-y-4">
               <Progress value={progress} className="h-2" />
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {steps.map((step, index) => {
                   const stepStatus = step.status;
                   const isCompleted = steps[currentStepIndex].status !== stepStatus && index < currentStepIndex;
@@ -116,13 +116,13 @@ const EmployerRegistration = () => {
                   return (
                     <div key={index} className="flex items-center gap-3">
                       {isCompleted ? (
-                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       ) : isCurrent ? (
-                        <CircleDot className="h-5 w-5 text-primary" />
+                        <CircleDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       ) : (
-                        <Circle className="h-5 w-5 text-muted-foreground" />
+                        <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                       )}
-                      <span className={isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}>
+                      <span className={`text-sm sm:text-base ${isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                         {step.label}
                       </span>
                     </div>

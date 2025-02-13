@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -106,16 +105,16 @@ const EducatorRegistration = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-background py-12 px-4 mt-16">
-        <div className="container max-w-2xl mx-auto space-y-8">
+      <div className="min-h-screen bg-background px-4 py-8 sm:py-12 mt-16">
+        <div className="container max-w-2xl mx-auto space-y-6 sm:space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-primary">Educator Registration</h1>
-            <p className="text-muted-foreground mt-2">Join our community of skilled trades educators</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Educator Registration</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-2">Join our community of skilled trades educators</p>
           </div>
 
           <div className="space-y-4">
             <Progress value={progress} className="h-2" />
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {steps.map((step, index) => {
                 const stepNumber = index + 1;
                 const isCompleted = stepNumber < currentStep;
@@ -124,13 +123,13 @@ const EducatorRegistration = () => {
                 return (
                   <div key={index} className="flex items-center gap-3">
                     {isCompleted ? (
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     ) : isCurrent ? (
-                      <CircleDot className="h-5 w-5 text-primary" />
+                      <CircleDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     ) : (
-                      <Circle className="h-5 w-5 text-muted-foreground" />
+                      <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     )}
-                    <span className={isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}>
+                    <span className={`text-sm sm:text-base ${isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                       {step.label}
                     </span>
                   </div>
@@ -139,7 +138,7 @@ const EducatorRegistration = () => {
             </div>
           </div>
 
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6">
             {currentStep === 1 && (
               <ProfileSetupForm 
                 onSubmit={handleStepSubmit}
@@ -169,6 +168,7 @@ const EducatorRegistration = () => {
                 variant="ghost"
                 onClick={() => setCurrentStep(currentStep - 1)}
                 disabled={isLoading}
+                className="w-full sm:w-auto"
               >
                 Back to Previous Step
               </Button>
