@@ -30,9 +30,11 @@ export const useParticipantSettings = () => {
       try {
         // If no user, return default settings immediately
         if (!user?.id) {
+          console.log("No user ID found, returning default settings");
           return { id: "", ...defaultSettings };
         }
 
+        console.log("Fetching settings for user:", user.id);
         const { data, error } = await supabase
           .from("participant_settings")
           .select("*")
@@ -40,45 +42,54 @@ export const useParticipantSettings = () => {
           .maybeSingle();
 
         if (error) {
-          console.error("Error fetching settings:", error);
+          console.error("Database error:", error);
           throw error;
         }
 
-        // If no data found, return default settings
         if (!data) {
+          console.log("No settings found, returning default settings");
           return { id: "", ...defaultSettings };
         }
 
-        return data as unknown as ParticipantSettings;
+        console.log("Settings found:", data);
+        return data as ParticipantSettings;
       } catch (error) {
         console.error("Error in settings query:", error);
-        return { id: "", ...defaultSettings };
+        throw error;
       }
     },
-    // Only run the query if we have a user ID
     enabled: true,
-    // Add staleTime to prevent unnecessary refetches
     staleTime: 1000 * 60 * 5, // 5 minutes
-    // Add retry configuration
     retry: 1,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
     mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, "id" | "participant_id">>) => {
-      if (!user?.id) throw new Error("No user ID found");
+      if (!user?.id) {
+        console.error("No user ID found during update");
+        throw new Error("No user ID found");
+      }
+
+      console.log("Updating settings for user:", user.id, "with data:", newSettings);
 
       const updatedSettings = {
         participant_id: user.id,
         ...newSettings,
       };
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("participant_settings")
         .upsert(updatedSettings)
         .select()
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating settings:", error);
+        throw error;
+      }
+
+      console.log("Settings updated successfully:", data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
@@ -88,7 +99,7 @@ export const useParticipantSettings = () => {
       });
     },
     onError: (error) => {
-      console.error("Error updating settings:", error);
+      console.error("Error in mutation:", error);
       toast({
         title: "Error",
         description: "Failed to update settings",
@@ -98,7 +109,7 @@ export const useParticipantSettings = () => {
   });
 
   return {
-    settings: settings as ParticipantSettings,
+    settings: settings || { id: "", ...defaultSettings },
     updateSettings,
     isLoading,
   };
