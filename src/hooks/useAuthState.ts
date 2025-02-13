@@ -17,14 +17,16 @@ export const useAuthState = () => {
 
   // Define public routes that don't require authentication
   const isPublicRoute = (path: string) => {
+    // Registration routes should always be public
+    if (path.includes('/registration')) {
+      return true;
+    }
+    
     const publicPaths = [
       '/login',
       '/employer-landing',
       '/educator-landing',
       '/participant-landing',
-      '/employer/registration',
-      '/educator/registration',
-      '/participant/registration',
       '/'
     ];
     return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
@@ -39,6 +41,12 @@ export const useAuthState = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!mounted) return;
+
+        // If we're on a registration page, don't enforce authentication
+        if (location.pathname.includes('/registration')) {
+          setIsLoading(false);
+          return;
+        }
 
         if (!session?.user) {
           console.log("No active session found");
