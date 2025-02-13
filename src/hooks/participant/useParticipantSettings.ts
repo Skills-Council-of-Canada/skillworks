@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { ParticipantSettings, UpdateParticipantSettings } from "@/types/participant";
+import { ParticipantSettings, UpdateParticipantSettings, MentorshipMode } from "@/types/participant";
 import { Database, Json } from "@/types/supabase";
 
 type ParticipantSettingsRow = Database['public']['Tables']['participant_settings']['Row'];
@@ -53,13 +53,13 @@ export const useParticipantSettings = () => {
         const insertData: ParticipantSettingsInsert = {
           participant_id: user.id,
           mentorship_mode: defaultSettings.mentorship_mode,
-          privacy_settings: defaultSettings.privacy_settings as Json,
-          notification_preferences: defaultSettings.notification_preferences as Json,
+          privacy_settings: defaultSettings.privacy_settings as unknown as Json,
+          notification_preferences: defaultSettings.notification_preferences as unknown as Json,
         };
 
         const insertResponse = await supabase
           .from("participant_settings")
-          .insert([insertData])
+          .insert(insertData)
           .select()
           .single();
 
@@ -80,8 +80,8 @@ export const useParticipantSettings = () => {
     id: data.id,
     participant_id: data.participant_id,
     mentorship_mode: data.mentorship_mode,
-    privacy_settings: data.privacy_settings as ParticipantSettings['privacy_settings'],
-    notification_preferences: data.notification_preferences as ParticipantSettings['notification_preferences'],
+    privacy_settings: data.privacy_settings as unknown as ParticipantSettings['privacy_settings'],
+    notification_preferences: data.notification_preferences as unknown as ParticipantSettings['notification_preferences'],
   });
 
   const { mutateAsync: updateSettings } = useMutation({
@@ -93,13 +93,13 @@ export const useParticipantSettings = () => {
       const updateData: ParticipantSettingsInsert = {
         participant_id: user.id,
         mentorship_mode: newSettings.mentorship_mode,
-        privacy_settings: newSettings.privacy_settings as Json,
-        notification_preferences: newSettings.notification_preferences as Json,
+        privacy_settings: newSettings.privacy_settings as unknown as Json,
+        notification_preferences: newSettings.notification_preferences as unknown as Json,
       };
 
       const response = await supabase
         .from("participant_settings")
-        .upsert([updateData])
+        .upsert(updateData)
         .select()
         .single();
 

@@ -1,6 +1,4 @@
 
-import { User } from "./auth";
-
 export type ParticipantRegistrationStatus = "pending" | "email_verified" | "profile_completed" | "admin_approved" | "active";
 export type MentorshipMode = 'self_guided' | 'mentor_assisted';
 export type WorkVisibility = 'mentor' | 'public' | 'private';
