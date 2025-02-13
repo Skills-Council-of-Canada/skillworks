@@ -752,6 +752,9 @@ export type Database = {
       }
       employers: {
         Row: {
+          admin_review_date: string | null
+          admin_review_notes: string | null
+          admin_reviewer_id: string | null
           company_name: string
           company_size: string
           created_at: string
@@ -766,6 +769,7 @@ export type Database = {
           rating: number | null
           rating_count: number | null
           registration_status: string
+          rejection_reason: string | null
           updated_at: string
           user_id: string
           verification_status:
@@ -778,6 +782,9 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          admin_review_date?: string | null
+          admin_review_notes?: string | null
+          admin_reviewer_id?: string | null
           company_name: string
           company_size: string
           created_at?: string
@@ -792,6 +799,7 @@ export type Database = {
           rating?: number | null
           rating_count?: number | null
           registration_status?: string
+          rejection_reason?: string | null
           updated_at?: string
           user_id: string
           verification_status?:
@@ -804,6 +812,9 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          admin_review_date?: string | null
+          admin_review_notes?: string | null
+          admin_reviewer_id?: string | null
           company_name?: string
           company_size?: string
           created_at?: string
@@ -818,6 +829,7 @@ export type Database = {
           rating?: number | null
           rating_count?: number | null
           registration_status?: string
+          rejection_reason?: string | null
           updated_at?: string
           user_id?: string
           verification_status?:
