@@ -33,34 +33,35 @@ export const useParticipantSettings = () => {
       }
 
       console.log("Fetching settings for user:", user.id);
-      const response = await supabase
-        .from("participant_settings")
-        .select()
-        .eq("participant_id", user.id)
+      const { data, error } = await supabase
+        .from('participant_settings')
+        .select('*')
+        .eq('participant_id', user.id)
+        .limit(1)
         .single();
 
-      if (response.error) {
-        console.error("Database error:", response.error);
-        throw response.error;
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
       }
 
-      if (!response.data) {
+      if (!data) {
         // If no settings exist, create default settings
-        const insertResponse = await supabase
-          .from("participant_settings")
-          .insert(defaultSettings)
+        const { data: insertedData, error: insertError } = await supabase
+          .from('participant_settings')
+          .insert([defaultSettings])
           .select()
           .single();
 
-        if (insertResponse.error) {
-          console.error("Error creating default settings:", insertResponse.error);
-          throw insertResponse.error;
+        if (insertError) {
+          console.error("Error creating default settings:", insertError);
+          throw insertError;
         }
 
-        return insertResponse.data as ParticipantSettings;
+        return insertedData as ParticipantSettings;
       }
 
-      return response.data as ParticipantSettings;
+      return data as ParticipantSettings;
     },
     enabled: !!user?.id,
   });
@@ -71,8 +72,8 @@ export const useParticipantSettings = () => {
         throw new Error("No user ID found");
       }
 
-      const response = await supabase
-        .from("participant_settings")
+      const { data, error } = await supabase
+        .from('participant_settings')
         .upsert({
           participant_id: user.id,
           ...newSettings,
@@ -80,12 +81,12 @@ export const useParticipantSettings = () => {
         .select()
         .single();
 
-      if (response.error) {
-        console.error("Error updating settings:", response.error);
-        throw response.error;
+      if (error) {
+        console.error("Error updating settings:", error);
+        throw error;
       }
 
-      return response.data;
+      return data as ParticipantSettings;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
