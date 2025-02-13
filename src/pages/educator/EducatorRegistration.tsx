@@ -9,8 +9,6 @@ import ContactVerificationForm from "@/components/educator/registration/ContactV
 import AccountSetupForm from "@/components/educator/registration/AccountSetupForm";
 import { Steps } from "@/components/educator/registration/Steps";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
 
 export type RegistrationData = {
   fullName: string;
@@ -34,14 +32,6 @@ const EducatorRegistration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login?portal=educator');
-      return;
-    }
-  }, [user, navigate]);
 
   const handleStepSubmit = async (stepData: Partial<RegistrationData>) => {
     const updatedData = { ...formData, ...stepData };
@@ -55,14 +45,21 @@ const EducatorRegistration = () => {
   };
 
   const handleRegistration = async (data: RegistrationData) => {
-    if (!user) return;
-
     setIsLoading(true);
     try {
+      // First create the auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("Failed to create user");
+
       const { error: profileError } = await supabase
         .from('educator_profiles')
         .insert({
-          id: user.id,
+          id: authData.user.id,
           full_name: data.fullName,
           institution_name: data.institutionName,
           specialization: data.specialization,
@@ -72,13 +69,14 @@ const EducatorRegistration = () => {
           job_title: data.jobTitle,
           location: data.location,
           areas_of_interest: data.areasOfInterest,
+          role: 'educator'
         });
 
       if (profileError) throw profileError;
 
       toast({
         title: "Registration successful!",
-        description: "Your educator profile has been created.",
+        description: "Your educator account has been created. Please check your email to verify your account.",
       });
 
       navigate("/login?portal=educator&registered=true");
@@ -145,4 +143,3 @@ const EducatorRegistration = () => {
 };
 
 export default EducatorRegistration;
-
