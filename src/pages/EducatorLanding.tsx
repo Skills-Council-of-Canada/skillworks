@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
@@ -22,16 +21,9 @@ const EducatorLanding = () => {
             </Button>
             <div className="text-2xl font-bold text-primary">Skilled Trades Educator Portal</div>
           </div>
-          <div className="flex gap-4">
+          <div>
             <Button
-              variant="ghost"
-              onClick={() => navigate("/login?portal=educator")}
-              className="text-secondary hover:text-primary"
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => navigate("/login?portal=educator")}
+              onClick={() => navigate("/educator/registration")}
               className="bg-primary hover:bg-primary/90"
             >
               Sign Up
@@ -54,7 +46,7 @@ const EducatorLanding = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/login?portal=educator")}
+                  onClick={() => navigate("/educator/registration")}
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
@@ -143,7 +135,7 @@ const EducatorLanding = () => {
             </p>
             <Button
               size="lg"
-              onClick={() => navigate("/login?portal=educator")}
+              onClick={() => navigate("/educator/registration")}
               className="bg-white text-secondary hover:bg-white/90 mt-4"
             >
               Get Started Today
