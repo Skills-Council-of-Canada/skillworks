@@ -44,7 +44,11 @@ export function ParticipantSettingsForm() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: settings || {
+    values: settings ? {
+      mentorship_mode: settings.mentorship_mode,
+      privacy_settings: settings.privacy_settings,
+      notification_preferences: settings.notification_preferences,
+    } : {
       mentorship_mode: "self_guided",
       privacy_settings: {
         work_visibility: "mentor",
@@ -55,7 +59,7 @@ export function ParticipantSettingsForm() {
         project_approvals: true,
         experience_milestones: true,
       },
-    },
+    }
   });
 
   async function onSubmit(values: FormData) {

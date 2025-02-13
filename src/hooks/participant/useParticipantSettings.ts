@@ -6,24 +6,28 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ParticipantSettings } from "@/types/participant";
 import { Database } from "@/integrations/supabase/types";
 
+type DbParticipantSettings = Database['public']['Tables']['participant_settings']['Row'];
+
 export const useParticipantSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const defaultSettings: ParticipantSettings = {
-    id: "",
-    participant_id: user?.id || "",
-    mentorship_mode: "self_guided",
+  const defaultSettings: DbParticipantSettings = {
+    id: '',
+    participant_id: user?.id || '',
+    mentorship_mode: 'self_guided',
     privacy_settings: {
-      work_visibility: "mentor",
-      profile_visibility: "public",
+      work_visibility: 'mentor',
+      profile_visibility: 'public',
     },
     notification_preferences: {
       mentor_feedback: true,
       project_approvals: true,
       experience_milestones: true,
-    }
+    },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
   const { data: settings, isLoading } = useQuery({
@@ -33,19 +37,19 @@ export const useParticipantSettings = () => {
 
       const { data, error } = await supabase
         .from('participant_settings')
-        .select('id, participant_id, mentorship_mode, privacy_settings, notification_preferences')
+        .select('*')
         .eq('participant_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
       
-      return data || defaultSettings;
+      return (data || defaultSettings) as DbParticipantSettings;
     },
     enabled: !!user?.id,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
-    mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, 'id'>>) => {
+    mutationFn: async (newSettings: Partial<Omit<DbParticipantSettings, 'id' | 'created_at' | 'updated_at'>>) => {
       if (!user?.id) throw new Error("No user ID found");
 
       const updatedSettings = {
@@ -55,9 +59,7 @@ export const useParticipantSettings = () => {
 
       const { error } = await supabase
         .from('participant_settings')
-        .upsert(updatedSettings)
-        .select()
-        .single();
+        .upsert(updatedSettings);
 
       if (error) throw error;
     },
