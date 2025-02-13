@@ -6,6 +6,7 @@ import ContactInformationForm from "@/components/employer/registration/ContactIn
 import AccountSetupForm from "@/components/employer/registration/AccountSetupForm";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Header from "@/components/landing/Header";
 
 type RegistrationStep = "company" | "contact" | "account";
 
@@ -82,78 +83,81 @@ const EmployerRegistration = () => {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto py-8">
-      <Card className="p-6">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">Employer Registration</h1>
-            <Button variant="outline" onClick={handleSaveAndExit}>
-              Save & Exit
-            </Button>
-          </div>
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex gap-2">
-              <span
-                className={`w-3 h-3 rounded-full ${
-                  currentStep === "company"
-                    ? "bg-primary"
-                    : "bg-primary/30"
-                }`}
-              />
-              <span
-                className={`w-3 h-3 rounded-full ${
-                  currentStep === "contact"
-                    ? "bg-primary"
-                    : "bg-primary/30"
-                }`}
-              />
-              <span
-                className={`w-3 h-3 rounded-full ${
-                  currentStep === "account"
-                    ? "bg-primary"
-                    : "bg-primary/30"
-                }`}
-              />
+    <>
+      <Header />
+      <div className="container max-w-2xl mx-auto py-8 mt-16">
+        <Card className="p-6">
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold">Employer Registration</h1>
+              <Button variant="outline" onClick={handleSaveAndExit}>
+                Save & Exit
+              </Button>
             </div>
-            <span className="text-sm text-muted-foreground">
-              Step {currentStep === "company" ? "1" : currentStep === "contact" ? "2" : "3"} of 3
-            </span>
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex gap-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    currentStep === "company"
+                      ? "bg-primary"
+                      : "bg-primary/30"
+                  }`}
+                />
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    currentStep === "contact"
+                      ? "bg-primary"
+                      : "bg-primary/30"
+                  }`}
+                />
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    currentStep === "account"
+                      ? "bg-primary"
+                      : "bg-primary/30"
+                  }`}
+                />
+              </div>
+              <span className="text-sm text-muted-foreground">
+                Step {currentStep === "company" ? "1" : currentStep === "contact" ? "2" : "3"} of 3
+              </span>
+            </div>
           </div>
-        </div>
 
-        {currentStep === "company" && (
-          <CompanyDetailsForm
-            initialData={formData.company}
-            onSubmit={(data: CompanyDetails) => {
-              updateFormData("company", data);
-              handleNext();
-            }}
-          />
-        )}
+          {currentStep === "company" && (
+            <CompanyDetailsForm
+              initialData={formData.company}
+              onSubmit={(data: CompanyDetails) => {
+                updateFormData("company", data);
+                handleNext();
+              }}
+            />
+          )}
 
-        {currentStep === "contact" && (
-          <ContactInformationForm
-            initialData={formData.contact}
-            onSubmit={(data: ContactInformation) => {
-              updateFormData("contact", data);
-              handleNext();
-            }}
-            onBack={handleBack}
-          />
-        )}
+          {currentStep === "contact" && (
+            <ContactInformationForm
+              initialData={formData.contact}
+              onSubmit={(data: ContactInformation) => {
+                updateFormData("contact", data);
+                handleNext();
+              }}
+              onBack={handleBack}
+            />
+          )}
 
-        {currentStep === "account" && (
-          <AccountSetupForm
-            initialData={formData.account}
-            onSubmit={(data: AccountSetup) => {
-              updateFormData("account", data);
-              console.log("Final submission:", { ...formData, account: data });
-            }}
-            onBack={handleBack}
-          />
-        )}
-      </Card>
-    </div>
+          {currentStep === "account" && (
+            <AccountSetupForm
+              initialData={formData.account}
+              onSubmit={(data: AccountSetup) => {
+                updateFormData("account", data);
+                console.log("Final submission:", { ...formData, account: data });
+              }}
+              onBack={handleBack}
+            />
+          )}
+        </Card>
+      </div>
+    </>
   );
 };
 
