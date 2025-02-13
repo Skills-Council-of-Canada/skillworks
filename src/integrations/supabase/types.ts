@@ -768,6 +768,12 @@ export type Database = {
           registration_status: string
           updated_at: string
           user_id: string
+          verification_status:
+            | Database["public"]["Enums"]["employer_verification_status"]
+            | null
+          verification_submitted_at: string | null
+          verification_token: string | null
+          verification_token_expires_at: string | null
           verified: boolean | null
           website: string | null
         }
@@ -788,6 +794,12 @@ export type Database = {
           registration_status?: string
           updated_at?: string
           user_id: string
+          verification_status?:
+            | Database["public"]["Enums"]["employer_verification_status"]
+            | null
+          verification_submitted_at?: string | null
+          verification_token?: string | null
+          verification_token_expires_at?: string | null
           verified?: boolean | null
           website?: string | null
         }
@@ -808,6 +820,12 @@ export type Database = {
           registration_status?: string
           updated_at?: string
           user_id?: string
+          verification_status?:
+            | Database["public"]["Enums"]["employer_verification_status"]
+            | null
+          verification_submitted_at?: string | null
+          verification_token?: string | null
+          verification_token_expires_at?: string | null
           verified?: boolean | null
           website?: string | null
         }
@@ -3422,6 +3440,12 @@ export type Database = {
         | "reports"
         | "settings"
         | "support"
+      employer_verification_status:
+        | "pending_email_verification"
+        | "email_verified"
+        | "pending_admin_approval"
+        | "approved"
+        | "rejected"
       experience_approval_status:
         | "pending_review"
         | "approved"
