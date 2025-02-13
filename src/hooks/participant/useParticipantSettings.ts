@@ -48,7 +48,12 @@ export const useParticipantSettings = () => {
         // If no settings exist, create default settings
         const insertResponse = await supabase
           .from("participant_settings")
-          .insert(defaultSettings)
+          .insert({
+            participant_id: user.id,
+            mentorship_mode: defaultSettings.mentorship_mode,
+            privacy_settings: defaultSettings.privacy_settings,
+            notification_preferences: defaultSettings.notification_preferences,
+          })
           .select()
           .single();
 
@@ -57,10 +62,22 @@ export const useParticipantSettings = () => {
           throw insertResponse.error;
         }
 
-        return insertResponse.data as ParticipantSettings;
+        return {
+          id: insertResponse.data.id,
+          participant_id: insertResponse.data.participant_id,
+          mentorship_mode: insertResponse.data.mentorship_mode,
+          privacy_settings: insertResponse.data.privacy_settings as ParticipantSettings['privacy_settings'],
+          notification_preferences: insertResponse.data.notification_preferences as ParticipantSettings['notification_preferences'],
+        } as ParticipantSettings;
       }
 
-      return response.data as ParticipantSettings;
+      return {
+        id: response.data.id,
+        participant_id: response.data.participant_id,
+        mentorship_mode: response.data.mentorship_mode,
+        privacy_settings: response.data.privacy_settings as ParticipantSettings['privacy_settings'],
+        notification_preferences: response.data.notification_preferences as ParticipantSettings['notification_preferences'],
+      } as ParticipantSettings;
     },
     enabled: !!user?.id,
   });
@@ -75,7 +92,9 @@ export const useParticipantSettings = () => {
         .from("participant_settings")
         .upsert({
           participant_id: user.id,
-          ...newSettings,
+          mentorship_mode: newSettings.mentorship_mode,
+          privacy_settings: newSettings.privacy_settings,
+          notification_preferences: newSettings.notification_preferences,
         })
         .select()
         .single();
@@ -85,7 +104,13 @@ export const useParticipantSettings = () => {
         throw response.error;
       }
 
-      return response.data as ParticipantSettings;
+      return {
+        id: response.data.id,
+        participant_id: response.data.participant_id,
+        mentorship_mode: response.data.mentorship_mode,
+        privacy_settings: response.data.privacy_settings as ParticipantSettings['privacy_settings'],
+        notification_preferences: response.data.notification_preferences as ParticipantSettings['notification_preferences'],
+      } as ParticipantSettings;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
