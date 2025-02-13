@@ -13,10 +13,7 @@ interface AuthFormProps {
   title: string;
   gradient: string;
   isLoading: boolean;
-  onBack: () => void;
-  onSubmit: (username: string, password: string, isSignUp: boolean) => Promise<void>;
-  defaultUsername?: string;
-  showEmailField?: boolean;
+  onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
 }
 
 const AuthForm = ({
@@ -24,14 +21,10 @@ const AuthForm = ({
   title,
   gradient,
   isLoading,
-  onBack,
   onSubmit,
-  defaultUsername = "",
-  showEmailField = true,
 }: AuthFormProps) => {
-  const [username, setUsername] = useState(defaultUsername);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,7 +35,7 @@ const AuthForm = ({
     setError(null);
 
     try {
-      await onSubmit(username, password, isSigningUp);
+      await onSubmit(email, password, false);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -55,14 +48,6 @@ const AuthForm = ({
   return (
     <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
       <div className="text-center">
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={onBack}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Portal Selection
-        </Button>
         <div className="flex flex-col items-center gap-4">
           <Icon className="h-16 w-16 text-primary" />
           <h2 className="text-4xl font-bold text-secondary">{title}</h2>
@@ -84,12 +69,12 @@ const AuthForm = ({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-secondary">Username</label>
+              <label className="text-sm font-medium text-secondary">Email</label>
               <Input
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-background/50"
                 required
               />

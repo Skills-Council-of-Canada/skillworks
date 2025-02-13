@@ -14,8 +14,8 @@ export const useAuthRedirect = () => {
       case "participant":
         return "/participant/dashboard";
       default:
-        console.log("No matching role found, defaulting to login");
-        return "/login";
+        console.log("No matching role found, defaulting to index");
+        return "/";
     }
   };
 
