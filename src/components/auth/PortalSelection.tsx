@@ -12,6 +12,7 @@ export const portals = [
     icon: Building2,
     gradient: "bg-gradient-to-br from-blue-500/10 to-purple-500/10",
     borderGradient: "hover:border-blue-500/50",
+    registrationPath: "/employer/registration"
   },
   {
     id: "educator",
@@ -21,6 +22,7 @@ export const portals = [
     icon: GraduationCap,
     gradient: "bg-gradient-to-br from-green-500/10 to-emerald-500/10",
     borderGradient: "hover:border-green-500/50",
+    registrationPath: "/educator/registration"
   },
   {
     id: "participant",
@@ -30,6 +32,7 @@ export const portals = [
     icon: UserCircle,
     gradient: "bg-gradient-to-br from-orange-500/10 to-red-500/10",
     borderGradient: "hover:border-orange-500/50",
+    registrationPath: "/participant/registration"
   },
 ];
 
@@ -51,6 +54,7 @@ const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
             key={portal.id}
             {...portal}
             onSelect={() => onPortalSelect(portal.id, portal.role)}
+            registrationPath={portal.registrationPath}
           />
         ))}
       </div>
