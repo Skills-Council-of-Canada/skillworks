@@ -658,6 +658,60 @@ export type Database = {
         }
         Relationships: []
       }
+      educator_registrations: {
+        Row: {
+          areas_of_interest: string[] | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          institution_name: string
+          job_title: string | null
+          location: string | null
+          phone_number: string | null
+          preferred_contact: string
+          registration_completed: boolean | null
+          specialization: string
+          updated_at: string
+          user_id: string | null
+          years_experience: number
+        }
+        Insert: {
+          areas_of_interest?: string[] | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          institution_name: string
+          job_title?: string | null
+          location?: string | null
+          phone_number?: string | null
+          preferred_contact: string
+          registration_completed?: boolean | null
+          specialization: string
+          updated_at?: string
+          user_id?: string | null
+          years_experience: number
+        }
+        Update: {
+          areas_of_interest?: string[] | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          institution_name?: string
+          job_title?: string | null
+          location?: string | null
+          phone_number?: string | null
+          preferred_contact?: string
+          registration_completed?: boolean | null
+          specialization?: string
+          updated_at?: string
+          user_id?: string | null
+          years_experience?: number
+        }
+        Relationships: []
+      }
       educator_tasks: {
         Row: {
           created_at: string
