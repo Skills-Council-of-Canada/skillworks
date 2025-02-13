@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import ProfileSetupForm from "@/components/educator/registration/ProfileSetupForm";
 import ContactVerificationForm from "@/components/educator/registration/ContactVerificationForm";
@@ -10,6 +11,13 @@ import AccountSetupForm from "@/components/educator/registration/AccountSetupFor
 import { Steps } from "@/components/educator/registration/Steps";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/landing/Header";
+import { CheckCircle2, Circle, CircleDot } from "lucide-react";
+
+const steps = [
+  { label: "Profile Setup" },
+  { label: "Contact & Verification" },
+  { label: "Account Setup" }
+];
 
 export type RegistrationData = {
   fullName: string;
@@ -33,6 +41,8 @@ const EducatorRegistration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  const progress = (currentStep / steps.length) * 100;
 
   const handleStepSubmit = async (stepData: Partial<RegistrationData>) => {
     const updatedData = { ...formData, ...stepData };
@@ -103,7 +113,31 @@ const EducatorRegistration = () => {
             <p className="text-muted-foreground mt-2">Join our community of skilled trades educators</p>
           </div>
 
-          <Steps currentStep={currentStep} />
+          <div className="space-y-4">
+            <Progress value={progress} className="h-2" />
+            <div className="grid grid-cols-3 gap-4">
+              {steps.map((step, index) => {
+                const stepNumber = index + 1;
+                const isCompleted = stepNumber < currentStep;
+                const isCurrent = stepNumber === currentStep;
+
+                return (
+                  <div key={index} className="flex items-center gap-3">
+                    {isCompleted ? (
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    ) : isCurrent ? (
+                      <CircleDot className="h-5 w-5 text-primary" />
+                    ) : (
+                      <Circle className="h-5 w-5 text-muted-foreground" />
+                    )}
+                    <span className={isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}>
+                      {step.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
           <Card className="p-6">
             {currentStep === 1 && (
