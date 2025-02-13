@@ -1,12 +1,14 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import CompanyDetailsForm from "@/components/employer/registration/CompanyDetailsForm";
 import ContactInformationForm from "@/components/employer/registration/ContactInformationForm";
 import AccountSetupForm from "@/components/employer/registration/AccountSetupForm";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/landing/Header";
+import { CheckCircle2, Circle, CircleDot } from "lucide-react";
 
 type RegistrationStep = "company" | "contact" | "account";
 
@@ -28,6 +30,12 @@ interface AccountSetup {
   password: string;
   confirmPassword: string;
 }
+
+const steps = [
+  { label: "Company Details", status: "company" },
+  { label: "Contact Information", status: "contact" },
+  { label: "Account Setup", status: "account" }
+];
 
 const EmployerRegistration = () => {
   console.log("Rendering EmployerRegistration component");
@@ -55,6 +63,9 @@ const EmployerRegistration = () => {
       confirmPassword: "",
     },
   });
+
+  const currentStepIndex = steps.findIndex(step => step.status === currentStep);
+  const progress = ((currentStepIndex + 1) / steps.length) * 100;
 
   const updateFormData = (
     step: RegistrationStep,
@@ -94,33 +105,30 @@ const EmployerRegistration = () => {
                 Save & Exit
               </Button>
             </div>
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex gap-2">
-                <span
-                  className={`w-3 h-3 rounded-full ${
-                    currentStep === "company"
-                      ? "bg-primary"
-                      : "bg-primary/30"
-                  }`}
-                />
-                <span
-                  className={`w-3 h-3 rounded-full ${
-                    currentStep === "contact"
-                      ? "bg-primary"
-                      : "bg-primary/30"
-                  }`}
-                />
-                <span
-                  className={`w-3 h-3 rounded-full ${
-                    currentStep === "account"
-                      ? "bg-primary"
-                      : "bg-primary/30"
-                  }`}
-                />
+            <div className="space-y-4">
+              <Progress value={progress} className="h-2" />
+              <div className="grid grid-cols-3 gap-4">
+                {steps.map((step, index) => {
+                  const stepStatus = step.status;
+                  const isCompleted = steps[currentStepIndex].status !== stepStatus && index < currentStepIndex;
+                  const isCurrent = steps[currentStepIndex].status === stepStatus;
+
+                  return (
+                    <div key={index} className="flex items-center gap-3">
+                      {isCompleted ? (
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                      ) : isCurrent ? (
+                        <CircleDot className="h-5 w-5 text-primary" />
+                      ) : (
+                        <Circle className="h-5 w-5 text-muted-foreground" />
+                      )}
+                      <span className={isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}>
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <span className="text-sm text-muted-foreground">
-                Step {currentStep === "company" ? "1" : currentStep === "contact" ? "2" : "3"} of 3
-              </span>
             </div>
           </div>
 
