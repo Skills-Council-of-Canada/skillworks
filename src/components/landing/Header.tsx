@@ -18,7 +18,7 @@ const Header = ({ onAdminLoginClick }: HeaderProps) => {
           onClick={onAdminLoginClick}
         >
           <LogIn className="h-4 w-4" />
-          Admin Login
+          Login
         </Button>
       </div>
     </header>
