@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
@@ -24,17 +23,10 @@ const ParticipantLanding = () => {
           </div>
           <div className="flex gap-4">
             <Button
-              variant="ghost"
-              onClick={() => navigate("/login?portal=participant")}
-              className="text-secondary hover:text-primary"
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => navigate("/login?portal=participant")}
+              onClick={() => navigate("/participant/registration")}
               className="bg-primary hover:bg-primary/90"
             >
-              Sign Up
+              Sign Up Now
             </Button>
           </div>
         </div>
@@ -54,7 +46,7 @@ const ParticipantLanding = () => {
               <div className="flex gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/participant/registration")}
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />

@@ -7,6 +7,7 @@ import { RegistrationStepper } from "@/components/participant/registration/Regis
 import { PersonalInfoForm } from "@/components/participant/registration/PersonalInfoForm";
 import { ProfileSetupForm } from "@/components/participant/registration/ProfileSetupForm";
 import { supabase } from "@/integrations/supabase/client";
+import Header from "@/components/landing/Header";
 
 const ParticipantRegistration = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -78,36 +79,39 @@ const ParticipantRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>Participant Registration</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {currentStep === 1 && (
-            <PersonalInfoForm
-              onSubmit={handlePersonalInfoSubmit}
-              onValidityChange={setIsStepValid}
-            />
-          )}
-          
-          {currentStep === 2 && (
-            <ProfileSetupForm
-              onSubmit={handleProfileSetupSubmit}
-              onValidityChange={setIsStepValid}
-            />
-          )}
+    <>
+      <Header />
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 mt-16">
+        <Card className="w-full max-w-lg">
+          <CardHeader>
+            <CardTitle>Participant Registration</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {currentStep === 1 && (
+              <PersonalInfoForm
+                onSubmit={handlePersonalInfoSubmit}
+                onValidityChange={setIsStepValid}
+              />
+            )}
+            
+            {currentStep === 2 && (
+              <ProfileSetupForm
+                onSubmit={handleProfileSetupSubmit}
+                onValidityChange={setIsStepValid}
+              />
+            )}
 
-          <RegistrationStepper
-            currentStep={currentStep}
-            onStepChange={handleStepChange}
-            isStepValid={isStepValid}
-            onSubmit={() => handleProfileSetupSubmit(formData)}
-            isLastStep={currentStep === 2}
-          />
-        </CardContent>
-      </Card>
-    </div>
+            <RegistrationStepper
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+              isStepValid={isStepValid}
+              onSubmit={() => handleProfileSetupSubmit(formData)}
+              isLastStep={currentStep === 2}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 };
 
