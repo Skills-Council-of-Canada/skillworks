@@ -2,6 +2,9 @@
 import { User } from "./auth";
 
 export type ParticipantRegistrationStatus = "pending" | "email_verified" | "profile_completed" | "admin_approved" | "active";
+export type MentorshipMode = 'self_guided' | 'mentor_assisted';
+export type WorkVisibility = 'mentor' | 'public' | 'private';
+export type ProfileVisibility = 'public' | 'private';
 
 export interface ParticipantWorkflowStatus {
   id: string;
@@ -36,10 +39,6 @@ export interface ParticipantAchievement {
   created_at: string;
 }
 
-export type MentorshipMode = 'self_guided' | 'mentor_assisted';
-export type WorkVisibility = 'mentor' | 'public' | 'private';
-export type ProfileVisibility = 'public' | 'private';
-
 export interface ParticipantPrivacySettings {
   work_visibility: WorkVisibility;
   profile_visibility: ProfileVisibility;
@@ -60,6 +59,8 @@ export interface ParticipantSettings {
   created_at?: string;
   updated_at?: string;
 }
+
+export type UpdateParticipantSettings = Partial<Omit<ParticipantSettings, 'id' | 'participant_id' | 'created_at' | 'updated_at'>>;
 
 export interface UploadedFile {
   id: string;

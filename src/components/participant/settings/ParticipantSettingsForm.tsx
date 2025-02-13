@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,14 +23,19 @@ import {
 } from "@/components/ui/select";
 import { useParticipantSettings } from "@/hooks/participant/useParticipantSettings";
 import { Brain, Eye, Bell } from "lucide-react";
-import { ParticipantSettings } from "@/types/participant";
+import { 
+  ParticipantSettings, 
+  MentorshipMode, 
+  WorkVisibility, 
+  ProfileVisibility 
+} from "@/types/participant";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
-  mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
+  mentorship_mode: z.enum(["self_guided", "mentor_assisted"] as const),
   privacy_settings: z.object({
-    work_visibility: z.enum(["mentor", "public", "private"]),
-    profile_visibility: z.enum(["public", "private"]),
+    work_visibility: z.enum(["mentor", "public", "private"] as const),
+    profile_visibility: z.enum(["public", "private"] as const),
   }),
   notification_preferences: z.object({
     mentor_feedback: z.boolean(),
@@ -46,26 +52,25 @@ export function ParticipantSettingsForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      mentorship_mode: settings?.mentorship_mode || "self_guided",
-      privacy_settings: {
-        work_visibility: settings?.privacy_settings?.work_visibility || "mentor",
-        profile_visibility: settings?.privacy_settings?.profile_visibility || "public",
-      },
-      notification_preferences: {
-        mentor_feedback: settings?.notification_preferences?.mentor_feedback ?? true,
-        project_approvals: settings?.notification_preferences?.project_approvals ?? true,
-        experience_milestones: settings?.notification_preferences?.experience_milestones ?? true,
-      },
-    }
+      mentorship_mode: settings.mentorship_mode,
+      privacy_settings: settings.privacy_settings,
+      notification_preferences: settings.notification_preferences,
+    },
   });
 
   async function onSubmit(values: FormData) {
-    const updatedSettings = {
+    await updateSettings({
       mentorship_mode: values.mentorship_mode,
-      privacy_settings: values.privacy_settings,
-      notification_preferences: values.notification_preferences,
-    };
-    await updateSettings(updatedSettings);
+      privacy_settings: {
+        work_visibility: values.privacy_settings.work_visibility,
+        profile_visibility: values.privacy_settings.profile_visibility,
+      },
+      notification_preferences: {
+        mentor_feedback: values.notification_preferences.mentor_feedback,
+        project_approvals: values.notification_preferences.project_approvals,
+        experience_milestones: values.notification_preferences.experience_milestones,
+      },
+    });
   }
 
   if (isLoading) {
