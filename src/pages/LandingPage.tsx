@@ -1,7 +1,5 @@
 
-import { useState } from "react";
 import Header from "@/components/landing/Header";
-import AdminLoginDialog from "@/components/landing/AdminLoginDialog";
 import HeroSection from "@/components/landing/HeroSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import Footer from "@/components/landing/Footer";
@@ -10,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
 
   const handlePortalSelect = (portalId: string) => {
     switch (portalId) {
@@ -30,12 +27,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header onAdminLoginClick={() => setShowAdminLogin(true)} />
-      
-      <AdminLoginDialog 
-        showAdminLogin={showAdminLogin}
-        setShowAdminLogin={setShowAdminLogin}
-      />
+      <Header />
 
       {/* Portal Selection Section */}
       <section className="pt-24 pb-8 px-4">

@@ -1,12 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-interface HeaderProps {
-  onAdminLoginClick: () => void;
-}
-
-const Header = ({ onAdminLoginClick }: HeaderProps) => {
+const Header = () => {
+  const navigate = useNavigate();
+  
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -15,7 +14,7 @@ const Header = ({ onAdminLoginClick }: HeaderProps) => {
           variant="ghost"
           size="sm"
           className="gap-2"
-          onClick={onAdminLoginClick}
+          onClick={() => navigate("/login")}
         >
           <LogIn className="h-4 w-4" />
           Login
