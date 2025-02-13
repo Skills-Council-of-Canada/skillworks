@@ -9,6 +9,7 @@ import ContactVerificationForm from "@/components/educator/registration/ContactV
 import AccountSetupForm from "@/components/educator/registration/AccountSetupForm";
 import { Steps } from "@/components/educator/registration/Steps";
 import { supabase } from "@/integrations/supabase/client";
+import Header from "@/components/landing/Header";
 
 export type RegistrationData = {
   fullName: string;
@@ -93,52 +94,55 @@ const EducatorRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="container max-w-2xl mx-auto space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">Educator Registration</h1>
-          <p className="text-muted-foreground mt-2">Join our community of skilled trades educators</p>
-        </div>
-
-        <Steps currentStep={currentStep} />
-
-        <Card className="p-6">
-          {currentStep === 1 && (
-            <ProfileSetupForm 
-              onSubmit={handleStepSubmit}
-              initialData={formData}
-              isLoading={isLoading}
-            />
-          )}
-          {currentStep === 2 && (
-            <ContactVerificationForm
-              onSubmit={handleStepSubmit}
-              initialData={formData}
-              isLoading={isLoading}
-            />
-          )}
-          {currentStep === 3 && (
-            <AccountSetupForm
-              onSubmit={handleStepSubmit}
-              initialData={formData}
-              isLoading={isLoading}
-            />
-          )}
-        </Card>
-
-        {currentStep > 1 && (
-          <div className="flex justify-center">
-            <Button
-              variant="ghost"
-              onClick={() => setCurrentStep(currentStep - 1)}
-              disabled={isLoading}
-            >
-              Back to Previous Step
-            </Button>
+    <>
+      <Header />
+      <div className="min-h-screen bg-background py-12 px-4 mt-16">
+        <div className="container max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-primary">Educator Registration</h1>
+            <p className="text-muted-foreground mt-2">Join our community of skilled trades educators</p>
           </div>
-        )}
+
+          <Steps currentStep={currentStep} />
+
+          <Card className="p-6">
+            {currentStep === 1 && (
+              <ProfileSetupForm 
+                onSubmit={handleStepSubmit}
+                initialData={formData}
+                isLoading={isLoading}
+              />
+            )}
+            {currentStep === 2 && (
+              <ContactVerificationForm
+                onSubmit={handleStepSubmit}
+                initialData={formData}
+                isLoading={isLoading}
+              />
+            )}
+            {currentStep === 3 && (
+              <AccountSetupForm
+                onSubmit={handleStepSubmit}
+                initialData={formData}
+                isLoading={isLoading}
+              />
+            )}
+          </Card>
+
+          {currentStep > 1 && (
+            <div className="flex justify-center">
+              <Button
+                variant="ghost"
+                onClick={() => setCurrentStep(currentStep - 1)}
+                disabled={isLoading}
+              >
+                Back to Previous Step
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
