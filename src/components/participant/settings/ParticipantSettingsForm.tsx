@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -26,10 +27,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MentorshipMode, WorkVisibility, ProfileVisibility } from "@/types/participant";
 
 const formSchema = z.object({
-  mentorship_mode: z.enum(["self_guided", "mentor_assisted"] as const),
+  mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
   privacy_settings: z.object({
-    work_visibility: z.enum(["mentor", "public", "private"] as const),
-    profile_visibility: z.enum(["public", "private"] as const),
+    work_visibility: z.enum(["mentor", "public", "private"]),
+    profile_visibility: z.enum(["public", "private"]),
   }),
   notification_preferences: z.object({
     mentor_feedback: z.boolean(),
@@ -46,7 +47,7 @@ export function ParticipantSettingsForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      mentorship_mode: settings.mentorship_mode,
+      mentorship_mode: settings.mentorship_mode as MentorshipMode,
       privacy_settings: settings.privacy_settings,
       notification_preferences: settings.notification_preferences,
     },

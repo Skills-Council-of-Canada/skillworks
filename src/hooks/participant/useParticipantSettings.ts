@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { ParticipantSettings, UpdateParticipantSettings } from "@/types/participant";
-import { Database } from "@/types/supabase";
+import { Database, Json } from "@/types/supabase";
 
 type ParticipantSettingsRow = Database['public']['Tables']['participant_settings']['Row'];
 type ParticipantSettingsInsert = Database['public']['Tables']['participant_settings']['Insert'];
@@ -53,8 +53,8 @@ export const useParticipantSettings = () => {
         const insertData: ParticipantSettingsInsert = {
           participant_id: user.id,
           mentorship_mode: defaultSettings.mentorship_mode,
-          privacy_settings: defaultSettings.privacy_settings,
-          notification_preferences: defaultSettings.notification_preferences,
+          privacy_settings: defaultSettings.privacy_settings as Json,
+          notification_preferences: defaultSettings.notification_preferences as Json,
         };
 
         const insertResponse = await supabase
@@ -79,7 +79,7 @@ export const useParticipantSettings = () => {
   const transformDatabaseSettings = (data: ParticipantSettingsRow): ParticipantSettings => ({
     id: data.id,
     participant_id: data.participant_id,
-    mentorship_mode: data.mentorship_mode as ParticipantSettings['mentorship_mode'],
+    mentorship_mode: data.mentorship_mode,
     privacy_settings: data.privacy_settings as ParticipantSettings['privacy_settings'],
     notification_preferences: data.notification_preferences as ParticipantSettings['notification_preferences'],
   });
@@ -93,8 +93,8 @@ export const useParticipantSettings = () => {
       const updateData: ParticipantSettingsInsert = {
         participant_id: user.id,
         mentorship_mode: newSettings.mentorship_mode,
-        privacy_settings: newSettings.privacy_settings,
-        notification_preferences: newSettings.notification_preferences,
+        privacy_settings: newSettings.privacy_settings as Json,
+        notification_preferences: newSettings.notification_preferences as Json,
       };
 
       const response = await supabase
