@@ -16,7 +16,7 @@ export const useParticipantSettings = () => {
 
   const defaultSettings: Omit<ParticipantSettings, 'id'> = {
     participant_id: user?.id || "",
-    mentorship_mode: "self_guided",
+    mentorship_mode: "self_guided" as const,
     privacy_settings: {
       work_visibility: "mentor",
       profile_visibility: "public",
@@ -79,9 +79,11 @@ export const useParticipantSettings = () => {
   const transformDatabaseSettings = (data: ParticipantSettingsRow): ParticipantSettings => ({
     id: data.id,
     participant_id: data.participant_id,
-    mentorship_mode: data.mentorship_mode,
+    mentorship_mode: data.mentorship_mode as MentorshipMode,
     privacy_settings: data.privacy_settings as unknown as ParticipantSettings['privacy_settings'],
     notification_preferences: data.notification_preferences as unknown as ParticipantSettings['notification_preferences'],
+    created_at: data.created_at,
+    updated_at: data.updated_at
   });
 
   const { mutateAsync: updateSettings } = useMutation({
@@ -92,7 +94,7 @@ export const useParticipantSettings = () => {
 
       const updateData: ParticipantSettingsInsert = {
         participant_id: user.id,
-        mentorship_mode: newSettings.mentorship_mode,
+        mentorship_mode: newSettings.mentorship_mode as MentorshipMode,
         privacy_settings: newSettings.privacy_settings as unknown as Json,
         notification_preferences: newSettings.notification_preferences as unknown as Json,
       };
