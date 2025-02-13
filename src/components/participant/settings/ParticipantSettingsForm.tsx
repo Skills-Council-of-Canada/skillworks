@@ -47,20 +47,25 @@ export function ParticipantSettingsForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       mentorship_mode: settings?.mentorship_mode || "self_guided",
-      privacy_settings: settings?.privacy_settings || {
-        work_visibility: "mentor",
-        profile_visibility: "public",
+      privacy_settings: {
+        work_visibility: settings?.privacy_settings?.work_visibility || "mentor",
+        profile_visibility: settings?.privacy_settings?.profile_visibility || "public",
       },
-      notification_preferences: settings?.notification_preferences || {
-        mentor_feedback: true,
-        project_approvals: true,
-        experience_milestones: true,
+      notification_preferences: {
+        mentor_feedback: settings?.notification_preferences?.mentor_feedback ?? true,
+        project_approvals: settings?.notification_preferences?.project_approvals ?? true,
+        experience_milestones: settings?.notification_preferences?.experience_milestones ?? true,
       },
     }
   });
 
   async function onSubmit(values: FormData) {
-    await updateSettings(values);
+    const updatedSettings = {
+      mentorship_mode: values.mentorship_mode,
+      privacy_settings: values.privacy_settings,
+      notification_preferences: values.notification_preferences,
+    };
+    await updateSettings(updatedSettings);
   }
 
   if (isLoading) {

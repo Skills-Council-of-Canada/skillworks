@@ -1,3 +1,4 @@
+
 import { User } from "./auth";
 
 export type ParticipantRegistrationStatus = "pending" | "email_verified" | "profile_completed" | "admin_approved" | "active";

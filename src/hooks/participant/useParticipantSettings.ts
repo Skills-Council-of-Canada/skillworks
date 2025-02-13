@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { ParticipantSettings } from "@/types/participant";
+import { ParticipantSettings, MentorshipMode, ParticipantPrivacySettings, ParticipantNotificationPreferences } from "@/types/participant";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
@@ -27,50 +27,49 @@ export const useParticipantSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["participant-settings", user?.id],
     queryFn: async () => {
-      try {
-        // If no user, return default settings immediately
-        if (!user?.id) {
-          console.log("No user ID found, returning default settings");
-          return { id: "", ...defaultSettings };
-        }
+      if (!user?.id) {
+        console.log("No user ID found, returning default settings");
+        return { id: "", ...defaultSettings };
+      }
 
-        console.log("Fetching settings for user:", user.id);
-        const { data, error } = await supabase
-          .from("participant_settings")
-          .select("*")
-          .eq("participant_id", user.id)
-          .maybeSingle();
+      console.log("Fetching settings for user:", user.id);
+      const { data, error } = await supabase
+        .from("participant_settings")
+        .select("*")
+        .eq("participant_id", user.id)
+        .single();
 
-        if (error) {
-          console.error("Database error:", error);
-          throw error;
-        }
-
-        if (!data) {
-          console.log("No settings found, returning default settings");
-          return { id: "", ...defaultSettings };
-        }
-
-        console.log("Settings found:", data);
-        return data as ParticipantSettings;
-      } catch (error) {
-        console.error("Error in settings query:", error);
+      if (error) {
+        console.error("Database error:", error);
         throw error;
       }
+
+      if (!data) {
+        // If no settings exist, create default settings
+        const { data: newSettings, error: insertError } = await supabase
+          .from("participant_settings")
+          .insert(defaultSettings)
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("Error creating default settings:", insertError);
+          throw insertError;
+        }
+
+        return newSettings as ParticipantSettings;
+      }
+
+      return data as ParticipantSettings;
     },
-    enabled: true,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 1,
+    enabled: !!user?.id,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
     mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, "id" | "participant_id">>) => {
       if (!user?.id) {
-        console.error("No user ID found during update");
         throw new Error("No user ID found");
       }
-
-      console.log("Updating settings for user:", user.id, "with data:", newSettings);
 
       const updatedSettings = {
         participant_id: user.id,
@@ -81,14 +80,13 @@ export const useParticipantSettings = () => {
         .from("participant_settings")
         .upsert(updatedSettings)
         .select()
-        .maybeSingle();
+        .single();
 
       if (error) {
         console.error("Error updating settings:", error);
         throw error;
       }
 
-      console.log("Settings updated successfully:", data);
       return data;
     },
     onSuccess: () => {
