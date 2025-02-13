@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LogIn } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
 import { useNavigate } from "react-router-dom";
@@ -67,7 +67,11 @@ const Index = () => {
       <h1 className="text-4xl font-bold text-center mb-6">Welcome to TradesConnect</h1>
       
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center order-2 md:order-1">
+          <PortalSelection onPortalSelect={handlePortalSelect} />
+        </div>
+        
+        <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
           <AuthForm
             icon={User}
             title="Sign In"
@@ -75,10 +79,14 @@ const Index = () => {
             isLoading={isSubmitting}
             onSubmit={handleAuthSubmit}
           />
-        </div>
-        
-        <div className="flex flex-col justify-center">
-          <PortalSelection onPortalSelect={handlePortalSelect} />
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => navigate("/login")}
+          >
+            <LogIn className="mr-2 h-4 w-4" />
+            Login Page
+          </Button>
         </div>
       </div>
     </div>
