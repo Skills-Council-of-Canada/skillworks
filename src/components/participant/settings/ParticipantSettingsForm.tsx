@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -23,13 +22,8 @@ import {
 } from "@/components/ui/select";
 import { useParticipantSettings } from "@/hooks/participant/useParticipantSettings";
 import { Brain, Eye, Bell } from "lucide-react";
-import { 
-  ParticipantSettings, 
-  MentorshipMode, 
-  WorkVisibility, 
-  ProfileVisibility 
-} from "@/types/participant";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MentorshipMode, WorkVisibility, ProfileVisibility } from "@/types/participant";
 
 const formSchema = z.object({
   mentorship_mode: z.enum(["self_guided", "mentor_assisted"] as const),
