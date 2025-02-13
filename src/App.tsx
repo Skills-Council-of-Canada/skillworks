@@ -35,6 +35,7 @@ import ResourceCenter from "./pages/employer/ResourceCenter";
 import ProfileSettings from "./pages/employer/ProfileSettings";
 import CreateProject from "./pages/employer/CreateProject";
 import ProjectDetails from "./pages/employer/ProjectDetails";
+import EmployerRegistration from "./pages/employer/EmployerRegistration";
 
 // Educator routes
 import EducatorLayout from "./pages/educator/EducatorLayout";
@@ -76,7 +77,9 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/participant/registration" element={<ParticipantRegistration />} />
-          
+          <Route path="/employer/registration" element={<EmployerRegistration />} />
+          <Route path="/educator/registration" element={<EducatorRegistration />} />
+
           {/* Admin routes */}
           <Route
             path="/admin"
@@ -118,9 +121,6 @@ const App = () => (
             <Route path="create-experience" element={<CreateExperience />} />
           </Route>
 
-          {/* Protected educator registration route */}
-          <Route path="/educator/registration" element={<EducatorRegistration />} />
-          
           {/* Protected employer routes */}
           <Route
             path="/employer"
