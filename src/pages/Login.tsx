@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
-import { User } from "lucide-react";
+import { User, Home } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -56,14 +57,31 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      <AuthForm
-        icon={User}
-        title="Welcome Back"
-        gradient="bg-white"
-        isLoading={isSubmitting}
-        onSubmit={handleAuthSubmit}
-      />
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
+        <div className="container mx-auto px-4 h-16 flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="text-secondary hover:text-primary"
+          >
+            <Home className="h-5 w-5" />
+          </Button>
+        </div>
+      </header>
+
+      {/* Login Form */}
+      <div className="min-h-screen flex items-center justify-center px-4 pt-16">
+        <AuthForm
+          icon={User}
+          title="Welcome Back"
+          gradient="bg-white"
+          isLoading={isSubmitting}
+          onSubmit={handleAuthSubmit}
+        />
+      </div>
     </div>
   );
 };
