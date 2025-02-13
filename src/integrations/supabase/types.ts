@@ -2453,7 +2453,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          mentorship_mode: string
+          mentorship_mode: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences: Json
           participant_id: string
           privacy_settings: Json
@@ -2462,7 +2462,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          mentorship_mode?: string
+          mentorship_mode?: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences?: Json
           participant_id: string
           privacy_settings?: Json
@@ -2471,7 +2471,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          mentorship_mode?: string
+          mentorship_mode?: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences?: Json
           participant_id?: string
           privacy_settings?: Json
@@ -3433,6 +3433,7 @@ export type Database = {
         | "draft"
         | "pending_approval"
         | "published"
+      mentorship_mode_type: "self_guided" | "mentor_assisted"
       milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
