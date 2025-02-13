@@ -10,8 +10,7 @@ export const useParticipantSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const defaultSettings: ParticipantSettings = {
-    id: "",
+  const defaultSettings: Omit<ParticipantSettings, 'id'> = {
     participant_id: user?.id || "",
     mentorship_mode: "self_guided",
     privacy_settings: {
@@ -28,52 +27,49 @@ export const useParticipantSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["participant-settings", user?.id],
     queryFn: async () => {
-      if (!user?.id) return defaultSettings;
+      if (!user?.id) return { id: "", ...defaultSettings };
 
       try {
         const { data, error } = await supabase
           .from("participant_settings")
-          .select()
+          .select("id, participant_id, mentorship_mode, privacy_settings, notification_preferences")
           .eq("participant_id", user.id)
-          .limit(1)
           .single();
 
         if (error) {
+          if (error.code === 'PGRST116') {
+            // No row found, return default settings
+            return { id: "", ...defaultSettings };
+          }
           console.error("Error fetching settings:", error);
           throw error;
         }
-        
-        return data || defaultSettings;
+
+        return data as ParticipantSettings;
       } catch (error) {
         console.error("Error in settings query:", error);
-        return defaultSettings;
+        return { id: "", ...defaultSettings };
       }
     },
     enabled: !!user?.id,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
-    mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, "id">>) => {
+    mutationFn: async (newSettings: Partial<Omit<ParticipantSettings, "id" | "participant_id">>) => {
       if (!user?.id) throw new Error("No user ID found");
 
-      try {
-        const updatedSettings = {
-          participant_id: user.id,
-          ...newSettings,
-        };
+      const updatedSettings = {
+        participant_id: user.id,
+        ...newSettings,
+      };
 
-        const { error } = await supabase
-          .from("participant_settings")
-          .upsert(updatedSettings);
+      const { error } = await supabase
+        .from("participant_settings")
+        .upsert(updatedSettings)
+        .select()
+        .single();
 
-        if (error) {
-          console.error("Error updating settings:", error);
-          throw error;
-        }
-      } catch (error) {
-        console.error("Error in update mutation:", error);
-        throw error;
-      }
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
@@ -93,7 +89,7 @@ export const useParticipantSettings = () => {
   });
 
   return {
-    settings,
+    settings: settings as ParticipantSettings,
     updateSettings,
     isLoading,
   };

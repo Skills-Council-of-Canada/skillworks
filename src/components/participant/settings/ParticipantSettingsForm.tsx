@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -44,7 +45,7 @@ export function ParticipantSettingsForm() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    values: settings ? {
+    defaultValues: settings ? {
       mentorship_mode: settings.mentorship_mode,
       privacy_settings: settings.privacy_settings,
       notification_preferences: settings.notification_preferences,
