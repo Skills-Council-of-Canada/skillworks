@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -24,6 +23,7 @@ import {
 import { useParticipantSettings } from "@/hooks/participant/useParticipantSettings";
 import { Brain, Eye, Bell } from "lucide-react";
 import { ParticipantSettings } from "@/types/participant";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
@@ -45,17 +45,13 @@ export function ParticipantSettingsForm() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: settings ? {
-      mentorship_mode: settings.mentorship_mode,
-      privacy_settings: settings.privacy_settings,
-      notification_preferences: settings.notification_preferences,
-    } : {
-      mentorship_mode: "self_guided",
-      privacy_settings: {
+    defaultValues: {
+      mentorship_mode: settings?.mentorship_mode || "self_guided",
+      privacy_settings: settings?.privacy_settings || {
         work_visibility: "mentor",
         profile_visibility: "public",
       },
-      notification_preferences: {
+      notification_preferences: settings?.notification_preferences || {
         mentor_feedback: true,
         project_approvals: true,
         experience_milestones: true,
@@ -64,11 +60,17 @@ export function ParticipantSettingsForm() {
   });
 
   async function onSubmit(values: FormData) {
-    await updateSettings(values as Partial<ParticipantSettings>);
+    await updateSettings(values);
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-[200px] w-full" />
+        <Skeleton className="h-[300px] w-full" />
+        <Skeleton className="h-[250px] w-full" />
+      </div>
+    );
   }
 
   return (

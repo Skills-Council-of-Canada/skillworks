@@ -27,31 +27,40 @@ export const useParticipantSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["participant-settings", user?.id],
     queryFn: async () => {
-      if (!user?.id) return { id: "", ...defaultSettings };
-
       try {
+        // If no user, return default settings immediately
+        if (!user?.id) {
+          return { id: "", ...defaultSettings };
+        }
+
         const { data, error } = await supabase
           .from("participant_settings")
-          .select("id, participant_id, mentorship_mode, privacy_settings, notification_preferences")
+          .select("*")
           .eq("participant_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
-          if (error.code === 'PGRST116') {
-            // No row found, return default settings
-            return { id: "", ...defaultSettings };
-          }
           console.error("Error fetching settings:", error);
           throw error;
         }
 
-        return data as ParticipantSettings;
+        // If no data found, return default settings
+        if (!data) {
+          return { id: "", ...defaultSettings };
+        }
+
+        return data as unknown as ParticipantSettings;
       } catch (error) {
         console.error("Error in settings query:", error);
         return { id: "", ...defaultSettings };
       }
     },
-    enabled: !!user?.id,
+    // Only run the query if we have a user ID
+    enabled: true,
+    // Add staleTime to prevent unnecessary refetches
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    // Add retry configuration
+    retry: 1,
   });
 
   const { mutateAsync: updateSettings } = useMutation({
@@ -67,7 +76,7 @@ export const useParticipantSettings = () => {
         .from("participant_settings")
         .upsert(updatedSettings)
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
     },
