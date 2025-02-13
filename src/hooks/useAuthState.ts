@@ -17,7 +17,7 @@ export const useAuthState = () => {
 
   // Define public routes that don't require authentication
   const isPublicRoute = (path: string) => {
-    return path.match(/^\/(login|employer-landing|educator-landing|participant-landing|)$/);
+    return path.match(/^\/(login|employer-landing|educator-landing|participant-landing|employer\/registration|educator\/registration|participant\/registration|)$/);
   };
 
   useEffect(() => {
@@ -36,6 +36,7 @@ export const useAuthState = () => {
           setIsLoading(false);
           // Only redirect to login if we're not on a public route
           if (!isPublicRoute(location.pathname)) {
+            console.log("Not a public route, redirecting to login:", location.pathname);
             navigate('/login');
           }
           return;
