@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import EducatorRegistration from "./pages/educator/EducatorRegistration";
 import Reports from "./pages/admin/Reports";
+import EmployerRegistration from "./pages/employer/EmployerRegistration";
 
 // Admin routes
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -36,7 +36,6 @@ import ResourceCenter from "./pages/employer/ResourceCenter";
 import ProfileSettings from "./pages/employer/ProfileSettings";
 import CreateProject from "./pages/employer/CreateProject";
 import ProjectDetails from "./pages/employer/ProjectDetails";
-import EmployerRegistration from "./pages/employer/EmployerRegistration";
 
 // Educator routes
 import EducatorLayout from "./pages/educator/EducatorLayout";
@@ -78,12 +77,32 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           
-          {/* Registration routes - public access */}
+          {/* Registration routes - explicitly marked as public access */}
           <Route path="/participant/registration" element={<ParticipantRegistration />} />
           <Route path="/employer/registration" element={<EmployerRegistration />} />
           <Route path="/educator/registration" element={<EducatorRegistration />} />
 
-          {/* Admin routes */}
+          {/* Protected employer routes */}
+          <Route
+            path="/employer"
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <EmployerLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<EmployerDashboard />} />
+            <Route path="dashboard" element={<EmployerDashboard />} />
+            <Route path="projects" element={<EmployerProjectManagement />} />
+            <Route path="applications" element={<ApplicationsManagement />} />
+            <Route path="messages" element={<MessagesPage />} />
+            <Route path="resources" element={<ResourceCenter />} />
+            <Route path="settings" element={<ProfileSettings />} />
+            <Route path="create-project" element={<CreateProject />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
+          </Route>
+
+          {/* Protected admin routes */}
           <Route
             path="/admin"
             element={
@@ -122,26 +141,6 @@ const App = () => (
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="create-experience" element={<CreateExperience />} />
-          </Route>
-
-          {/* Protected employer routes */}
-          <Route
-            path="/employer"
-            element={
-              <ProtectedRoute allowedRoles={["employer"]}>
-                <EmployerLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<EmployerDashboard />} />
-            <Route path="dashboard" element={<EmployerDashboard />} />
-            <Route path="projects" element={<EmployerProjectManagement />} />
-            <Route path="applications" element={<ApplicationsManagement />} />
-            <Route path="messages" element={<MessagesPage />} />
-            <Route path="resources" element={<ResourceCenter />} />
-            <Route path="settings" element={<ProfileSettings />} />
-            <Route path="create-project" element={<CreateProject />} />
-            <Route path="projects/:projectId" element={<ProjectDetails />} />
           </Route>
 
           {/* Protected participant routes */}
