@@ -1,9 +1,15 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
 
 const EmployerLanding = () => {
   const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    console.log("Navigating to employer registration");
+    navigate("/employer/registration");
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -23,7 +29,7 @@ const EmployerLanding = () => {
           </div>
           <div>
             <Button
-              onClick={() => navigate("/employer/registration")}
+              onClick={handleSignUp}
               className="bg-primary hover:bg-primary/90"
             >
               Sign Up
@@ -46,7 +52,7 @@ const EmployerLanding = () => {
               <div className="flex gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/employer/registration")}
+                  onClick={handleSignUp}
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
