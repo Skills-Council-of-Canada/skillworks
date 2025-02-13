@@ -2449,6 +2449,36 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_settings: {
+        Row: {
+          created_at: string
+          id: string
+          mentorship_mode: string
+          notification_preferences: Json
+          participant_id: string
+          privacy_settings: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentorship_mode?: string
+          notification_preferences?: Json
+          participant_id: string
+          privacy_settings?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentorship_mode?: string
+          notification_preferences?: Json
+          participant_id?: string
+          privacy_settings?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       participant_workflow_status: {
         Row: {
           created_at: string | null
