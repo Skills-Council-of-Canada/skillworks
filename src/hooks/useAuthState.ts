@@ -17,7 +17,17 @@ export const useAuthState = () => {
 
   // Define public routes that don't require authentication
   const isPublicRoute = (path: string) => {
-    return path.match(/^\/(login|employer-landing|educator-landing|participant-landing|employer\/registration|educator\/registration|participant\/registration|)$/);
+    const publicPaths = [
+      '/login',
+      '/employer-landing',
+      '/educator-landing',
+      '/participant-landing',
+      '/employer/registration',
+      '/educator/registration',
+      '/participant/registration',
+      '/'
+    ];
+    return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
   };
 
   useEffect(() => {
