@@ -705,6 +705,54 @@ export type Database = {
           },
         ]
       }
+      employer_registrations: {
+        Row: {
+          company_name: string
+          company_size: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          id: string
+          industry: string
+          location: string
+          registration_completed: boolean | null
+          updated_at: string
+          user_id: string | null
+          username: string
+        }
+        Insert: {
+          company_name: string
+          company_size: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string
+          id?: string
+          industry: string
+          location: string
+          registration_completed?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+          username: string
+        }
+        Update: {
+          company_name?: string
+          company_size?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          id?: string
+          industry?: string
+          location?: string
+          registration_completed?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
       employer_reviews: {
         Row: {
           comment: string | null
