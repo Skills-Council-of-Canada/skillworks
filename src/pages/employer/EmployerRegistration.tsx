@@ -5,6 +5,7 @@ import CompanyDetailsForm from "@/components/employer/registration/CompanyDetail
 import ContactInformationForm from "@/components/employer/registration/ContactInformationForm";
 import AccountSetupForm from "@/components/employer/registration/AccountSetupForm";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 type RegistrationStep = "company" | "contact" | "account";
 
@@ -28,6 +29,8 @@ interface AccountSetup {
 }
 
 const EmployerRegistration = () => {
+  console.log("Rendering EmployerRegistration component");
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<RegistrationStep>("company");
   const [formData, setFormData] = useState<{
     company: CompanyDetails;
@@ -75,6 +78,7 @@ const EmployerRegistration = () => {
   const handleSaveAndExit = () => {
     // Save progress to localStorage or backend
     console.log("Saving progress:", formData);
+    navigate("/employer-landing");
   };
 
   return (
