@@ -3,14 +3,12 @@ import React from 'react';
 import { NavLink } from "react-router-dom";
 import {
   Home,
-  GraduationCap,
-  MessageSquare,
-  Settings,
-  Calendar,
-  BookOpen,
-  Activity,
   CheckSquare,
-  Users
+  BookOpen,
+  Users,
+  Calendar,
+  MessageSquare,
+  Settings
 } from "lucide-react";
 
 interface NavItemProps {
