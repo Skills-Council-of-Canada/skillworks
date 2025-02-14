@@ -32,10 +32,7 @@ export const useExperienceSubmission = () => {
       if (profileError) throw profileError;
       if (profile.role !== 'educator') throw new Error("Only educators can create experiences");
 
-      // Start a transaction by storing milestones temporarily
-      const milestones = data.milestones;
-      
-      // Create the experience first without milestones
+      // Create the experience first
       const { data: experience, error: experienceError } = await supabase
         .from("participant_experiences")
         .insert({
@@ -43,24 +40,25 @@ export const useExperienceSubmission = () => {
           description: data.description,
           status: status,
           educator_id: user.id,
-          start_date: data.start_date,
-          end_date: data.end_date,
+          participant_id: user.id, // Required field as per schema
+          start_date: new Date(data.start_date).toISOString(),
+          end_date: data.end_date ? new Date(data.end_date).toISOString() : null,
         })
         .select()
         .single();
 
       if (experienceError) throw experienceError;
 
-      // Now insert the milestones
-      if (milestones.length > 0) {
+      // Now insert the milestones if any
+      if (data.milestones?.length > 0) {
         const { error: milestonesError } = await supabase
           .from("experience_milestones")
           .insert(
-            milestones.map(milestone => ({
+            data.milestones.map(milestone => ({
               participant_experience_id: experience.id,
               title: milestone.title,
               description: milestone.description || '',
-              due_date: milestone.due_date,
+              due_date: new Date(milestone.due_date).toISOString(),
               status: 'pending'
             }))
           );

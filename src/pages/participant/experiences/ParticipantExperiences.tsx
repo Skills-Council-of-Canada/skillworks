@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ExperienceCard } from '@/components/participant/experiences/ExperienceCard';
@@ -14,6 +14,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Experience {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  start_date: string;
+  end_date?: string;
+  educator: {
+    name: string;
+  };
+  milestones: Array<{
+    id: string;
+    title: string;
+    due_date: string;
+    status: string;
+  }>;
+  feedback: Array<{
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+    reviewer: {
+      name: string;
+    };
+  }>;
+}
+
 const ParticipantExperiences = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -22,10 +49,18 @@ const ParticipantExperiences = () => {
   const { data: experiences, isLoading } = useQuery({
     queryKey: ['participant-experiences', statusFilter],
     queryFn: async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error('Not authenticated');
+
       let query = supabase
         .from('participant_experiences')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          status,
+          start_date,
+          end_date,
           educator:profiles!participant_experiences_educator_id_fkey(name),
           milestones:experience_milestones(
             id,
@@ -40,7 +75,8 @@ const ParticipantExperiences = () => {
             created_at,
             reviewer:profiles!experience_feedback_reviewer_id_fkey(name)
           )
-        `);
+        `)
+        .eq('participant_id', userData.user.id);
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -53,7 +89,7 @@ const ParticipantExperiences = () => {
         throw error;
       }
 
-      return data;
+      return data as Experience[];
     },
     meta: {
       onError: () => {
