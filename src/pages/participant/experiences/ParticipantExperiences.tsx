@@ -38,7 +38,9 @@ const ParticipantExperiences = () => {
             rating,
             comment,
             created_at,
-            reviewer:profiles(full_name)
+            reviewer:reviewer_id(
+              full_name
+            )
           )
         `);
 
