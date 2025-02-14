@@ -27,13 +27,13 @@ const ParticipantExperiences = () => {
         .select(`
           *,
           educator:profiles!participant_experiences_educator_id_fkey(name),
-          milestones:experience_milestones!participant_experience_id(
+          milestones:experience_milestones(
             id,
             title,
             due_date,
             status
           ),
-          feedback:experience_feedback!participant_experience_id(
+          feedback:experience_feedback(
             id,
             rating,
             comment,

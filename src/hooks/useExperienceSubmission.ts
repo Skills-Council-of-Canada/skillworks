@@ -37,30 +37,14 @@ export const useExperienceSubmission = () => {
       
       // Create the experience first without milestones
       const { data: experience, error: experienceError } = await supabase
-        .from("educator_experiences")
+        .from("participant_experiences")
         .insert({
           title: data.title,
           description: data.description,
-          expected_outcomes: data.expected_outcomes || [],
-          example_projects: data.example_projects || [],
-          trade_category: data.trade_category,
-          subcategories: data.subcategories || [],
-          skill_tags: data.skill_tags || [],
-          class_size: data.class_size,
-          team_size: data.team_size,
-          skill_level: data.skill_level,
-          duration_weeks: data.duration_weeks,
-          required_certifications: data.required_certifications || [],
-          preferred_industries: data.preferred_industries || [],
-          company_types: data.company_types || [],
-          compensation_type: data.compensation_type,
-          screening_questions: data.screening_questions || [],
           status: status,
+          educator_id: user.id,
           start_date: data.start_date,
           end_date: data.end_date,
-          educator_id: user.id,
-          marketplace_visibility: data.marketplace_visibility || 'private',
-          is_published: status === 'pending_approval'
         })
         .select()
         .single();
@@ -73,10 +57,11 @@ export const useExperienceSubmission = () => {
           .from("experience_milestones")
           .insert(
             milestones.map(milestone => ({
-              experience_id: experience.id,
+              participant_experience_id: experience.id,
               title: milestone.title,
               description: milestone.description || '',
-              due_date: milestone.due_date
+              due_date: milestone.due_date,
+              status: 'pending'
             }))
           );
 
