@@ -1108,61 +1108,6 @@ export type Database = {
           },
         ]
       }
-      experience_feedback: {
-        Row: {
-          comment: string | null
-          created_at: string | null
-          experience_id: string
-          id: string
-          participant_experience_id: string | null
-          rating: number
-          reviewer_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string | null
-          experience_id: string
-          id?: string
-          participant_experience_id?: string | null
-          rating: number
-          reviewer_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string | null
-          experience_id?: string
-          id?: string
-          participant_experience_id?: string | null
-          rating?: number
-          reviewer_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "experience_feedback_experience_id_fkey"
-            columns: ["experience_id"]
-            isOneToOne: false
-            referencedRelation: "participant_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "experience_feedback_participant_experience_id_fkey"
-            columns: ["participant_experience_id"]
-            isOneToOne: false
-            referencedRelation: "participant_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "experience_feedback_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       experience_matches: {
         Row: {
           created_at: string
@@ -1318,64 +1263,6 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      experience_milestones: {
-        Row: {
-          created_at: string
-          description: string | null
-          due_date: string
-          experience_id: string
-          id: string
-          participant_experience_id: string | null
-          status: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          due_date: string
-          experience_id: string
-          id?: string
-          participant_experience_id?: string | null
-          status?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          due_date?: string
-          experience_id?: string
-          id?: string
-          participant_experience_id?: string | null
-          status?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "experience_milestones_experience_id_fkey"
-            columns: ["experience_id"]
-            isOneToOne: false
-            referencedRelation: "analytics_experiences"
-            referencedColumns: ["experience_id"]
-          },
-          {
-            foreignKeyName: "experience_milestones_experience_id_fkey"
-            columns: ["experience_id"]
-            isOneToOne: false
-            referencedRelation: "educator_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "experience_milestones_participant_experience_id_fkey"
-            columns: ["participant_experience_id"]
-            isOneToOne: false
-            referencedRelation: "participant_experiences"
             referencedColumns: ["id"]
           },
         ]
