@@ -2533,6 +2533,64 @@ export type Database = {
           },
         ]
       }
+      participant_recommendations: {
+        Row: {
+          created_at: string | null
+          experience_id: string
+          id: string
+          is_viewed: boolean | null
+          match_reasons: Json | null
+          match_score: number
+          participant_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          experience_id: string
+          id?: string
+          is_viewed?: boolean | null
+          match_reasons?: Json | null
+          match_score: number
+          participant_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          experience_id?: string
+          id?: string
+          is_viewed?: boolean | null
+          match_reasons?: Json | null
+          match_score?: number
+          participant_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_recommendations_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "participant_recommendations_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_recommendations_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_registrations: {
         Row: {
           availability: string
