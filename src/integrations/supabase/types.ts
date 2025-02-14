@@ -2651,11 +2651,15 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
           created_at: string
           email: string
           id: string
           last_status_change: string | null
           name: string
+          phone: string | null
+          preferred_contact: string | null
           requires_verification: boolean | null
           role: string
           status: Database["public"]["Enums"]["user_status"] | null
@@ -2669,11 +2673,15 @@ export type Database = {
           verified_by: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           email: string
           id: string
           last_status_change?: string | null
           name?: string
+          phone?: string | null
+          preferred_contact?: string | null
           requires_verification?: boolean | null
           role?: string
           status?: Database["public"]["Enums"]["user_status"] | null
@@ -2687,11 +2695,15 @@ export type Database = {
           verified_by?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
           id?: string
           last_status_change?: string | null
           name?: string
+          phone?: string | null
+          preferred_contact?: string | null
           requires_verification?: boolean | null
           role?: string
           status?: Database["public"]["Enums"]["user_status"] | null
