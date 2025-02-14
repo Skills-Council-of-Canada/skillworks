@@ -3,19 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { User, UserRole } from "@/types/auth";
 
 const usernameToEmail: Record<string, string> = {
-  employ: "employ@skillscouncil.ca",
-  employer: "employ@skillscouncil.ca", // Add alias for employer
+  employ: "employer@skillscouncil.ca",
+  employer: "employer@skillscouncil.ca",
   educator: "educator@skillscouncil.ca",
   participate: "participate@skillscouncil.ca",
-  participant: "participate@skillscouncil.ca", // Add alias for participant
+  participant: "participant@skillscouncil.ca",
   admin: "admin@skillscouncil.ca"
 };
 
 // Map emails to roles
 const emailToRole: Record<string, UserRole> = {
-  "employ@skillscouncil.ca": "employer",
+  "employer@skillscouncil.ca": "employer",
   "educator@skillscouncil.ca": "educator",
   "participate@skillscouncil.ca": "participant",
+  "participant@skillscouncil.ca": "participant",
   "admin@skillscouncil.ca": "admin"
 };
 
