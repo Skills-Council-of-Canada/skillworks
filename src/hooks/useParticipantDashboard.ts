@@ -89,17 +89,29 @@ export const useParticipantDashboard = () => {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // Fetch pending applications
+      // Fetch pending applications with a simplified query
       const { data: applications } = await supabase
         .from("applications")
-        .select(`
-          id,
-          created_at,
-          status,
-          project:projects(title)
-        `)
+        .select("id, created_at, status, project_id")
         .eq("applicant_id", user.id)
         .order("created_at", { ascending: false });
+
+      // If we have applications, fetch their project titles separately
+      let applicationData = [];
+      if (applications) {
+        const projectIds = applications.map(app => app.project_id);
+        const { data: projects } = await supabase
+          .from("projects")
+          .select("id, title")
+          .in("id", projectIds);
+
+        applicationData = applications.map(app => ({
+          id: app.id,
+          title: projects?.find(p => p.id === app.project_id)?.title || 'Untitled Project',
+          status: app.status,
+          submitted_at: app.created_at
+        }));
+      }
 
       // Transform notifications into activities
       const activities: Activity[] = (notificationsData || []).map(notification => ({
@@ -146,12 +158,7 @@ export const useParticipantDashboard = () => {
         upcomingEvents: events || [],
         tasks: tasks || [],
         recommendations: recommendations || [],
-        pendingApplications: applications?.map(app => ({
-          id: app.id,
-          title: app.project?.title || 'Untitled Project',
-          status: app.status,
-          submitted_at: app.created_at
-        })) || []
+        pendingApplications: applicationData
       };
     }
   });
