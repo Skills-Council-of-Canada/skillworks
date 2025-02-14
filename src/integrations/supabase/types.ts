@@ -2669,6 +2669,67 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_tasks: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          experience_id: string | null
+          id: string
+          participant_id: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          experience_id?: string | null
+          id?: string
+          participant_id: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          experience_id?: string | null
+          id?: string
+          participant_id?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_tasks_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "participant_tasks_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_tasks_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_workflow_status: {
         Row: {
           created_at: string | null
