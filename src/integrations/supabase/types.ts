@@ -1897,6 +1897,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_mentor"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fk_participant"
             columns: ["participant_id"]
             isOneToOne: false
