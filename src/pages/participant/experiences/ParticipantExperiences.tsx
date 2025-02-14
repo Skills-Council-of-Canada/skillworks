@@ -41,27 +41,27 @@ interface Experience {
   }>;
 }
 
-interface SupabaseExperience {
+interface RawSupabaseResponse {
   id: string;
   title: string;
   description: string;
   status: string;
   start_date: string;
   end_date: string | null;
-  educator: Array<{ name: string }>;
-  milestones: Array<{
+  educator: { name: string }[];
+  milestones: {
     id: string;
     title: string;
     due_date: string;
     status: string;
-  }>;
-  feedback: Array<{
+  }[];
+  feedback: {
     id: string;
     rating: number;
     comment: string;
     created_at: string;
-    reviewer: Array<{ name: string }>;
-  }>;
+    reviewer: { name: string }[];
+  }[];
 }
 
 const ParticipantExperiences = () => {
@@ -112,8 +112,11 @@ const ParticipantExperiences = () => {
         throw error;
       }
 
+      // First cast to unknown, then to our expected raw response type
+      const rawData = data as unknown as RawSupabaseResponse[];
+
       // Transform the data to match our Experience interface
-      const transformedData: Experience[] = (data as SupabaseExperience[]).map(exp => ({
+      const transformedData: Experience[] = rawData.map(exp => ({
         ...exp,
         educator: {
           name: exp.educator?.[0]?.name || 'Unknown Educator'
