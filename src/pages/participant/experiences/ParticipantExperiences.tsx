@@ -41,6 +41,29 @@ interface Experience {
   }>;
 }
 
+interface SupabaseExperience {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  educator: Array<{ name: string }>;
+  milestones: Array<{
+    id: string;
+    title: string;
+    due_date: string;
+    status: string;
+  }>;
+  feedback: Array<{
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+    reviewer: Array<{ name: string }>;
+  }>;
+}
+
 const ParticipantExperiences = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -89,7 +112,21 @@ const ParticipantExperiences = () => {
         throw error;
       }
 
-      return data as Experience[];
+      // Transform the data to match our Experience interface
+      const transformedData: Experience[] = (data as SupabaseExperience[]).map(exp => ({
+        ...exp,
+        educator: {
+          name: exp.educator?.[0]?.name || 'Unknown Educator'
+        },
+        feedback: exp.feedback?.map(f => ({
+          ...f,
+          reviewer: {
+            name: f.reviewer?.[0]?.name || 'Unknown Reviewer'
+          }
+        })) || []
+      }));
+
+      return transformedData;
     },
     meta: {
       onError: () => {
@@ -140,7 +177,7 @@ const ParticipantExperiences = () => {
               experience={{
                 ...experience,
                 educator: {
-                  name: experience.educator?.name || 'Unknown Educator'
+                  name: experience.educator.name
                 },
                 progress: calculateProgress(experience.milestones || [])
               }}
