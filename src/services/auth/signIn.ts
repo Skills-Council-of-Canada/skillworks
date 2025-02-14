@@ -92,18 +92,17 @@ export const signInUser = async (identifier: string, password: string) => {
         console.log("No profile found, creating new profile with role:", role);
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
-          .insert([{
+          .insert({
             id: authData.user.id,
             email: email,
             role: role,
             name: email.split('@')[0],
-            created_at: new Date().toISOString(),
-            status: 'active',
+            status: 'pending',
             avatar_url: null,
             bio: null,
             phone: null,
             preferred_contact: 'email'
-          }])
+          })
           .select()
           .single();
 
