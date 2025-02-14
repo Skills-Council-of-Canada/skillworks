@@ -21,17 +21,31 @@ const usernameToRole: Record<string, UserRole> = {
   admin: "admin"
 };
 
-export const signInUser = async (username: string, password: string) => {
-  console.log("Signing in user:", username);
+export const signInUser = async (identifier: string, password: string) => {
+  console.log("Signing in user with identifier:", identifier);
   try {
-    const email = usernameToEmail[username.toLowerCase()];
-    const role = usernameToRole[username.toLowerCase()];
+    // Check if the identifier is an email
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+    
+    let email: string;
+    let role: UserRole | undefined;
+    
+    if (isEmail) {
+      email = identifier.toLowerCase();
+      // Try to determine role from email domain or handle as needed
+      role = Object.entries(usernameToEmail).find(([_, e]) => e === email)?.[0] as UserRole;
+    } else {
+      // Handle username lookup
+      const username = identifier.toLowerCase();
+      email = usernameToEmail[username];
+      role = usernameToRole[username];
 
-    if (!email || !role) {
-      return { 
-        data: null, 
-        error: new Error("Invalid username. Please use: employer/employ, educator, participate/participant, or admin") 
-      };
+      if (!email || !role) {
+        return { 
+          data: null, 
+          error: new Error("Invalid username. Please use: employer/employ, educator, participate/participant, or admin") 
+        };
+      }
     }
     
     console.log("Using email for login:", email);

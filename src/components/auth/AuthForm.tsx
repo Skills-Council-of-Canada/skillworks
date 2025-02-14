@@ -23,7 +23,7 @@ const AuthForm = ({
   isLoading,
   onSubmit,
 }: AuthFormProps) => {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,7 @@ const AuthForm = ({
     setError(null);
 
     try {
-      await onSubmit(email, password, false);
+      await onSubmit(identifier, password, false);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -69,12 +69,12 @@ const AuthForm = ({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-secondary">Email</label>
+              <label className="text-sm font-medium text-secondary">Email or Username</label>
               <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Enter your email or username"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full bg-background/50"
                 required
               />

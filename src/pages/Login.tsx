@@ -23,17 +23,20 @@ const Login = () => {
     }
   }, [user, navigate, getRoleBasedRedirect]);
 
-  const handleAuthSubmit = async (email: string, password: string) => {
+  const handleAuthSubmit = async (identifier: string, password: string) => {
     if (isSubmitting) return;
     
     setIsSubmitting(true);
     try {
-      const user = await login(email, password);
+      // Email format validation
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+      const user = await login(isEmail ? identifier : identifier.toLowerCase(), password);
+      
       if (!user) {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Please check your email and password and try again."
+          description: "Please check your credentials and try again."
         });
       }
     } catch (error) {
