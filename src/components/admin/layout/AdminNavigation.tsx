@@ -28,9 +28,9 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-3">
-        <div className="mb-4 px-4 py-2">
+        <div className="mb-4 px-4 py-2 border-b border-white/10">
           <h2 className="text-lg font-semibold">Admin Portal</h2>
         </div>
         <nav className="space-y-1">
@@ -40,8 +40,8 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
               to={to}
               end={end}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent ${
-                  isActive ? 'bg-accent' : ''
+                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
+                  isActive ? 'bg-white/10' : ''
                 }`
               }
             >
@@ -54,7 +54,7 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
       <div className="mt-auto p-3">
         <Button
           variant="ghost"
-          className="w-full justify-start"
+          className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-white/10"
           onClick={onLogout}
         >
           <LogOut className="mr-2 h-4 w-4" />

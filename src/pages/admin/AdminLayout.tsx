@@ -31,7 +31,7 @@ const AdminLayout = () => {
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
-        <Sidebar collapsible="icon" className="border-r">
+        <Sidebar collapsible="icon" className="border-r bg-[#1A1F2C]">
           <AdminNavigation onLogout={logout} />
         </Sidebar>
 
