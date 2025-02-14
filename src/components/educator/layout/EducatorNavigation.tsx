@@ -22,7 +22,7 @@ interface EducatorNavigationProps {
 
 export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
   return (
-    <div className="flex h-full flex-col gap-2">
+    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C] text-white">
       <NavigationHeader />
 
       <div className="flex-1 px-4">
