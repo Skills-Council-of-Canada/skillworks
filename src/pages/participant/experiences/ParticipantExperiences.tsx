@@ -26,7 +26,7 @@ const ParticipantExperiences = () => {
         .from('participant_experiences')
         .select(`
           *,
-          educator:educator_id(name),
+          educator:profiles!participant_experiences_educator_id_fkey(name),
           milestones:experience_milestones!participant_experience_id(
             id,
             title,
@@ -38,7 +38,7 @@ const ParticipantExperiences = () => {
             rating,
             comment,
             created_at,
-            reviewer:reviewer_id(name)
+            reviewer:profiles!experience_feedback_reviewer_id_fkey(name)
           )
         `);
 
@@ -124,4 +124,3 @@ const calculateProgress = (milestones: any[]) => {
 };
 
 export default ParticipantExperiences;
-
