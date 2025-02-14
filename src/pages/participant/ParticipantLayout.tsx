@@ -3,7 +3,10 @@ import { Link, Outlet } from "react-router-dom";
 import { 
   LogOut, 
   User, 
+  Home,
+  CheckSquare,
   BookOpen, 
+  Users,
   MessageSquare, 
   Calendar, 
   Settings,
@@ -60,10 +63,16 @@ const ParticipantLayout = () => {
           </div>
           
           <nav className="space-y-2">
-            <Link to="/participant">
+            <Link to="/participant/dashboard">
               <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
-                <User className="mr-2 h-4 w-4" />
+                <Home className="mr-2 h-4 w-4" />
                 Dashboard
+              </Button>
+            </Link>
+            <Link to="/participant/tasks">
+              <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
+                <CheckSquare className="mr-2 h-4 w-4" />
+                Tasks & Activity
               </Button>
             </Link>
             <Link to="/participant/experiences">
@@ -72,16 +81,22 @@ const ParticipantLayout = () => {
                 My Experiences
               </Button>
             </Link>
-            <Link to="/participant/messages">
+            <Link to="/participant/mentors">
               <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Messages
+                <Users className="mr-2 h-4 w-4" />
+                My Mentors
               </Button>
             </Link>
             <Link to="/participant/calendar">
               <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
                 <Calendar className="mr-2 h-4 w-4" />
                 Calendar
+              </Button>
+            </Link>
+            <Link to="/participant/messages">
+              <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Messages
               </Button>
             </Link>
             <Link to="/participant/settings">
