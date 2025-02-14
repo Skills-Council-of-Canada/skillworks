@@ -11,6 +11,14 @@ const usernameToEmail: Record<string, string> = {
   admin: "admin@skillscouncil.ca"
 };
 
+// Map emails to roles
+const emailToRole: Record<string, UserRole> = {
+  "employ@skillscouncil.ca": "employer",
+  "educator@skillscouncil.ca": "educator",
+  "participate@skillscouncil.ca": "participant",
+  "admin@skillscouncil.ca": "admin"
+};
+
 // Map usernames to roles
 const usernameToRole: Record<string, UserRole> = {
   employ: "employer",
@@ -32,13 +40,14 @@ export const signInUser = async (identifier: string, password: string) => {
     
     if (isEmail) {
       email = identifier.toLowerCase();
-      // Try to determine role from email domain or handle as needed
-      role = Object.entries(usernameToEmail).find(([_, e]) => e === email)?.[0] as UserRole;
+      role = emailToRole[email];
+      console.log("Email login - determined role:", role);
     } else {
       // Handle username lookup
       const username = identifier.toLowerCase();
       email = usernameToEmail[username];
       role = usernameToRole[username];
+      console.log("Username login - determined role:", role);
 
       if (!email || !role) {
         return { 
@@ -67,7 +76,7 @@ export const signInUser = async (identifier: string, password: string) => {
       console.log("Sign in successful, checking profile for user:", authData.user.id);
       
       // First try to get existing profile
-      const { data: profile, error: profileError } = await supabase
+      let { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', authData.user.id)
@@ -79,7 +88,7 @@ export const signInUser = async (identifier: string, password: string) => {
       }
 
       // If no profile exists, create one
-      if (!profile) {
+      if (!profile && role) {
         console.log("No profile found, creating new profile with role:", role);
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
@@ -87,7 +96,13 @@ export const signInUser = async (identifier: string, password: string) => {
             id: authData.user.id,
             email: email,
             role: role,
-            name: email.split('@')[0]
+            name: email.split('@')[0],
+            created_at: new Date().toISOString(),
+            status: 'active',
+            avatar_url: null,
+            bio: null,
+            phone: null,
+            preferred_contact: 'email'
           }])
           .select()
           .single();
@@ -97,19 +112,15 @@ export const signInUser = async (identifier: string, password: string) => {
           return { data: null, error: createError };
         }
 
-        console.log("Created new profile:", newProfile);
-        return { 
-          data: {
-            user: {
-              ...authData.user,
-              ...newProfile
-            }
-          }, 
-          error: null 
-        };
+        profile = newProfile;
+        console.log("Created new profile:", profile);
       }
 
-      console.log("Found existing profile:", profile);
+      if (!profile) {
+        return { data: null, error: new Error("Could not find or create user profile") };
+      }
+
+      console.log("Returning user data with profile:", { ...authData.user, ...profile });
       return { 
         data: {
           user: {
