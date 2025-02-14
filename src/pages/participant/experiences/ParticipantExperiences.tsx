@@ -72,11 +72,11 @@ const ParticipantExperiences = () => {
   const { data: experiences, isLoading } = useQuery({
     queryKey: ['participant-experiences', statusFilter],
     queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error('Not authenticated');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
 
       let query = supabase
-        .from('participant_experiences')
+        .from("participant_experiences")
         .select(`
           id,
           title,
@@ -84,7 +84,7 @@ const ParticipantExperiences = () => {
           status,
           start_date,
           end_date,
-          educator:profiles!participant_experiences_educator_id_fkey(name),
+          educator:educator_id(name),
           milestones:experience_milestones(
             id,
             title,
@@ -96,10 +96,10 @@ const ParticipantExperiences = () => {
             rating,
             comment,
             created_at,
-            reviewer:profiles!experience_feedback_reviewer_id_fkey(name)
+            reviewer:reviewer_id(name)
           )
         `)
-        .eq('participant_id', userData.user.id);
+        .eq('participant_id', user.id);
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -200,3 +200,4 @@ const calculateProgress = (milestones: any[]) => {
 };
 
 export default ParticipantExperiences;
+
