@@ -59,9 +59,9 @@ interface EmployerNavigationProps {
 
 export const EmployerNavigation = ({ onLogout }: EmployerNavigationProps) => {
   return (
-    <SidebarContent>
+    <SidebarContent className="bg-[#1A1F2C] text-white">
       <SidebarGroup>
-        <SidebarGroupLabel>Menu</SidebarGroupLabel>
+        <SidebarGroupLabel className="text-gray-400">Menu</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {menuItems.map((item) => (
@@ -69,7 +69,7 @@ export const EmployerNavigation = ({ onLogout }: EmployerNavigationProps) => {
                 <SidebarMenuButton asChild>
                   <Link
                     to={item.url}
-                    className="flex items-center gap-2 relative"
+                    className="flex items-center gap-2 relative hover:bg-white/10 transition-colors"
                   >
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
@@ -80,7 +80,7 @@ export const EmployerNavigation = ({ onLogout }: EmployerNavigationProps) => {
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={onLogout}
-                className="flex items-center gap-2 text-destructive hover:text-destructive"
+                className="flex items-center gap-2 text-red-400 hover:text-red-300 hover:bg-white/10 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Logout</span>
