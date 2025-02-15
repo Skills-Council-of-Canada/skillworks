@@ -1943,6 +1943,70 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          parent_id: string | null
+          recipient_id: string
+          sender_id: string
+          status: Database["public"]["Enums"]["message_status"]
+          thread_id: string | null
+          type: Database["public"]["Enums"]["message_type"]
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          parent_id?: string | null
+          recipient_id: string
+          sender_id: string
+          status?: Database["public"]["Enums"]["message_status"]
+          thread_id?: string | null
+          type: Database["public"]["Enums"]["message_type"]
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          parent_id?: string | null
+          recipient_id?: string
+          sender_id?: string
+          status?: Database["public"]["Enums"]["message_status"]
+          thread_id?: string | null
+          type?: Database["public"]["Enums"]["message_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string | null
