@@ -3823,6 +3823,11 @@ export type Database = {
         | "reports"
         | "settings"
         | "support"
+      conversation_type:
+        | "direct_message"
+        | "match_request"
+        | "experience_related"
+        | "general"
       employer_verification_status:
         | "pending_email_verification"
         | "email_verified"
@@ -3841,6 +3846,7 @@ export type Database = {
         | "pending_approval"
         | "published"
       mentorship_mode_type: "self_guided" | "mentor_assisted"
+      message_status: "sent" | "delivered" | "read" | "archived" | "deleted"
       milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
