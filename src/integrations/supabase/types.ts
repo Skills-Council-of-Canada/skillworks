@@ -2570,6 +2570,7 @@ export type Database = {
           phone: string | null
           preferred_contact: string | null
           role: string
+          status: string
           updated_at: string
         }
         Insert: {
@@ -2582,6 +2583,7 @@ export type Database = {
           phone?: string | null
           preferred_contact?: string | null
           role: string
+          status?: string
           updated_at?: string
         }
         Update: {
@@ -2594,6 +2596,7 @@ export type Database = {
           phone?: string | null
           preferred_contact?: string | null
           role?: string
+          status?: string
           updated_at?: string
         }
         Relationships: []

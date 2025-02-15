@@ -9,4 +9,9 @@ export interface Profile {
   role: UserRole;
   status: UserStatus;
   created_at: string;
+  updated_at: string;
+  avatar_url?: string;
+  bio?: string;
+  phone?: string;
+  preferred_contact?: string;
 }
