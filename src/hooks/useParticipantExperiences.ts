@@ -11,8 +11,8 @@ interface DatabaseExperience {
   status: string;
   start_date: string;
   end_date: string | null;
-  profiles: {
-    name: string;
+  educator_profiles: {
+    full_name: string;
   } | null;
   milestones: Array<{
     id: string;
@@ -49,8 +49,8 @@ export const useParticipantExperiences = (statusFilter: string) => {
           status,
           start_date,
           end_date,
-          profiles!participant_experiences_educator_id_fkey(
-            name
+          educator_profiles(
+            full_name
           ),
           milestones:experience_milestones(
             id,
@@ -63,7 +63,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
             rating,
             comment,
             created_at,
-            profiles!experience_feedback_reviewer_id_fkey(
+            profiles(
               name
             )
           )
@@ -85,7 +85,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
       const transformedData: Experience[] = (data || []).map(exp => ({
         ...exp,
         educator: {
-          name: exp.profiles?.name || 'Unknown Educator'
+          name: exp.educator_profiles?.full_name || 'Unknown Educator'
         },
         feedback: (exp.feedback || []).map(f => ({
           ...f,
