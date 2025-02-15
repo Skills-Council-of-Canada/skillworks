@@ -1,6 +1,5 @@
-
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Database } from "@/integrations/supabase/types";
 
 interface DashboardStats {
@@ -51,8 +50,7 @@ export const useParticipantDashboard = () => {
     queryKey: ["participant-dashboard"],
     queryFn: async (): Promise<DashboardData> => {
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) throw new Error("No user found");
+      if (!user) throw new Error('No user found');
 
       // Fetch experiences stats
       const { data: experiences } = await supabase

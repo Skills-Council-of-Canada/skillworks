@@ -1072,6 +1072,7 @@ export type Database = {
           participant_experience_id: string | null
           rating: number
           reviewer_id: string | null
+          reviewer_profile_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1081,6 +1082,7 @@ export type Database = {
           participant_experience_id?: string | null
           rating: number
           reviewer_id?: string | null
+          reviewer_profile_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1090,6 +1092,7 @@ export type Database = {
           participant_experience_id?: string | null
           rating?: number
           reviewer_id?: string | null
+          reviewer_profile_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -1098,6 +1101,13 @@ export type Database = {
             columns: ["participant_experience_id"]
             isOneToOne: false
             referencedRelation: "participant_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_feedback_reviewer_profile_id_fkey"
+            columns: ["reviewer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

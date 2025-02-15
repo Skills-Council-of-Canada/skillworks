@@ -1,61 +1,20 @@
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Experience } from '@/types/experience';
-import { useToast } from '@/hooks/use-toast';
 
-interface DatabaseExperience {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-  start_date: string;
-  end_date: string | null;
-  educator_profiles: {
-    full_name: string;
-  } | null;
-  trade_category: string | null;
-  subcategories: string[] | null;
-  skill_tags: string[] | null;
-  expected_outcomes: string[] | null;
-  project_examples: any[] | null;
-  learner_capabilities: string | null;
-  media_urls: string[] | null;
-  video_url: string | null;
-  team_structure: string | null;
-  team_size: number | null;
-  preferred_companies: any | null;
-  duration_hours: number | null;
-  learner_level: string | null;
-  max_learners: number | null;
-  milestones: Array<{
-    id: string;
-    title: string;
-    due_date: string;
-    status: string;
-  }> | null;
-  feedback: Array<{
-    id: string;
-    rating: number;
-    comment: string;
-    created_at: string;
-    profiles: {
-      name: string;
-    } | null;
-  }> | null;
-}
+export const useParticipantExperiences = (statusFilter: string = 'all') => {
+  const [error, setError] = useState<string | null>(null);
 
-export const useParticipantExperiences = (statusFilter: string) => {
-  const { toast } = useToast();
-
-  return useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['participant-experiences', statusFilter],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
 
       let query = supabase
-        .from("participant_experiences")
+        .from('participant_experiences')
         .select(`
           id,
           title,
@@ -77,9 +36,6 @@ export const useParticipantExperiences = (statusFilter: string) => {
           duration_hours,
           learner_level,
           max_learners,
-          educator_profiles(
-            full_name
-          ),
           milestones:experience_milestones(
             id,
             title,
@@ -91,48 +47,31 @@ export const useParticipantExperiences = (statusFilter: string) => {
             rating,
             comment,
             created_at,
-            profiles(
-              name
-            )
+            reviewer_profile_id,
+            profiles!experience_feedback_reviewer_profile_id_fkey(name)
           )
         `)
-        .eq('participant_id', user.id);
+        .eq('participant_id', user?.id);
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
 
-      const { data, error } = await query.returns<DatabaseExperience[]>();
+      const { data: experiences, error: experiencesError } = await query;
 
-      if (error) {
-        console.error('Error fetching experiences:', error);
-        throw error;
+      if (experiencesError) {
+        console.error('Error fetching experiences:', experiencesError);
+        setError(experiencesError.message);
+        return [];
       }
 
-      // Transform the data to match our Experience interface
-      const transformedData: Experience[] = (data || []).map(exp => ({
-        ...exp,
-        educator: {
-          name: exp.educator_profiles?.full_name || 'Unknown Educator'
-        },
-        feedback: (exp.feedback || []).map(f => ({
-          ...f,
-          reviewer: {
-            name: f.profiles?.name || 'Anonymous Reviewer'
-          }
-        }))
-      }));
-
-      return transformedData;
-    },
-    meta: {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to load experiences",
-          variant: "destructive",
-        });
-      }
+      return experiences as Experience[];
     }
   });
+
+  return {
+    data,
+    isLoading,
+    error
+  };
 };
