@@ -2240,6 +2240,7 @@ export type Database = {
           full_name: string | null
           id: string
           interests: string[] | null
+          location: string | null
           onboarding_completed: boolean | null
           profile_completion_percentage: number | null
           skills: string[] | null
@@ -2255,6 +2256,7 @@ export type Database = {
           full_name?: string | null
           id: string
           interests?: string[] | null
+          location?: string | null
           onboarding_completed?: boolean | null
           profile_completion_percentage?: number | null
           skills?: string[] | null
@@ -2270,6 +2272,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           interests?: string[] | null
+          location?: string | null
           onboarding_completed?: boolean | null
           profile_completion_percentage?: number | null
           skills?: string[] | null

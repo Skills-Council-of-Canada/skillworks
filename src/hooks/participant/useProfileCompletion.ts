@@ -14,6 +14,8 @@ export const useProfileCompletion = () => {
     queryFn: async () => {
       if (!user?.id) return null;
 
+      console.log("Fetching profile for user:", user.id);
+      
       const { data, error } = await supabase
         .from("participant_profiles")
         .select("*")
@@ -22,11 +24,16 @@ export const useProfileCompletion = () => {
 
       if (error) {
         console.error("Error fetching profile:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch profile data",
+          variant: "destructive",
+        });
         return null;
       }
 
-      // If no profile exists, attempt to create one
       if (!data) {
+        console.log("No profile found, creating new profile");
         const { data: newProfile, error: createError } = await supabase
           .from("participant_profiles")
           .insert([
@@ -43,20 +50,28 @@ export const useProfileCompletion = () => {
               }
             }
           ])
-          .select()
-          .single();
+          .select("*")
+          .maybeSingle();
 
         if (createError) {
           console.error("Error creating profile:", createError);
+          toast({
+            title: "Error",
+            description: "Failed to create profile",
+            variant: "destructive",
+          });
           return null;
         }
 
+        console.log("New profile created:", newProfile);
         return newProfile;
       }
 
+      console.log("Existing profile found:", data);
       return data;
     },
     enabled: !!user?.id,
+    retry: 1,
   });
 
   const calculateCompletionPercentage = (profile: any) => {
@@ -82,9 +97,13 @@ export const useProfileCompletion = () => {
 
   const updateProfileCompletion = useMutation({
     mutationFn: async () => {
-      if (!user?.id || !profile) return;
+      if (!user?.id || !profile) {
+        console.log("Cannot update profile: missing user ID or profile data");
+        return;
+      }
 
       const completionPercentage = calculateCompletionPercentage(profile);
+      console.log("Updating profile completion to:", completionPercentage);
 
       const { error } = await supabase
         .from('participant_profiles')
@@ -94,7 +113,10 @@ export const useProfileCompletion = () => {
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating profile completion:", error);
+        throw error;
+      }
       return completionPercentage;
     },
     onSuccess: (completionPercentage) => {
@@ -106,7 +128,8 @@ export const useProfileCompletion = () => {
         });
       }
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Profile update error:", error);
       toast({
         title: "Error",
         description: "Failed to update profile completion",
