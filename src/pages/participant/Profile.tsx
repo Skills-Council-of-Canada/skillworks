@@ -14,12 +14,25 @@ import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
 
+interface ParticipantProfileData {
+  id: string;
+  avatar_url: string | null;
+  bio: string | null;
+  certifications: any[];
+  created_at: string;
+  full_name: string | null;
+  interests: string[];
+  skills: string[];
+  updated_at: string;
+  location: string | null;
+}
+
 export const Profile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
 
   // Fetch participant profile data
-  const { data: profile, isLoading } = useQuery({
+  const { data: profile, isLoading } = useQuery<ParticipantProfileData>({
     queryKey: ["participant-profile", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase

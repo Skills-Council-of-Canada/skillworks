@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +43,7 @@ export const UpdatesTab = () => {
         .from("experience_updates")
         .select(`
           *,
-          profiles!experience_updates_author_id_fkey (
+          author:author_id (
             name
           )
         `)
@@ -211,7 +210,7 @@ export const UpdatesTab = () => {
                 <TableRow key={update.id}>
                   <TableCell className="font-medium">{update.title}</TableCell>
                   <TableCell className="max-w-md truncate">{update.content}</TableCell>
-                  <TableCell>{update.profiles?.name}</TableCell>
+                  <TableCell>{update.author?.name}</TableCell>
                   <TableCell>
                     <Badge variant={getVisibilityBadgeVariant(update.visibility)}>
                       {update.visibility}
