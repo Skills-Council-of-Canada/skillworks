@@ -7,11 +7,6 @@ export interface Message {
   content: string;
   timestamp: Date;
   readAt?: Date;
-  attachments?: {
-    fileName: string;
-    fileUrl: string;
-    fileType: string;
-  }[];
 }
 
 export interface Conversation {
@@ -24,3 +19,24 @@ export interface Conversation {
   updatedAt: Date;
 }
 
+export interface DatabaseMessage {
+  id: string;
+  application_id: string;
+  sender_id: string;
+  recipient_id: string;
+  content: string;
+  created_at: string;
+  read_at: string | null;
+  type: 'text';
+}
+
+export interface DatabaseApplication {
+  id: string;
+  employer_id: string;
+  learner_id: string;
+  project: {
+    id: string;
+    title: string;
+  } | null;
+  messages: DatabaseMessage[];
+}

@@ -155,7 +155,9 @@ export type Database = {
           applicant_id: string
           cover_letter: string | null
           created_at: string
+          employer_id: string | null
           id: string
+          learner_id: string | null
           project_id: string
           status: string
           updated_at: string
@@ -164,7 +166,9 @@ export type Database = {
           applicant_id: string
           cover_letter?: string | null
           created_at?: string
+          employer_id?: string | null
           id?: string
+          learner_id?: string | null
           project_id: string
           status?: string
           updated_at?: string
@@ -173,7 +177,9 @@ export type Database = {
           applicant_id?: string
           cover_letter?: string | null
           created_at?: string
+          employer_id?: string | null
           id?: string
+          learner_id?: string | null
           project_id?: string
           status?: string
           updated_at?: string
@@ -184,6 +190,20 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_applications_employer"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_applications_learner"
+            columns: ["learner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

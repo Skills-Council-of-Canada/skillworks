@@ -2,20 +2,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import type { Conversation } from "@/types/message";
+import type { Conversation, DatabaseApplication } from "@/types/message";
 
 export const useMessages = () => {
   const { user } = useAuth();
 
-  return useQuery({
+  const query = useQuery<Conversation[]>({
     queryKey: ["conversations", user?.id],
     queryFn: async () => {
-      const { data: applications, error } = await supabase
+      const { data, error } = await supabase
         .from("applications")
         .select(`
           id,
+          employer_id,
           learner_id,
-          project (
+          project:projects (
             id,
             title
           ),
@@ -31,7 +32,9 @@ export const useMessages = () => {
         .order("created_at", { foreignTable: "messages", ascending: false });
 
       if (error) throw error;
-      if (!applications) return [];
+      if (!data) return [];
+
+      const applications = data as DatabaseApplication[];
 
       return applications.map((app): Conversation => {
         const messages = app.messages || [];
@@ -43,8 +46,8 @@ export const useMessages = () => {
         return {
           applicationId: app.id,
           projectId: app.project?.id || "",
-          employerId: app.learner_id,
-          learnerId: user?.id || "",
+          employerId: app.employer_id,
+          learnerId: app.learner_id,
           lastMessage: lastMessage
             ? {
                 id: lastMessage.id,
@@ -62,4 +65,9 @@ export const useMessages = () => {
     },
     enabled: !!user?.id,
   });
+
+  return {
+    conversations: query.data ?? [],
+    isLoading: query.isLoading,
+  };
 };
