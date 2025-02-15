@@ -1,5 +1,5 @@
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
@@ -96,53 +95,9 @@ export const useProfileCompletion = () => {
     return Math.round((completedFields.length / requiredFields.length) * 100);
   };
 
-  const updateProfileCompletion = useMutation({
-    mutationFn: async () => {
-      if (!user?.id || !profile) {
-        console.log("Cannot update profile: missing user ID or profile data");
-        return;
-      }
-
-      const completionPercentage = calculateCompletionPercentage(profile);
-      console.log("Updating profile completion to:", completionPercentage);
-
-      const { error } = await supabase
-        .from('participant_profiles')
-        .update({ 
-          profile_completion_percentage: completionPercentage,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-
-      if (error) {
-        console.error("Error updating profile completion:", error);
-        throw error;
-      }
-      return completionPercentage;
-    },
-    onSuccess: (completionPercentage) => {
-      queryClient.invalidateQueries({ queryKey: ["participant-profile"] });
-      if (completionPercentage !== undefined) {
-        toast({
-          title: "Profile Updated",
-          description: `Profile completion: ${completionPercentage}%`,
-        });
-      }
-    },
-    onError: (error) => {
-      console.error("Profile update error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile completion",
-        variant: "destructive",
-      });
-    },
-  });
-
   return {
     profile,
     isLoading,
     completionPercentage: profile ? calculateCompletionPercentage(profile) : 0,
-    updateProfileCompletion,
   };
 };

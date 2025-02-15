@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -53,16 +53,7 @@ interface DatabaseParticipantProfile {
 export const Profile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
-  const { profile, isLoading, updateProfileCompletion } = useProfileCompletion();
-  const [lastUpdated, setLastUpdated] = useState<string>();
-
-  // Effect to update completion percentage when profile changes
-  useEffect(() => {
-    if (profile?.updated_at !== lastUpdated) {
-      updateProfileCompletion.mutate();
-      setLastUpdated(profile?.updated_at);
-    }
-  }, [profile?.updated_at, lastUpdated, updateProfileCompletion]);
+  const { profile, isLoading, completionPercentage } = useProfileCompletion();
 
   if (isLoading) {
     return <div>Loading profile...</div>;
@@ -96,9 +87,9 @@ export const Profile = () => {
           
           {/* Profile Completion Progress */}
           <div className="mt-4">
-            <Progress value={profile?.profile_completion_percentage || 0} className="mb-2" />
+            <Progress value={completionPercentage} className="mb-2" />
             <p className="text-sm text-gray-600">
-              Profile Completion: {profile?.profile_completion_percentage || 0}%
+              Profile Completion: {completionPercentage}%
             </p>
           </div>
         </div>
