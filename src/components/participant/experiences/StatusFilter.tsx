@@ -15,7 +15,7 @@ interface StatusFilterProps {
 export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] bg-transparent">
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
       <SelectContent className="bg-background border shadow-lg">

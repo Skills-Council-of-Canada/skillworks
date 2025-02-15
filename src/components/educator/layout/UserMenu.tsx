@@ -33,7 +33,7 @@ export const UserMenu = () => {
     <div className="flex items-center gap-4">
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="bg-transparent">
             <HelpCircle className="h-5 w-5" />
           </Button>
         </TooltipTrigger>
@@ -44,7 +44,7 @@ export const UserMenu = () => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2">
+          <Button variant="ghost" className="flex items-center gap-2 bg-transparent">
             <Avatar className="h-8 w-8">
               <AvatarFallback>
                 {getInitials(user?.name || "")}

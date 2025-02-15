@@ -35,7 +35,7 @@ export function ProjectFilters({
         />
       </div>
       <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilterType)}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] bg-transparent">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>
         <SelectContent className="bg-background border shadow-lg">
