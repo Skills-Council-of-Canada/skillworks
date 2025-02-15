@@ -1638,6 +1638,24 @@ export type Database = {
           },
         ]
       }
+      industries: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       knowledge_base_articles: {
         Row: {
           category: string
@@ -2168,16 +2186,64 @@ export type Database = {
           },
         ]
       }
+      participant_profile_completion: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          is_completed: boolean | null
+          optional_fields: Json | null
+          participant_id: string | null
+          required_fields: Json | null
+          step_name: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean | null
+          optional_fields?: Json | null
+          participant_id?: string | null
+          required_fields?: Json | null
+          step_name: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean | null
+          optional_fields?: Json | null
+          participant_id?: string | null
+          required_fields?: Json | null
+          step_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_profile_completion_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participant_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           certifications: Json[] | null
           created_at: string
+          email_verified: boolean | null
           full_name: string | null
           id: string
           interests: string[] | null
+          onboarding_completed: boolean | null
+          profile_completion_percentage: number | null
           skills: string[] | null
+          steps_completed: Json | null
           updated_at: string
         }
         Insert: {
@@ -2185,10 +2251,14 @@ export type Database = {
           bio?: string | null
           certifications?: Json[] | null
           created_at?: string
+          email_verified?: boolean | null
           full_name?: string | null
           id: string
           interests?: string[] | null
+          onboarding_completed?: boolean | null
+          profile_completion_percentage?: number | null
           skills?: string[] | null
+          steps_completed?: Json | null
           updated_at?: string
         }
         Update: {
@@ -2196,10 +2266,14 @@ export type Database = {
           bio?: string | null
           certifications?: Json[] | null
           created_at?: string
+          email_verified?: boolean | null
           full_name?: string | null
           id?: string
           interests?: string[] | null
+          onboarding_completed?: boolean | null
+          profile_completion_percentage?: number | null
           skills?: string[] | null
+          steps_completed?: Json | null
           updated_at?: string
         }
         Relationships: []
@@ -3013,6 +3087,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      skills: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       student_assignments: {
         Row: {
