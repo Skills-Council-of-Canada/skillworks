@@ -1945,11 +1945,13 @@ export type Database = {
       }
       messages: {
         Row: {
+          application_id: string | null
           content: string
           created_at: string
           id: string
           metadata: Json | null
           parent_id: string | null
+          read_at: string | null
           recipient_id: string
           sender_id: string
           status: Database["public"]["Enums"]["message_status"]
@@ -1958,11 +1960,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          application_id?: string | null
           content: string
           created_at?: string
           id?: string
           metadata?: Json | null
           parent_id?: string | null
+          read_at?: string | null
           recipient_id: string
           sender_id: string
           status?: Database["public"]["Enums"]["message_status"]
@@ -1971,11 +1975,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          application_id?: string | null
           content?: string
           created_at?: string
           id?: string
           metadata?: Json | null
           parent_id?: string | null
+          read_at?: string | null
           recipient_id?: string
           sender_id?: string
           status?: Database["public"]["Enums"]["message_status"]
@@ -1984,6 +1990,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "messages_parent_id_fkey"
             columns: ["parent_id"]
