@@ -60,6 +60,7 @@ import ParticipantExperiences from "./pages/participant/experiences/ParticipantE
 import MyMentors from "./pages/participant/MyMentors";
 import Profile from "./pages/participant/Profile";
 import CreateParticipantExperience from "./pages/participant/experiences/CreateParticipantExperience";
+import ParticipantSettings from "./pages/participant/ParticipantSettings";
 
 const queryClient = new QueryClient();
 
@@ -160,6 +161,7 @@ const App = () => (
             <Route path="create-experience" element={<CreateParticipantExperience />} />
             <Route path="mentors" element={<MyMentors />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<ParticipantSettings />} />
           </Route>
 
           {/* Catch all route */}
