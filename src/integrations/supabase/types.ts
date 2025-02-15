@@ -1945,47 +1945,38 @@ export type Database = {
       }
       messages: {
         Row: {
-          application_id: string | null
+          application_id: string
           content: string
           created_at: string
           id: string
-          metadata: Json | null
-          parent_id: string | null
           read_at: string | null
           recipient_id: string
           sender_id: string
           status: Database["public"]["Enums"]["message_status"]
-          thread_id: string | null
           type: Database["public"]["Enums"]["message_type"]
           updated_at: string
         }
         Insert: {
-          application_id?: string | null
+          application_id: string
           content: string
           created_at?: string
           id?: string
-          metadata?: Json | null
-          parent_id?: string | null
           read_at?: string | null
           recipient_id: string
           sender_id: string
           status?: Database["public"]["Enums"]["message_status"]
-          thread_id?: string | null
-          type: Database["public"]["Enums"]["message_type"]
+          type?: Database["public"]["Enums"]["message_type"]
           updated_at?: string
         }
         Update: {
-          application_id?: string | null
+          application_id?: string
           content?: string
           created_at?: string
           id?: string
-          metadata?: Json | null
-          parent_id?: string | null
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
           status?: Database["public"]["Enums"]["message_status"]
-          thread_id?: string | null
           type?: Database["public"]["Enums"]["message_type"]
           updated_at?: string
         }
@@ -1995,27 +1986,6 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "messages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_recipient_id_fkey"
-            columns: ["recipient_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3924,7 +3894,7 @@ export type Database = {
         | "published"
       mentorship_mode_type: "self_guided" | "mentor_assisted"
       message_status: "sent" | "delivered" | "read"
-      message_type: "direct" | "project" | "experience" | "company"
+      message_type: "text" | "file" | "system"
       milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
