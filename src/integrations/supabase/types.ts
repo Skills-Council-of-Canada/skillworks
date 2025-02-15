@@ -3846,6 +3846,7 @@ export type Database = {
         | "pending_approval"
         | "published"
       mentorship_mode_type: "self_guided" | "mentor_assisted"
+      message_status: "sent" | "delivered" | "read"
       message_type: "direct" | "project" | "experience" | "company"
       milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
