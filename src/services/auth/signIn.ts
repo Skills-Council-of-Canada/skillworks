@@ -11,7 +11,6 @@ const usernameToEmail: Record<string, string> = {
   admin: "admin@skillscouncil.ca"
 };
 
-// Map emails to roles
 const emailToRole: Record<string, UserRole> = {
   "employer@skillscouncil.ca": "employer",
   "educator@skillscouncil.ca": "educator",
@@ -20,7 +19,6 @@ const emailToRole: Record<string, UserRole> = {
   "admin@skillscouncil.ca": "admin"
 };
 
-// Map usernames to roles
 const usernameToRole: Record<string, UserRole> = {
   employ: "employer",
   employer: "employer",
@@ -31,7 +29,7 @@ const usernameToRole: Record<string, UserRole> = {
 };
 
 export const signInUser = async (identifier: string, password: string) => {
-  console.log("Signing in user with identifier:", identifier);
+  console.log("Attempting to sign in with identifier:", identifier);
   try {
     // Check if the identifier is an email
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
@@ -42,15 +40,16 @@ export const signInUser = async (identifier: string, password: string) => {
     if (isEmail) {
       email = identifier.toLowerCase();
       role = emailToRole[email];
-      console.log("Email login - determined role:", role);
+      console.log("Email login attempt - determined role:", role);
     } else {
       // Handle username lookup
       const username = identifier.toLowerCase();
       email = usernameToEmail[username];
       role = usernameToRole[username];
-      console.log("Username login - determined role:", role);
+      console.log("Username login attempt - determined role:", role, "mapped email:", email);
 
       if (!email || !role) {
+        console.log("Invalid username provided:", username);
         return { 
           data: null, 
           error: new Error("Invalid username. Please use: employer/employ, educator, participate/participant, or admin") 
@@ -58,8 +57,15 @@ export const signInUser = async (identifier: string, password: string) => {
       }
     }
     
-    console.log("Using email for login:", email);
-    console.log("Determined role:", role);
+    if (!role) {
+      console.log("No role found for:", identifier);
+      return {
+        data: null,
+        error: new Error("Invalid email or username. Please check your credentials.")
+      };
+    }
+    
+    console.log("Attempting sign in with email:", email);
     
     // Try to sign in
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
