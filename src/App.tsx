@@ -59,6 +59,7 @@ import ParticipantRegistration from "./pages/participant/ParticipantRegistration
 import ParticipantExperiences from "./pages/participant/experiences/ParticipantExperiences";
 import MyMentors from "./pages/participant/MyMentors";
 import Profile from "./pages/participant/Profile";
+import CreateParticipantExperience from "./pages/participant/experiences/CreateParticipantExperience";
 
 const queryClient = new QueryClient();
 
@@ -156,6 +157,7 @@ const App = () => (
             <Route index element={<ParticipantDashboard />} />
             <Route path="dashboard" element={<ParticipantDashboard />} />
             <Route path="experiences" element={<ParticipantExperiences />} />
+            <Route path="create-experience" element={<CreateParticipantExperience />} />
             <Route path="mentors" element={<MyMentors />} />
             <Route path="profile" element={<Profile />} />
           </Route>
