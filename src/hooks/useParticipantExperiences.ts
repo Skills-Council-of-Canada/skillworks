@@ -23,18 +23,18 @@ export const useParticipantExperiences = (statusFilter: string) => {
           start_date,
           end_date,
           educator:educator_id(name),
-          milestones:experience_milestones!participant_experience_id(
+          milestones:experience_milestones(
             id,
             title,
             due_date,
             status
           ),
-          feedback:experience_feedback!participant_experience_id(
+          feedback:experience_feedback(
             id,
             rating,
             comment,
             created_at,
-            reviewer:reviewer_id(name)
+            reviewer_id
           )
         `)
         .eq('participant_id', user.id);
@@ -50,21 +50,18 @@ export const useParticipantExperiences = (statusFilter: string) => {
         throw error;
       }
 
-      // First cast to unknown, then to our expected raw response type
-      const rawData = data as unknown as RawSupabaseResponse[];
-
       // Transform the data to match our Experience interface
-      const transformedData: Experience[] = rawData.map(exp => ({
+      const transformedData: Experience[] = (data || []).map(exp => ({
         ...exp,
         educator: {
           name: exp.educator?.name || 'Unknown Educator'
         },
-        feedback: exp.feedback?.map(f => ({
+        feedback: (exp.feedback || []).map(f => ({
           ...f,
           reviewer: {
-            name: f.reviewer?.name || 'Unknown Reviewer'
+            name: 'Reviewer' // For now, we'll use a placeholder
           }
-        })) || []
+        }))
       }));
 
       return transformedData;
