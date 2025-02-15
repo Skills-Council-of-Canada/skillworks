@@ -1,4 +1,3 @@
-
 import { Link, Outlet } from "react-router-dom";
 import { 
   LogOut, 
@@ -152,7 +151,7 @@ const ParticipantLayout = () => {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white border shadow-lg">
+              <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                 <DropdownMenuItem className="hover:bg-gray-100">
                   Profile Settings
                 </DropdownMenuItem>
