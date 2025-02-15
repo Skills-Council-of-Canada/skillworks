@@ -90,12 +90,12 @@ export const useParticipantSettings = () => {
                 throw insertError;
               }
               
-              return transformDatabaseToAppSettings(newSettings);
+              return transformDatabaseToAppSettings(newSettings as ParticipantSettingsRow);
             }
             throw error;
           }
 
-          return transformDatabaseToAppSettings(data);
+          return transformDatabaseToAppSettings(data as ParticipantSettingsRow);
         } catch (error) {
           if (retries < RETRY_COUNT - 1) {
             retries++;
@@ -120,11 +120,11 @@ export const useParticipantSettings = () => {
         mentorship_mode: updates.mentorship_mode,
         language_preference: updates.language_preference,
         timezone: updates.timezone,
-        privacy_settings: updates.privacy_settings as any,
-        notification_preferences: updates.notification_preferences as any,
-        appearance_settings: updates.appearance_settings as any,
-        digest_settings: updates.digest_settings as any,
-        security_settings: updates.security_settings as any
+        privacy_settings: updates.privacy_settings,
+        notification_preferences: updates.notification_preferences,
+        appearance_settings: updates.appearance_settings,
+        digest_settings: updates.digest_settings,
+        security_settings: updates.security_settings
       };
 
       let retries = 0;
@@ -169,13 +169,13 @@ export const useParticipantSettings = () => {
       id: data.id,
       participant_id: data.participant_id,
       mentorship_mode: data.mentorship_mode,
-      privacy_settings: data.privacy_settings as ParticipantSettings['privacy_settings'],
-      notification_preferences: data.notification_preferences as ParticipantSettings['notification_preferences'],
+      privacy_settings: data.privacy_settings as Required<ParticipantSettings['privacy_settings']>,
+      notification_preferences: data.notification_preferences as Required<ParticipantSettings['notification_preferences']>,
       language_preference: data.language_preference,
       timezone: data.timezone,
-      appearance_settings: data.appearance_settings as ParticipantSettings['appearance_settings'],
-      digest_settings: data.digest_settings as ParticipantSettings['digest_settings'],
-      security_settings: data.security_settings as ParticipantSettings['security_settings'],
+      appearance_settings: data.appearance_settings as Required<ParticipantSettings['appearance_settings']>,
+      digest_settings: data.digest_settings as Required<ParticipantSettings['digest_settings']>,
+      security_settings: data.security_settings as Required<ParticipantSettings['security_settings']>,
       created_at: data.created_at,
       updated_at: data.updated_at
     };
