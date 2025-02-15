@@ -15,7 +15,9 @@ import { ExperienceStepper } from "@/components/participant/experiences/Experien
 
 const formSchema = z.object({
   // Step 1: Experience Details
-  title: z.string().min(1, "Title is required").max(80, "Title must be less than 80 characters"),
+  title: z.string()
+    .min(1, "Title is required")
+    .max(80, "Title must be less than 80 characters"),
   learner_capabilities: z.string()
     .min(50, "Please provide at least 2-3 sentences about learner capabilities")
     .max(1000, "Description is too long"),
@@ -23,26 +25,51 @@ const formSchema = z.object({
     .min(1, "At least one expected outcome is required"),
   project_examples: z.array(z.string())
     .min(1, "At least one project example is required"),
-  
-  // ... will add validation for other steps later
-  description: z.string().min(1, "Description is required"),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string().optional(),
-  trade_category: z.string().optional(),
-  subcategories: z.array(z.string()).optional(),
-  skill_tags: z.array(z.string()).optional(),
-  media_urls: z.array(z.string()).optional(),
   video_url: z.string().optional(),
-  team_structure: z.string().optional(),
-  team_size: z.number().optional(),
-  preferred_companies: z.any().optional(),
-  duration_hours: z.number().optional(),
-  learner_level: z.string().optional(),
-  max_learners: z.number().optional(),
+  media_urls: z.array(z.string()).optional(),
+  
+  // Step 2: Meta Categorization
+  trade_category: z.string().min(1, "Main category is required"),
+  subcategories: z.array(z.string())
+    .min(1, "At least one subcategory is required")
+    .max(5, "Maximum 5 subcategories allowed"),
+  skill_tags: z.array(z.string())
+    .max(10, "Maximum 10 skill tags allowed"),
+  
+  // Step 3: Learner Setup
+  program_type: z.enum(['bootcamp', 'certificate', 'graduate', 'workforce_development'])
+    .optional(),
+  class_size: z.number().min(1, "Class size must be at least 1"),
+  class_affiliation: z.boolean().default(false),
+  course_name: z.string().optional(),
+  work_structure: z.enum(['individual', 'team']).optional(),
+  assignment_method: z.enum(['admin', 'self', 'application']).optional(),
+  hours_per_learner: z.number().min(1, "Hours must be greater than 0").optional(),
+  
+  // Step 4: Timeline
+  match_request_close_date: z.string().optional(),
+  date_assignment_rule: z.enum(['same', 'company', 'team']).optional(),
+  start_date: z.string(),
+  end_date: z.string().optional(),
   milestones: z.array(z.object({
     title: z.string(),
     description: z.string().optional(),
     due_date: z.string()
+  })).optional(),
+  submission_instructions: z.string().optional(),
+  
+  // Step 5: Company Preferences
+  projects_wanted: z.number().min(1).optional(),
+  difficulty_level: z.array(z.string()).optional(),
+  location_preference: z.enum(['anywhere', 'national', 'regional', 'local']).optional(),
+  industry_preferences: z.array(z.string()).optional(),
+  company_types: z.array(z.string()).optional(),
+  compensation_type: z.enum(['unpaid', 'hourly', 'flat']).optional(),
+  screening_questions: z.array(z.object({
+    question: z.string(),
+    required: z.boolean(),
+    question_type: z.enum(['text', 'multiple_choice', 'yes_no']),
+    options: z.array(z.string()).optional()
   })).optional()
 });
 
@@ -55,20 +82,27 @@ const CreateParticipantExperience = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
       learner_capabilities: "",
       expected_outcomes: [],
       project_examples: [],
-      start_date: new Date().toISOString().split('T')[0],
+      video_url: "",
+      media_urls: [],
       trade_category: "",
       subcategories: [],
       skill_tags: [],
-      media_urls: [],
-      team_structure: "individual",
-      team_size: 1,
-      duration_hours: 40,
-      learner_level: "beginner",
-      max_learners: 1,
+      class_size: 1,
+      work_structure: "individual",
+      assignment_method: "admin",
+      hours_per_learner: 40,
+      program_type: "certificate",
+      class_affiliation: false,
+      date_assignment_rule: "same",
+      location_preference: "anywhere",
+      difficulty_level: [],
+      industry_preferences: [],
+      company_types: [],
+      compensation_type: "unpaid",
+      screening_questions: [],
       milestones: []
     }
   });
@@ -86,7 +120,7 @@ const CreateParticipantExperience = () => {
           currentValues.expected_outcomes?.length > 0 &&
           currentValues.project_examples?.length > 0
         );
-      // ... will add validation for other steps
+      // Add validation for other steps here
       default:
         return true;
     }

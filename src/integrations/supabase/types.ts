@@ -1257,6 +1257,41 @@ export type Database = {
           },
         ]
       }
+      experience_milestone_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_type: string
+          file_url: string
+          id: string
+          milestone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_type: string
+          file_url: string
+          id?: string
+          milestone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          milestone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_milestone_attachments_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "experience_milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_milestones: {
         Row: {
           created_at: string | null
@@ -1394,6 +1429,44 @@ export type Database = {
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience_screening_questions: {
+        Row: {
+          created_at: string
+          experience_id: string | null
+          id: string
+          options: Json | null
+          question: string
+          question_type: string | null
+          required: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          experience_id?: string | null
+          id?: string
+          options?: Json | null
+          question: string
+          question_type?: string | null
+          required?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          experience_id?: string | null
+          id?: string
+          options?: Json | null
+          question?: string
+          question_type?: string | null
+          required?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_screening_questions_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "participant_experiences"
             referencedColumns: ["id"]
           },
         ]
@@ -2053,90 +2126,138 @@ export type Database = {
       }
       participant_experiences: {
         Row: {
+          assignment_method: string | null
+          class_affiliation: boolean | null
+          company_types: string[] | null
+          compensation_type: string | null
+          course_name: string | null
           created_at: string | null
+          date_assignment_rule: string | null
           description: string | null
+          difficulty_level: string[] | null
           duration_hours: number | null
           educator_id: string | null
           educator_profile_id: string | null
           end_date: string | null
           expected_outcomes: string[] | null
+          hours_per_learner: number | null
           id: string
+          industry_preferences: string[] | null
           learner_capabilities: string | null
           learner_level: string | null
+          location_preference: string | null
+          match_request_close_date: string | null
           max_learners: number | null
           media_urls: string[] | null
           mentor_feedback_status: string | null
           participant_id: string
           preferred_companies: Json | null
+          program_type: string | null
           project_examples: Json[] | null
+          projects_wanted: number | null
+          screening_questions: Json | null
           skill_tags: string[] | null
           start_date: string | null
           status: string
           subcategories: string[] | null
+          submission_instructions: string | null
           team_size: number | null
           team_structure: string | null
           title: string
           trade_category: string | null
           updated_at: string | null
           video_url: string | null
+          work_structure: string | null
           workflow_status: string | null
         }
         Insert: {
+          assignment_method?: string | null
+          class_affiliation?: boolean | null
+          company_types?: string[] | null
+          compensation_type?: string | null
+          course_name?: string | null
           created_at?: string | null
+          date_assignment_rule?: string | null
           description?: string | null
+          difficulty_level?: string[] | null
           duration_hours?: number | null
           educator_id?: string | null
           educator_profile_id?: string | null
           end_date?: string | null
           expected_outcomes?: string[] | null
+          hours_per_learner?: number | null
           id?: string
+          industry_preferences?: string[] | null
           learner_capabilities?: string | null
           learner_level?: string | null
+          location_preference?: string | null
+          match_request_close_date?: string | null
           max_learners?: number | null
           media_urls?: string[] | null
           mentor_feedback_status?: string | null
           participant_id: string
           preferred_companies?: Json | null
+          program_type?: string | null
           project_examples?: Json[] | null
+          projects_wanted?: number | null
+          screening_questions?: Json | null
           skill_tags?: string[] | null
           start_date?: string | null
           status?: string
           subcategories?: string[] | null
+          submission_instructions?: string | null
           team_size?: number | null
           team_structure?: string | null
           title: string
           trade_category?: string | null
           updated_at?: string | null
           video_url?: string | null
+          work_structure?: string | null
           workflow_status?: string | null
         }
         Update: {
+          assignment_method?: string | null
+          class_affiliation?: boolean | null
+          company_types?: string[] | null
+          compensation_type?: string | null
+          course_name?: string | null
           created_at?: string | null
+          date_assignment_rule?: string | null
           description?: string | null
+          difficulty_level?: string[] | null
           duration_hours?: number | null
           educator_id?: string | null
           educator_profile_id?: string | null
           end_date?: string | null
           expected_outcomes?: string[] | null
+          hours_per_learner?: number | null
           id?: string
+          industry_preferences?: string[] | null
           learner_capabilities?: string | null
           learner_level?: string | null
+          location_preference?: string | null
+          match_request_close_date?: string | null
           max_learners?: number | null
           media_urls?: string[] | null
           mentor_feedback_status?: string | null
           participant_id?: string
           preferred_companies?: Json | null
+          program_type?: string | null
           project_examples?: Json[] | null
+          projects_wanted?: number | null
+          screening_questions?: Json | null
           skill_tags?: string[] | null
           start_date?: string | null
           status?: string
           subcategories?: string[] | null
+          submission_instructions?: string | null
           team_size?: number | null
           team_structure?: string | null
           title?: string
           trade_category?: string | null
           updated_at?: string | null
           video_url?: string | null
+          work_structure?: string | null
           workflow_status?: string | null
         }
         Relationships: [
