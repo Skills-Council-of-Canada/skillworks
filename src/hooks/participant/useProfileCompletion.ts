@@ -18,9 +18,42 @@ export const useProfileCompletion = () => {
         .from("participant_profiles")
         .select("*")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return null;
+      }
+
+      // If no profile exists, attempt to create one
+      if (!data) {
+        const { data: newProfile, error: createError } = await supabase
+          .from("participant_profiles")
+          .insert([
+            {
+              id: user.id,
+              email_verified: false,
+              profile_completion_percentage: 0,
+              steps_completed: {
+                profile_setup: false,
+                personal_details: false,
+                skills_preferences: false,
+                documents: false,
+                final_review: false
+              }
+            }
+          ])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("Error creating profile:", createError);
+          return null;
+        }
+
+        return newProfile;
+      }
+
       return data;
     },
     enabled: !!user?.id,
@@ -66,10 +99,12 @@ export const useProfileCompletion = () => {
     },
     onSuccess: (completionPercentage) => {
       queryClient.invalidateQueries({ queryKey: ["participant-profile"] });
-      toast({
-        title: "Profile Updated",
-        description: `Profile completion: ${completionPercentage}%`,
-      });
+      if (completionPercentage !== undefined) {
+        toast({
+          title: "Profile Updated",
+          description: `Profile completion: ${completionPercentage}%`,
+        });
+      }
     },
     onError: () => {
       toast({
