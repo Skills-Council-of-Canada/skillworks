@@ -14,7 +14,6 @@ const usernameToEmail: Record<string, string> = {
 const emailToRole: Record<string, UserRole> = {
   "employer@skillscouncil.ca": "employer",
   "educator@skillscouncil.ca": "educator",
-  "participate@skillscouncil.ca": "participant",
   "participant@skillscouncil.ca": "participant",
   "admin@skillscouncil.ca": "admin"
 };
@@ -67,7 +66,6 @@ export const signInUser = async (identifier: string, password: string) => {
     
     console.log("Attempting sign in with email:", email);
     
-    // Pass the password directly without trimming
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -87,7 +85,7 @@ export const signInUser = async (identifier: string, password: string) => {
         .from('profiles')
         .select('*')
         .eq('id', authData.user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows returned
         console.error("Error fetching profile:", profileError);
