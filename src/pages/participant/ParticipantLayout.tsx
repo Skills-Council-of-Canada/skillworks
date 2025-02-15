@@ -152,11 +152,15 @@ const ParticipantLayout = () => {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>Profile Settings</DropdownMenuItem>
-                <DropdownMenuItem>Notifications</DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56 bg-white border shadow-lg">
+                <DropdownMenuItem className="hover:bg-gray-100">
+                  Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:bg-gray-100">
+                  Notifications
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-500" onClick={() => logout()}>
+                <DropdownMenuItem className="text-red-500 hover:bg-gray-100" onClick={() => logout()}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
