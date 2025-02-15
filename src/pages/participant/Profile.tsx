@@ -14,8 +14,6 @@ import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
 
-type Json = string[] | null;
-
 interface ParticipantProfileData {
   id: string;
   avatar_url: string | null;
@@ -25,6 +23,19 @@ interface ParticipantProfileData {
   full_name: string | null;
   interests: string[] | null;
   skills: string[] | null;
+  updated_at: string;
+  location: string | null;
+}
+
+interface DatabaseParticipantProfile {
+  id: string;
+  avatar_url: string | null;
+  bio: string | null;
+  certifications: any[] | null;
+  created_at: string;
+  full_name: string | null;
+  interests: any[] | null;
+  skills: any[] | null;
   updated_at: string;
   location: string | null;
 }
@@ -45,18 +56,20 @@ export const Profile = () => {
 
       if (error) throw error;
       
-      // Ensure all required fields are present, even if null
+      const dbProfile = data as DatabaseParticipantProfile;
+      
+      // Ensure all required fields are present, even if null, and convert arrays to string[]
       const profileData: ParticipantProfileData = {
-        id: data.id,
-        avatar_url: data.avatar_url || null,
-        bio: data.bio || null,
-        certifications: data.certifications || null,
-        created_at: data.created_at,
-        full_name: data.full_name || null,
-        interests: data.interests || null,
-        skills: data.skills || null,
-        updated_at: data.updated_at,
-        location: data.location || null
+        id: dbProfile.id,
+        avatar_url: dbProfile.avatar_url || null,
+        bio: dbProfile.bio || null,
+        certifications: dbProfile.certifications?.map(String) || null,
+        created_at: dbProfile.created_at,
+        full_name: dbProfile.full_name || null,
+        interests: dbProfile.interests?.map(String) || null,
+        skills: dbProfile.skills?.map(String) || null,
+        updated_at: dbProfile.updated_at,
+        location: dbProfile.location || null
       };
 
       return profileData;
