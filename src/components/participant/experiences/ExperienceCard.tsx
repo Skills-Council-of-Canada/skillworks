@@ -1,82 +1,56 @@
 
 import React from 'react';
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { MessageSquare, Calendar, User } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, ChevronRight } from "lucide-react";
+import { formatDistanceToNow } from 'date-fns';
+import { Experience } from '@/types/experience';
 
 interface ExperienceCardProps {
-  experience: {
-    id: string;
-    title: string;
-    description: string;
-    status: string;
-    start_date: string;
-    end_date?: string;
-    progress: number;
-    educator: {
-      name: string;
-    };
-  };
-  onViewDetails: (id: string) => void;
+  experience: Experience & { progress: number };
+  onViewDetails: () => void;
 }
 
 export const ExperienceCard = ({ experience, onViewDetails }: ExperienceCardProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'in_progress':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const statusColors = {
+    pending: "bg-yellow-100 text-yellow-800",
+    in_progress: "bg-blue-100 text-blue-800",
+    completed: "bg-green-100 text-green-800",
+    draft: "bg-gray-100 text-gray-800"
   };
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">{experience.title}</h3>
-          <Badge className={getStatusColor(experience.status)}>
-            {experience.status.replace('_', ' ').toUpperCase()}
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-xl font-semibold">{experience.title}</CardTitle>
+          <Badge className={statusColors[experience.status as keyof typeof statusColors]}>
+            {experience.status}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {experience.description}
-        </p>
-        <div className="space-y-2">
-          <div className="flex items-center text-sm">
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>
-              {format(new Date(experience.start_date), 'PP')} - 
-              {experience.end_date ? format(new Date(experience.end_date), 'PP') : 'Ongoing'}
-            </span>
+      <CardContent>
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{experience.description}</p>
+        <div className="space-y-4">
+          <div className="flex items-center text-sm text-gray-500">
+            <Calendar className="w-4 h-4 mr-2" />
+            Started {formatDistanceToNow(new Date(experience.start_date), { addSuffix: true })}
           </div>
-          <div className="flex items-center text-sm">
-            <User className="mr-2 h-4 w-4" />
-            <span>Mentor: {experience.educator.name}</span>
-          </div>
-          <div className="space-y-1">
-            <div className="flex justify-between text-sm">
+          <div>
+            <div className="flex justify-between text-sm mb-1">
               <span>Progress</span>
               <span>{experience.progress}%</span>
             </div>
-            <Progress value={experience.progress} />
+            <Progress value={experience.progress} className="h-2" />
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button 
-          variant="outline" 
-          className="w-full"
-          onClick={() => onViewDetails(experience.id)}
-        >
+      <CardFooter className="pt-4">
+        <Button onClick={onViewDetails} variant="outline" className="w-full">
           View Details
+          <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </CardFooter>
     </Card>

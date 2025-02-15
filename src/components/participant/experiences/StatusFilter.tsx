@@ -1,11 +1,6 @@
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import React from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface StatusFilterProps {
   value: string;
@@ -15,11 +10,13 @@ interface StatusFilterProps {
 export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px] bg-transparent">
+      <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
-      <SelectContent className="bg-background border shadow-lg">
+      <SelectContent>
         <SelectItem value="all">All Experiences</SelectItem>
+        <SelectItem value="draft">Draft</SelectItem>
+        <SelectItem value="pending">Pending</SelectItem>
         <SelectItem value="in_progress">In Progress</SelectItem>
         <SelectItem value="completed">Completed</SelectItem>
       </SelectContent>
