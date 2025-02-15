@@ -37,7 +37,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
           learner_level,
           max_learners,
           educator_id,
-          educator:profiles!participant_experiences_educator_id_fkey(name),
+          educator:educator_id(name),
           milestones:experience_milestones(
             id,
             title,
@@ -50,7 +50,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             comment,
             created_at,
             reviewer_profile_id,
-            profiles!experience_feedback_reviewer_profile_id_fkey(name)
+            reviewer:reviewer_profile_id(name)
           )
         `)
         .eq('participant_id', user?.id);
@@ -70,10 +70,10 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
       // Transform the data to match the Experience type
       const transformedExperiences: Experience[] = experiences?.map((exp: any) => ({
         ...exp,
-        educator: exp.educator?.[0] || { name: '' }, // Handle the case where educator might be null
+        educator: exp.educator || { name: '' }, // Handle the case where educator might be null
         feedback: exp.feedback?.map((f: any) => ({
           ...f,
-          profiles: f.profiles?.[0] || { name: '' }
+          profiles: { name: f.reviewer?.name || '' }
         })) || []
       })) || [];
 
