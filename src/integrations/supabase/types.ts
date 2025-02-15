@@ -250,93 +250,6 @@ export type Database = {
           },
         ]
       }
-      conversations: {
-        Row: {
-          company_id: string | null
-          created_at: string
-          experience_id: string | null
-          id: string
-          is_muted: boolean | null
-          is_pinned: boolean | null
-          last_message_at: string | null
-          other_participant_id: string | null
-          participant_id: string
-          project_id: string | null
-          title: string | null
-          type: Database["public"]["Enums"]["conversation_type"]
-          unread_count: number | null
-          updated_at: string
-        }
-        Insert: {
-          company_id?: string | null
-          created_at?: string
-          experience_id?: string | null
-          id?: string
-          is_muted?: boolean | null
-          is_pinned?: boolean | null
-          last_message_at?: string | null
-          other_participant_id?: string | null
-          participant_id: string
-          project_id?: string | null
-          title?: string | null
-          type: Database["public"]["Enums"]["conversation_type"]
-          unread_count?: number | null
-          updated_at?: string
-        }
-        Update: {
-          company_id?: string | null
-          created_at?: string
-          experience_id?: string | null
-          id?: string
-          is_muted?: boolean | null
-          is_pinned?: boolean | null
-          last_message_at?: string | null
-          other_participant_id?: string | null
-          participant_id?: string
-          project_id?: string | null
-          title?: string | null
-          type?: Database["public"]["Enums"]["conversation_type"]
-          unread_count?: number | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "conversations_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "employers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_experience_id_fkey"
-            columns: ["experience_id"]
-            isOneToOne: false
-            referencedRelation: "participant_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_other_participant_id_fkey"
-            columns: ["other_participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       educational_portals: {
         Row: {
           category: string
@@ -2026,57 +1939,6 @@ export type Database = {
             columns: ["relationship_id"]
             isOneToOne: false
             referencedRelation: "mentor_relationships"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      messages: {
-        Row: {
-          attachments: Json | null
-          content: string
-          conversation_id: string
-          created_at: string
-          id: string
-          read_at: string | null
-          sender_id: string
-          status: Database["public"]["Enums"]["message_status"] | null
-          updated_at: string
-        }
-        Insert: {
-          attachments?: Json | null
-          content: string
-          conversation_id: string
-          created_at?: string
-          id?: string
-          read_at?: string | null
-          sender_id: string
-          status?: Database["public"]["Enums"]["message_status"] | null
-          updated_at?: string
-        }
-        Update: {
-          attachments?: Json | null
-          content?: string
-          conversation_id?: string
-          created_at?: string
-          id?: string
-          read_at?: string | null
-          sender_id?: string
-          status?: Database["public"]["Enums"]["message_status"] | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_conversation_id_fkey"
-            columns: ["conversation_id"]
-            isOneToOne: false
-            referencedRelation: "conversations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3984,7 +3846,6 @@ export type Database = {
         | "pending_approval"
         | "published"
       mentorship_mode_type: "self_guided" | "mentor_assisted"
-      message_status: "sent" | "delivered" | "read" | "archived" | "deleted"
       milestone_status: "pending" | "in_progress" | "completed" | "overdue"
       notification_level: "all" | "important" | "critical" | "none"
       project_review_status:
