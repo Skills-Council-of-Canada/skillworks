@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,9 +17,11 @@ import { useParticipantDashboard } from "@/hooks/useParticipantDashboard";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useProfileCompletion } from "@/hooks/useProfileCompletion";
 
 const ParticipantDashboard = () => {
   const { data, isLoading } = useParticipantDashboard();
+  const { profile, completionPercentage } = useProfileCompletion();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -67,8 +68,8 @@ const ParticipantDashboard = () => {
           <h1 className="text-3xl font-bold tracking-tight">Welcome Back</h1>
           <p className="text-muted-foreground">Here's an overview of your learning journey</p>
         </div>
-        {data?.stats.profileCompletion < 100 && (
-          <Button onClick={() => navigate('/participant/settings')}>
+        {completionPercentage < 100 && (
+          <Button onClick={() => navigate('/participant/profile')}>
             Complete Profile
           </Button>
         )}
@@ -79,9 +80,14 @@ const ParticipantDashboard = () => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <h3 className="font-semibold">Profile Completion</h3>
-            <span>{data?.stats.profileCompletion}%</span>
+            <span>{completionPercentage}%</span>
           </div>
-          <Progress value={data?.stats.profileCompletion} />
+          <Progress value={completionPercentage} />
+          {completionPercentage < 100 && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Complete your profile to unlock all features
+            </p>
+          )}
         </div>
       </Card>
 

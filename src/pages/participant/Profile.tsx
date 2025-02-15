@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,8 @@ import { WorkExperienceList } from "./components/profile/WorkExperienceList";
 import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
+import { Progress } from "@/components/ui/progress";
+import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 
 interface ParticipantProfileData {
   id: string;
@@ -51,43 +52,14 @@ interface DatabaseParticipantProfile {
 export const Profile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
+  const { profile, isLoading, updateProfileCompletion } = useProfileCompletion();
 
-  // Fetch participant profile data
-  const { data: profile, isLoading } = useQuery<ParticipantProfileData, Error>({
-    queryKey: ["participant-profile", user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("participant_profiles")
-        .select("*")
-        .eq("id", user?.id)
-        .single();
-
-      if (error) throw error;
-      
-      const dbProfile = data as DatabaseParticipantProfile;
-      
-      // Ensure all required fields are present, even if null, and convert arrays to string[]
-      const profileData: ParticipantProfileData = {
-        id: dbProfile.id,
-        avatar_url: dbProfile.avatar_url || null,
-        bio: dbProfile.bio || null,
-        certifications: dbProfile.certifications?.map(String) || null,
-        created_at: dbProfile.created_at,
-        full_name: dbProfile.full_name || null,
-        interests: dbProfile.interests?.map(String) || null,
-        skills: dbProfile.skills?.map(String) || null,
-        updated_at: dbProfile.updated_at,
-        location: dbProfile.location || null,
-        email_verified: dbProfile.email_verified || null,
-        onboarding_completed: dbProfile.onboarding_completed || null,
-        profile_completion_percentage: dbProfile.profile_completion_percentage || null,
-        steps_completed: dbProfile.steps_completed || null
-      };
-
-      return profileData;
-    },
-    enabled: !!user?.id,
-  });
+  // Effect to update completion percentage when profile changes
+  useEffect(() => {
+    if (profile) {
+      updateProfileCompletion.mutate();
+    }
+  }, [profile]);
 
   if (isLoading) {
     return <div>Loading profile...</div>;
@@ -118,6 +90,14 @@ export const Profile = () => {
         <div className="mt-20 px-8">
           <h1 className="text-2xl font-bold">{profile?.full_name || user?.name}</h1>
           <p className="text-gray-600">{profile?.bio || "No bio yet"}</p>
+          
+          {/* Profile Completion Progress */}
+          <div className="mt-4">
+            <Progress value={profile?.profile_completion_percentage || 0} className="mb-2" />
+            <p className="text-sm text-gray-600">
+              Profile Completion: {profile?.profile_completion_percentage || 0}%
+            </p>
+          </div>
         </div>
       </div>
 
