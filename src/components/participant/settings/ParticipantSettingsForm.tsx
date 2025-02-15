@@ -16,7 +16,7 @@ import { ParticipantSettings } from "@/types/participant";
 const formSchema = z.object({
   id: z.string(),
   participant_id: z.string(),
-  mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
+  mentorship_mode: z.enum(["self_guided", "mentor_assisted"]) as z.ZodType<ParticipantSettings["mentorship_mode"]>,
   privacy_settings: z.object({
     work_visibility: z.enum(["mentor", "public", "private"]),
     profile_visibility: z.enum(["public", "private"]),
@@ -56,7 +56,7 @@ const formSchema = z.object({
   }),
   created_at: z.string().optional(),
   updated_at: z.string().optional()
-}) satisfies z.ZodType<ParticipantSettings>;
+}) as z.ZodType<ParticipantSettings>;
 
 export function ParticipantSettingsForm() {
   const { settings, updateSettings, isLoading } = useParticipantSettings();
@@ -67,7 +67,8 @@ export function ParticipantSettingsForm() {
   });
 
   async function onSubmit(values: ParticipantSettings) {
-    await updateSettings(values);
+    const { id, participant_id, created_at, updated_at, ...updateData } = values;
+    await updateSettings(updateData);
   }
 
   if (isLoading) {
