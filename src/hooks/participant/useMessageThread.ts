@@ -21,7 +21,15 @@ export const useMessageThread = (conversationId: string) => {
 
       if (error) throw error;
 
-      return messages as Message[];
+      return messages.map((msg): Message => ({
+        id: msg.id,
+        applicationId: msg.application_id,
+        senderId: msg.sender_id,
+        senderType: msg.sender_id === user?.id ? "learner" : "employer",
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+        readAt: msg.read_at ? new Date(msg.read_at) : undefined
+      }));
     },
     enabled: !!conversationId && !!user?.id,
   });
@@ -30,7 +38,7 @@ export const useMessageThread = (conversationId: string) => {
     mutationFn: async (content: string) => {
       const { data: application } = await supabase
         .from("applications")
-        .select("employer_id")
+        .select("learner_id")
         .eq("id", conversationId)
         .single();
 
@@ -39,7 +47,7 @@ export const useMessageThread = (conversationId: string) => {
       const { error } = await supabase.from("messages").insert({
         content,
         sender_id: user?.id,
-        recipient_id: application.employer_id,
+        recipient_id: application.learner_id,
         application_id: conversationId,
         type: "text",
       });
