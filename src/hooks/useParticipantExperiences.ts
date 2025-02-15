@@ -1,7 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Experience, RawSupabaseResponse } from '@/types/experience';
+import { Experience } from '@/types/experience';
 import { useToast } from '@/hooks/use-toast';
 
 export const useParticipantExperiences = (statusFilter: string) => {
@@ -22,7 +22,9 @@ export const useParticipantExperiences = (statusFilter: string) => {
           status,
           start_date,
           end_date,
-          educator:educator_id(name),
+          educator:profiles!participant_experiences_educator_id_fkey(
+            name
+          ),
           milestones:experience_milestones(
             id,
             title,
@@ -34,7 +36,9 @@ export const useParticipantExperiences = (statusFilter: string) => {
             rating,
             comment,
             created_at,
-            reviewer_id
+            reviewer:profiles!experience_feedback_reviewer_id_fkey(
+              name
+            )
           )
         `)
         .eq('participant_id', user.id);
@@ -59,7 +63,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
         feedback: (exp.feedback || []).map(f => ({
           ...f,
           reviewer: {
-            name: 'Reviewer' // For now, we'll use a placeholder
+            name: f.reviewer?.name || 'Anonymous Reviewer'
           }
         }))
       }));
