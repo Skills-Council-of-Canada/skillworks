@@ -2237,7 +2237,6 @@ export type Database = {
           certifications: Json[] | null
           created_at: string
           email_verified: boolean | null
-          full_name: string | null
           id: string
           interests: string[] | null
           location: string | null
@@ -2253,7 +2252,6 @@ export type Database = {
           certifications?: Json[] | null
           created_at?: string
           email_verified?: boolean | null
-          full_name?: string | null
           id: string
           interests?: string[] | null
           location?: string | null
@@ -2269,7 +2267,6 @@ export type Database = {
           certifications?: Json[] | null
           created_at?: string
           email_verified?: boolean | null
-          full_name?: string | null
           id?: string
           interests?: string[] | null
           location?: string | null
