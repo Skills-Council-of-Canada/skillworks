@@ -20,11 +20,11 @@ interface ParticipantProfileData {
   id: string;
   avatar_url: string | null;
   bio: string | null;
-  certifications: Json;
+  certifications: string[] | null;
   created_at: string;
   full_name: string | null;
-  interests: Json;
-  skills: Json;
+  interests: string[] | null;
+  skills: string[] | null;
   updated_at: string;
   location: string | null;
 }
@@ -48,15 +48,15 @@ export const Profile = () => {
       // Ensure all required fields are present, even if null
       const profileData: ParticipantProfileData = {
         id: data.id,
-        avatar_url: data.avatar_url,
-        bio: data.bio,
-        certifications: data.certifications,
+        avatar_url: data.avatar_url || null,
+        bio: data.bio || null,
+        certifications: data.certifications || null,
         created_at: data.created_at,
-        full_name: data.full_name,
-        interests: data.interests,
-        skills: data.skills,
+        full_name: data.full_name || null,
+        interests: data.interests || null,
+        skills: data.skills || null,
         updated_at: data.updated_at,
-        location: data.location
+        location: data.location || null
       };
 
       return profileData;
