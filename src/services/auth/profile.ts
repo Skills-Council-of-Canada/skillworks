@@ -21,7 +21,7 @@ export const getUserProfile = async (session: Session): Promise<User | null> => 
       .from('profiles')
       .select('*')
       .eq('id', session.user.id)
-      .single();
+      .maybeSingle();
 
     if (profileError) {
       const now = Date.now();
