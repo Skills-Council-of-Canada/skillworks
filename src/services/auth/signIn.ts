@@ -6,7 +6,7 @@ const usernameToEmail: Record<string, string> = {
   employ: "employer@skillscouncil.ca",
   employer: "employer@skillscouncil.ca",
   educator: "educator@skillscouncil.ca",
-  participate: "participate@skillscouncil.ca",
+  participate: "participant@skillscouncil.ca",
   participant: "participant@skillscouncil.ca",
   admin: "admin@skillscouncil.ca"
 };
@@ -67,10 +67,10 @@ export const signInUser = async (identifier: string, password: string) => {
     
     console.log("Attempting sign in with email:", email);
     
-    // Try to sign in with trimmed password
+    // Pass the password directly without trimming
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
-      password: password.trim(),
+      password,
     });
 
     if (signInError) {
