@@ -21,16 +21,14 @@ interface ParticipantDetails {
   id: string;
   skill_level: string;
   availability: string;
-  date_of_birth: string;
+  date_of_birth: string | null;
   educational_background: string | null;
   preferred_learning_areas: string[];
-  created_at: string;
-  updated_at: string;
 }
 
-interface CombinedProfile extends Profile, Omit<ParticipantDetails, 'id' | 'created_at' | 'updated_at'> {
+type CombinedProfile = {
   full_name: string;
-}
+} & Omit<Profile, 'name'> & Omit<ParticipantDetails, 'id'>;
 
 export const useProfileCompletion = () => {
   const { user } = useAuth();
@@ -41,60 +39,52 @@ export const useProfileCompletion = () => {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      console.log("Fetching participant profile data for user:", user.id);
-      
+      // First, get the base profile
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
-        throw profileError;
+        toast({
+          title: "Error",
+          description: "Failed to fetch profile data",
+          variant: "destructive",
+        });
+        return null;
       }
 
-      try {
-        const { data: details, error: detailsError } = await supabase
-          .from('participant_details')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (detailsError) {
-          console.error("Error fetching participant details:", detailsError);
-          throw detailsError;
-        }
-
-        if (!profile || !details) {
-          toast({
-            title: "Profile Incomplete",
-            description: "Please complete your profile setup",
-            variant: "destructive",
-          });
-          return null;
-        }
-
-        return {
-          ...profile,
-          ...details,
-          full_name: profile.name, // Use name from profiles table as full_name
-        };
-      } catch (error) {
-        console.error("Error in details fetch:", error);
-        // Return basic profile if details aren't found yet
-        return {
-          ...profile,
-          full_name: profile.name,
-          skill_level: '',
-          availability: '',
-          date_of_birth: '',
-          educational_background: null,
-          preferred_learning_areas: [],
-        };
+      if (!profile) {
+        return null;
       }
+
+      // Then try to get participant details
+      const { data: details, error: detailsError } = await supabase
+        .from('participant_details')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (detailsError && detailsError.code !== 'PGRST116') {
+        console.error("Error fetching participant details:", detailsError);
+      }
+
+      // Create combined profile
+      const combinedProfile: CombinedProfile = {
+        ...profile,
+        full_name: profile.name,
+        skill_level: details?.skill_level || 'beginner',
+        availability: details?.availability || 'flexible',
+        date_of_birth: details?.date_of_birth || null,
+        educational_background: details?.educational_background || null,
+        preferred_learning_areas: details?.preferred_learning_areas || [],
+      };
+
+      return combinedProfile;
     },
-    enabled: !!user?.id,
+    retry: false,
     staleTime: 30000,
   });
 
