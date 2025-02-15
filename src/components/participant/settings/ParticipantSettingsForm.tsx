@@ -14,6 +14,8 @@ import { SecuritySection } from "./sections/SecuritySection";
 import { ParticipantSettings } from "@/types/participant";
 
 const formSchema = z.object({
+  id: z.string(),
+  participant_id: z.string(),
   mentorship_mode: z.enum(["self_guided", "mentor_assisted"]),
   privacy_settings: z.object({
     work_visibility: z.enum(["mentor", "public", "private"]),
@@ -51,7 +53,9 @@ const formSchema = z.object({
     mfa_enabled: z.boolean(),
     last_password_change: z.string().nullable(),
     account_merged: z.boolean()
-  })
+  }),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional()
 }) satisfies z.ZodType<ParticipantSettings>;
 
 export function ParticipantSettingsForm() {
