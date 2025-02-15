@@ -4,60 +4,103 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
+interface ParticipantProfile {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+  status: string;
+  phone: string | null;
+  preferred_contact: string | null;
+}
+
+interface ParticipantDetails {
+  id: string;
+  skill_level: string;
+  availability: string;
+  date_of_birth: string;
+  educational_background: string | null;
+  preferred_learning_areas: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["participant-registration", user?.id],
+  const { data: profileData, isLoading } = useQuery({
+    queryKey: ["participant-profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
 
-      console.log("Fetching registration profile for user:", user.id);
+      console.log("Fetching participant profile data for user:", user.id);
       
-      const { data, error } = await supabase
-        .from("participant_registrations")
+      // Fetch both profile and participant details
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("id", user.id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching registration:", error);
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+        throw profileError;
+      }
+
+      const { data: details, error: detailsError } = await supabase
+        .from("participant_details")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (detailsError) {
+        console.error("Error fetching participant details:", detailsError);
+        throw detailsError;
+      }
+
+      if (!profile || !details) {
         toast({
-          title: "Error",
-          description: "Failed to fetch profile data",
+          title: "Profile Incomplete",
+          description: "Please complete your profile setup",
           variant: "destructive",
         });
         return null;
       }
 
-      if (!data) {
-        console.log("No registration found for this user");
-        return null;
-      }
-
-      console.log("Existing registration found:", data);
       return {
-        ...data,
-        full_name: `${data.first_name} ${data.last_name}`.trim(),
+        ...profile,
+        ...details,
       };
     },
     enabled: !!user?.id,
-    staleTime: 30000, // Consider data fresh for 30 seconds
+    staleTime: 30000,
     retry: 1,
+    onError: (error) => {
+      console.error("Error in profile query:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch profile data",
+        variant: "destructive",
+      });
+    },
   });
 
   const calculateCompletionPercentage = (profile: any) => {
     if (!profile) return 0;
 
     const requiredFields = [
-      'first_name',
-      'last_name',
+      'full_name',
       'email',
+      'phone',
       'skill_level',
       'availability',
       'date_of_birth',
-      'preferred_learning_areas'
+      'preferred_learning_areas',
+      'educational_background'
     ];
 
     const completedFields = requiredFields.filter(field => {
@@ -70,8 +113,8 @@ export const useProfileCompletion = () => {
   };
 
   return {
-    profile,
+    profile: profileData,
     isLoading,
-    completionPercentage: profile ? calculateCompletionPercentage(profile) : 0,
+    completionPercentage: profileData ? calculateCompletionPercentage(profileData) : 0,
   };
 };

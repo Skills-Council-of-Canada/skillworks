@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,23 +13,7 @@ import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
-
-interface ParticipantRegistration {
-  id: string;
-  user_id: string | null;
-  first_name: string;
-  last_name: string;
-  email: string;
-  skill_level: string;
-  educational_background: string | null;
-  availability: string;
-  preferred_learning_areas: string[] | null;
-  registration_completed: boolean | null;
-  created_at: string;
-  updated_at: string;
-  date_of_birth: string;
-  full_name?: string;
-}
+import { format } from "date-fns";
 
 export const Profile = () => {
   const { user } = useAuth();
@@ -48,9 +32,13 @@ export const Profile = () => {
           <div className="h-48 bg-gradient-to-r from-blue-400 to-blue-600 rounded-t-lg" />
           <div className="absolute -bottom-16 left-8">
             <Avatar className="h-32 w-32 border-4 border-white">
-              <AvatarFallback className="bg-blue-100 text-blue-600 text-4xl">
-                {profile?.first_name?.[0] || user?.name?.[0]}
-              </AvatarFallback>
+              {profile?.avatar_url ? (
+                <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+              ) : (
+                <AvatarFallback className="bg-blue-100 text-blue-600 text-4xl">
+                  {profile?.full_name?.[0] || user?.name?.[0]}
+                </AvatarFallback>
+              )}
             </Avatar>
           </div>
           <div className="absolute bottom-4 right-4">
@@ -63,7 +51,7 @@ export const Profile = () => {
           </div>
         </div>
         <div className="mt-20 px-8">
-          <h1 className="text-2xl font-bold">{profile?.full_name || user?.name}</h1>
+          <h1 className="text-2xl font-bold">{profile?.full_name}</h1>
           <p className="text-gray-600">{profile?.educational_background || "No educational background provided"}</p>
           
           {/* Profile Completion Progress */}
@@ -93,6 +81,15 @@ export const Profile = () => {
               <div className="space-y-2">
                 <p className="text-gray-600">
                   <span className="font-medium">Email:</span> {profile?.email}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-medium">Phone:</span> {profile?.phone || "Not provided"}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-medium">Preferred Contact:</span> {profile?.preferred_contact || "Not specified"}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-medium">Date of Birth:</span> {profile?.date_of_birth ? format(new Date(profile.date_of_birth), 'PPP') : "Not provided"}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-medium">Skill Level:</span> {profile?.skill_level}
