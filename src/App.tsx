@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -60,7 +61,7 @@ import ParticipantExperiences from "./pages/participant/experiences/ParticipantE
 import MyMentors from "./pages/participant/MyMentors";
 import Profile from "./pages/participant/Profile";
 import CreateParticipantExperience from "./pages/participant/experiences/CreateParticipantExperience";
-import ParticipantSettings from "./pages/participant/ParticipantSettings";
+import ParticipantSettings from "./pages/participant/settings/ParticipantSettings";
 
 const queryClient = new QueryClient();
 
