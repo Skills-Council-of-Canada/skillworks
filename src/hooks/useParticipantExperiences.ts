@@ -11,7 +11,7 @@ interface DatabaseExperience {
   status: string;
   start_date: string;
   end_date: string | null;
-  educator: {
+  profiles: {
     name: string;
   } | null;
   milestones: Array<{
@@ -25,7 +25,7 @@ interface DatabaseExperience {
     rating: number;
     comment: string;
     created_at: string;
-    reviewer: {
+    profiles: {
       name: string;
     } | null;
   }> | null;
@@ -49,7 +49,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
           status,
           start_date,
           end_date,
-          educator:profiles!participant_experiences_educator_id_fkey(
+          profiles!participant_experiences_educator_id_fkey(
             name
           ),
           milestones:experience_milestones(
@@ -63,19 +63,18 @@ export const useParticipantExperiences = (statusFilter: string) => {
             rating,
             comment,
             created_at,
-            reviewer:profiles!experience_feedback_reviewer_id_fkey(
+            profiles!experience_feedback_reviewer_id_fkey(
               name
             )
           )
         `)
-        .eq('participant_id', user.id)
-        .returns<DatabaseExperience[]>();
+        .eq('participant_id', user.id);
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.returns<DatabaseExperience[]>();
 
       if (error) {
         console.error('Error fetching experiences:', error);
@@ -86,12 +85,12 @@ export const useParticipantExperiences = (statusFilter: string) => {
       const transformedData: Experience[] = (data || []).map(exp => ({
         ...exp,
         educator: {
-          name: exp.educator?.name || 'Unknown Educator'
+          name: exp.profiles?.name || 'Unknown Educator'
         },
         feedback: (exp.feedback || []).map(f => ({
           ...f,
           reviewer: {
-            name: f.reviewer?.name || 'Anonymous Reviewer'
+            name: f.profiles?.name || 'Anonymous Reviewer'
           }
         }))
       }));
