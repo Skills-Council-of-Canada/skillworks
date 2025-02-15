@@ -1,136 +1,122 @@
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { ParticipantSettings, UpdateParticipantSettings, MentorshipMode } from "@/types/participant";
-import { Database, Json } from "@/types/supabase";
-
-type ParticipantSettingsRow = Database['public']['Tables']['participant_settings']['Row'];
-type ParticipantSettingsInsert = Database['public']['Tables']['participant_settings']['Insert'];
+import { ParticipantSettings, UpdateParticipantSettings } from "@/types/participant";
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const defaultSettings: Omit<ParticipantSettings, 'id'> = {
-    participant_id: user?.id || "",
-    mentorship_mode: "self_guided",
-    privacy_settings: {
-      work_visibility: "mentor",
-      profile_visibility: "public",
-    },
-    notification_preferences: {
-      mentor_feedback: true,
-      project_approvals: true,
-      experience_milestones: true,
-    }
-  };
-
-  const transformDatabaseSettings = (data: ParticipantSettingsRow): ParticipantSettings => ({
-    id: data.id,
-    participant_id: data.participant_id,
-    mentorship_mode: data.mentorship_mode,
-    privacy_settings: data.privacy_settings as unknown as ParticipantSettings['privacy_settings'],
-    notification_preferences: data.notification_preferences as unknown as ParticipantSettings['notification_preferences'],
-    created_at: data.created_at,
-    updated_at: data.updated_at
-  });
-
   const { data: settings, isLoading } = useQuery({
-    queryKey: ["participant-settings", user?.id],
+    queryKey: ["participant-settings"],
     queryFn: async () => {
-      if (!user?.id) {
-        console.log("No user ID found, returning default settings");
-        return { id: "", ...defaultSettings };
-      }
-
-      console.log("Fetching settings for user:", user.id);
-      const response = await supabase
+      const { data, error } = await supabase
         .from("participant_settings")
-        .select()
-        .eq("participant_id", user.id)
+        .select("*")
+        .eq("participant_id", user?.id)
         .single();
 
-      if (response.error) {
-        console.error("Database error:", response.error);
-        throw response.error;
-      }
+      if (error) throw error;
 
-      if (!response.data) {
-        // If no settings exist, create default settings
-        const insertData: ParticipantSettingsInsert = {
-          participant_id: user.id,
-          mentorship_mode: defaultSettings.mentorship_mode,
-          privacy_settings: defaultSettings.privacy_settings as unknown as Json,
-          notification_preferences: defaultSettings.notification_preferences as unknown as Json,
-        };
+      // Transform the data to match our types
+      const transformedData: ParticipantSettings = {
+        id: data.id,
+        participant_id: data.participant_id,
+        mentorship_mode: data.mentorship_mode,
+        privacy_settings: {
+          work_visibility: data.privacy_settings.work_visibility,
+          profile_visibility: data.privacy_settings.profile_visibility,
+          profile_indexing: data.privacy_settings.profile_indexing
+        },
+        notification_preferences: {
+          mentor_feedback: data.notification_preferences.mentor_feedback,
+          project_approvals: data.notification_preferences.project_approvals,
+          experience_milestones: data.notification_preferences.experience_milestones,
+          match_requests: data.notification_preferences.match_requests,
+          match_comments: data.notification_preferences.match_comments,
+          matched_projects: data.notification_preferences.matched_projects,
+          experience_updates: data.notification_preferences.experience_updates,
+          feedback_reminders: data.notification_preferences.feedback_reminders,
+          company_applications: data.notification_preferences.company_applications,
+          date_changes: data.notification_preferences.date_changes,
+          new_feedback: data.notification_preferences.new_feedback,
+          member_requests: data.notification_preferences.member_requests,
+          account_merge: data.notification_preferences.account_merge
+        },
+        language_preference: data.language_preference,
+        timezone: data.timezone,
+        appearance_settings: data.appearance_settings,
+        digest_settings: data.digest_settings,
+        security_settings: data.security_settings,
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
 
-        const insertResponse = await supabase
-          .from("participant_settings")
-          .insert(insertData)
-          .select()
-          .single();
-
-        if (insertResponse.error) {
-          console.error("Error creating default settings:", insertResponse.error);
-          throw insertResponse.error;
-        }
-
-        return transformDatabaseSettings(insertResponse.data);
-      }
-
-      return transformDatabaseSettings(response.data);
+      return transformedData;
     },
     enabled: !!user?.id,
   });
 
-  const { mutateAsync: updateSettings } = useMutation({
-    mutationFn: async (newSettings: UpdateParticipantSettings) => {
-      if (!user?.id) {
-        throw new Error("No user ID found");
-      }
+  const { mutate: updateSettings } = useMutation({
+    mutationFn: async (updates: UpdateParticipantSettings) => {
+      if (!user?.id) throw new Error("No user ID");
 
-      const updateData: ParticipantSettingsInsert = {
-        participant_id: user.id,
-        mentorship_mode: newSettings.mentorship_mode,
-        privacy_settings: newSettings.privacy_settings as unknown as Json,
-        notification_preferences: newSettings.notification_preferences as unknown as Json,
-      };
-
-      const response = await supabase
+      const { error } = await supabase
         .from("participant_settings")
-        .upsert(updateData)
-        .select()
-        .single();
+        .update(updates)
+        .eq("participant_id", user.id);
 
-      if (response.error) {
-        console.error("Error updating settings:", response.error);
-        throw response.error;
-      }
-
-      return transformDatabaseSettings(response.data);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
-      toast({
-        title: "Success",
-        description: "Settings updated successfully",
-      });
-    },
-    onError: (error) => {
-      console.error("Error in mutation:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update settings",
-        variant: "destructive",
-      });
     },
   });
 
   return {
-    settings: settings || { id: "", ...defaultSettings },
+    settings: settings || {
+      id: "",
+      participant_id: user?.id || "",
+      mentorship_mode: "self_guided",
+      privacy_settings: {
+        work_visibility: "mentor",
+        profile_visibility: "public",
+        profile_indexing: "public"
+      },
+      notification_preferences: {
+        mentor_feedback: true,
+        project_approvals: true,
+        experience_milestones: true,
+        match_requests: true,
+        match_comments: true,
+        matched_projects: true,
+        experience_updates: true,
+        feedback_reminders: true,
+        company_applications: true,
+        date_changes: true,
+        new_feedback: true,
+        member_requests: true,
+        account_merge: true
+      },
+      language_preference: "en",
+      timezone: "UTC",
+      appearance_settings: {
+        cover_photo_url: null,
+        banner_color: "#000000",
+        use_default_settings: true
+      },
+      digest_settings: {
+        email_frequency: "daily",
+        disable_all_emails: false,
+        disable_all_sms: false
+      },
+      security_settings: {
+        mfa_enabled: false,
+        last_password_change: null,
+        account_merged: false
+      }
+    },
     updateSettings,
     isLoading,
   };
