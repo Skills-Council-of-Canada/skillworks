@@ -2,67 +2,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import { User, UserRole } from "@/types/auth";
 
-const usernameToEmail: Record<string, string> = {
-  employ: "employer@skillscouncil.ca",
-  employer: "employer@skillscouncil.ca",
-  educator: "educator@skillscouncil.ca",
-  participate: "participant@skillscouncil.ca",
-  participant: "participant@skillscouncil.ca",
-  admin: "admin@skillscouncil.ca"
-};
-
-const emailToRole: Record<string, UserRole> = {
-  "employer@skillscouncil.ca": "employer",
-  "educator@skillscouncil.ca": "educator",
-  "participant@skillscouncil.ca": "participant",
-  "admin@skillscouncil.ca": "admin"
-};
-
-const usernameToRole: Record<string, UserRole> = {
-  employ: "employer",
-  employer: "employer",
-  educator: "educator",
-  participate: "participant",
-  participant: "participant",
-  admin: "admin"
-};
-
 export const signInUser = async (identifier: string, password: string) => {
   console.log("Attempting to sign in with identifier:", identifier);
   try {
     // Check if the identifier is an email
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-    
-    let email: string;
-    let role: UserRole | undefined;
-    
-    if (isEmail) {
-      email = identifier.toLowerCase();
-      role = emailToRole[email];
-      console.log("Email login attempt - determined role:", role);
-    } else {
-      // Handle username lookup
-      const username = identifier.toLowerCase();
-      email = usernameToEmail[username];
-      role = usernameToRole[username];
-      console.log("Username login attempt - determined role:", role, "mapped email:", email);
-
-      if (!email || !role) {
-        console.log("Invalid username provided:", username);
-        return { 
-          data: null, 
-          error: new Error("Invalid username. Please use: employer/employ, educator, participate/participant, or admin") 
-        };
-      }
-    }
-    
-    if (!role) {
-      console.log("No role found for:", identifier);
-      return {
-        data: null,
-        error: new Error("Invalid email or username. Please check your credentials.")
-      };
-    }
+    const email = isEmail ? identifier.toLowerCase() : identifier.toLowerCase();
     
     console.log("Attempting sign in with email:", email);
     
@@ -95,33 +40,9 @@ export const signInUser = async (identifier: string, password: string) => {
         return { data: null, error: profileError };
       }
 
-      // If still no profile exists (unlikely with the trigger), create one
       if (!profile) {
-        console.log("No profile found, attempting to create new profile with role:", role);
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: authData.user.id,
-            email: email,
-            role: role,
-            name: email.split('@')[0]
-          }, { 
-            onConflict: 'id'
-          })
-          .select()
-          .maybeSingle();
-
-        if (createError) {
-          console.error("Error creating profile:", createError);
-          return { data: null, error: createError };
-        }
-
-        profile = newProfile;
-        console.log("Created new profile:", profile);
-      }
-
-      if (!profile) {
-        return { data: null, error: new Error("Could not find or create user profile") };
+        console.log("No profile found for user");
+        return { data: null, error: new Error("Could not find user profile") };
       }
 
       console.log("Returning user data with profile:", { ...authData.user, ...profile });
