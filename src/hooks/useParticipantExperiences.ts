@@ -115,7 +115,9 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
     },
     retry: 1,
     staleTime: 30000, // Cache data for 30 seconds
-    cacheTime: 60000, // Keep in cache for 1 minute
+    gcTime: 60000, // Keep in cache for 1 minute
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: false // Only fetch on initial mount
   });
 
   return {
