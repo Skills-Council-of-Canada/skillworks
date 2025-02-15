@@ -23,13 +23,13 @@ export const useParticipantExperiences = (statusFilter: string) => {
           start_date,
           end_date,
           educator:educator_id(name),
-          milestones:experience_milestones(
+          milestones:experience_milestones!participant_experience_id(
             id,
             title,
             due_date,
             status
           ),
-          feedback:experience_feedback(
+          feedback:experience_feedback!participant_experience_id(
             id,
             rating,
             comment,
@@ -57,12 +57,12 @@ export const useParticipantExperiences = (statusFilter: string) => {
       const transformedData: Experience[] = rawData.map(exp => ({
         ...exp,
         educator: {
-          name: exp.educator?.[0]?.name || 'Unknown Educator'
+          name: exp.educator?.name || 'Unknown Educator'
         },
         feedback: exp.feedback?.map(f => ({
           ...f,
           reviewer: {
-            name: f.reviewer?.[0]?.name || 'Unknown Reviewer'
+            name: f.reviewer?.name || 'Unknown Reviewer'
           }
         })) || []
       }));
