@@ -35,18 +35,6 @@ export const ExperienceStepper = ({
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <div className="text-sm font-medium">
-            {STEPS[currentStep - 1]?.label}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Step {currentStep} of {STEPS.length}
-          </div>
-        </div>
-        <Progress value={progress} className="h-2" />
-      </div>
-      
       <div className="flex justify-between items-center">
         <Button
           variant="outline"

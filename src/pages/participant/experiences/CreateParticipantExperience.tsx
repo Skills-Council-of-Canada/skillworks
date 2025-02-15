@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -146,118 +145,132 @@ const CreateParticipantExperience = () => {
         Back to Experiences
       </Button>
 
-      <Card className="max-w-3xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Create New Experience</h1>
+      <Card className="max-w-3xl mx-auto">
+        <div className="space-y-2 p-6 border-b">
+          <div className="flex justify-between items-center">
+            <div className="text-sm font-medium">
+              {STEPS[currentStep - 1]?.label}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Step {currentStep} of {STEPS.length}
+            </div>
+          </div>
+          <Progress value={(currentStep / STEPS.length) * 100} className="h-2" />
+        </div>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Experience Title</FormLabel>
-                      <FormDescription>
-                        Enter a descriptive title for your experience (e.g., Digital Marketing Strategy)
-                      </FormDescription>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter experience title" 
-                          {...field} 
-                          maxLength={80}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-6">Create New Experience</h1>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Experience Title</FormLabel>
+                        <FormDescription>
+                          Enter a descriptive title for your experience (e.g., Digital Marketing Strategy)
+                        </FormDescription>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter experience title" 
+                            {...field} 
+                            maxLength={80}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="learner_capabilities"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Learner Capabilities</FormLabel>
-                      <FormDescription>
-                        Provide an overview of what companies will gain from working with your learners
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Describe the capabilities and skills your learners will bring to projects..." 
-                          className="min-h-[150px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="learner_capabilities"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Learner Capabilities</FormLabel>
+                        <FormDescription>
+                          Provide an overview of what companies will gain from working with your learners
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Describe the capabilities and skills your learners will bring to projects..." 
+                            className="min-h-[150px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="expected_outcomes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Expected Outcomes & Deliverables</FormLabel>
-                      <FormDescription>
-                        List the expected outcomes and deliverables (e.g., "Analyze a dataset", "Develop a marketing plan")
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Enter each outcome on a new line" 
-                          className="min-h-[100px]"
-                          onChange={(e) => {
-                            const outcomes = e.target.value.split('\n').filter(line => line.trim());
-                            field.onChange(outcomes);
-                          }}
-                          value={field.value?.join('\n') || ''}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="expected_outcomes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expected Outcomes & Deliverables</FormLabel>
+                        <FormDescription>
+                          List the expected outcomes and deliverables (e.g., "Analyze a dataset", "Develop a marketing plan")
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Enter each outcome on a new line" 
+                            className="min-h-[100px]"
+                            onChange={(e) => {
+                              const outcomes = e.target.value.split('\n').filter(line => line.trim());
+                              field.onChange(outcomes);
+                            }}
+                            value={field.value?.join('\n') || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="project_examples"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Project Examples</FormLabel>
-                      <FormDescription>
-                        Provide examples of the types of projects learners can complete
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Enter each project example on a new line" 
-                          className="min-h-[100px]"
-                          onChange={(e) => {
-                            const examples = e.target.value.split('\n').filter(line => line.trim());
-                            field.onChange(examples);
-                          }}
-                          value={field.value?.join('\n') || ''}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
+                  <FormField
+                    control={form.control}
+                    name="project_examples"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Project Examples</FormLabel>
+                        <FormDescription>
+                          Provide examples of the types of projects learners can complete
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Enter each project example on a new line" 
+                            className="min-h-[100px]"
+                            onChange={(e) => {
+                              const examples = e.target.value.split('\n').filter(line => line.trim());
+                              field.onChange(examples);
+                            }}
+                            value={field.value?.join('\n') || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
 
-            <ExperienceStepper
-              currentStep={currentStep}
-              onStepChange={setCurrentStep}
-              isStepValid={isStepValid()}
-              onSubmit={form.handleSubmit(onSubmit)}
-              isLastStep={currentStep === 6}
-              isSaving={isSubmitting}
-              onSaveDraft={handleSaveDraft}
-            />
-          </form>
-        </Form>
+              <ExperienceStepper
+                currentStep={currentStep}
+                onStepChange={setCurrentStep}
+                isStepValid={isStepValid()}
+                onSubmit={form.handleSubmit(onSubmit)}
+                isLastStep={currentStep === 6}
+                isSaving={isSubmitting}
+                onSaveDraft={handleSaveDraft}
+              />
+            </form>
+          </Form>
+        </div>
       </Card>
     </div>
   );
