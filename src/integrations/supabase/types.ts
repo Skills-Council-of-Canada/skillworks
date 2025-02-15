@@ -1629,6 +1629,13 @@ export type Database = {
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_experience_updates_author"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       knowledge_base_articles: {
