@@ -18,7 +18,7 @@ const Messages = () => {
   }
 
   return (
-    <div className="container mx-auto space-y-4">
+    <div className="container mx-auto space-y-4 py-6">
       <h1 className="text-2xl font-bold">Messages</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-12rem)]">

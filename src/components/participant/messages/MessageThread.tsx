@@ -18,8 +18,20 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    await sendMessage(newMessage);
-    setNewMessage("");
+    
+    try {
+      await sendMessage(newMessage);
+      setNewMessage("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   if (isLoading) {
@@ -34,12 +46,12 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     <div className="flex flex-col h-full">
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
-          {messages?.map((message) => (
+          {messages.map((message) => (
             <div
               key={message.id}
               className={cn(
                 "flex",
-                message.senderId === message.applicationId
+                message.senderType === "learner"
                   ? "justify-end"
                   : "justify-start"
               )}
@@ -47,14 +59,14 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
               <div
                 className={cn(
                   "max-w-[80%] rounded-lg p-3",
-                  message.senderId === message.applicationId
+                  message.senderType === "learner"
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted"
                 )}
               >
-                <p className="text-sm">{message.content}</p>
-                <span className="text-xs opacity-70">
-                  {format(new Date(message.timestamp), "p")}
+                <p className="text-sm break-words">{message.content}</p>
+                <span className="text-xs opacity-70 mt-1 block">
+                  {format(message.timestamp, "p")}
                 </span>
               </div>
             </div>
@@ -67,8 +79,9 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
           <Textarea
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            className="min-h-[80px]"
+            className="min-h-[80px] resize-none"
           />
           <Button 
             onClick={handleSendMessage} 
