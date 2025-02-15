@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type ParticipantSettingsRow = Database['public']['Tables']['participant_settings']['Row'];
 type DbInsertSettings = Database['public']['Tables']['participant_settings']['Insert'];
+type Json = Database['public']['Tables']['participant_settings']['Insert']['privacy_settings'];
 
 const RETRY_COUNT = 3;
 const STALE_TIME = 1000 * 60 * 5; // 5 minutes
@@ -41,7 +42,7 @@ export const useParticipantSettings = () => {
                   work_visibility: "mentor",
                   profile_visibility: "public",
                   profile_indexing: "public"
-                },
+                } as Json,
                 notification_preferences: {
                   mentor_feedback: true,
                   project_approvals: true,
@@ -56,24 +57,24 @@ export const useParticipantSettings = () => {
                   new_feedback: true,
                   member_requests: true,
                   account_merge: true
-                },
+                } as Json,
                 language_preference: "en",
                 timezone: "UTC",
                 appearance_settings: {
                   cover_photo_url: null,
                   banner_color: "#000000",
                   use_default_settings: true
-                },
+                } as Json,
                 digest_settings: {
                   email_frequency: "daily",
                   disable_all_emails: false,
                   disable_all_sms: false
-                },
+                } as Json,
                 security_settings: {
                   mfa_enabled: false,
                   last_password_change: null,
                   account_merged: false
-                }
+                } as Json
               };
 
               const { data: newSettings, error: insertError } = await supabase
@@ -120,11 +121,11 @@ export const useParticipantSettings = () => {
         mentorship_mode: updates.mentorship_mode,
         language_preference: updates.language_preference,
         timezone: updates.timezone,
-        privacy_settings: updates.privacy_settings,
-        notification_preferences: updates.notification_preferences,
-        appearance_settings: updates.appearance_settings,
-        digest_settings: updates.digest_settings,
-        security_settings: updates.security_settings
+        privacy_settings: updates.privacy_settings as Json,
+        notification_preferences: updates.notification_preferences as Json,
+        appearance_settings: updates.appearance_settings as Json,
+        digest_settings: updates.digest_settings as Json,
+        security_settings: updates.security_settings as Json
       };
 
       let retries = 0;
