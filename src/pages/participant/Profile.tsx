@@ -25,6 +25,10 @@ interface ParticipantProfileData {
   skills: string[] | null;
   updated_at: string;
   location: string | null;
+  email_verified: boolean | null;
+  onboarding_completed: boolean | null;
+  profile_completion_percentage: number | null;
+  steps_completed: Record<string, boolean> | null;
 }
 
 interface DatabaseParticipantProfile {
@@ -38,6 +42,10 @@ interface DatabaseParticipantProfile {
   skills: any[] | null;
   updated_at: string;
   location: string | null;
+  email_verified: boolean | null;
+  onboarding_completed: boolean | null;
+  profile_completion_percentage: number | null;
+  steps_completed: Record<string, boolean> | null;
 }
 
 export const Profile = () => {
@@ -69,7 +77,11 @@ export const Profile = () => {
         interests: dbProfile.interests?.map(String) || null,
         skills: dbProfile.skills?.map(String) || null,
         updated_at: dbProfile.updated_at,
-        location: dbProfile.location || null
+        location: dbProfile.location || null,
+        email_verified: dbProfile.email_verified || null,
+        onboarding_completed: dbProfile.onboarding_completed || null,
+        profile_completion_percentage: dbProfile.profile_completion_percentage || null,
+        steps_completed: dbProfile.steps_completed || null
       };
 
       return profileData;
