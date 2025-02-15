@@ -14,15 +14,17 @@ import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
 
+type Json = string[] | null;
+
 interface ParticipantProfileData {
   id: string;
   avatar_url: string | null;
   bio: string | null;
-  certifications: any[];
+  certifications: Json;
   created_at: string;
   full_name: string | null;
-  interests: string[];
-  skills: string[];
+  interests: Json;
+  skills: Json;
   updated_at: string;
   location: string | null;
 }
@@ -32,7 +34,7 @@ export const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   // Fetch participant profile data
-  const { data: profile, isLoading } = useQuery<ParticipantProfileData>({
+  const { data: profile, isLoading } = useQuery<ParticipantProfileData, Error>({
     queryKey: ["participant-profile", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -42,7 +44,22 @@ export const Profile = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      
+      // Ensure all required fields are present, even if null
+      const profileData: ParticipantProfileData = {
+        id: data.id,
+        avatar_url: data.avatar_url,
+        bio: data.bio,
+        certifications: data.certifications,
+        created_at: data.created_at,
+        full_name: data.full_name,
+        interests: data.interests,
+        skills: data.skills,
+        updated_at: data.updated_at,
+        location: data.location
+      };
+
+      return profileData;
     },
     enabled: !!user?.id,
   });
