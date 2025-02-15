@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -7,12 +8,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Pencil } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { EducationList } from "./components/profile/EducationList";
 import { WorkExperienceList } from "./components/profile/WorkExperienceList";
 import { FeedbackList } from "./components/profile/FeedbackList";
 import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
-import { Progress } from "@/components/ui/progress";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 
 interface ParticipantProfileData {

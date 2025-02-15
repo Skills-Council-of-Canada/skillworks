@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -17,7 +19,7 @@ import { useParticipantDashboard } from "@/hooks/useParticipantDashboard";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useProfileCompletion } from "@/hooks/useProfileCompletion";
+import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 
 const ParticipantDashboard = () => {
   const { data, isLoading } = useParticipantDashboard();
