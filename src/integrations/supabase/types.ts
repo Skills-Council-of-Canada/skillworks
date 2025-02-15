@@ -2045,41 +2045,86 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          duration_hours: number | null
           educator_id: string | null
           end_date: string | null
+          expected_outcomes: string[] | null
           id: string
+          learner_capabilities: string | null
+          learner_level: string | null
+          max_learners: number | null
+          media_urls: string[] | null
           mentor_feedback_status: string | null
           participant_id: string
+          preferred_companies: Json | null
+          project_examples: Json[] | null
+          skill_tags: string[] | null
           start_date: string | null
           status: string
+          subcategories: string[] | null
+          team_size: number | null
+          team_structure: string | null
           title: string
+          trade_category: string | null
           updated_at: string | null
+          video_url: string | null
+          workflow_status: string | null
         }
         Insert: {
           created_at?: string | null
           description?: string | null
+          duration_hours?: number | null
           educator_id?: string | null
           end_date?: string | null
+          expected_outcomes?: string[] | null
           id?: string
+          learner_capabilities?: string | null
+          learner_level?: string | null
+          max_learners?: number | null
+          media_urls?: string[] | null
           mentor_feedback_status?: string | null
           participant_id: string
+          preferred_companies?: Json | null
+          project_examples?: Json[] | null
+          skill_tags?: string[] | null
           start_date?: string | null
           status?: string
+          subcategories?: string[] | null
+          team_size?: number | null
+          team_structure?: string | null
           title: string
+          trade_category?: string | null
           updated_at?: string | null
+          video_url?: string | null
+          workflow_status?: string | null
         }
         Update: {
           created_at?: string | null
           description?: string | null
+          duration_hours?: number | null
           educator_id?: string | null
           end_date?: string | null
+          expected_outcomes?: string[] | null
           id?: string
+          learner_capabilities?: string | null
+          learner_level?: string | null
+          max_learners?: number | null
+          media_urls?: string[] | null
           mentor_feedback_status?: string | null
           participant_id?: string
+          preferred_companies?: Json | null
+          project_examples?: Json[] | null
+          skill_tags?: string[] | null
           start_date?: string | null
           status?: string
+          subcategories?: string[] | null
+          team_size?: number | null
+          team_structure?: string | null
           title?: string
+          trade_category?: string | null
           updated_at?: string | null
+          video_url?: string | null
+          workflow_status?: string | null
         }
         Relationships: [
           {

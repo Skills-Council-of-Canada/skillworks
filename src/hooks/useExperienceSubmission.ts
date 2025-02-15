@@ -3,7 +3,32 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { ExperienceFormValues } from "@/types/educator";
+
+export interface ExperienceFormValues {
+  title: string;
+  description: string;
+  start_date: string;
+  end_date?: string;
+  trade_category?: string;
+  subcategories?: string[];
+  skill_tags?: string[];
+  expected_outcomes?: string[];
+  project_examples?: any[];
+  learner_capabilities?: string;
+  media_urls?: string[];
+  video_url?: string;
+  team_structure?: string;
+  team_size?: number;
+  preferred_companies?: any;
+  duration_hours?: number;
+  learner_level?: string;
+  max_learners?: number;
+  milestones?: Array<{
+    title: string;
+    description?: string;
+    due_date: string;
+  }>;
+}
 
 type ExperienceSubmissionStatus = 'draft' | 'pending_approval';
 
@@ -22,34 +47,37 @@ export const useExperienceSubmission = () => {
 
       if (userError || !user) throw new Error("User not authenticated");
 
-      // First, check if the user is a verified educator
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) throw profileError;
-      if (profile.role !== 'educator') throw new Error("Only educators can create experiences");
-
-      // Create the experience first
+      // Create the experience
       const { data: experience, error: experienceError } = await supabase
         .from("participant_experiences")
         .insert({
+          participant_id: user.id,
           title: data.title,
           description: data.description,
           status: status,
-          educator_id: user.id,
-          participant_id: user.id, // Required field as per schema
           start_date: new Date(data.start_date).toISOString(),
           end_date: data.end_date ? new Date(data.end_date).toISOString() : null,
+          trade_category: data.trade_category,
+          subcategories: data.subcategories,
+          skill_tags: data.skill_tags,
+          expected_outcomes: data.expected_outcomes,
+          project_examples: data.project_examples,
+          learner_capabilities: data.learner_capabilities,
+          media_urls: data.media_urls,
+          video_url: data.video_url,
+          team_structure: data.team_structure,
+          team_size: data.team_size,
+          preferred_companies: data.preferred_companies,
+          duration_hours: data.duration_hours,
+          learner_level: data.learner_level,
+          max_learners: data.max_learners
         })
         .select()
         .single();
 
       if (experienceError) throw experienceError;
 
-      // Now insert the milestones if any
+      // Insert milestones if any
       if (data.milestones?.length > 0) {
         const { error: milestonesError } = await supabase
           .from("experience_milestones")
@@ -73,7 +101,7 @@ export const useExperienceSubmission = () => {
           : "Your experience has been submitted for approval.",
       });
       
-      navigate("/educator/experiences");
+      navigate("/participant/experiences");
     } catch (error: any) {
       console.error("Error creating experience:", error);
       toast({

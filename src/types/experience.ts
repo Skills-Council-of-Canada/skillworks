@@ -6,6 +6,20 @@ export interface Experience {
   status: string;
   start_date: string;
   end_date?: string;
+  trade_category?: string;
+  subcategories?: string[];
+  skill_tags?: string[];
+  expected_outcomes?: string[];
+  project_examples?: any[];
+  learner_capabilities?: string;
+  media_urls?: string[];
+  video_url?: string;
+  team_structure?: string;
+  team_size?: number;
+  preferred_companies?: any;
+  duration_hours?: number;
+  learner_level?: string;
+  max_learners?: number;
   educator: {
     name: string;
   };
