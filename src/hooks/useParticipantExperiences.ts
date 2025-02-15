@@ -15,7 +15,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
         if (userError) throw userError;
         if (!user) throw new Error('No user found');
 
-        // Optimize the query using the new foreign key relationships
+        // Updated query to use 'name' instead of 'full_name'
         const query = supabase
           .from('participant_experiences')
           .select(`
@@ -41,7 +41,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             max_learners,
             educator_profile:profiles!participant_experiences_educator_profile_id_fkey(
               id,
-              full_name
+              name
             ),
             milestones:experience_milestones(
               id,
@@ -56,7 +56,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
               created_at,
               reviewer:profiles!experience_feedback_reviewer_profile_id_fkey(
                 id,
-                full_name
+                name
               )
             )
           `)
@@ -75,7 +75,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
           throw experiencesError;
         }
 
-        // Transform the data using the new structure
+        // Transform the data using the updated structure
         return (experiences || []).map((exp: any): Experience => ({
           id: exp.id,
           title: exp.title,
@@ -98,7 +98,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
           learner_level: exp.learner_level,
           max_learners: exp.max_learners,
           educator: {
-            name: exp.educator_profile?.full_name || ''
+            name: exp.educator_profile?.name || ''
           },
           milestones: exp.milestones || [],
           feedback: (exp.feedback || []).map((f: any) => ({
@@ -108,7 +108,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             created_at: f.created_at,
             reviewer_profile_id: f.reviewer?.id,
             profiles: {
-              name: f.reviewer?.full_name || ''
+              name: f.reviewer?.name || ''
             }
           }))
         }));
