@@ -6,6 +6,7 @@ import { ParticipantSettings, UpdateParticipantSettings } from "@/types/particip
 import { Database } from "@/types/supabase";
 
 type ParticipantSettingsRow = Database['public']['Tables']['participant_settings']['Row'];
+type DbInsertSettings = Database['public']['Tables']['participant_settings']['Insert'];
 
 export const useParticipantSettings = () => {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export const useParticipantSettings = () => {
       if (error) {
         if (error.code === 'PGRST116') {
           // No settings found, create default settings
-          const defaultSettings: Omit<ParticipantSettings, 'id'> = {
+          const defaultSettings: DbInsertSettings = {
             participant_id: user.id,
             mentorship_mode: "self_guided",
             privacy_settings: {
@@ -74,12 +75,15 @@ export const useParticipantSettings = () => {
             .single();
 
           if (insertError) throw insertError;
-          return newSettings as ParticipantSettings;
+          
+          // Transform the data to our application type
+          return transformDatabaseToAppSettings(newSettings);
         }
         throw error;
       }
 
-      return data as ParticipantSettings;
+      // Transform the data to our application type
+      return transformDatabaseToAppSettings(data);
     },
     enabled: !!user?.id,
   });
@@ -88,9 +92,21 @@ export const useParticipantSettings = () => {
     mutationFn: async (updates: UpdateParticipantSettings) => {
       if (!user?.id) throw new Error("No user ID");
 
+      // Transform our app types to database types
+      const dbUpdates: Partial<DbInsertSettings> = {
+        mentorship_mode: updates.mentorship_mode,
+        language_preference: updates.language_preference,
+        timezone: updates.timezone,
+        privacy_settings: updates.privacy_settings as any,
+        notification_preferences: updates.notification_preferences as any,
+        appearance_settings: updates.appearance_settings as any,
+        digest_settings: updates.digest_settings as any,
+        security_settings: updates.security_settings as any
+      };
+
       const { error } = await supabase
         .from("participant_settings")
-        .update(updates)
+        .update(dbUpdates)
         .eq("participant_id", user.id);
 
       if (error) throw error;
@@ -99,6 +115,24 @@ export const useParticipantSettings = () => {
       queryClient.invalidateQueries({ queryKey: ["participant-settings"] });
     },
   });
+
+  // Helper function to transform database types to application types
+  function transformDatabaseToAppSettings(data: ParticipantSettingsRow): ParticipantSettings {
+    return {
+      id: data.id,
+      participant_id: data.participant_id,
+      mentorship_mode: data.mentorship_mode,
+      privacy_settings: data.privacy_settings as ParticipantSettings['privacy_settings'],
+      notification_preferences: data.notification_preferences as ParticipantSettings['notification_preferences'],
+      language_preference: data.language_preference,
+      timezone: data.timezone,
+      appearance_settings: data.appearance_settings as ParticipantSettings['appearance_settings'],
+      digest_settings: data.digest_settings as ParticipantSettings['digest_settings'],
+      security_settings: data.security_settings as ParticipantSettings['security_settings'],
+      created_at: data.created_at,
+      updated_at: data.updated_at
+    };
+  }
 
   return {
     settings: settings || {
