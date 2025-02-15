@@ -18,7 +18,7 @@ export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-background border shadow-lg">
         <SelectItem value="all">All Experiences</SelectItem>
         <SelectItem value="in_progress">In Progress</SelectItem>
         <SelectItem value="completed">Completed</SelectItem>

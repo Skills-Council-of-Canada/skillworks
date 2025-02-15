@@ -38,7 +38,7 @@ export function ProjectFilters({
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-background border shadow-lg">
           <SelectItem value="all">All statuses</SelectItem>
           <SelectItem value="pending_review">Pending Review</SelectItem>
           <SelectItem value="approved">Approved</SelectItem>

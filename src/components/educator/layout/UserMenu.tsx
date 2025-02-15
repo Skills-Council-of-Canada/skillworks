@@ -37,7 +37,7 @@ export const UserMenu = () => {
             <HelpCircle className="h-5 w-5" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="bg-background border shadow-lg">
           <p>Help & Support</p>
         </TooltipContent>
       </Tooltip>
