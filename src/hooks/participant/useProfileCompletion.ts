@@ -9,20 +9,20 @@ export const useProfileCompletion = () => {
   const { toast } = useToast();
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ["participant-profile", user?.id],
+    queryKey: ["participant-registration", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
 
-      console.log("Fetching profile for user:", user.id);
+      console.log("Fetching registration profile for user:", user.id);
       
       const { data, error } = await supabase
-        .from("participant_profiles")
+        .from("participant_registrations")
         .select("*")
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error fetching registration:", error);
         toast({
           title: "Error",
           description: "Failed to fetch profile data",
@@ -32,42 +32,15 @@ export const useProfileCompletion = () => {
       }
 
       if (!data) {
-        console.log("No profile found, creating new profile");
-        const { data: newProfile, error: createError } = await supabase
-          .from("participant_profiles")
-          .insert([
-            {
-              id: user.id,
-              email_verified: false,
-              profile_completion_percentage: 0,
-              steps_completed: {
-                profile_setup: false,
-                personal_details: false,
-                skills_preferences: false,
-                documents: false,
-                final_review: false
-              }
-            }
-          ])
-          .select("*")
-          .maybeSingle();
-
-        if (createError) {
-          console.error("Error creating profile:", createError);
-          toast({
-            title: "Error",
-            description: "Failed to create profile",
-            variant: "destructive",
-          });
-          return null;
-        }
-
-        console.log("New profile created:", newProfile);
-        return newProfile;
+        console.log("No registration found for this user");
+        return null;
       }
 
-      console.log("Existing profile found:", data);
-      return data;
+      console.log("Existing registration found:", data);
+      return {
+        ...data,
+        full_name: `${data.first_name} ${data.last_name}`.trim(),
+      };
     },
     enabled: !!user?.id,
     staleTime: 30000, // Consider data fresh for 30 seconds
@@ -78,12 +51,13 @@ export const useProfileCompletion = () => {
     if (!profile) return 0;
 
     const requiredFields = [
-      'full_name',
-      'avatar_url',
-      'bio',
-      'location',
-      'skills',
-      'interests'
+      'first_name',
+      'last_name',
+      'email',
+      'skill_level',
+      'availability',
+      'date_of_birth',
+      'preferred_learning_areas'
     ];
 
     const completedFields = requiredFields.filter(field => {

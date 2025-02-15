@@ -5,8 +5,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Pencil } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { EducationList } from "./components/profile/EducationList";
@@ -16,38 +14,21 @@ import { ExperienceList } from "./components/profile/ExperienceList";
 import { AchievementList } from "./components/profile/AchievementList";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 
-interface ParticipantProfileData {
+interface ParticipantRegistration {
   id: string;
-  avatar_url: string | null;
-  bio: string | null;
-  certifications: string[] | null;
+  user_id: string | null;
+  first_name: string;
+  last_name: string;
+  email: string;
+  skill_level: string;
+  educational_background: string | null;
+  availability: string;
+  preferred_learning_areas: string[] | null;
+  registration_completed: boolean | null;
   created_at: string;
-  full_name: string | null;
-  interests: string[] | null;
-  skills: string[] | null;
   updated_at: string;
-  location: string | null;
-  email_verified: boolean | null;
-  onboarding_completed: boolean | null;
-  profile_completion_percentage: number | null;
-  steps_completed: Record<string, boolean> | null;
-}
-
-interface DatabaseParticipantProfile {
-  id: string;
-  avatar_url: string | null;
-  bio: string | null;
-  certifications: any[] | null;
-  created_at: string;
-  full_name: string | null;
-  interests: any[] | null;
-  skills: any[] | null;
-  updated_at: string;
-  location: string | null;
-  email_verified: boolean | null;
-  onboarding_completed: boolean | null;
-  profile_completion_percentage: number | null;
-  steps_completed: Record<string, boolean> | null;
+  date_of_birth: string;
+  full_name?: string;
 }
 
 export const Profile = () => {
@@ -68,7 +49,7 @@ export const Profile = () => {
           <div className="absolute -bottom-16 left-8">
             <Avatar className="h-32 w-32 border-4 border-white">
               <AvatarFallback className="bg-blue-100 text-blue-600 text-4xl">
-                {profile?.full_name?.[0] || user?.name?.[0]}
+                {profile?.first_name?.[0] || user?.name?.[0]}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -83,7 +64,7 @@ export const Profile = () => {
         </div>
         <div className="mt-20 px-8">
           <h1 className="text-2xl font-bold">{profile?.full_name || user?.name}</h1>
-          <p className="text-gray-600">{profile?.bio || "No bio yet"}</p>
+          <p className="text-gray-600">{profile?.educational_background || "No educational background provided"}</p>
           
           {/* Profile Completion Progress */}
           <div className="mt-4">
@@ -106,10 +87,35 @@ export const Profile = () => {
 
         <TabsContent value="profile">
           <div className="space-y-8">
-            {/* Location & Categories */}
+            {/* Basic Information */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold mb-4">LOCATION</h2>
-              <p className="text-gray-600">{profile?.location || "Location not set"}</p>
+              <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
+              <div className="space-y-2">
+                <p className="text-gray-600">
+                  <span className="font-medium">Email:</span> {profile?.email}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-medium">Skill Level:</span> {profile?.skill_level}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-medium">Availability:</span> {profile?.availability}
+                </p>
+              </div>
+            </div>
+
+            {/* Learning Areas */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h2 className="text-lg font-semibold mb-4">Preferred Learning Areas</h2>
+              <div className="flex flex-wrap gap-2">
+                {profile?.preferred_learning_areas?.map((area, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                  >
+                    {area}
+                  </span>
+                )) || "No learning areas specified"}
+              </div>
             </div>
 
             {/* Work Experience */}
