@@ -4,6 +4,33 @@ import { supabase } from '@/integrations/supabase/client';
 import { Experience } from '@/types/experience';
 import { useToast } from '@/hooks/use-toast';
 
+interface DatabaseExperience {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  educator: {
+    name: string;
+  } | null;
+  milestones: Array<{
+    id: string;
+    title: string;
+    due_date: string;
+    status: string;
+  }> | null;
+  feedback: Array<{
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+    reviewer: {
+      name: string;
+    } | null;
+  }> | null;
+}
+
 export const useParticipantExperiences = (statusFilter: string) => {
   const { toast } = useToast();
 
@@ -13,7 +40,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      let query = supabase
+      const { data, error } = await supabase
         .from("participant_experiences")
         .select(`
           id,
@@ -41,13 +68,12 @@ export const useParticipantExperiences = (statusFilter: string) => {
             )
           )
         `)
-        .eq('participant_id', user.id);
+        .eq('participant_id', user.id)
+        .returns<DatabaseExperience[]>();
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
-
-      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching experiences:', error);
