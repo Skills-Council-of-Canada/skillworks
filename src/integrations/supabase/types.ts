@@ -69,13 +69,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "admin_experience_reviews_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "admin_experience_reviews_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
@@ -155,15 +148,7 @@ export type Database = {
           resource_type?: Database["public"]["Enums"]["admin_resource_type"]
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_role_permissions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       applications: {
         Row: {
@@ -263,13 +248,6 @@ export type Database = {
             referencedRelation: "educator_employer_collaborations"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "collaboration_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       educational_portals: {
@@ -340,13 +318,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "educator_employer_collaborations_educator_id_fkey"
-            columns: ["educator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "educator_employer_collaborations_employer_id_fkey"
             columns: ["employer_id"]
@@ -573,13 +544,6 @@ export type Database = {
             columns: ["employer_id"]
             isOneToOne: false
             referencedRelation: "employers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "educator_experiences_reviewed_by_fkey"
-            columns: ["reviewed_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1098,15 +1062,7 @@ export type Database = {
           title?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "experience_drafts_educator_id_fkey"
-            columns: ["educator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       experience_feedback: {
         Row: {
@@ -1142,13 +1098,6 @@ export type Database = {
             columns: ["participant_experience_id"]
             isOneToOne: false
             referencedRelation: "participant_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "experience_feedback_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1290,24 +1239,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "experience_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "fk_experience_id"
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "participant_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_sender_id"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1681,13 +1616,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "experience_updates_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "experience_updates_experience_id_fkey"
             columns: ["experience_id"]
             isOneToOne: false
@@ -1782,13 +1710,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "mentor_feedback_requests_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "mentor_feedback_requests_relationship_id_fkey"
             columns: ["relationship_id"]
             isOneToOne: false
@@ -1834,13 +1755,6 @@ export type Database = {
             referencedRelation: "mentor_relationships"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mentor_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mentor_relationships: {
@@ -1868,36 +1782,7 @@ export type Database = {
           status?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "fk_mentor"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_participant"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mentor_relationships_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mentor_relationships_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       mentor_skill_assessments: {
         Row: {
@@ -2079,15 +1964,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "participant_events_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       participant_experiences: {
         Row: {
@@ -2167,15 +2044,7 @@ export type Database = {
           participant_id?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "participant_integrations_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       participant_messages: {
         Row: {
@@ -2202,15 +2071,7 @@ export type Database = {
           read?: boolean | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "participant_messages_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       participant_notifications: {
         Row: {
@@ -2331,13 +2192,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "participant_project_deliverables_feedback_by_fkey"
-            columns: ["feedback_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "participant_project_deliverables_participant_project_id_fkey"
             columns: ["participant_project_id"]
             isOneToOne: false
@@ -2382,13 +2236,6 @@ export type Database = {
             referencedRelation: "participant_projects"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "participant_project_documents_uploaded_by_fkey"
-            columns: ["uploaded_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       participant_project_messages: {
@@ -2421,13 +2268,6 @@ export type Database = {
             referencedRelation: "participant_projects"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "participant_project_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       participant_project_team_members: {
@@ -2456,13 +2296,6 @@ export type Database = {
           role?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "participant_project_team_members_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "participant_project_team_members_participant_project_id_fkey"
             columns: ["participant_project_id"]
@@ -2504,13 +2337,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "participant_projects_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "participant_projects_project_id_fkey"
             columns: ["project_id"]
@@ -2567,13 +2393,6 @@ export type Database = {
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "participant_recommendations_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2708,13 +2527,6 @@ export type Database = {
             referencedRelation: "educator_experiences"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "participant_tasks_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       participant_workflow_status: {
@@ -2745,15 +2557,7 @@ export type Database = {
           registration_status?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "participant_workflow_status_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -2762,21 +2566,11 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          last_status_change: string | null
           name: string
           phone: string | null
           preferred_contact: string | null
-          requires_verification: boolean | null
           role: string
-          status: Database["public"]["Enums"]["user_status"] | null
-          status_changed_by: string | null
           updated_at: string
-          verification_details: Json | null
-          verification_documents: string[] | null
-          verification_notes: string | null
-          verification_submitted_at: string | null
-          verified_at: string | null
-          verified_by: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -2784,21 +2578,11 @@ export type Database = {
           created_at?: string
           email: string
           id: string
-          last_status_change?: string | null
-          name?: string
+          name: string
           phone?: string | null
           preferred_contact?: string | null
-          requires_verification?: boolean | null
-          role?: string
-          status?: Database["public"]["Enums"]["user_status"] | null
-          status_changed_by?: string | null
+          role: string
           updated_at?: string
-          verification_details?: Json | null
-          verification_documents?: string[] | null
-          verification_notes?: string | null
-          verification_submitted_at?: string | null
-          verified_at?: string | null
-          verified_by?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -2806,21 +2590,11 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
-          last_status_change?: string | null
           name?: string
           phone?: string | null
           preferred_contact?: string | null
-          requires_verification?: boolean | null
           role?: string
-          status?: Database["public"]["Enums"]["user_status"] | null
-          status_changed_by?: string | null
           updated_at?: string
-          verification_details?: Json | null
-          verification_documents?: string[] | null
-          verification_notes?: string | null
-          verification_submitted_at?: string | null
-          verified_at?: string | null
-          verified_by?: string | null
         }
         Relationships: []
       }
@@ -2853,13 +2627,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "project_approvals_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "project_approvals_project_id_fkey"
             columns: ["project_id"]
@@ -2935,13 +2702,6 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "project_reviews_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3090,13 +2850,6 @@ export type Database = {
             columns: ["employer_id"]
             isOneToOne: false
             referencedRelation: "employers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "projects_reviewed_by_fkey"
-            columns: ["reviewed_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3572,14 +3325,6 @@ export type Database = {
             | null
           total_matches: number | null
           total_projects: number | null
-        }
-        Relationships: []
-      }
-      analytics_user_registrations: {
-        Row: {
-          count: number | null
-          month: string | null
-          role: string | null
         }
         Relationships: []
       }

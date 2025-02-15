@@ -87,13 +87,13 @@ export const signInUser = async (identifier: string, password: string) => {
         .eq('id', authData.user.id)
         .maybeSingle();
 
-      if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows returned
+      if (profileError) {
         console.error("Error fetching profile:", profileError);
         return { data: null, error: profileError };
       }
 
       // If no profile exists, create one
-      if (!profile && role) {
+      if (!profile) {
         console.log("No profile found, creating new profile with role:", role);
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
@@ -101,12 +101,7 @@ export const signInUser = async (identifier: string, password: string) => {
             id: authData.user.id,
             email: email,
             role: role,
-            name: email.split('@')[0],
-            status: 'pending',
-            avatar_url: null,
-            bio: null,
-            phone: null,
-            preferred_contact: 'email'
+            name: email.split('@')[0]
           })
           .select()
           .single();
