@@ -43,13 +43,9 @@ const ParticipantExperiences = () => {
       ) : !experiences?.length ? (
         <Card className="p-8 text-center">
           <h3 className="text-xl font-semibold mb-2">No experiences found</h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-muted-foreground">
             Start by creating your first experience or adjust your filters
           </p>
-          <Button onClick={() => navigate('/participant/create-experience')}>
-            <Plus className="w-4 h-4 mr-2" />
-            Create Your First Experience
-          </Button>
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
