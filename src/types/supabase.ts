@@ -30,36 +30,63 @@ export interface Database {
           updated_at?: string;
         };
       };
-      participant_details: {
+      participant_profiles: {
         Row: {
           id: string;
+          onboarding_completed: boolean;
+          email_verified: boolean;
+          location: string | null;
+          avatar_url: string | null;
+          interests: string[] | null;
+          skills: string[] | null;
+          bio: string | null;
+          certifications: string[] | null;
+          created_at: string;
+          updated_at: string;
+          profile_completion_percentage: number;
           skill_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
           availability: string;
           date_of_birth: string | null;
           educational_background: string | null;
           preferred_learning_areas: string[];
-          created_at: string;
-          updated_at: string;
         };
         Insert: {
           id: string;
+          onboarding_completed?: boolean;
+          email_verified?: boolean;
+          location?: string | null;
+          avatar_url?: string | null;
+          interests?: string[] | null;
+          skills?: string[] | null;
+          bio?: string | null;
+          certifications?: string[] | null;
+          created_at?: string;
+          updated_at?: string;
+          profile_completion_percentage?: number;
           skill_level?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
           availability?: string;
           date_of_birth?: string | null;
           educational_background?: string | null;
           preferred_learning_areas?: string[];
-          created_at?: string;
-          updated_at?: string;
         };
         Update: {
           id?: string;
+          onboarding_completed?: boolean;
+          email_verified?: boolean;
+          location?: string | null;
+          avatar_url?: string | null;
+          interests?: string[] | null;
+          skills?: string[] | null;
+          bio?: string | null;
+          certifications?: string[] | null;
+          created_at?: string;
+          updated_at?: string;
+          profile_completion_percentage?: number;
           skill_level?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
           availability?: string;
           date_of_birth?: string | null;
           educational_background?: string | null;
           preferred_learning_areas?: string[];
-          created_at?: string;
-          updated_at?: string;
         };
       };
       profiles: {
