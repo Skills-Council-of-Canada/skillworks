@@ -20,7 +20,8 @@ export interface Experience {
   duration_hours?: number;
   learner_level?: string;
   max_learners?: number;
-  educator: {
+  educator_id?: string;
+  educator?: {
     name: string;
   };
   milestones: Array<{
@@ -34,7 +35,8 @@ export interface Experience {
     rating: number;
     comment: string;
     created_at: string;
-    reviewer: {
+    reviewer_profile_id: string;
+    profiles: {
       name: string;
     };
   }>;
@@ -47,6 +49,7 @@ export interface RawSupabaseResponse {
   status: string;
   start_date: string;
   end_date: string | null;
+  educator_id: string;
   educator: { name: string }[];
   milestones: {
     id: string;
@@ -59,6 +62,7 @@ export interface RawSupabaseResponse {
     rating: number;
     comment: string;
     created_at: string;
-    reviewer: { name: string }[];
+    reviewer_profile_id: string;
+    profiles: { name: string }[];
   }[];
 }
