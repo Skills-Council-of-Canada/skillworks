@@ -3,30 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Database } from "@/types/supabase";
 
-type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
-
-interface Profile {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
-  status: string;
-  phone: string | null;
-  preferred_contact: string | null;
-}
-
-interface ParticipantDetails {
-  id: string;
-  skill_level: SkillLevel;
-  availability: string;
-  date_of_birth: string | null;
-  educational_background: string | null;
-  preferred_learning_areas: string[];
-}
+type Tables = Database['public']['Tables'];
+type Profile = Tables['profiles']['Row'];
+type ParticipantDetails = Tables['participant_details']['Row'];
 
 type CombinedProfile = {
   full_name: string;
@@ -86,7 +67,7 @@ export const useProfileCompletion = () => {
         const combinedProfile: CombinedProfile = {
           ...profile,
           full_name: profile.name,
-          skill_level: (details?.skill_level as SkillLevel) || 'beginner',
+          skill_level: details?.skill_level || 'beginner',
           availability: details?.availability || 'flexible',
           date_of_birth: details?.date_of_birth || null,
           educational_background: details?.educational_background || null,
