@@ -4,10 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface ParticipantProfile {
+interface Profile {
   id: string;
   email: string;
-  full_name: string;
+  name: string;
   role: string;
   avatar_url: string | null;
   created_at: string;
@@ -28,68 +28,77 @@ interface ParticipantDetails {
   updated_at: string;
 }
 
+interface CombinedProfile extends Profile, Omit<ParticipantDetails, 'id' | 'created_at' | 'updated_at'> {
+  full_name: string;
+}
+
 export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { data: profileData, isLoading } = useQuery({
+  const { data: profileData, isLoading } = useQuery<CombinedProfile | null>({
     queryKey: ["participant-profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
 
       console.log("Fetching participant profile data for user:", user.id);
       
-      // Fetch both profile and participant details
       const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
         throw profileError;
       }
 
-      const { data: details, error: detailsError } = await supabase
-        .from("participant_details")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+      try {
+        const { data: details, error: detailsError } = await supabase
+          .from('participant_details')
+          .select('*')
+          .eq('id', user.id)
+          .single();
 
-      if (detailsError) {
-        console.error("Error fetching participant details:", detailsError);
-        throw detailsError;
+        if (detailsError) {
+          console.error("Error fetching participant details:", detailsError);
+          throw detailsError;
+        }
+
+        if (!profile || !details) {
+          toast({
+            title: "Profile Incomplete",
+            description: "Please complete your profile setup",
+            variant: "destructive",
+          });
+          return null;
+        }
+
+        return {
+          ...profile,
+          ...details,
+          full_name: profile.name, // Use name from profiles table as full_name
+        };
+      } catch (error) {
+        console.error("Error in details fetch:", error);
+        // Return basic profile if details aren't found yet
+        return {
+          ...profile,
+          full_name: profile.name,
+          skill_level: '',
+          availability: '',
+          date_of_birth: '',
+          educational_background: null,
+          preferred_learning_areas: [],
+        };
       }
-
-      if (!profile || !details) {
-        toast({
-          title: "Profile Incomplete",
-          description: "Please complete your profile setup",
-          variant: "destructive",
-        });
-        return null;
-      }
-
-      return {
-        ...profile,
-        ...details,
-      };
     },
     enabled: !!user?.id,
     staleTime: 30000,
-    retry: 1,
-    onError: (error) => {
-      console.error("Error in profile query:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch profile data",
-        variant: "destructive",
-      });
-    },
   });
 
-  const calculateCompletionPercentage = (profile: any) => {
+  const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
     if (!profile) return 0;
 
     const requiredFields = [
@@ -104,7 +113,7 @@ export const useProfileCompletion = () => {
     ];
 
     const completedFields = requiredFields.filter(field => {
-      const value = profile[field];
+      const value = profile[field as keyof CombinedProfile];
       return value !== null && value !== undefined && 
              (Array.isArray(value) ? value.length > 0 : value !== '');
     });
