@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { useExperienceSubmission } from '@/hooks/useExperienceSubmission';
+import { useExperienceSubmission, ExperienceFormValues } from '@/hooks/useExperienceSubmission';
 import { ArrowLeft } from 'lucide-react';
 
 const formSchema = z.object({
@@ -38,13 +37,11 @@ const formSchema = z.object({
   })).optional()
 });
 
-type FormValues = z.infer<typeof formSchema>;
-
 const CreateParticipantExperience = () => {
   const navigate = useNavigate();
   const { submitExperience, isSubmitting } = useExperienceSubmission();
 
-  const form = useForm<FormValues>({
+  const form = useForm<ExperienceFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -66,7 +63,7 @@ const CreateParticipantExperience = () => {
     }
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ExperienceFormValues) => {
     await submitExperience(data);
   };
 

@@ -5,9 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 export interface ExperienceFormValues {
+  // Required fields
   title: string;
   description: string;
   start_date: string;
+  // Optional fields
   end_date?: string;
   trade_category?: string;
   subcategories?: string[];
@@ -57,20 +59,20 @@ export const useExperienceSubmission = () => {
           status: status,
           start_date: new Date(data.start_date).toISOString(),
           end_date: data.end_date ? new Date(data.end_date).toISOString() : null,
-          trade_category: data.trade_category,
-          subcategories: data.subcategories,
-          skill_tags: data.skill_tags,
-          expected_outcomes: data.expected_outcomes,
-          project_examples: data.project_examples,
-          learner_capabilities: data.learner_capabilities,
-          media_urls: data.media_urls,
-          video_url: data.video_url,
-          team_structure: data.team_structure,
-          team_size: data.team_size,
-          preferred_companies: data.preferred_companies,
-          duration_hours: data.duration_hours,
-          learner_level: data.learner_level,
-          max_learners: data.max_learners
+          trade_category: data.trade_category || null,
+          subcategories: data.subcategories || [],
+          skill_tags: data.skill_tags || [],
+          expected_outcomes: data.expected_outcomes || [],
+          project_examples: data.project_examples || [],
+          learner_capabilities: data.learner_capabilities || null,
+          media_urls: data.media_urls || [],
+          video_url: data.video_url || null,
+          team_structure: data.team_structure || 'individual',
+          team_size: data.team_size || 1,
+          preferred_companies: data.preferred_companies || null,
+          duration_hours: data.duration_hours || 40,
+          learner_level: data.learner_level || 'beginner',
+          max_learners: data.max_learners || 1
         })
         .select()
         .single();
