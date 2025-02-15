@@ -7,11 +7,17 @@ import { Database } from "@/types/supabase";
 
 type Tables = Database['public']['Tables'];
 type Profile = Tables['profiles']['Row'];
-type ParticipantDetails = Tables['participant_details']['Row'];
+type ParticipantProfile = Tables['participant_profiles']['Row'];
 
 type CombinedProfile = {
   full_name: string;
-} & Omit<Profile, 'name'> & Omit<ParticipantDetails, 'id'>;
+} & Omit<Profile, 'name'> & {
+  skill_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  availability: string;
+  date_of_birth: string | null;
+  educational_background: string | null;
+  preferred_learning_areas: string[];
+};
 
 export const useProfileCompletion = () => {
   const { user } = useAuth();
@@ -44,20 +50,20 @@ export const useProfileCompletion = () => {
           return null;
         }
 
-        // Then get participant details
+        // Then get participant profile
         const { data: details, error: detailsError } = await supabase
-          .from('participant_details')
+          .from('participant_profiles')
           .select()
           .eq('id', user.id)
           .maybeSingle();
 
         if (detailsError) {
-          console.error("Error fetching participant details:", detailsError);
+          console.error("Error fetching participant profile:", detailsError);
           // Only show error if it's not a "does not exist" error
           if (detailsError.code !== 'PGRST116') {
             toast({
               title: "Error",
-              description: "Failed to fetch participant details",
+              description: "Failed to fetch participant profile",
               variant: "destructive",
             });
           }
@@ -67,11 +73,12 @@ export const useProfileCompletion = () => {
         const combinedProfile: CombinedProfile = {
           ...profile,
           full_name: profile.name,
-          skill_level: details?.skill_level || 'beginner',
-          availability: details?.availability || 'flexible',
-          date_of_birth: details?.date_of_birth || null,
-          educational_background: details?.educational_background || null,
-          preferred_learning_areas: details?.preferred_learning_areas || [],
+          skill_level: 'beginner',
+          availability: 'flexible',
+          date_of_birth: null,
+          educational_background: null,
+          preferred_learning_areas: [],
+          ...details
         };
 
         return combinedProfile;
