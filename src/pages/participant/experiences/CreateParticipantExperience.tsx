@@ -8,9 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useExperienceSubmission, ExperienceFormValues } from '@/hooks/useExperienceSubmission';
 import { ArrowLeft } from 'lucide-react';
-import { ExperienceStepper } from "@/components/participant/experiences/ExperienceStepper";
+import { ExperienceStepper, STEPS } from "@/components/participant/experiences/ExperienceStepper";
 
 const formSchema = z.object({
   // Step 1: Experience Details

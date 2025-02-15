@@ -13,7 +13,7 @@ interface ExperienceStepperProps {
   onSaveDraft: () => void;
 }
 
-const STEPS = [
+export const STEPS = [
   { label: "Experience Details" },
   { label: "Meta Categorization" },
   { label: "Learner Setup" },
@@ -31,8 +31,6 @@ export const ExperienceStepper = ({
   isSaving,
   onSaveDraft
 }: ExperienceStepperProps) => {
-  const progress = (currentStep / STEPS.length) * 100;
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
