@@ -24,7 +24,7 @@ const ParticipantExperiences = () => {
             value={statusFilter}
             onValueChange={setStatusFilter}
           />
-          <Button onClick={() => navigate('/participant/experiences/create')} className="bg-primary">
+          <Button onClick={() => navigate('/educator/create-experience')} className="bg-primary">
             <Plus className="w-4 h-4 mr-2" />
             Create Experience
           </Button>
@@ -46,7 +46,7 @@ const ParticipantExperiences = () => {
           <p className="text-muted-foreground mb-6">
             Start by creating your first experience or adjust your filters
           </p>
-          <Button onClick={() => navigate('/participant/experiences/create')}>
+          <Button onClick={() => navigate('/educator/create-experience')}>
             <Plus className="w-4 h-4 mr-2" />
             Create Your First Experience
           </Button>

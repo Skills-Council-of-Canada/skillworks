@@ -40,7 +40,7 @@ export const useParticipantExperiences = (statusFilter: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
+      let query = supabase
         .from("participant_experiences")
         .select(`
           id,
@@ -74,6 +74,8 @@ export const useParticipantExperiences = (statusFilter: string) => {
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching experiences:', error);
