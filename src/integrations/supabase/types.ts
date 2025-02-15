@@ -2764,30 +2764,45 @@ export type Database = {
       }
       participant_settings: {
         Row: {
+          appearance_settings: Json | null
           created_at: string
+          digest_settings: Json | null
           id: string
+          language_preference: string | null
           mentorship_mode: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences: Json
           participant_id: string
           privacy_settings: Json
+          security_settings: Json | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
+          appearance_settings?: Json | null
           created_at?: string
+          digest_settings?: Json | null
           id?: string
+          language_preference?: string | null
           mentorship_mode?: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences?: Json
           participant_id: string
           privacy_settings?: Json
+          security_settings?: Json | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
+          appearance_settings?: Json | null
           created_at?: string
+          digest_settings?: Json | null
           id?: string
+          language_preference?: string | null
           mentorship_mode?: Database["public"]["Enums"]["mentorship_mode_type"]
           notification_preferences?: Json
           participant_id?: string
           privacy_settings?: Json
+          security_settings?: Json | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []

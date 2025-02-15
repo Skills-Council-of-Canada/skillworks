@@ -15,8 +15,43 @@ export interface Database {
           id: string;
           participant_id: string;
           mentorship_mode: "self_guided" | "mentor_assisted";
-          privacy_settings: Json;
-          notification_preferences: Json;
+          privacy_settings: {
+            work_visibility: "mentor" | "public" | "private";
+            profile_visibility: "public" | "private";
+            profile_indexing: "public" | "not_indexed" | "hidden";
+          };
+          notification_preferences: {
+            mentor_feedback: boolean;
+            project_approvals: boolean;
+            experience_milestones: boolean;
+            match_requests: boolean;
+            match_comments: boolean;
+            matched_projects: boolean;
+            experience_updates: boolean;
+            feedback_reminders: boolean;
+            company_applications: boolean;
+            date_changes: boolean;
+            new_feedback: boolean;
+            member_requests: boolean;
+            account_merge: boolean;
+          };
+          language_preference: string;
+          timezone: string;
+          appearance_settings: {
+            cover_photo_url: string | null;
+            banner_color: string;
+            use_default_settings: boolean;
+          };
+          digest_settings: {
+            email_frequency: "daily" | "weekly";
+            disable_all_emails: boolean;
+            disable_all_sms: boolean;
+          };
+          security_settings: {
+            mfa_enabled: boolean;
+            last_password_change: string | null;
+            account_merged: boolean;
+          };
           created_at: string;
           updated_at: string;
         };
@@ -26,6 +61,11 @@ export interface Database {
           mentorship_mode?: "self_guided" | "mentor_assisted";
           privacy_settings?: Json;
           notification_preferences?: Json;
+          language_preference?: string;
+          timezone?: string;
+          appearance_settings?: Json;
+          digest_settings?: Json;
+          security_settings?: Json;
           created_at?: string;
           updated_at?: string;
         };
