@@ -15,7 +15,8 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
         if (userError) throw userError;
         if (!user) throw new Error('No user found');
 
-        let query = supabase
+        // Optimize the query by reducing nested selects and only fetching needed fields
+        const query = supabase
           .from('participant_experiences')
           .select(`
             id,
@@ -38,55 +39,83 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             duration_hours,
             learner_level,
             max_learners,
-            educator_id,
             educator:profiles(id, full_name),
-            milestones:experience_milestones(
+            milestones:experience_milestones!participant_id_fkey(
               id,
               title,
               due_date,
               status
             ),
-            feedback:experience_feedback(
+            feedback:experience_feedback!participant_id_fkey(
               id,
               rating,
               comment,
               created_at,
-              reviewer_profile_id,
               reviewer:profiles(id, full_name)
             )
           `)
-          .eq('participant_id', user.id);
+          .eq('participant_id', user.id)
+          .order('created_at', { ascending: false });
 
-        if (statusFilter !== 'all') {
-          query = query.eq('status', statusFilter);
-        }
+        // Add status filter if needed
+        const finalQuery = statusFilter !== 'all' 
+          ? query.eq('status', statusFilter)
+          : query;
 
-        const { data: experiences, error: experiencesError } = await query;
+        const { data: experiences, error: experiencesError } = await finalQuery;
 
         if (experiencesError) {
           console.error('Error fetching experiences:', experiencesError);
-          setError(experiencesError.message);
-          return [];
+          throw experiencesError;
         }
 
-        // Transform the data to match the Experience type
-        const transformedExperiences: Experience[] = experiences?.map((exp: any) => ({
-          ...exp,
-          educator: { name: exp.educator?.[0]?.full_name || '' },
-          feedback: exp.feedback?.map((f: any) => ({
-            ...f,
-            profiles: { name: f.reviewer?.[0]?.full_name || '' }
-          })) || []
-        })) || [];
+        // Optimize transformation by reducing object spread operations
+        return (experiences || []).map((exp: any): Experience => ({
+          id: exp.id,
+          title: exp.title,
+          description: exp.description,
+          status: exp.status,
+          start_date: exp.start_date,
+          end_date: exp.end_date,
+          trade_category: exp.trade_category,
+          subcategories: exp.subcategories,
+          skill_tags: exp.skill_tags,
+          expected_outcomes: exp.expected_outcomes,
+          project_examples: exp.project_examples,
+          learner_capabilities: exp.learner_capabilities,
+          media_urls: exp.media_urls,
+          video_url: exp.video_url,
+          team_structure: exp.team_structure,
+          team_size: exp.team_size,
+          preferred_companies: exp.preferred_companies,
+          duration_hours: exp.duration_hours,
+          learner_level: exp.learner_level,
+          max_learners: exp.max_learners,
+          educator: {
+            name: exp.educator?.[0]?.full_name || ''
+          },
+          milestones: exp.milestones || [],
+          feedback: (exp.feedback || []).map((f: any) => ({
+            id: f.id,
+            rating: f.rating,
+            comment: f.comment,
+            created_at: f.created_at,
+            reviewer_profile_id: f.reviewer_profile_id,
+            profiles: {
+              name: f.reviewer?.[0]?.full_name || ''
+            }
+          }))
+        }));
 
-        return transformedExperiences;
       } catch (err) {
         console.error('Error in useParticipantExperiences:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
         return [];
       }
     },
-    retry: false
+    retry: 1,
+    staleTime: 30000, // Cache data for 30 seconds
+    cacheTime: 60000, // Keep in cache for 1 minute
   });
 
   return {
