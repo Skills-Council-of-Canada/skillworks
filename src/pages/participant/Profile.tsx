@@ -54,13 +54,15 @@ export const Profile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const { profile, isLoading, updateProfileCompletion } = useProfileCompletion();
+  const [lastUpdated, setLastUpdated] = useState<string>();
 
   // Effect to update completion percentage when profile changes
   useEffect(() => {
-    if (profile) {
+    if (profile?.updated_at !== lastUpdated) {
       updateProfileCompletion.mutate();
+      setLastUpdated(profile?.updated_at);
     }
-  }, [profile]);
+  }, [profile?.updated_at, lastUpdated, updateProfileCompletion]);
 
   if (isLoading) {
     return <div>Loading profile...</div>;

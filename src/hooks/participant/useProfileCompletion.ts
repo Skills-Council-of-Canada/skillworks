@@ -71,6 +71,7 @@ export const useProfileCompletion = () => {
       return data;
     },
     enabled: !!user?.id,
+    staleTime: 30000, // Consider data fresh for 30 seconds
     retry: 1,
   });
 
