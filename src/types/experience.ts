@@ -1,4 +1,3 @@
-
 export interface Experience {
   id: string;
   title: string;
@@ -20,8 +19,7 @@ export interface Experience {
   duration_hours?: number;
   learner_level?: string;
   max_learners?: number;
-  educator_id?: string;
-  educator?: {
+  educator: {
     name: string;
   };
   milestones: Array<{

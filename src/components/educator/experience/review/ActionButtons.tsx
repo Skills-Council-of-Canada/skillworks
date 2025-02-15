@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Globe } from "lucide-react";
 import { ExperienceFormValues as EducatorExperienceFormValues } from "@/types/educator";
@@ -36,6 +35,20 @@ const ActionButtons = ({ values, isComplete }: ActionButtonsProps) => {
   const { toast } = useToast();
 
   const convertToSubmissionValues = (values: EducatorExperienceFormValues): SubmissionExperienceFormValues => {
+    // Map the program type to the correct value
+    let programType: 'bootcamp' | 'certificate' | 'graduate' | 'workforce_development' = 'certificate';
+    switch (values.program_type) {
+      case 'diploma':
+        programType = 'workforce_development';
+        break;
+      case 'certificate':
+        programType = 'certificate';
+        break;
+      case 'bachelors':
+        programType = 'graduate';
+        break;
+    }
+
     return {
       title: values.title,
       learner_capabilities: values.learner_capabilities,
@@ -54,7 +67,7 @@ const ActionButtons = ({ values, isComplete }: ActionButtonsProps) => {
       duration_hours: values.duration_weeks * 40, // Convert weeks to hours
       learner_level: values.skill_level,
       max_learners: values.class_size,
-      program_type: values.program_type === 'diploma' ? 'certificate' : values.program_type,
+      program_type: programType,
       class_size: values.class_size,
       class_affiliation: false,
       work_structure: values.team_structure,
