@@ -28,10 +28,9 @@ export const Profile = () => {
     <div className="max-w-7xl mx-auto p-6">
       {/* Profile Header */}
       <div className="mb-8">
-        <div className="relative">
-          <div className="h-48 bg-gradient-to-r from-blue-400 to-blue-600 rounded-t-lg" />
-          <div className="absolute -bottom-16 left-8">
-            <Avatar className="h-32 w-32 border-4 border-white">
+        <div className="relative bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-start">
+            <Avatar className="h-24 w-24">
               {profile?.avatar_url ? (
                 <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
               ) : (
@@ -40,26 +39,28 @@ export const Profile = () => {
                 </AvatarFallback>
               )}
             </Avatar>
-          </div>
-          <div className="absolute bottom-4 right-4">
-            <Link to="/participant/settings">
-              <Button className="gap-2">
-                <Pencil className="h-4 w-4" />
-                Edit profile
-              </Button>
-            </Link>
-          </div>
-        </div>
-        <div className="mt-20 px-8">
-          <h1 className="text-2xl font-bold">{profile?.full_name}</h1>
-          <p className="text-gray-600">{profile?.educational_background || "No educational background provided"}</p>
-          
-          {/* Profile Completion Progress */}
-          <div className="mt-4">
-            <Progress value={completionPercentage} className="mb-2" />
-            <p className="text-sm text-gray-600">
-              Profile Completion: {completionPercentage}%
-            </p>
+            <div className="ml-6 flex-1">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h1 className="text-2xl font-bold">{profile?.full_name}</h1>
+                  <p className="text-gray-600">{profile?.educational_background || "No educational background provided"}</p>
+                </div>
+                <Link to="/participant/settings">
+                  <Button className="gap-2">
+                    <Pencil className="h-4 w-4" />
+                    Edit profile
+                  </Button>
+                </Link>
+              </div>
+              
+              {/* Profile Completion Progress */}
+              <div className="mt-4">
+                <Progress value={completionPercentage} className="mb-2" />
+                <p className="text-sm text-gray-600">
+                  Profile Completion: {completionPercentage}%
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
