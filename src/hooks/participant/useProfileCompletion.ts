@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
+type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
+
 interface Profile {
   id: string;
   email: string;
@@ -19,7 +21,7 @@ interface Profile {
 
 interface ParticipantDetails {
   id: string;
-  skill_level: string;
+  skill_level: SkillLevel;
   availability: string;
   date_of_birth: string | null;
   educational_background: string | null;
@@ -43,7 +45,7 @@ export const useProfileCompletion = () => {
         // First, get the base profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('*')
+          .select()
           .eq('id', user.id)
           .maybeSingle();
 
@@ -61,22 +63,30 @@ export const useProfileCompletion = () => {
           return null;
         }
 
-        // Then try to get participant details
+        // Then get participant details
         const { data: details, error: detailsError } = await supabase
           .from('participant_details')
-          .select('*')
+          .select()
           .eq('id', user.id)
           .maybeSingle();
 
-        if (detailsError && detailsError.code !== 'PGRST116') {
+        if (detailsError) {
           console.error("Error fetching participant details:", detailsError);
+          // Only show error if it's not a "does not exist" error
+          if (detailsError.code !== 'PGRST116') {
+            toast({
+              title: "Error",
+              description: "Failed to fetch participant details",
+              variant: "destructive",
+            });
+          }
         }
 
         // Create combined profile with defaults if details are missing
         const combinedProfile: CombinedProfile = {
           ...profile,
           full_name: profile.name,
-          skill_level: details?.skill_level || 'beginner',
+          skill_level: (details?.skill_level as SkillLevel) || 'beginner',
           availability: details?.availability || 'flexible',
           date_of_birth: details?.date_of_birth || null,
           educational_background: details?.educational_background || null,
