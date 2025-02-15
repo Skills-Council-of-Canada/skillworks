@@ -2057,6 +2057,7 @@ export type Database = {
           description: string | null
           duration_hours: number | null
           educator_id: string | null
+          educator_profile_id: string | null
           end_date: string | null
           expected_outcomes: string[] | null
           id: string
@@ -2085,6 +2086,7 @@ export type Database = {
           description?: string | null
           duration_hours?: number | null
           educator_id?: string | null
+          educator_profile_id?: string | null
           end_date?: string | null
           expected_outcomes?: string[] | null
           id?: string
@@ -2113,6 +2115,7 @@ export type Database = {
           description?: string | null
           duration_hours?: number | null
           educator_id?: string | null
+          educator_profile_id?: string | null
           end_date?: string | null
           expected_outcomes?: string[] | null
           id?: string
@@ -2142,6 +2145,13 @@ export type Database = {
             columns: ["educator_id"]
             isOneToOne: false
             referencedRelation: "educator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participant_experiences_educator_profile_id_fkey"
+            columns: ["educator_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

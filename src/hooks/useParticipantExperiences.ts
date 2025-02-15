@@ -15,7 +15,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
         if (userError) throw userError;
         if (!user) throw new Error('No user found');
 
-        // Optimize the query by reducing nested selects and only fetching needed fields
+        // Optimize the query using the new foreign key relationships
         const query = supabase
           .from('participant_experiences')
           .select(`
@@ -39,19 +39,25 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             duration_hours,
             learner_level,
             max_learners,
-            educator:profiles(id, full_name),
-            milestones:experience_milestones!participant_id_fkey(
+            educator_profile:profiles!participant_experiences_educator_profile_id_fkey(
+              id,
+              full_name
+            ),
+            milestones:experience_milestones(
               id,
               title,
               due_date,
               status
             ),
-            feedback:experience_feedback!participant_id_fkey(
+            feedback:experience_feedback(
               id,
               rating,
               comment,
               created_at,
-              reviewer:profiles(id, full_name)
+              reviewer:profiles!experience_feedback_reviewer_profile_id_fkey(
+                id,
+                full_name
+              )
             )
           `)
           .eq('participant_id', user.id)
@@ -69,7 +75,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
           throw experiencesError;
         }
 
-        // Optimize transformation by reducing object spread operations
+        // Transform the data using the new structure
         return (experiences || []).map((exp: any): Experience => ({
           id: exp.id,
           title: exp.title,
@@ -92,7 +98,7 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
           learner_level: exp.learner_level,
           max_learners: exp.max_learners,
           educator: {
-            name: exp.educator?.[0]?.full_name || ''
+            name: exp.educator_profile?.full_name || ''
           },
           milestones: exp.milestones || [],
           feedback: (exp.feedback || []).map((f: any) => ({
@@ -100,9 +106,9 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
             rating: f.rating,
             comment: f.comment,
             created_at: f.created_at,
-            reviewer_profile_id: f.reviewer_profile_id,
+            reviewer_profile_id: f.reviewer?.id,
             profiles: {
-              name: f.reviewer?.[0]?.full_name || ''
+              name: f.reviewer?.full_name || ''
             }
           }))
         }));
@@ -116,8 +122,8 @@ export const useParticipantExperiences = (statusFilter: string = 'all') => {
     retry: 1,
     staleTime: 30000, // Cache data for 30 seconds
     gcTime: 60000, // Keep in cache for 1 minute
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    refetchOnMount: false // Only fetch on initial mount
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
   });
 
   return {
