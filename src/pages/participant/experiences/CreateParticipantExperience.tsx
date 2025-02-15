@@ -17,6 +17,20 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().optional(),
+  trade_category: z.string().optional(),
+  subcategories: z.array(z.string()).optional(),
+  skill_tags: z.array(z.string()).optional(),
+  expected_outcomes: z.array(z.string()).optional(),
+  project_examples: z.array(z.any()).optional(),
+  learner_capabilities: z.string().optional(),
+  media_urls: z.array(z.string()).optional(),
+  video_url: z.string().optional(),
+  team_structure: z.string().optional(),
+  team_size: z.number().optional(),
+  preferred_companies: z.any().optional(),
+  duration_hours: z.number().optional(),
+  learner_level: z.string().optional(),
+  max_learners: z.number().optional(),
   milestones: z.array(z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -36,13 +50,24 @@ const CreateParticipantExperience = () => {
       title: "",
       description: "",
       start_date: new Date().toISOString().split('T')[0],
+      trade_category: "",
+      subcategories: [],
+      skill_tags: [],
+      expected_outcomes: [],
+      project_examples: [],
+      learner_capabilities: "",
+      media_urls: [],
+      team_structure: "individual",
+      team_size: 1,
+      duration_hours: 40,
+      learner_level: "beginner",
+      max_learners: 1,
       milestones: []
     }
   });
 
   const onSubmit = async (data: FormValues) => {
     await submitExperience(data);
-    navigate('/participant/experiences');
   };
 
   return (

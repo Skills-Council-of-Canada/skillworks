@@ -40,13 +40,7 @@ const ActionButtons = ({ values, isComplete }: ActionButtonsProps) => {
 
   const handlePublish = async () => {
     if (!isComplete) return;
-    await submitExperience(
-      {
-        ...values,
-        marketplace_visibility: visibility,
-      },
-      'pending_approval'
-    );
+    await submitExperience(values, 'pending_approval');
     setIsPublishDialogOpen(false);
   };
 
