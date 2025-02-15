@@ -152,9 +152,12 @@ const ParticipantLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
-                <DropdownMenuItem className="hover:bg-gray-100">
-                  Profile Settings
-                </DropdownMenuItem>
+                <Link to="/participant/profile">
+                  <DropdownMenuItem className="hover:bg-gray-100">
+                    <User className="mr-2 h-4 w-4" />
+                    View Profile
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem className="hover:bg-gray-100">
                   Notifications
                 </DropdownMenuItem>

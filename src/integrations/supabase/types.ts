@@ -1940,6 +1940,56 @@ export type Database = {
           },
         ]
       }
+      participant_education: {
+        Row: {
+          created_at: string | null
+          degree: string
+          description: string | null
+          end_date: string | null
+          field_of_study: string
+          id: string
+          institution_name: string
+          is_current: boolean | null
+          participant_id: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          degree: string
+          description?: string | null
+          end_date?: string | null
+          field_of_study: string
+          id?: string
+          institution_name: string
+          is_current?: boolean | null
+          participant_id: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          degree?: string
+          description?: string | null
+          end_date?: string | null
+          field_of_study?: string
+          id?: string
+          institution_name?: string
+          is_current?: boolean | null
+          participant_id?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_education_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_events: {
         Row: {
           created_at: string | null
@@ -2532,6 +2582,56 @@ export type Database = {
             columns: ["experience_id"]
             isOneToOne: false
             referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_work_experience: {
+        Row: {
+          company_name: string
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_current: boolean | null
+          location: string | null
+          participant_id: string
+          position: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          participant_id: string
+          position: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          participant_id?: string
+          position?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_work_experience_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
