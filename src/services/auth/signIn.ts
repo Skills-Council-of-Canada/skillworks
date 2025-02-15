@@ -67,10 +67,10 @@ export const signInUser = async (identifier: string, password: string) => {
     
     console.log("Attempting sign in with email:", email);
     
-    // Try to sign in
+    // Try to sign in with exact password provided (no trimming)
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
-      password: password.trim(),
+      password,
     });
 
     if (signInError) {
