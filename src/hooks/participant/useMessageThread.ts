@@ -10,9 +10,19 @@ export const useMessageThread = (conversationId: string) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: messages, isLoading } = useQuery<Message[]>({
+  const { data: messages, isLoading } = useQuery({
     queryKey: ["messages", conversationId],
     queryFn: async () => {
+      const { data: application } = await supabase
+        .from("applications")
+        .select("employer_id")
+        .eq("id", conversationId)
+        .single();
+
+      if (!application) {
+        throw new Error("Application not found");
+      }
+
       const { data, error } = await supabase
         .from("messages")
         .select("*")
@@ -22,9 +32,7 @@ export const useMessageThread = (conversationId: string) => {
       if (error) throw error;
       if (!data) return [];
 
-      const dbMessages = data as DatabaseMessage[];
-
-      return dbMessages.map((msg): Message => ({
+      return data.map((msg): Message => ({
         id: msg.id,
         applicationId: msg.application_id,
         senderId: msg.sender_id,
