@@ -50,16 +50,16 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         return null;
       }
 
-      if (!data.user) {
+      if (!data?.user) {
         return null;
       }
 
-      // Create user object from the response
+      // Use the profile data returned from signInUser
       const user: User = {
         id: data.user.id,
         email: data.user.email || '',
-        role: 'admin', // This should be fetched from your profiles table in a real app
-        name: data.user.email || 'Admin User'
+        role: data.user.role || 'admin',
+        name: data.user.name || 'Admin User'
       };
 
       console.log("Login successful", user);
