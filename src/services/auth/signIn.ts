@@ -17,6 +17,22 @@ export const signInUser = async (identifier: string, password: string) => {
 
     if (signInError) {
       console.error("Sign in error:", signInError);
+      
+      // Handle specific error cases
+      if (signInError.message.includes('Invalid login credentials')) {
+        return { 
+          data: null, 
+          error: new Error("Invalid email or password. Please check your credentials and try again.")
+        };
+      }
+      
+      if (signInError.message.includes('Email not confirmed')) {
+        return {
+          data: null,
+          error: new Error("Please verify your email address before logging in. Check your inbox for a confirmation email.")
+        };
+      }
+
       return { data: null, error: signInError };
     }
 
@@ -33,12 +49,18 @@ export const signInUser = async (identifier: string, password: string) => {
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
-        return { data: null, error: profileError };
+        return { 
+          data: null, 
+          error: new Error("Error fetching user profile. Please try again.")
+        };
       }
 
       if (!profile) {
         console.error("No profile found for user:", authData.user.id);
-        return { data: null, error: new Error("No profile found for user") };
+        return { 
+          data: null, 
+          error: new Error("No user profile found. Please contact support.")
+        };
       }
 
       const user: User = {
@@ -52,7 +74,10 @@ export const signInUser = async (identifier: string, password: string) => {
       return { data: { user }, error: null };
     }
       
-    return { data: null, error: new Error("No user data returned from authentication") };
+    return { 
+      data: null, 
+      error: new Error("No user data returned from authentication")
+    };
   } catch (error) {
     console.error("Error in signInUser:", error);
     throw error;
