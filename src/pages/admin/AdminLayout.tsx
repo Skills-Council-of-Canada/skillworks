@@ -21,8 +21,7 @@ const AdminLayout = () => {
       "/admin/experiences": "Experience Oversight",
       "/admin/projects": "Project Management",
       "/admin/reports": "Reports & Analytics",
-      "/admin/settings": "Settings",
-      "/admin/support": "Support & Helpdesk"
+      "/admin/settings": "Settings"
     };
     
     return paths[location.pathname] || "Dashboard";

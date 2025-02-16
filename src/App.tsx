@@ -22,7 +22,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ExperienceOversight from "./pages/admin/ExperienceOversight";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminSupport from "./pages/admin/AdminSupport";
 import AdminMessages from "./pages/admin/AdminMessages";
 import { default as AdminProjectManagement } from "./pages/admin/ProjectManagement";
 import EmployerLayout from "./pages/employer/EmployerLayout";
@@ -116,7 +115,6 @@ const App = () => (
             <Route path="messages" element={<AdminMessages />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<AdminSettings />} />
-            <Route path="support" element={<AdminSupport />} />
           </Route>
 
           {/* Protected educator routes */}
