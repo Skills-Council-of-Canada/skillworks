@@ -48,20 +48,22 @@ export const useMessages = () => {
           id: messages[0]?.id || 'temp',
           applicationId: app.id,
           senderId: messages[0]?.sender_id || app.employer_id || '',
-          senderType: messages[0]?.sender_id === user?.id ? "learner" as const : "employer" as const,
+          senderType: messages[0]?.sender_id === user?.id ? "learner" : "employer",
           content: app.last_message,
           timestamp: new Date(app.last_message_at || new Date()),
+          readAt: messages[0]?.read_at ? new Date(messages[0].read_at) : undefined,
         } : undefined;
 
         return {
           applicationId: app.id,
           projectId: app.project?.id || "",
+          projectTitle: app.project?.title || "Untitled Project",
           employerId: app.employer_id || "",
           learnerId: app.learner_id || "",
           lastMessage,
           unreadCount,
           updatedAt: app.last_message_at ? new Date(app.last_message_at) : new Date(),
-          type: 'direct' as const, // Add this line to fix the type error
+          type: 'direct',
         };
       });
     },

@@ -5,7 +5,7 @@ import { ConversationList } from "@/components/participant/messages/Conversation
 import { MessageThread } from "@/components/participant/messages/MessageThread";
 import { useMessages } from "@/hooks/participant/useMessages";
 import { Input } from "@/components/ui/input";
-import { Settings, Search, UserPlus, MessageSquare } from "lucide-react";
+import { Settings, Search, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -23,7 +23,7 @@ const Messages = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const filteredConversations = conversations.filter(conv => 
-    conv.projectId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    conv.projectTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     conv.lastMessage?.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -58,15 +58,7 @@ const Messages = () => {
               onSelect={setSelectedConversation}
             />
           </div>
-          <div className="mt-4 flex gap-2">
-            <Button 
-              variant="outline" 
-              className="flex-1 bg-primary/5 hover:bg-primary/10"
-              onClick={() => {/* TODO: Implement new conversation */}}
-            >
-              <UserPlus className="h-4 w-4 mr-2" />
-              New Chat
-            </Button>
+          <div className="mt-4 flex justify-end">
             <Sheet open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -96,7 +88,7 @@ const Messages = () => {
               <MessageSquare className="h-12 w-12 text-muted-foreground/50" />
               <h3 className="text-lg font-medium">No Conversation Selected</h3>
               <p className="text-sm text-center text-muted-foreground/70">
-                Select a conversation from the list to start messaging or create a new one.
+                Select a conversation from the list to start messaging.
               </p>
             </div>
           )}

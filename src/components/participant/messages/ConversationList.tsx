@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import type { Conversation } from "@/types/message";
 
@@ -43,15 +43,16 @@ export const ConversationList = ({
           >
             <div className="flex items-start gap-3 w-full">
               <div className="relative">
-                <Avatar className="h-10 w-10 shrink-0 border-2 border-background shadow-sm" />
-                {conversation.isOnline && (
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background animate-pulse" />
-                )}
+                <Avatar className="h-10 w-10 shrink-0 border-2 border-background shadow-sm">
+                  <AvatarFallback>
+                    {conversation.projectTitle?.charAt(0) || 'P'}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="flex-1 text-left space-y-1 overflow-hidden">
                 <div className="flex justify-between items-start gap-2">
                   <p className="font-medium truncate leading-none mt-1">
-                    {conversation.projectId}
+                    {conversation.projectTitle || "Untitled Project"}
                   </p>
                   <span className="text-[11px] text-muted-foreground/70 shrink-0 mt-1.5">
                     {format(conversation.updatedAt, "MMM d")}
