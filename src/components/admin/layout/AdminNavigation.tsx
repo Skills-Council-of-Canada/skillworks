@@ -8,7 +8,8 @@ import {
   BarChart,
   Settings,
   HeadphonesIcon,
-  LogOut
+  LogOut,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -22,6 +23,7 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
     { to: "/admin/users", icon: Users, label: "User Management" },
     { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
+    { to: "/admin/messages", icon: MessageSquare, label: "Messages" },
     { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
     { to: "/admin/settings", icon: Settings, label: "System Settings" },
     { to: "/admin/support", icon: HeadphonesIcon, label: "Support & Helpdesk" },
