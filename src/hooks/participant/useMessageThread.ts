@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -53,10 +54,13 @@ export const useMessageThread = (conversationId: string) => {
         isPinned: msg.is_pinned || false,
         threadId: msg.thread_id,
         mentions: Array.isArray(msg.mentions) 
-          ? msg.mentions.map(m => ({
-              id: m.id,
-              name: m.name
-            }))
+          ? msg.mentions.map(m => {
+              const mention = m as { id: string; name: string };
+              return {
+                id: mention.id,
+                name: mention.name
+              };
+            })
           : [],
         chatType: 'direct',
         chatId: msg.chat_id

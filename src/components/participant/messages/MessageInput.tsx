@@ -1,19 +1,48 @@
 
-import { useState, useRef } from "react";
-import { SendHorizontal, PaperclipIcon } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { SendHorizontal, PaperclipIcon, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadFile } from "@/components/employer/project/media-uploads/uploadUtils";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandInput,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;
 }
 
+interface Mention {
+  id: string;
+  name: string;
+  avatar?: string;
+}
+
+// Mock data - replace with actual user data from your application
+const MOCK_MENTIONS: Mention[] = [
+  { id: "1", name: "John Doe" },
+  { id: "2", name: "Jane Smith" },
+  { id: "3", name: "Mike Johnson" },
+];
+
 export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   const [newMessage, setNewMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionSearch, setMentionSearch] = useState("");
+  const [cursorPosition, setCursorPosition] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
 
   const handleSend = () => {
@@ -26,6 +55,21 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    } else if (e.key === "@") {
+      setShowMentions(true);
+    }
+  };
+
+  const handleMentionSelect = (user: Mention) => {
+    const beforeCursor = newMessage.substring(0, cursorPosition);
+    const afterCursor = newMessage.substring(cursorPosition);
+    const newContent = `${beforeCursor}@[${user.name}](${user.id})${afterCursor}`;
+    setNewMessage(newContent);
+    setShowMentions(false);
+
+    // Set focus back to textarea
+    if (textareaRef.current) {
+      textareaRef.current.focus();
     }
   };
 
@@ -55,15 +99,27 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
     }
   };
 
+  const filteredMentions = MOCK_MENTIONS.filter(user =>
+    user.name.toLowerCase().includes(mentionSearch.toLowerCase())
+  );
+
   return (
     <div className="p-4 border-t glass-effect">
       <div className="flex gap-2 items-end">
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <Textarea
+            ref={textareaRef}
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              setCursorPosition(e.target.selectionStart);
+            }}
             onKeyPress={handleKeyPress}
-            placeholder="Write your message..."
+            onClick={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              setCursorPosition(target.selectionStart);
+            }}
+            placeholder="Write your message... Use @ to mention someone"
             className="min-h-[80px] resize-none bg-background/80 focus:bg-background transition-colors duration-200"
           />
           <input
@@ -73,6 +129,32 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
             className="hidden"
             accept="image/*,.pdf,.doc,.docx"
           />
+          
+          {showMentions && (
+            <Popover open={showMentions} onOpenChange={setShowMentions}>
+              <PopoverContent className="w-[200px] p-0" side="top">
+                <Command>
+                  <CommandInput 
+                    placeholder="Search people..." 
+                    value={mentionSearch}
+                    onValueChange={setMentionSearch}
+                  />
+                  <CommandEmpty>No users found.</CommandEmpty>
+                  <CommandGroup>
+                    {filteredMentions.map((user) => (
+                      <CommandItem
+                        key={user.id}
+                        onSelect={() => handleMentionSelect(user)}
+                        className="cursor-pointer"
+                      >
+                        {user.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <Button
