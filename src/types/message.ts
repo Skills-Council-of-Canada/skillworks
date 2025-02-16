@@ -32,8 +32,10 @@ export interface DatabaseMessage {
 
 export interface DatabaseApplication {
   id: string;
-  employer_id: string;
-  learner_id: string;
+  employer_id: string | null;
+  learner_id: string | null;
+  last_message: string | null;
+  last_message_at: string | null;
   project: {
     id: string;
     title: string;

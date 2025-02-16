@@ -16,6 +16,8 @@ export const useMessages = () => {
           id,
           employer_id,
           learner_id,
+          last_message,
+          last_message_at,
           project:projects (
             id,
             title
@@ -29,7 +31,7 @@ export const useMessages = () => {
           )
         `)
         .eq("learner_id", user?.id)
-        .order("created_at", { foreignTable: "messages", ascending: false });
+        .order("last_message_at", { ascending: false });
 
       if (error) throw error;
       if (!data) return [];
@@ -38,28 +40,27 @@ export const useMessages = () => {
 
       return applications.map((app): Conversation => {
         const messages = app.messages || [];
-        const lastMessage = messages[0];
         const unreadCount = messages.filter(
           (msg) => msg.sender_id !== user?.id && !msg.read_at
         ).length;
 
+        const lastMessage = app.last_message ? {
+          id: messages[0]?.id || 'temp',
+          applicationId: app.id,
+          senderId: messages[0]?.sender_id || app.employer_id || '',
+          senderType: messages[0]?.sender_id === user?.id ? "learner" : "employer",
+          content: app.last_message,
+          timestamp: new Date(app.last_message_at || new Date()),
+        } : undefined;
+
         return {
           applicationId: app.id,
           projectId: app.project?.id || "",
-          employerId: app.employer_id,
-          learnerId: app.learner_id,
-          lastMessage: lastMessage
-            ? {
-                id: lastMessage.id,
-                applicationId: app.id,
-                senderId: lastMessage.sender_id,
-                senderType: lastMessage.sender_id === user?.id ? "learner" : "employer",
-                content: lastMessage.content,
-                timestamp: new Date(lastMessage.created_at),
-              }
-            : undefined,
+          employerId: app.employer_id || "",
+          learnerId: app.learner_id || "",
+          lastMessage,
           unreadCount,
-          updatedAt: lastMessage ? new Date(lastMessage.created_at) : new Date(),
+          updatedAt: app.last_message_at ? new Date(app.last_message_at) : new Date(),
         };
       });
     },
