@@ -157,6 +157,8 @@ export type Database = {
           created_at: string
           employer_id: string | null
           id: string
+          last_message: string | null
+          last_message_at: string | null
           learner_id: string | null
           project_id: string
           status: string
@@ -168,6 +170,8 @@ export type Database = {
           created_at?: string
           employer_id?: string | null
           id?: string
+          last_message?: string | null
+          last_message_at?: string | null
           learner_id?: string | null
           project_id: string
           status?: string
@@ -179,6 +183,8 @@ export type Database = {
           created_at?: string
           employer_id?: string | null
           id?: string
+          last_message?: string | null
+          last_message_at?: string | null
           learner_id?: string | null
           project_id?: string
           status?: string
