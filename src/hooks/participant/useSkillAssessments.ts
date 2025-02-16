@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface SkillAssessment {
   id: string;
@@ -15,17 +16,29 @@ interface SkillAssessment {
 
 export const useSkillAssessments = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const { data: assessments, isLoading } = useQuery({
     queryKey: ["skill-assessments", user?.id],
     queryFn: async () => {
-      const { data: relationship } = await supabase
+      const { data: relationship, error: relationshipError } = await supabase
         .from("mentor_relationships")
         .select("id")
         .eq("participant_id", user?.id)
-        .single();
+        .maybeSingle();
 
-      if (!relationship) return [];
+      if (relationshipError) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch mentor relationship",
+          variant: "destructive",
+        });
+        throw relationshipError;
+      }
+
+      if (!relationship) {
+        return [];
+      }
 
       const { data, error } = await supabase
         .from("mentor_skill_assessments")
@@ -33,7 +46,15 @@ export const useSkillAssessments = () => {
         .eq("relationship_id", relationship.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch skill assessments",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
       return data as SkillAssessment[];
     },
     enabled: !!user?.id,
