@@ -1,6 +1,4 @@
 
-import type { Message, Conversation, DatabaseApplication } from "@/types/message";
-
 export interface UseMessagesReturn {
   conversations: Conversation[];
   isLoading: boolean;
