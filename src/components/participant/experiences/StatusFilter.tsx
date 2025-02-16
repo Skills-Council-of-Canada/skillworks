@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Filter } from 'lucide-react';
 
 interface StatusFilterProps {
   value: string;
@@ -11,6 +12,7 @@ export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-[180px]">
+        <Filter className="w-4 h-4 mr-2" />
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
       <SelectContent>

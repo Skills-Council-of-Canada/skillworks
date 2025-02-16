@@ -2194,6 +2194,7 @@ export type Database = {
       participant_experiences: {
         Row: {
           assignment_method: string | null
+          category_tags: string[] | null
           class_affiliation: boolean | null
           company_types: string[] | null
           compensation_type: string | null
@@ -2214,6 +2215,7 @@ export type Database = {
           learner_level: string | null
           location_preference: string | null
           match_request_close_date: string | null
+          matches_count: number | null
           max_learners: number | null
           media_urls: string[] | null
           mentor_feedback_status: string | null
@@ -2239,6 +2241,7 @@ export type Database = {
         }
         Insert: {
           assignment_method?: string | null
+          category_tags?: string[] | null
           class_affiliation?: boolean | null
           company_types?: string[] | null
           compensation_type?: string | null
@@ -2259,6 +2262,7 @@ export type Database = {
           learner_level?: string | null
           location_preference?: string | null
           match_request_close_date?: string | null
+          matches_count?: number | null
           max_learners?: number | null
           media_urls?: string[] | null
           mentor_feedback_status?: string | null
@@ -2284,6 +2288,7 @@ export type Database = {
         }
         Update: {
           assignment_method?: string | null
+          category_tags?: string[] | null
           class_affiliation?: boolean | null
           company_types?: string[] | null
           compensation_type?: string | null
@@ -2304,6 +2309,7 @@ export type Database = {
           learner_level?: string | null
           location_preference?: string | null
           match_request_close_date?: string | null
+          matches_count?: number | null
           max_learners?: number | null
           media_urls?: string[] | null
           mentor_feedback_status?: string | null
