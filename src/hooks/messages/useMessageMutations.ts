@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { MessageMutations } from "./types";
-import type { Message } from "@/types/message";
+import type { Message, DatabaseMessage } from "@/types/message";
 
 export const useMessageMutations = (
   conversationId: string,
@@ -13,10 +13,15 @@ export const useMessageMutations = (
 
   const handleReactionAdd = async (messageId: string, emoji: string) => {
     try {
-      const message = await findMessage(messageId);
+      const { data: message } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("id", messageId)
+        .single();
+
       if (!message) return;
 
-      const existingReactions = message.reactions || [];
+      const existingReactions = (message.reactions as Array<{ emoji: string; count: number }>) || [];
       const existingReaction = existingReactions.find((r) => r.emoji === emoji);
       
       let newReactions;
@@ -140,13 +145,13 @@ export const useMessageMutations = (
   };
 
   const findMessage = async (messageId: string) => {
-    const message = (await supabase
+    const { data } = await supabase
       .from("messages")
       .select("*")
       .eq("id", messageId)
-      .single()).data;
+      .single();
 
-    return message;
+    return data as DatabaseMessage | null;
   };
 
   return {
