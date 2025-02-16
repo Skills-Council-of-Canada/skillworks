@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, SendHorizontal, Paperclip, SmilePlus, MoreVertical, Check } from "lucide-react";
+import { MessageSquare, SendHorizontal, Paperclip, SmilePlus, MoreVertical, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
@@ -87,27 +87,28 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const MessageBubble = ({ message }: { message: Message }) => (
     <div
       className={cn(
-        "flex items-start gap-3 group animate-fade-in",
+        "flex items-start gap-3 group animate-fade-in transition-opacity duration-200 ease-in-out opacity-0",
         message.senderType === "learner" && "flex-row-reverse"
       )}
+      style={{ animationFillMode: 'forwards' }}
     >
-      <Avatar className="h-8 w-8 shrink-0" />
+      <Avatar className="h-8 w-8 shrink-0 border-2 border-background shadow-sm" />
       <div className="flex flex-col gap-1 max-w-[80%]">
         <div
           className={cn(
-            "rounded-lg p-3 group-hover:shadow-sm transition-shadow",
+            "rounded-lg p-3 shadow-sm transition-all duration-200 hover:shadow-md",
             message.senderType === "learner"
               ? "bg-primary text-primary-foreground rounded-tr-none"
-              : "bg-secondary/20 rounded-tl-none"
+              : "bg-accent/10 rounded-tl-none"
           )}
         >
           <p className="text-sm break-words leading-relaxed">{message.content}</p>
           {message.isEdited && (
-            <span className="text-xs opacity-70">(edited)</span>
+            <span className="text-xs opacity-70 mt-1 inline-block">(edited)</span>
           )}
         </div>
         <div className={cn(
-          "flex gap-2 items-center text-xs text-muted-foreground",
+          "flex gap-2 items-center text-xs text-muted-foreground/70",
           message.senderType === "learner" && "justify-end"
         )}>
           <span>{format(message.timestamp, "p")}</span>
@@ -124,21 +125,21 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <p>Loading messages...</p>
+      <div className="h-full flex items-center justify-center bg-background/50">
+        <MessageSquare className="h-8 w-8 text-muted-foreground/50 animate-pulse" />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="px-4 py-3 border-b flex items-center justify-between bg-card/50">
+      <div className="px-4 py-3 border-b flex items-center justify-between bg-card/50 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8" />
+          <Avatar className="h-8 w-8 border-2 border-background shadow-sm" />
           <div>
-            <h3 className="font-semibold text-lg">Project Chat</h3>
+            <h3 className="font-semibold text-lg leading-none">Project Chat</h3>
             {userTyping && (
-              <p className="text-xs text-muted-foreground animate-pulse">Someone is typing...</p>
+              <p className="text-xs text-muted-foreground mt-1 animate-pulse">Someone is typing...</p>
             )}
           </div>
         </div>
@@ -147,15 +148,15 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         </Button>
       </div>
       
-      <ScrollArea ref={scrollRef} className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6">
+        <div className="space-y-6">
           {messages.map((message) => (
             <MessageBubble key={message.id} message={message} />
           ))}
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t bg-card/50">
+      <div className="p-4 border-t bg-card/50 backdrop-blur-sm">
         <div className="flex gap-2 items-end">
           <div className="flex-1 flex gap-2">
             <Button variant="ghost" size="icon" className="shrink-0 hover:bg-primary/5">
@@ -169,7 +170,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
               }}
               onKeyPress={handleKeyPress}
               placeholder="Write your message..."
-              className="min-h-[80px] resize-none bg-background"
+              className="min-h-[80px] resize-none bg-background/80 focus:bg-background transition-colors duration-200"
             />
           </div>
           <div className="flex gap-2">
@@ -179,7 +180,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
             <Button 
               onClick={handleSendMessage} 
               size="icon"
-              className="h-10 w-10 shrink-0"
+              className="h-10 w-10 shrink-0 shadow-sm hover:shadow-md transition-all duration-200"
               disabled={!newMessage.trim()}
             >
               <SendHorizontal className="h-4 w-4" />
