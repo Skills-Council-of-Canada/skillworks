@@ -29,7 +29,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-background/80 backdrop-blur-sm">
+      <div className="border-b px-4 py-3 bg-background/90">
+        <h3 className="font-semibold text-lg">Messages</h3>
+      </div>
       <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6">
         <div className="space-y-6">
           {messages.map((message) => (

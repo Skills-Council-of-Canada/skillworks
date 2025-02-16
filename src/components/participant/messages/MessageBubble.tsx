@@ -22,7 +22,7 @@ export const MessageBubble = ({ message, onReactionAdd }: MessageBubbleProps) =>
       <div className="flex flex-col gap-1 max-w-[80%]">
         <div
           className={cn(
-            "rounded-lg p-3 subtle-shadow",
+            "rounded-lg p-3 subtle-shadow backdrop-blur-sm",
             message.senderType === "learner"
               ? "bg-primary text-primary-foreground rounded-tr-none"
               : "bg-accent/10 rounded-tl-none"
