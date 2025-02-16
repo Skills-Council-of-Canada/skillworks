@@ -11,6 +11,14 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical } from "lucide-react";
 
 const EducatorMessages = () => {
   // This would normally be driven by real data
@@ -22,6 +30,19 @@ const EducatorMessages = () => {
       <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold">Conversations</h3>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background border shadow-lg rounded-lg">
+              <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
