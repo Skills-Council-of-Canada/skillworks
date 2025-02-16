@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -54,6 +53,7 @@ import Profile from "./pages/participant/Profile";
 import CreateParticipantExperience from "./pages/participant/experiences/CreateParticipantExperience";
 import ParticipantSettings from "./pages/participant/settings/ParticipantSettings";
 import Messages from "./pages/participant/Messages";
+import EducatorMessages from "./pages/educator/EducatorMessages";
 
 const queryClient = new QueryClient();
 
@@ -133,6 +133,7 @@ const App = () => (
             <Route path="students" element={<StudentManagement />} />
             <Route path="matches" element={<MatchRequests />} />
             <Route path="tasks" element={<TasksActivities />} />
+            <Route path="messages" element={<EducatorMessages />} />
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="create-experience" element={<CreateExperience />} />

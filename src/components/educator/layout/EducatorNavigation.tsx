@@ -9,7 +9,8 @@ import {
   Briefcase,
   ClipboardList,
   Users,
-  Building2
+  Building2,
+  MessageSquare
 } from "lucide-react";
 import { NavigationHeader } from "./NavigationHeader";
 import { NavItem } from "./NavItem";
@@ -58,6 +59,10 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
             Tasks & Activities
           </NavItem>
 
+          <NavItem to="/educator/messages" icon={MessageSquare}>
+            Messages
+          </NavItem>
+
           <NavItem to="/educator/calendar" icon={Calendar}>
             Calendar
           </NavItem>
@@ -72,4 +77,3 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
     </div>
   );
 };
-
