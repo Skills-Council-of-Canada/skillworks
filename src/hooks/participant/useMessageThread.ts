@@ -1,14 +1,40 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Message, DatabaseMessage } from "@/types/message";
 
+interface ChatInfo {
+  name: string;
+  memberCount?: number;
+  type: 'direct' | 'group';
+}
+
 export const useMessageThread = (conversationId: string) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const { data: chatInfo } = useQuery({
+    queryKey: ["chat", conversationId],
+    queryFn: async () => {
+      const { data: application } = await supabase
+        .from("applications")
+        .select("employer_id, project:projects(title)")
+        .eq("id", conversationId)
+        .single();
+
+      if (!application) {
+        throw new Error("Application not found");
+      }
+
+      return {
+        name: application.project?.title || "Direct Message",
+        type: 'direct' as const
+      } satisfies ChatInfo;
+    },
+    enabled: !!conversationId
+  });
 
   const { data: messages, isLoading } = useQuery({
     queryKey: ["messages", conversationId],
@@ -69,6 +95,26 @@ export const useMessageThread = (conversationId: string) => {
     enabled: !!conversationId && !!user?.id,
   });
 
+  const searchMessages = async (query: string) => {
+    if (!query.trim()) return;
+
+    const { data, error } = await supabase.rpc('search_messages', {
+      search_query: query,
+      chat_id: conversationId
+    });
+
+    if (error) {
+      toast({
+        title: "Search failed",
+        description: "Failed to search messages. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    return data;
+  };
+
   const { mutateAsync: sendMessage } = useMutation({
     mutationFn: async (content: string) => {
       const { data: application, error: appError } = await supabase
@@ -79,7 +125,6 @@ export const useMessageThread = (conversationId: string) => {
 
       if (appError || !application) throw new Error("Application not found");
 
-      // Extract mentions from content
       const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
       const mentions: { id: string; name: string }[] = [];
       let match;
@@ -174,5 +219,7 @@ export const useMessageThread = (conversationId: string) => {
     pinMessage,
     deleteMessage,
     editMessage,
+    searchMessages,
+    chatInfo
   };
 };
