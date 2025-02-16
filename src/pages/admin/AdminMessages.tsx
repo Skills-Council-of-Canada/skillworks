@@ -1,5 +1,4 @@
-
-import { BellDot } from "lucide-react";
+import { BellDot, MoreVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import { ConversationList } from "@/components/employer/messages/ConversationList";
 
 const AdminMessages = () => {
   // This would normally be driven by real data
