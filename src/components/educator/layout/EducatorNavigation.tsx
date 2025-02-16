@@ -3,7 +3,6 @@ import {
   Calendar,
   GraduationCap,
   Home,
-  MessageSquare,
   Search,
   Settings,
   UserCheck,
@@ -59,10 +58,6 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
             Tasks & Activities
           </NavItem>
 
-          <NavItem to="/educator/messages" icon={MessageSquare}>
-            Messages
-          </NavItem>
-
           <NavItem to="/educator/calendar" icon={Calendar}>
             Calendar
           </NavItem>
@@ -77,3 +72,4 @@ export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
     </div>
   );
 };
+
