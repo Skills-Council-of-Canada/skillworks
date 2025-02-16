@@ -61,6 +61,7 @@ export const useMessages = () => {
           lastMessage,
           unreadCount,
           updatedAt: app.last_message_at ? new Date(app.last_message_at) : new Date(),
+          type: 'direct' as const, // Add this line to fix the type error
         };
       });
     },
