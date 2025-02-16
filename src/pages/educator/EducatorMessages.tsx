@@ -37,7 +37,7 @@ const EducatorMessages = () => {
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-background border shadow-lg rounded-lg !bg-opacity-100">
+              <DropdownMenuContent align="end" className="bg-white border shadow-lg rounded-lg" style={{ backgroundColor: 'white' }}>
                 <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
                 <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
                 <DropdownMenuSeparator />
