@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import type { Message } from "@/types/message";
+import type { Message, DatabaseMessage } from "@/types/message";
 
 export const useMessageThread = (conversationId: string) => {
   const { user } = useAuth();
@@ -40,7 +40,15 @@ export const useMessageThread = (conversationId: string) => {
         content: msg.content,
         timestamp: new Date(msg.created_at),
         readAt: msg.read_at ? new Date(msg.read_at) : undefined,
-        reactions: msg.reactions || [],
+        reactions: Array.isArray(msg.reactions) 
+          ? msg.reactions.map(r => {
+              const reaction = r as { emoji: string; count: number };
+              return {
+                emoji: reaction.emoji,
+                count: reaction.count
+              };
+            })
+          : [],
         isEdited: msg.is_edited || false,
         editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
         isPinned: msg.is_pinned || false,
