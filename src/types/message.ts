@@ -1,3 +1,4 @@
+
 export interface Message {
   id: string;
   applicationId: string;
@@ -19,6 +20,7 @@ export interface Message {
 export interface Conversation {
   applicationId: string;
   projectId: string;
+  projectTitle: string;  // Added this property
   employerId: string;
   learnerId: string;
   lastMessage?: Message;
