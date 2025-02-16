@@ -37,7 +37,7 @@ const EducatorMessages = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent 
-              className="w-80 p-0 bg-background border shadow-lg" 
+              className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
               align="end"
               sideOffset={5}
             >

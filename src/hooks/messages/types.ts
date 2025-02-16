@@ -1,4 +1,6 @@
 
+import type { Message } from "@/types/message";
+
 export interface UseMessagesReturn {
   messages: Message[];
   isLoading: boolean;
