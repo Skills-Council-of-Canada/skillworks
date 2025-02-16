@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { MessageReactions } from "./MessageReactions";
 import type { Message } from "@/types/message";
 
 interface MessageThreadProps {
@@ -54,6 +55,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
           content: msg.content,
           timestamp: new Date(msg.created_at),
           readAt: msg.read_at ? new Date(msg.read_at) : undefined,
+          reactions: msg.reactions || [],
         }))
       );
     } catch (error) {
@@ -63,28 +65,76 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     }
   };
 
+  const handleReactionAdd = async (messageId: string, emoji: string) => {
+    try {
+      const message = messages.find((m) => m.id === messageId);
+      if (!message) return;
+
+      const existingReactions = message.reactions || [];
+      const existingReaction = existingReactions.find((r) => r.emoji === emoji);
+      
+      let newReactions;
+      if (existingReaction) {
+        newReactions = existingReactions.map((r) =>
+          r.emoji === emoji ? { ...r, count: r.count + 1 } : r
+        );
+      } else {
+        newReactions = [...existingReactions, { emoji, count: 1 }];
+      }
+
+      const { error } = await supabase
+        .from("messages")
+        .update({ reactions: newReactions })
+        .eq("id", messageId);
+
+      if (error) throw error;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId ? { ...m, reactions: newReactions } : m
+        )
+      );
+    } catch (error) {
+      console.error("Error adding reaction:", error);
+    }
+  };
+
   const subscribeToMessages = () => {
     const channel = supabase
       .channel("messages")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*", // Listen to all changes
           schema: "public",
           table: "messages",
           filter: `application_id=eq.${conversationId}`,
         },
         (payload) => {
-          const newMessage: Message = {
-            id: payload.new.id,
-            applicationId: payload.new.application_id,
-            senderId: payload.new.sender_id,
-            senderType: payload.new.sender_id === user?.id ? "learner" : "employer",
-            content: payload.new.content,
-            timestamp: new Date(payload.new.created_at),
-            readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,
-          };
-          setMessages((prev) => [...prev, newMessage]);
+          if (payload.eventType === "INSERT") {
+            const newMessage: Message = {
+              id: payload.new.id,
+              applicationId: payload.new.application_id,
+              senderId: payload.new.sender_id,
+              senderType: payload.new.sender_id === user?.id ? "learner" : "employer",
+              content: payload.new.content,
+              timestamp: new Date(payload.new.created_at),
+              readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,
+              reactions: payload.new.reactions || [],
+            };
+            setMessages((prev) => [...prev, newMessage]);
+          } else if (payload.eventType === "UPDATE") {
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === payload.new.id
+                  ? {
+                      ...msg,
+                      reactions: payload.new.reactions || [],
+                    }
+                  : msg
+              )
+            );
+          }
         }
       )
       .subscribe();
@@ -161,9 +211,16 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
                     {message.content}
                   </p>
                 </div>
-                <span className="text-xs text-muted-foreground/70">
-                  {format(message.timestamp, "p")}
-                </span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-muted-foreground/70">
+                    {format(message.timestamp, "p")}
+                  </span>
+                  <MessageReactions
+                    messageId={message.id}
+                    reactions={message.reactions || []}
+                    onReactionAdd={(emoji) => handleReactionAdd(message.id, emoji)}
+                  />
+                </div>
               </div>
             </div>
           ))}
