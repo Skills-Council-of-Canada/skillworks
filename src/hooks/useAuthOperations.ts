@@ -51,24 +51,21 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       }
 
       if (!data?.user) {
+        toast({
+          title: "Login Failed",
+          description: "No user profile found. Please contact support.",
+          variant: "destructive",
+        });
         return null;
       }
 
-      // Use the profile data returned from signInUser
-      const user: User = {
-        id: data.user.id,
-        email: data.user.email || '',
-        role: data.user.role || 'admin',
-        name: data.user.name || 'Admin User'
-      };
-
-      console.log("Login successful", user);
+      console.log("Login successful", data.user);
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
       
-      return user;
+      return data.user;
     } catch (error) {
       console.error("Login error:", error);
       const authError = error as AuthError;

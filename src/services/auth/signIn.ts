@@ -21,19 +21,16 @@ export const signInUser = async (identifier: string, password: string) => {
       return { data: null, error: signInError };
     }
 
-    // If sign in succeeds, wait a moment for the trigger to create the profile
+    // If sign in succeeds, get the profile
     if (authData.user) {
-      console.log("Sign in successful for user:", authData.user.id);
+      console.log("Sign in successful, getting profile for user:", authData.user.id);
       
-      // Add a small delay to allow the trigger to complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Then try to get the profile
-      let { data: profile, error: profileError } = await supabase
+      // Get the profile
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', authData.user.id)
-        .maybeSingle();
+        .single();
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
@@ -41,36 +38,19 @@ export const signInUser = async (identifier: string, password: string) => {
       }
 
       if (!profile) {
-        console.log("No profile found, creating one");
-        // If no profile exists, create one
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert([{
-            id: authData.user.id,
-            email: authData.user.email,
-            role: 'participant',
-            name: authData.user.email?.split('@')[0] || 'User'
-          }])
-          .select()
-          .single();
-
-        if (createError) {
-          console.error("Error creating profile:", createError);
-          return { data: null, error: createError };
-        }
-        profile = newProfile;
+        console.error("No profile found for user:", authData.user.id);
+        return { data: null, error: new Error("No profile found for user") };
       }
 
-      console.log("Returning user data with profile:", { ...authData.user, ...profile });
-      return { 
-        data: {
-          user: {
-            ...authData.user,
-            ...profile
-          }
-        }, 
-        error: null 
+      const user: User = {
+        id: profile.id,
+        email: profile.email,
+        role: profile.role as UserRole,
+        name: profile.name
       };
+
+      console.log("Login successful with profile:", user);
+      return { data: { user }, error: null };
     }
       
     return { data: null, error: new Error("No user data returned from authentication") };
