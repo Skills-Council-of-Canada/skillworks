@@ -67,7 +67,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="bg-white border shadow-lg">
                   <DropdownMenuLabel>
                     {user?.email}
                   </DropdownMenuLabel>

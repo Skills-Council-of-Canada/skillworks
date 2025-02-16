@@ -85,7 +85,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-background border shadow-lg">
+          <DropdownMenuContent className="w-56 bg-white border shadow-lg">
             <DropdownMenuItem 
               className="focus:bg-accent"
               onClick={() => navigate('/employer/settings')}
