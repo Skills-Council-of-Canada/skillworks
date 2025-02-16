@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Message } from "@/types/message";
@@ -24,7 +23,7 @@ export const useMessages = (conversationId: string) => {
           id: msg.id,
           applicationId: msg.application_id,
           senderId: msg.sender_id,
-          senderType: msg.sender_id === user?.id ? "learner" : "employer",
+          senderType: msg.sender_id === user?.id ? "participant" : "employer",
           content: msg.content,
           timestamp: new Date(msg.created_at),
           readAt: msg.read_at ? new Date(msg.read_at) : undefined,
@@ -203,7 +202,7 @@ export const useMessages = (conversationId: string) => {
                 id: payload.new.id,
                 applicationId: payload.new.application_id,
                 senderId: payload.new.sender_id,
-                senderType: payload.new.sender_id === user?.id ? "learner" : "employer",
+                senderType: payload.new.sender_id === user?.id ? "participant" : "employer",
                 content: payload.new.content,
                 timestamp: new Date(payload.new.created_at),
                 readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,

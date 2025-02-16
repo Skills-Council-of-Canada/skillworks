@@ -29,7 +29,7 @@ export const useMessageSubscription = (
                 id: payload.new.id,
                 applicationId: payload.new.application_id,
                 senderId: payload.new.sender_id,
-                senderType: payload.new.sender_id === user?.id ? "learner" : "employer",
+                senderType: payload.new.sender_id === user?.id ? "participant" : "employer",
                 content: payload.new.content,
                 timestamp: new Date(payload.new.created_at),
                 readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,

@@ -30,7 +30,7 @@ export const useMessages = (conversationId: string) => {
           id: msg.id,
           applicationId: msg.application_id,
           senderId: msg.sender_id,
-          senderType: msg.sender_id === user?.id ? "learner" : "employer",
+          senderType: msg.sender_id === user?.id ? "participant" : "employer",
           content: msg.content,
           timestamp: new Date(msg.created_at),
           readAt: msg.read_at ? new Date(msg.read_at) : undefined,

@@ -60,7 +60,7 @@ export const ChatMessage = ({
     >
       <Avatar className="h-8 w-8 shrink-0 border-2 border-background shadow-sm">
         <AvatarFallback className="bg-primary/10 text-primary">
-          {message.senderType === "learner" ? "L" : "E"}
+          {message.senderType === "participant" ? "P" : "E"}
         </AvatarFallback>
       </Avatar>
 
