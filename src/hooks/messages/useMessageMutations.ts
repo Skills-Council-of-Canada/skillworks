@@ -156,18 +156,34 @@ export const useMessageMutations = (
 
     // Convert the raw data to DatabaseMessage type
     const message: DatabaseMessage = {
-      ...data,
+      id: data.id,
+      application_id: data.application_id,
+      sender_id: data.sender_id,
+      recipient_id: data.recipient_id,
+      content: data.content,
+      created_at: data.created_at,
+      read_at: data.read_at,
       reactions: data.reactions as any[] || [],
+      thread_id: data.thread_id,
+      is_pinned: data.is_pinned,
+      is_edited: data.is_edited,
+      edited_at: data.edited_at,
+      deleted_at: data.deleted_at,
+      edited_by: data.edited_by,
+      forwarded_from: data.forwarded_from,
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      chat_id: data.chat_id,
+      typing_state: data.typing_state,
+      typing_updated_at: data.typing_updated_at,
       mentions: Array.isArray(data.mentions) 
         ? (data.mentions as any[]).map(m => ({
             id: m.id as string,
             name: m.name as string
           }))
         : [],
-      attachments: Array.isArray(data.attachments) 
-        ? data.attachments as any[]
-        : [],
-      search_vector: data.search_vector as any,
+      search_vector: data.search_vector,
+      reply_to: data.reply_to,
+      status: (data.status as "sent" | "delivered" | "read") || "sent" // Ensure status is one of the allowed values
     };
 
     return message;
