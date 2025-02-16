@@ -5,9 +5,8 @@ import { User, UserRole } from "@/types/auth";
 export const signInUser = async (identifier: string, password: string) => {
   console.log("Attempting to sign in with identifier:", identifier);
   try {
-    // Check if the identifier is an email
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-    const email = isEmail ? identifier.toLowerCase() : identifier.toLowerCase();
+    // Always convert email to lowercase to ensure consistent handling
+    const email = identifier.toLowerCase();
     
     console.log("Attempting sign in with email:", email);
     
