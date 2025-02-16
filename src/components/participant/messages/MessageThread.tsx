@@ -18,6 +18,8 @@ interface MessageThreadProps {
 
 export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const [newMessage, setNewMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -27,6 +29,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     if (conversationId) {
       fetchMessages();
       subscribeToMessages();
+      subscribeToTyping();
     }
   }, [conversationId]);
 
@@ -177,6 +180,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     };
   };
 
+  const subscribeToTyping = () => {
+    // TODO: Implement typing indicator subscription
+  };
+
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !user) return;
 
@@ -286,3 +293,4 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     </div>
   );
 };
+
