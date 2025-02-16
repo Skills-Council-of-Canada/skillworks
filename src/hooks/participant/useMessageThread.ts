@@ -32,7 +32,7 @@ export const useMessageThread = (conversationId: string) => {
       if (error) throw error;
       if (!data) return [];
 
-      return data.map((msg): Message => ({
+      return data.map((msg: DatabaseMessage): Message => ({
         id: msg.id,
         applicationId: msg.application_id,
         senderId: msg.sender_id,
@@ -53,8 +53,13 @@ export const useMessageThread = (conversationId: string) => {
         editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
         isPinned: msg.is_pinned || false,
         threadId: msg.thread_id,
-        mentions: msg.mentions || [],
-        chatType: msg.chat_type || 'direct',
+        mentions: Array.isArray(msg.mentions) 
+          ? msg.mentions.map(m => ({
+              id: (m as { id: string; name: string }).id,
+              name: (m as { id: string; name: string }).name
+            }))
+          : [],
+        chatType: msg.type === 'group' ? 'group' : 'direct',
         chatId: msg.chat_id
       }));
     },
@@ -87,7 +92,7 @@ export const useMessageThread = (conversationId: string) => {
         application_id: conversationId,
         type: "text",
         mentions,
-        chat_type: 'direct', // For now, keeping as direct messages
+        chat_type: 'direct' // For now, keeping as direct messages
       });
 
       if (error) throw error;
