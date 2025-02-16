@@ -1969,108 +1969,33 @@ export type Database = {
           },
         ]
       }
-      message_reactions: {
-        Row: {
-          created_at: string | null
-          id: string
-          message_id: string
-          reaction: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          message_id: string
-          reaction: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          message_id?: string
-          reaction?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "message_reactions_message_id_fkey"
-            columns: ["message_id"]
-            isOneToOne: false
-            referencedRelation: "messages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "message_reactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       messages: {
         Row: {
           application_id: string
-          attachments: Json | null
           content: string
-          created_at: string
-          edited_at: string | null
-          has_media: boolean | null
+          created_at: string | null
           id: string
-          is_edited: boolean | null
-          is_pinned: boolean | null
-          reactions: Json | null
           read_at: string | null
-          recipient_avatar_url: string | null
           recipient_id: string
-          sender_avatar_url: string | null
           sender_id: string
-          status: Database["public"]["Enums"]["message_status"]
-          thread_id: string | null
-          type: Database["public"]["Enums"]["message_type"]
-          updated_at: string
         }
         Insert: {
           application_id: string
-          attachments?: Json | null
           content: string
-          created_at?: string
-          edited_at?: string | null
-          has_media?: boolean | null
+          created_at?: string | null
           id?: string
-          is_edited?: boolean | null
-          is_pinned?: boolean | null
-          reactions?: Json | null
           read_at?: string | null
-          recipient_avatar_url?: string | null
           recipient_id: string
-          sender_avatar_url?: string | null
           sender_id: string
-          status?: Database["public"]["Enums"]["message_status"]
-          thread_id?: string | null
-          type?: Database["public"]["Enums"]["message_type"]
-          updated_at?: string
         }
         Update: {
           application_id?: string
-          attachments?: Json | null
           content?: string
-          created_at?: string
-          edited_at?: string | null
-          has_media?: boolean | null
+          created_at?: string | null
           id?: string
-          is_edited?: boolean | null
-          is_pinned?: boolean | null
-          reactions?: Json | null
           read_at?: string | null
-          recipient_avatar_url?: string | null
           recipient_id?: string
-          sender_avatar_url?: string | null
           sender_id?: string
-          status?: Database["public"]["Enums"]["message_status"]
-          thread_id?: string | null
-          type?: Database["public"]["Enums"]["message_type"]
-          updated_at?: string
         }
         Relationships: [
           {
@@ -2078,13 +2003,6 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "messages"
             referencedColumns: ["id"]
           },
         ]
@@ -3781,77 +3699,6 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "support_tickets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      typing_indicators: {
-        Row: {
-          conversation_id: string
-          created_at: string | null
-          expires_at: string | null
-          id: string
-          user_id: string
-        }
-        Insert: {
-          conversation_id: string
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          user_id: string
-        }
-        Update: {
-          conversation_id?: string
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "typing_indicators_conversation_id_fkey"
-            columns: ["conversation_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "typing_indicators_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      typing_status: {
-        Row: {
-          application_id: string | null
-          id: string
-          is_typing: boolean | null
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          application_id?: string | null
-          id?: string
-          is_typing?: boolean | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          application_id?: string | null
-          id?: string
-          is_typing?: boolean | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "typing_status_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
             referencedColumns: ["id"]
           },
         ]
