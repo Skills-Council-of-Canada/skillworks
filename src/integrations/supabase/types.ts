@@ -1975,14 +1975,20 @@ export type Database = {
           attachments: Json[] | null
           content: string
           created_at: string | null
+          deleted_at: string | null
           edited_at: string | null
+          edited_by: string | null
+          forwarded_from: string | null
           id: string
           is_edited: boolean | null
           is_pinned: boolean | null
+          last_edit_at: string | null
           reactions: Json[] | null
           read_at: string | null
           recipient_id: string
+          reply_to: string | null
           sender_id: string
+          status: string | null
           thread_id: string | null
         }
         Insert: {
@@ -1990,14 +1996,20 @@ export type Database = {
           attachments?: Json[] | null
           content: string
           created_at?: string | null
+          deleted_at?: string | null
           edited_at?: string | null
+          edited_by?: string | null
+          forwarded_from?: string | null
           id?: string
           is_edited?: boolean | null
           is_pinned?: boolean | null
+          last_edit_at?: string | null
           reactions?: Json[] | null
           read_at?: string | null
           recipient_id: string
+          reply_to?: string | null
           sender_id: string
+          status?: string | null
           thread_id?: string | null
         }
         Update: {
@@ -2005,14 +2017,20 @@ export type Database = {
           attachments?: Json[] | null
           content?: string
           created_at?: string | null
+          deleted_at?: string | null
           edited_at?: string | null
+          edited_by?: string | null
+          forwarded_from?: string | null
           id?: string
           is_edited?: boolean | null
           is_pinned?: boolean | null
+          last_edit_at?: string | null
           reactions?: Json[] | null
           read_at?: string | null
           recipient_id?: string
+          reply_to?: string | null
           sender_id?: string
+          status?: string | null
           thread_id?: string | null
         }
         Relationships: [
@@ -2021,6 +2039,27 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_edited_by_fkey"
+            columns: ["edited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_forwarded_from_fkey"
+            columns: ["forwarded_from"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
             referencedColumns: ["id"]
           },
           {
