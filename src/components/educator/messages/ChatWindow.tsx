@@ -1,16 +1,9 @@
 
 import { useState } from "react";
-import { MoreVertical, Smile, Paperclip, Send } from "lucide-react";
+import { Smile, Paperclip, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export const ChatWindow = () => {
   const [message, setMessage] = useState("");
@@ -26,19 +19,6 @@ export const ChatWindow = () => {
               <p className="text-sm text-muted-foreground">Online</p>
             </div>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Pin Chat</DropdownMenuItem>
-              <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">Delete Chat</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
 
