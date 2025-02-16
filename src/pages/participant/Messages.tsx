@@ -30,7 +30,7 @@ const Messages = () => {
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <p>Loading conversations...</p>
+        <MessageSquare className="h-8 w-8 text-muted-foreground/50 animate-pulse" />
       </div>
     );
   }
