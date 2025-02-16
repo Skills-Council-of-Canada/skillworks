@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 
-const MessagesPage = () => {
+const AdminMessages = () => {
   // This would normally be driven by real data
   const hasNewRequests = true;
 
@@ -118,4 +118,4 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   );
 };
 
-export default MessagesPage;
+export default AdminMessages;
