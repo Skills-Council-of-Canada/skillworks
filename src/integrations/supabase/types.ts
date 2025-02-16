@@ -1990,6 +1990,8 @@ export type Database = {
           sender_id: string
           status: string | null
           thread_id: string | null
+          typing_state: boolean | null
+          typing_updated_at: string | null
         }
         Insert: {
           application_id: string
@@ -2011,6 +2013,8 @@ export type Database = {
           sender_id: string
           status?: string | null
           thread_id?: string | null
+          typing_state?: boolean | null
+          typing_updated_at?: string | null
         }
         Update: {
           application_id?: string
@@ -2032,6 +2036,8 @@ export type Database = {
           sender_id?: string
           status?: string | null
           thread_id?: string | null
+          typing_state?: boolean | null
+          typing_updated_at?: string | null
         }
         Relationships: [
           {
@@ -3773,7 +3779,10 @@ export type Database = {
           dark_mode: boolean | null
           desktop_notifications: boolean | null
           email_notifications: boolean | null
+          message_preview: boolean | null
           sound_notifications: boolean | null
+          theme: string | null
+          typing_preview: boolean | null
           updated_at: string
           user_id: string
         }
@@ -3782,7 +3791,10 @@ export type Database = {
           dark_mode?: boolean | null
           desktop_notifications?: boolean | null
           email_notifications?: boolean | null
+          message_preview?: boolean | null
           sound_notifications?: boolean | null
+          theme?: string | null
+          typing_preview?: boolean | null
           updated_at?: string
           user_id: string
         }
@@ -3791,7 +3803,10 @@ export type Database = {
           dark_mode?: boolean | null
           desktop_notifications?: boolean | null
           email_notifications?: boolean | null
+          message_preview?: boolean | null
           sound_notifications?: boolean | null
+          theme?: string | null
+          typing_preview?: boolean | null
           updated_at?: string
           user_id?: string
         }

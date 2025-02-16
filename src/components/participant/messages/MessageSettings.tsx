@@ -82,6 +82,22 @@ export const MessageSettings = () => {
           onCheckedChange={(checked) => updateSetting('sound_notifications', checked)}
         />
       </div>
+
+      <div className="flex items-center justify-between">
+        <Label htmlFor="messagePreview">Message Preview</Label>
+        <Switch
+          id="messagePreview"
+          onCheckedChange={(checked) => updateSetting('message_preview', checked)}
+        />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <Label htmlFor="typingPreview">Typing Indicators</Label>
+        <Switch
+          id="typingPreview"
+          onCheckedChange={(checked) => updateSetting('typing_preview', checked)}
+        />
+      </div>
     </div>
   );
 };
