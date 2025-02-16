@@ -26,8 +26,8 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     pinMessage,
     deleteMessage,
     editMessage,
-    searchMessages, // This will be added to the hook
-    chatInfo // This will be added to the hook
+    searchMessages,
+    chatInfo
   } = useMessageThread(conversationId);
 
   useEffect(() => {
@@ -44,7 +44,6 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   };
 
   const handleManageMembers = () => {
-    // This will be implemented when we add the member management UI
     toast({
       title: "Coming Soon",
       description: "Member management will be available soon.",
@@ -108,7 +107,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-b from-background/95 to-background">
       <ChatHeader
         title={chatInfo?.name || "Messages"}
         memberCount={chatInfo?.memberCount}
@@ -116,8 +115,8 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         onManageMembers={handleManageMembers}
         type={chatInfo?.type || 'direct'}
       />
-      <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6 bg-background/80">
-        <div className="space-y-6">
+      <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6">
+        <div className="space-y-6 max-w-4xl mx-auto">
           {messages.map((message) => (
             <ChatMessage
               key={message.id}

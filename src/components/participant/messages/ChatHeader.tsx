@@ -29,7 +29,7 @@ export const ChatHeader = ({
 
   return (
     <div className="border-b p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto">
         <div className="flex items-center gap-3 flex-1">
           <div>
             <h3 className="font-semibold text-lg">{title}</h3>
@@ -45,7 +45,7 @@ export const ChatHeader = ({
               <Input
                 placeholder="Search messages..."
                 onChange={(e) => onSearch(e.target.value)}
-                className="w-full"
+                className="w-full bg-background/80"
               />
             </div>
           ) : (
@@ -53,6 +53,7 @@ export const ChatHeader = ({
               variant="ghost"
               size="icon"
               onClick={() => setShowSearch(true)}
+              className="hover:bg-primary/5"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -63,6 +64,7 @@ export const ChatHeader = ({
               variant="ghost"
               size="icon"
               onClick={onManageMembers}
+              className="hover:bg-primary/5"
             >
               <Users className="h-4 w-4" />
             </Button>
@@ -70,7 +72,7 @@ export const ChatHeader = ({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="hover:bg-primary/5">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { format } from "date-fns";
 import { Message } from "@/types/message";
@@ -57,8 +58,8 @@ export const ChatMessage = ({
         isCurrentUser && "flex-row-reverse"
       )}
     >
-      <Avatar className="h-8 w-8 shrink-0">
-        <AvatarFallback>
+      <Avatar className="h-8 w-8 shrink-0 border-2 border-background shadow-sm">
+        <AvatarFallback className="bg-primary/10 text-primary">
           {message.senderType === "learner" ? "L" : "E"}
         </AvatarFallback>
       </Avatar>
@@ -69,25 +70,23 @@ export const ChatMessage = ({
             <textarea
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
-              className="flex-1 p-3 rounded-lg bg-muted resize-none"
+              className="flex-1 p-3 rounded-lg bg-muted/50 resize-none border focus:border-primary/50 focus:ring-1 focus:ring-primary/50"
               rows={2}
             />
-            <Button size="sm" onClick={handleEditSubmit}>
+            <Button size="sm" onClick={handleEditSubmit} className="shadow-sm">
               <Check className="h-4 w-4" />
             </Button>
           </div>
         ) : (
           <div
             className={cn(
-              "rounded-lg p-3 shadow-sm",
+              "rounded-lg p-3 shadow-sm transition-colors",
               isCurrentUser
                 ? "bg-primary text-primary-foreground rounded-tr-none"
-                : "bg-muted/50 backdrop-blur-sm rounded-tl-none"
+                : "bg-muted/50 backdrop-blur-sm rounded-tl-none hover:bg-muted/60"
             )}
           >
-            <p className="text-sm break-words leading-relaxed">
-              {message.content}
-            </p>
+            <p className="text-sm break-words leading-relaxed">{message.content}</p>
           </div>
         )}
 
@@ -107,7 +106,7 @@ export const ChatMessage = ({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="h-8 w-8 hover:bg-primary/5"
               onClick={() => onReply(message.id)}
             >
               <Reply className="h-4 w-4" />
@@ -116,26 +115,26 @@ export const ChatMessage = ({
             {isCurrentUser && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/5">
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onPin(message.id)}>
-                    <Pin className="mr-2 h-4 w-4" />
+                <DropdownMenuContent align="end" className="w-32">
+                  <DropdownMenuItem onClick={() => onPin(message.id)} className="gap-2">
+                    <Pin className="h-4 w-4" />
                     {message.isPinned ? "Unpin" : "Pin"}
                   </DropdownMenuItem>
                   {canEdit && (
-                    <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                      <Edit className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem onClick={() => setIsEditing(true)} className="gap-2">
+                      <Edit className="h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem 
                     onClick={() => onDelete(message.id)}
-                    className="text-red-600"
+                    className="text-destructive gap-2"
                   >
-                    <Trash className="mr-2 h-4 w-4" />
+                    <Trash className="h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

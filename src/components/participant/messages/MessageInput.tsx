@@ -105,7 +105,7 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
 
   return (
     <div className="p-4 border-t glass-effect">
-      <div className="flex gap-2 items-end">
+      <div className="flex gap-2 items-end max-w-4xl mx-auto">
         <div className="flex-1 relative">
           <Textarea
             ref={textareaRef}
@@ -120,7 +120,7 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
               setCursorPosition(target.selectionStart);
             }}
             placeholder="Write your message... Use @ to mention someone"
-            className="min-h-[80px] resize-none bg-background/80 focus:bg-background transition-colors duration-200"
+            className="min-h-[80px] resize-none bg-background/80 focus:bg-background transition-colors duration-200 pr-20"
           />
           <input
             type="file"
@@ -161,7 +161,7 @@ export const MessageInput = ({ onSendMessage }: MessageInputProps) => {
             onClick={() => fileInputRef.current?.click()}
             size="icon"
             variant="ghost"
-            className="h-10 w-10"
+            className="h-10 w-10 hover:bg-primary/5"
             disabled={isUploading}
           >
             <PaperclipIcon className="h-4 w-4" />
