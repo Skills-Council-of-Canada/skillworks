@@ -52,7 +52,7 @@ export const useConversations = () => {
             id: messages[0]?.id || 'temp',
             applicationId: app.id,
             senderId: messages[0]?.sender_id || app.employer_id || '',
-            senderType: messages[0]?.sender_id === user?.id ? "employer" : "learner", // Fixed: Changed "educator" to "employer"
+            senderType: messages[0]?.sender_id === user?.id ? "employer" : "participant",
             content: app.last_message,
             timestamp: new Date(app.last_message_at || new Date()),
             readAt: messages[0]?.read_at ? new Date(messages[0].read_at) : undefined,
