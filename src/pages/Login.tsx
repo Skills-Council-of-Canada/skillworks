@@ -24,7 +24,7 @@ const Login = () => {
   }, [user, navigate, getRoleBasedRedirect]);
 
   const handleAuthSubmit = async (identifier: string, password: string) => {
-    if (isSubmitting) return;
+    if (isSubmitting || !identifier || !password) return;
     
     setIsSubmitting(true);
     try {
@@ -40,14 +40,26 @@ const Login = () => {
         });
       } else {
         console.log("Login successful, user:", user);
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in."
+        });
       }
     } catch (error) {
       console.error("Auth failed:", error);
       if (error instanceof AuthError) {
+        let errorMessage = "An unexpected error occurred during authentication";
+        
+        if (error.message.includes("Invalid login credentials")) {
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
+        } else if (error.message.includes("Email not confirmed")) {
+          errorMessage = "Please verify your email address before logging in.";
+        }
+        
         toast({
           variant: "destructive",
           title: "Authentication Error",
-          description: error.message
+          description: errorMessage
         });
       } else {
         toast({
@@ -63,7 +75,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
         <div className="container mx-auto px-4 h-16 flex items-center">
           <Button
@@ -77,7 +88,6 @@ const Login = () => {
         </div>
       </header>
 
-      {/* Login Form */}
       <div className="min-h-screen flex items-center justify-center px-4 pt-16">
         <AuthForm
           icon={User}

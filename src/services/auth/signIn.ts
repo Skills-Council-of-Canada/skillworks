@@ -29,55 +29,53 @@ export const signInUser = async (identifier: string, password: string) => {
       if (signInError.message.includes('Email not confirmed')) {
         return {
           data: null,
-          error: new Error("Please verify your email address before logging in. Check your inbox for a confirmation email.")
+          error: new Error("Please verify your email address before logging in.")
         };
       }
 
       return { data: null, error: signInError };
     }
 
-    // If sign in succeeds, get the profile
-    if (authData.user) {
-      console.log("Sign in successful, getting profile for user:", authData.user.id);
-      
-      // Get the profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authData.user.id)
-        .single();
-
-      if (profileError) {
-        console.error("Error fetching profile:", profileError);
-        return { 
-          data: null, 
-          error: new Error("Error fetching user profile. Please try again.")
-        };
-      }
-
-      if (!profile) {
-        console.error("No profile found for user:", authData.user.id);
-        return { 
-          data: null, 
-          error: new Error("No user profile found. Please contact support.")
-        };
-      }
-
-      const user: User = {
-        id: profile.id,
-        email: profile.email,
-        role: profile.role as UserRole,
-        name: profile.name
+    if (!authData?.user) {
+      console.error("No auth data returned from sign in");
+      return { 
+        data: null, 
+        error: new Error("No authentication data returned")
       };
-
-      console.log("Login successful with profile:", user);
-      return { data: { user }, error: null };
     }
-      
-    return { 
-      data: null, 
-      error: new Error("No user data returned from authentication")
+
+    // Get the profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authData.user.id)
+      .single();
+
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
+      return { 
+        data: null, 
+        error: new Error("Error fetching user profile. Please try again.")
+      };
+    }
+
+    if (!profile) {
+      console.error("No profile found for user:", authData.user.id);
+      return { 
+        data: null, 
+        error: new Error("No user profile found. Please contact support.")
+      };
+    }
+
+    const user: User = {
+      id: profile.id,
+      email: profile.email,
+      role: profile.role as UserRole,
+      name: profile.name
     };
+
+    console.log("Login successful with profile:", user);
+    return { data: { user }, error: null };
   } catch (error) {
     console.error("Error in signInUser:", error);
     throw error;
