@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import ExperienceOversight from "./pages/admin/ExperienceOversight";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSupport from "./pages/admin/AdminSupport";
+import AdminMessages from "./pages/admin/AdminMessages";
 import { default as AdminProjectManagement } from "./pages/admin/ProjectManagement";
 import EmployerLayout from "./pages/employer/EmployerLayout";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
@@ -111,6 +113,7 @@ const App = () => (
             <Route path="users" element={<UserManagement />} />
             <Route path="experiences" element={<ExperienceOversight />} />
             <Route path="projects" element={<AdminProjectManagement />} />
+            <Route path="messages" element={<AdminMessages />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="support" element={<AdminSupport />} />
