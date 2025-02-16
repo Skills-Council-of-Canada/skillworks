@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { MessageSquare } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useMessages } from "@/hooks/useMessages";
+import { useMessageThread } from "@/hooks/participant/useMessageThread";
 import { ChatMessage } from "./ChatMessage";
 import { MessageInput } from "./MessageInput";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +24,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     pinMessage,
     deleteMessage,
     editMessage 
-  } = useMessages(conversationId);
+  } = useMessageThread(conversationId);
 
   useEffect(() => {
     if (scrollRef.current) {
