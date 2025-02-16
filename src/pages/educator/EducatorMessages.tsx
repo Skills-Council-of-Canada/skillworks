@@ -1,29 +1,92 @@
 
+import { BellDot } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ChatList } from "@/components/educator/messages/ChatList";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
-import { ChatRequestPanel } from "@/components/educator/messages/ChatRequestPanel";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 const EducatorMessages = () => {
+  // This would normally be driven by real data
+  const hasNewRequests = true;
+
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4 overflow-hidden">
       {/* Left Panel - Chat List */}
       <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="font-semibold">Conversations</h3>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <BellDot className="h-5 w-5" />
+                {hasNewRequests && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
+                  >
+                    2
+                  </Badge>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <div className="p-4 border-b">
+                <h4 className="font-semibold">Chat Requests</h4>
+              </div>
+              <ScrollArea className="h-[300px]">
+                <div className="p-4 space-y-4">
+                  <RequestItem
+                    name="Jane Smith"
+                    message="I would like to discuss the project requirements"
+                    timestamp="2 hours ago"
+                  />
+                  <RequestItem
+                    name="Mike Johnson"
+                    message="Can we schedule a meeting?"
+                    timestamp="3 hours ago"
+                  />
+                </div>
+              </ScrollArea>
+            </PopoverContent>
+          </Popover>
+        </div>
         <ChatList />
       </div>
 
       <Separator orientation="vertical" />
 
-      {/* Center Panel - Chat Window */}
+      {/* Right Panel - Chat Window */}
       <div className="flex-1 bg-background border rounded-lg overflow-hidden">
         <ChatWindow />
       </div>
+    </div>
+  );
+};
 
-      <Separator orientation="vertical" />
+interface RequestItemProps {
+  name: string;
+  message: string;
+  timestamp: string;
+}
 
-      {/* Right Panel - Chat Requests */}
-      <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
-        <ChatRequestPanel />
+const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
+  return (
+    <div className="border rounded-lg p-3 space-y-2">
+      <div>
+        <h4 className="font-semibold text-sm">{name}</h4>
+        <p className="text-sm text-muted-foreground">{message}</p>
+        <span className="text-xs text-muted-foreground">{timestamp}</span>
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" className="w-full">Accept</Button>
+        <Button size="sm" variant="outline" className="w-full">Decline</Button>
       </div>
     </div>
   );
