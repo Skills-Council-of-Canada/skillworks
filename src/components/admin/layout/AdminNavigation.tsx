@@ -7,7 +7,6 @@ import {
   Briefcase,
   BarChart,
   Settings,
-  HeadphonesIcon,
   LogOut,
   MessageSquare
 } from "lucide-react";
@@ -26,7 +25,6 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
     { to: "/admin/messages", icon: MessageSquare, label: "Messages" },
     { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
     { to: "/admin/settings", icon: Settings, label: "System Settings" },
-    { to: "/admin/support", icon: HeadphonesIcon, label: "Support & Helpdesk" },
   ];
 
   return (
