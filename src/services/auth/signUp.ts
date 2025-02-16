@@ -2,8 +2,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { UserRole } from "@/types/auth";
 
-export const signUpUser = async (email: string, password: string, portal: string) => {
-  console.log("Signing up user with portal:", portal);
+export const signUpUser = async (email: string, password: string, role: UserRole) => {
+  console.log("Signing up user with role:", role);
   try {
     const normalizedEmail = email.toLowerCase();
     
@@ -14,7 +14,7 @@ export const signUpUser = async (email: string, password: string, portal: string
       password,
       options: {
         data: {
-          portal,
+          role,
         },
       },
     });
@@ -43,8 +43,8 @@ export const signUpUser = async (email: string, password: string, portal: string
           .insert({
             id: data.user.id,
             email: normalizedEmail,
-            role: portal,
-            name: email.split('@')[0]
+            role: role,
+            name: "Admin" // Set a default name for admin
           });
           
         if (profileError) {
