@@ -4271,6 +4271,14 @@ export type Database = {
           total_count: number
         }[]
       }
+      handle_message_reaction: {
+        Args: {
+          message_id: string
+          user_id: string
+          emoji: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       admin_permission_level: "read" | "write" | "manage"
