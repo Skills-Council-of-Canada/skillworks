@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { MessageMutations } from "./types";
 import type { Message, DatabaseMessage } from "@/types/message";
+import type { Json } from "@/types/supabase";
 
 export const useMessageMutations = (
   conversationId: string,
@@ -151,7 +152,25 @@ export const useMessageMutations = (
       .eq("id", messageId)
       .single();
 
-    return data as DatabaseMessage | null;
+    if (!data) return null;
+
+    // Convert the raw data to DatabaseMessage type
+    const message: DatabaseMessage = {
+      ...data,
+      reactions: data.reactions as any[] || [],
+      mentions: Array.isArray(data.mentions) 
+        ? (data.mentions as any[]).map(m => ({
+            id: m.id as string,
+            name: m.name as string
+          }))
+        : [],
+      attachments: Array.isArray(data.attachments) 
+        ? data.attachments as any[]
+        : [],
+      search_vector: data.search_vector as any,
+    };
+
+    return message;
   };
 
   return {
