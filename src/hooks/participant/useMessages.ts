@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import type { Conversation, DatabaseApplication } from "@/types/message";
+import type { Conversation, DatabaseApplication, Message } from "@/types/message";
 
 export const useMessages = () => {
   const { user } = useAuth();
@@ -44,11 +44,11 @@ export const useMessages = () => {
           (msg) => msg.sender_id !== user?.id && !msg.read_at
         ).length;
 
-        const lastMessage = app.last_message ? {
+        const lastMessage: Message | undefined = app.last_message ? {
           id: messages[0]?.id || 'temp',
           applicationId: app.id,
           senderId: messages[0]?.sender_id || app.employer_id || '',
-          senderType: messages[0]?.sender_id === user?.id ? "learner" : "employer",
+          senderType: messages[0]?.sender_id === user?.id ? "learner" as const : "employer" as const,
           content: app.last_message,
           timestamp: new Date(app.last_message_at || new Date()),
         } : undefined;
