@@ -214,6 +214,95 @@ export type Database = {
           },
         ]
       }
+      chat_notifications: {
+        Row: {
+          chat_id: string | null
+          content: string | null
+          created_at: string | null
+          id: string
+          message_id: string | null
+          status: string | null
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          chat_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          status?: string | null
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          chat_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          status?: string | null
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_notifications_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_notifications_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization_id: string | null
+          project_id: string | null
+          receiver_id: string | null
+          sender_id: string | null
+          status: Database["public"]["Enums"]["chat_request_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string | null
+          project_id?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+          status?: Database["public"]["Enums"]["chat_request_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string | null
+          project_id?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+          status?: Database["public"]["Enums"]["chat_request_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_sessions: {
         Row: {
           admin_id: string | null
@@ -240,6 +329,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      chats: {
+        Row: {
+          chat_name: string | null
+          created_at: string | null
+          id: string
+          is_group_chat: boolean | null
+          last_message: string | null
+          last_message_at: string | null
+          organization_id: string | null
+          project_id: string | null
+          updated_at: string | null
+          user_1_id: string | null
+          user_2_id: string | null
+        }
+        Insert: {
+          chat_name?: string | null
+          created_at?: string | null
+          id?: string
+          is_group_chat?: boolean | null
+          last_message?: string | null
+          last_message_at?: string | null
+          organization_id?: string | null
+          project_id?: string | null
+          updated_at?: string | null
+          user_1_id?: string | null
+          user_2_id?: string | null
+        }
+        Update: {
+          chat_name?: string | null
+          created_at?: string | null
+          id?: string
+          is_group_chat?: boolean | null
+          last_message?: string | null
+          last_message_at?: string | null
+          organization_id?: string | null
+          project_id?: string | null
+          updated_at?: string | null
+          user_1_id?: string | null
+          user_2_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chats_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       collaboration_messages: {
         Row: {
@@ -1747,6 +1886,79 @@ export type Database = {
           },
         ]
       }
+      group_chat_members: {
+        Row: {
+          group_chat_id: string | null
+          id: string
+          joined_at: string | null
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          group_chat_id?: string | null
+          id?: string
+          joined_at?: string | null
+          role?: string
+          user_id?: string | null
+        }
+        Update: {
+          group_chat_id?: string | null
+          id?: string
+          joined_at?: string | null
+          role?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_chat_members_group_chat_id_fkey"
+            columns: ["group_chat_id"]
+            isOneToOne: false
+            referencedRelation: "group_chats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_chats: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_announcement_channel: boolean | null
+          name: string
+          project_id: string | null
+          school_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_announcement_channel?: boolean | null
+          name: string
+          project_id?: string | null
+          school_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_announcement_channel?: boolean | null
+          name?: string
+          project_id?: string | null
+          school_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_chats_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       industries: {
         Row: {
           created_at: string
@@ -1969,10 +2181,49 @@ export type Database = {
           },
         ]
       }
+      message_attachments: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+          message_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id?: string
+          message_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_attachments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           application_id: string
           attachments: Json[] | null
+          chat_id: string | null
           content: string
           created_at: string | null
           deleted_at: string | null
@@ -1983,10 +2234,13 @@ export type Database = {
           is_edited: boolean | null
           is_pinned: boolean | null
           last_edit_at: string | null
+          mentions: Json | null
           reactions: Json[] | null
           read_at: string | null
           recipient_id: string
           reply_to: string | null
+          reply_to_id: string | null
+          search_vector: unknown | null
           sender_id: string
           status: string | null
           thread_id: string | null
@@ -1996,6 +2250,7 @@ export type Database = {
         Insert: {
           application_id: string
           attachments?: Json[] | null
+          chat_id?: string | null
           content: string
           created_at?: string | null
           deleted_at?: string | null
@@ -2006,10 +2261,13 @@ export type Database = {
           is_edited?: boolean | null
           is_pinned?: boolean | null
           last_edit_at?: string | null
+          mentions?: Json | null
           reactions?: Json[] | null
           read_at?: string | null
           recipient_id: string
           reply_to?: string | null
+          reply_to_id?: string | null
+          search_vector?: unknown | null
           sender_id: string
           status?: string | null
           thread_id?: string | null
@@ -2019,6 +2277,7 @@ export type Database = {
         Update: {
           application_id?: string
           attachments?: Json[] | null
+          chat_id?: string | null
           content?: string
           created_at?: string | null
           deleted_at?: string | null
@@ -2029,10 +2288,13 @@ export type Database = {
           is_edited?: boolean | null
           is_pinned?: boolean | null
           last_edit_at?: string | null
+          mentions?: Json | null
           reactions?: Json[] | null
           read_at?: string | null
           recipient_id?: string
           reply_to?: string | null
+          reply_to_id?: string | null
+          search_vector?: unknown | null
           sender_id?: string
           status?: string | null
           thread_id?: string | null
@@ -2045,6 +2307,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
             referencedColumns: ["id"]
           },
           {
@@ -2064,6 +2333,13 @@ export type Database = {
           {
             foreignKeyName: "messages_reply_to_fkey"
             columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
             isOneToOne: false
             referencedRelation: "messages"
             referencedColumns: ["id"]
@@ -4005,6 +4281,7 @@ export type Database = {
         | "reports"
         | "settings"
         | "support"
+      chat_request_status: "pending" | "accepted" | "rejected"
       conversation_type:
         | "direct_message"
         | "match_request"
@@ -4041,6 +4318,7 @@ export type Database = {
       ticket_category: "technical" | "approval" | "experience" | "other"
       ticket_priority: "low" | "medium" | "high" | "urgent"
       ticket_status: "open" | "in_progress" | "resolved" | "closed"
+      user_role: "admin" | "school" | "employer" | "participant"
       user_status: "pending" | "approved" | "rejected" | "suspended"
       visibility_rule: "public" | "registered" | "verified" | "admin_approved"
     }
