@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, SendHorizontal, Paperclip, SmilePlus, MoreVertical, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -87,16 +86,15 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const MessageBubble = ({ message }: { message: Message }) => (
     <div
       className={cn(
-        "flex items-start gap-3 group animate-fade-in transition-opacity duration-200 ease-in-out opacity-0",
+        "message-bubble flex items-start gap-3 group",
         message.senderType === "learner" && "flex-row-reverse"
       )}
-      style={{ animationFillMode: 'forwards' }}
     >
-      <Avatar className="h-8 w-8 shrink-0 border-2 border-background shadow-sm" />
+      <Avatar className="h-8 w-8 shrink-0 border-2 border-background subtle-shadow" />
       <div className="flex flex-col gap-1 max-w-[80%]">
         <div
           className={cn(
-            "rounded-lg p-3 shadow-sm transition-all duration-200 hover:shadow-md",
+            "rounded-lg p-3 subtle-shadow",
             message.senderType === "learner"
               ? "bg-primary text-primary-foreground rounded-tr-none"
               : "bg-accent/10 rounded-tl-none"
@@ -133,9 +131,9 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="px-4 py-3 border-b flex items-center justify-between bg-card/50 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
+      <div className="px-4 py-3 border-b flex items-center justify-between glass-effect sticky top-0 z-10 subtle-shadow">
         <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8 border-2 border-background shadow-sm" />
+          <Avatar className="h-8 w-8 border-2 border-background subtle-shadow" />
           <div>
             <h3 className="font-semibold text-lg leading-none">Project Chat</h3>
             {userTyping && (
@@ -156,7 +154,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t bg-card/50 backdrop-blur-sm">
+      <div className="p-4 border-t glass-effect">
         <div className="flex gap-2 items-end">
           <div className="flex-1 flex gap-2">
             <Button variant="ghost" size="icon" className="shrink-0 hover:bg-primary/5">
@@ -180,7 +178,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
             <Button 
               onClick={handleSendMessage} 
               size="icon"
-              className="h-10 w-10 shrink-0 shadow-sm hover:shadow-md transition-all duration-200"
+              className="h-10 w-10 shrink-0 subtle-shadow"
               disabled={!newMessage.trim()}
             >
               <SendHorizontal className="h-4 w-4" />
