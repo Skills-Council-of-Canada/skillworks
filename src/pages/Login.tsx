@@ -28,16 +28,18 @@ const Login = () => {
     
     setIsSubmitting(true);
     try {
-      // Email format validation
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-      const user = await login(isEmail ? identifier : identifier.toLowerCase(), password);
+      console.log("Attempting login with:", identifier);
+      const user = await login(identifier, password);
       
       if (!user) {
+        console.log("Login failed - no user returned");
         toast({
           variant: "destructive",
           title: "Login Failed",
           description: "Please check your credentials and try again."
         });
+      } else {
+        console.log("Login successful, user:", user);
       }
     } catch (error) {
       console.error("Auth failed:", error);

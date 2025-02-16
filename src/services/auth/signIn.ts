@@ -23,10 +23,10 @@ export const signInUser = async (identifier: string, password: string) => {
 
     // If sign in succeeds, wait a moment for the trigger to create the profile
     if (authData.user) {
-      console.log("Sign in successful, checking profile for user:", authData.user.id);
+      console.log("Sign in successful for user:", authData.user.id);
       
       // Add a small delay to allow the trigger to complete
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Then try to get the profile
       let { data: profile, error: profileError } = await supabase
@@ -41,8 +41,24 @@ export const signInUser = async (identifier: string, password: string) => {
       }
 
       if (!profile) {
-        console.log("No profile found for user");
-        return { data: null, error: new Error("Could not find user profile") };
+        console.log("No profile found, creating one");
+        // If no profile exists, create one
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: authData.user.id,
+            email: authData.user.email,
+            role: 'participant',
+            name: authData.user.email?.split('@')[0] || 'User'
+          }])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("Error creating profile:", createError);
+          return { data: null, error: createError };
+        }
+        profile = newProfile;
       }
 
       console.log("Returning user data with profile:", { ...authData.user, ...profile });
