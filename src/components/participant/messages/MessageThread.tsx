@@ -55,12 +55,25 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
           content: msg.content,
           timestamp: new Date(msg.created_at),
           readAt: msg.read_at ? new Date(msg.read_at) : undefined,
-          reactions: Array.isArray(msg.reactions) ? msg.reactions : [],
+          reactions: Array.isArray(msg.reactions) ? msg.reactions.map(r => {
+            const reaction = r as { emoji: string; count: number };
+            return {
+              emoji: reaction.emoji,
+              count: reaction.count
+            };
+          }) : [],
           isEdited: msg.is_edited || false,
           editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
           threadId: msg.thread_id || undefined,
           isPinned: msg.is_pinned || false,
-          attachments: Array.isArray(msg.attachments) ? msg.attachments : [],
+          attachments: Array.isArray(msg.attachments) ? msg.attachments.map(a => {
+            const attachment = a as { name: string; url: string; type: string };
+            return {
+              name: attachment.name,
+              url: attachment.url,
+              type: attachment.type
+            };
+          }) : [],
         }))
       );
     } catch (error) {
@@ -125,7 +138,19 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
               content: payload.new.content,
               timestamp: new Date(payload.new.created_at),
               readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,
-              reactions: payload.new.reactions || [],
+              reactions: Array.isArray(payload.new.reactions) ? payload.new.reactions.map(r => ({
+                emoji: (r as any).emoji,
+                count: (r as any).count
+              })) : [],
+              isEdited: payload.new.is_edited || false,
+              editedAt: payload.new.edited_at ? new Date(payload.new.edited_at) : undefined,
+              threadId: payload.new.thread_id || undefined,
+              isPinned: payload.new.is_pinned || false,
+              attachments: Array.isArray(payload.new.attachments) ? payload.new.attachments.map(a => ({
+                name: (a as any).name,
+                url: (a as any).url,
+                type: (a as any).type
+              })) : [],
             };
             setMessages((prev) => [...prev, newMessage]);
           } else if (payload.eventType === "UPDATE") {
@@ -134,7 +159,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
                 msg.id === payload.new.id
                   ? {
                       ...msg,
-                      reactions: payload.new.reactions || [],
+                      reactions: Array.isArray(payload.new.reactions) ? payload.new.reactions.map(r => ({
+                        emoji: (r as any).emoji,
+                        count: (r as any).count
+                      })) : [],
                     }
                   : msg
               )
