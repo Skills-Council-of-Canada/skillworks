@@ -48,7 +48,7 @@ export const useMessages = () => {
           id: messages[0]?.id || 'temp',
           applicationId: app.id,
           senderId: messages[0]?.sender_id || app.employer_id || '',
-          senderType: messages[0]?.sender_id === user?.id ? "learner" : "employer",
+          senderType: messages[0]?.sender_id === user?.id ? "participant" : "employer",
           content: app.last_message,
           timestamp: new Date(app.last_message_at || new Date()),
           readAt: messages[0]?.read_at ? new Date(messages[0].read_at) : undefined,
