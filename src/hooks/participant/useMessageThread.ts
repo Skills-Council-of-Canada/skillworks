@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,7 +31,7 @@ export const useMessageThread = (conversationId: string) => {
       if (error) throw error;
       if (!data) return [];
 
-      return data.map((msg: DatabaseMessage): Message => ({
+      return data.map((msg): Message => ({
         id: msg.id,
         applicationId: msg.application_id,
         senderId: msg.sender_id,
@@ -55,11 +54,11 @@ export const useMessageThread = (conversationId: string) => {
         threadId: msg.thread_id,
         mentions: Array.isArray(msg.mentions) 
           ? msg.mentions.map(m => ({
-              id: (m as { id: string; name: string }).id,
-              name: (m as { id: string; name: string }).name
+              id: m.id,
+              name: m.name
             }))
           : [],
-        chatType: msg.type === 'group' ? 'group' : 'direct',
+        chatType: 'direct',
         chatId: msg.chat_id
       }));
     },
@@ -90,9 +89,8 @@ export const useMessageThread = (conversationId: string) => {
         sender_id: user?.id,
         recipient_id: application.employer_id,
         application_id: conversationId,
-        type: "text",
         mentions,
-        chat_type: 'direct' // For now, keeping as direct messages
+        status: 'sent'
       });
 
       if (error) throw error;

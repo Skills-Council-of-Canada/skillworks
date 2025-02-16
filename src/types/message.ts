@@ -44,16 +44,22 @@ export interface DatabaseMessage {
   content: string;
   created_at: string;
   read_at: string | null;
-  type: 'text';
-  is_edited: boolean;
-  edited_at: string | null;
   reactions: any[];
   thread_id: string | null;
   is_pinned: boolean;
+  is_edited: boolean;
+  edited_at: string | null;
+  deleted_at: string | null;
+  edited_by: string | null;
+  forwarded_from: string | null;
   attachments: any[];
-  mentions: { id: string; name: string }[];
-  chat_type: 'direct' | 'group';
   chat_id: string;
+  typing_state: boolean;
+  typing_updated_at: string;
+  mentions: { id: string; name: string }[];
+  search_vector: any;
+  reply_to: string | null;
+  status: 'sent' | 'delivered' | 'read';
 }
 
 export interface DatabaseApplication {
