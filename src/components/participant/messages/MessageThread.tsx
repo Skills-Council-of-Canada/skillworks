@@ -55,7 +55,12 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
           content: msg.content,
           timestamp: new Date(msg.created_at),
           readAt: msg.read_at ? new Date(msg.read_at) : undefined,
-          reactions: msg.reactions || [],
+          reactions: Array.isArray(msg.reactions) ? msg.reactions : [],
+          isEdited: msg.is_edited || false,
+          editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
+          threadId: msg.thread_id || undefined,
+          isPinned: msg.is_pinned || false,
+          attachments: Array.isArray(msg.attachments) ? msg.attachments : [],
         }))
       );
     } catch (error) {
@@ -161,6 +166,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         application_id: conversationId,
         sender_id: user.id,
         recipient_id: application.employer_id,
+        reactions: [],
+        is_edited: false,
+        is_pinned: false,
+        attachments: [],
       });
 
       if (error) throw error;
