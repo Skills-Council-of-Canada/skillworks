@@ -30,57 +30,59 @@ const EducatorMessages = () => {
       <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold">Conversations</h3>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-background border shadow-lg rounded-lg">
-              <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <BellDot className="h-5 w-5" />
-                {hasNewRequests && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
-                  >
-                    2
-                  </Badge>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent 
-              className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
-              align="end"
-              sideOffset={5}
-            >
-              <div className="p-4 border-b bg-background">
-                <h4 className="font-semibold">Chat Requests</h4>
-              </div>
-              <ScrollArea className="h-[300px] bg-background">
-                <div className="p-4 space-y-4">
-                  <RequestItem
-                    name="Jane Smith"
-                    message="I would like to discuss the project requirements"
-                    timestamp="2 hours ago"
-                  />
-                  <RequestItem
-                    name="Mike Johnson"
-                    message="Can we schedule a meeting?"
-                    timestamp="3 hours ago"
-                  />
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-background border shadow-lg rounded-lg !bg-opacity-100">
+                <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <BellDot className="h-5 w-5" />
+                  {hasNewRequests && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
+                    >
+                      2
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent 
+                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
+                align="end"
+                sideOffset={5}
+              >
+                <div className="p-4 border-b bg-background">
+                  <h4 className="font-semibold">Chat Requests</h4>
                 </div>
-              </ScrollArea>
-            </PopoverContent>
-          </Popover>
+                <ScrollArea className="h-[300px] bg-background">
+                  <div className="p-4 space-y-4">
+                    <RequestItem
+                      name="Jane Smith"
+                      message="I would like to discuss the project requirements"
+                      timestamp="2 hours ago"
+                    />
+                    <RequestItem
+                      name="Mike Johnson"
+                      message="Can we schedule a meeting?"
+                      timestamp="3 hours ago"
+                    />
+                  </div>
+                </ScrollArea>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
         <ChatList />
       </div>
