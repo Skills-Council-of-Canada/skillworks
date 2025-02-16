@@ -42,7 +42,6 @@ import ProjectSearch from "./pages/educator/ProjectSearch";
 import StudentManagement from "./pages/educator/StudentManagement";
 import MatchRequests from "./pages/educator/MatchRequests";
 import TasksActivities from "./pages/educator/TasksActivities";
-import EducatorMessages from "./pages/educator/EducatorMessages";
 import EducatorCalendar from "./pages/educator/EducatorCalendar";
 import EducatorSettings from "./pages/educator/EducatorSettings";
 import CreateExperience from "./pages/educator/CreateExperience";
@@ -134,7 +133,6 @@ const App = () => (
             <Route path="students" element={<StudentManagement />} />
             <Route path="matches" element={<MatchRequests />} />
             <Route path="tasks" element={<TasksActivities />} />
-            <Route path="messages" element={<EducatorMessages />} />
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="create-experience" element={<CreateExperience />} />
