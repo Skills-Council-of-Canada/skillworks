@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import type { Message, DatabaseMessage } from "@/types/message";
+import type { Message } from "@/types/message";
 
 export const useMessageThread = (conversationId: string) => {
   const { user } = useAuth();
@@ -39,7 +39,12 @@ export const useMessageThread = (conversationId: string) => {
         senderType: msg.sender_id === user?.id ? "learner" : "employer",
         content: msg.content,
         timestamp: new Date(msg.created_at),
-        readAt: msg.read_at ? new Date(msg.read_at) : undefined
+        readAt: msg.read_at ? new Date(msg.read_at) : undefined,
+        reactions: msg.reactions || [],
+        isEdited: msg.is_edited || false,
+        editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
+        isPinned: msg.is_pinned || false,
+        threadId: msg.thread_id
       }));
     },
     enabled: !!conversationId && !!user?.id,
@@ -77,9 +82,68 @@ export const useMessageThread = (conversationId: string) => {
     },
   });
 
+  const handleReactionAdd = async (messageId: string, emoji: string) => {
+    if (!user?.id) return;
+
+    const { error } = await supabase.rpc('handle_message_reaction', {
+      message_id: messageId,
+      user_id: user.id,
+      emoji: emoji
+    });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add reaction",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+  };
+
+  const pinMessage = async (messageId: string) => {
+    const { error } = await supabase
+      .from("messages")
+      .update({ is_pinned: true })
+      .eq("id", messageId);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    const { error } = await supabase
+      .from("messages")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", messageId);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+  };
+
+  const editMessage = async (messageId: string, content: string) => {
+    const { error } = await supabase
+      .from("messages")
+      .update({
+        content,
+        is_edited: true,
+        edited_at: new Date().toISOString(),
+      })
+      .eq("id", messageId);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+  };
+
   return {
     messages: messages ?? [],
     sendMessage,
     isLoading,
+    handleReactionAdd,
+    pinMessage,
+    deleteMessage,
+    editMessage,
   };
 };
