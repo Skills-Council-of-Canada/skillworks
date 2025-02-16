@@ -1,10 +1,21 @@
 
 import { Button } from "@/components/ui/button";
-import { LogIn, Home } from "lucide-react";
+import { LogIn, LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  
+  const handleAuthAction = async () => {
+    if (user) {
+      await logout();
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  };
   
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
@@ -24,10 +35,19 @@ const Header = () => {
             variant="ghost"
             size="sm"
             className="gap-2"
-            onClick={() => navigate("/login")}
+            onClick={handleAuthAction}
           >
-            <LogIn className="h-4 w-4" />
-            <span className="hidden sm:inline">Login</span>
+            {user ? (
+              <>
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </>
+            ) : (
+              <>
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Login</span>
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -36,3 +56,4 @@ const Header = () => {
 };
 
 export default Header;
+
