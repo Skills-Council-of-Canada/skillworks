@@ -3,7 +3,7 @@ export interface Message {
   id: string;
   applicationId: string;
   senderId: string;
-  senderType: 'employer' | 'learner';
+  senderType: 'employer' | 'participant';
   content: string;
   timestamp: Date;
   readAt?: Date;
