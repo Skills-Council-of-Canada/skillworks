@@ -44,7 +44,8 @@ export const signUpUser = async (email: string, password: string, role: UserRole
             id: data.user.id,
             email: normalizedEmail,
             role: role,
-            name: "Admin" // Set a default name for admin
+            name: normalizedEmail.split('@')[0], // Set a default name based on email
+            status: 'pending' // Default status for new users
           });
           
         if (profileError) {
