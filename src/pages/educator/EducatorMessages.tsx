@@ -4,14 +4,14 @@ import { Card } from "@/components/ui/card";
 import { MessageThread } from "@/components/participant/messages/MessageThread";
 import { ConversationList } from "@/components/participant/messages/ConversationList";
 import { MessageSettings } from "@/components/participant/messages/MessageSettings";
-import { useMessages } from "@/hooks/messages/useMessages";
+import { useConversations } from "@/hooks/messages/useConversations";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const EducatorMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const { conversations, isLoading } = useMessages();
+  const { conversations, isLoading } = useConversations();
 
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4 p-4">
