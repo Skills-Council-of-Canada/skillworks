@@ -3101,6 +3101,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          online_status: boolean | null
           phone: string | null
           preferred_contact: string | null
           role: string
@@ -3114,6 +3115,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          online_status?: boolean | null
           phone?: string | null
           preferred_contact?: string | null
           role: string
@@ -3127,6 +3129,7 @@ export type Database = {
           email?: string
           id?: string
           name?: string
+          online_status?: boolean | null
           phone?: string | null
           preferred_contact?: string | null
           role?: string
@@ -3820,6 +3823,68 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      typing_status: {
+        Row: {
+          application_id: string | null
+          id: string
+          is_typing: boolean | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          id?: string
+          is_typing?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          id?: string
+          is_typing?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "typing_status_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_message_settings: {
+        Row: {
+          created_at: string
+          dark_mode: boolean | null
+          desktop_notifications: boolean | null
+          email_notifications: boolean | null
+          sound_notifications: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dark_mode?: boolean | null
+          desktop_notifications?: boolean | null
+          email_notifications?: boolean | null
+          sound_notifications?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dark_mode?: boolean | null
+          desktop_notifications?: boolean | null
+          email_notifications?: boolean | null
+          sound_notifications?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_support_notes: {
         Row: {
