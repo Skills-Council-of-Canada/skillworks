@@ -1972,30 +1972,48 @@ export type Database = {
       messages: {
         Row: {
           application_id: string
+          attachments: Json[] | null
           content: string
           created_at: string | null
+          edited_at: string | null
           id: string
+          is_edited: boolean | null
+          is_pinned: boolean | null
+          reactions: Json[] | null
           read_at: string | null
           recipient_id: string
           sender_id: string
+          thread_id: string | null
         }
         Insert: {
           application_id: string
+          attachments?: Json[] | null
           content: string
           created_at?: string | null
+          edited_at?: string | null
           id?: string
+          is_edited?: boolean | null
+          is_pinned?: boolean | null
+          reactions?: Json[] | null
           read_at?: string | null
           recipient_id: string
           sender_id: string
+          thread_id?: string | null
         }
         Update: {
           application_id?: string
+          attachments?: Json[] | null
           content?: string
           created_at?: string | null
+          edited_at?: string | null
           id?: string
+          is_edited?: boolean | null
+          is_pinned?: boolean | null
+          reactions?: Json[] | null
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
+          thread_id?: string | null
         }
         Relationships: [
           {
@@ -2003,6 +2021,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
             referencedColumns: ["id"]
           },
         ]
