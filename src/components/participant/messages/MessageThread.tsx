@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { MessageCircle, SendHorizontal } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { MessageCircle, SendHorizontal, Paperclip, SmilePlus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,7 @@ import { useMessageThread } from "@/hooks/participant/useMessageThread";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
+import type { Message } from "@/types/message";
 
 interface MessageThreadProps {
   conversationId: string;
@@ -16,6 +17,15 @@ interface MessageThreadProps {
 export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const [newMessage, setNewMessage] = useState("");
   const { messages, sendMessage, isLoading } = useMessageThread(conversationId);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -35,6 +45,51 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     }
   };
 
+  const handleTyping = () => {
+    setIsTyping(true);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 2000);
+  };
+
+  const MessageBubble = ({ message }: { message: Message }) => (
+    <div
+      className={cn(
+        "flex items-start gap-3 group",
+        message.senderType === "learner" && "flex-row-reverse"
+      )}
+    >
+      <Avatar className="h-8 w-8 shrink-0" />
+      <div className="flex flex-col gap-1 max-w-[80%]">
+        <div
+          className={cn(
+            "rounded-lg p-3 group-hover:shadow-sm transition-shadow",
+            message.senderType === "learner"
+              ? "bg-primary text-primary-foreground rounded-tr-none"
+              : "bg-muted rounded-tl-none"
+          )}
+        >
+          <p className="text-sm break-words leading-relaxed">{message.content}</p>
+          {message.isEdited && (
+            <span className="text-xs opacity-70">(edited)</span>
+          )}
+        </div>
+        <div className={cn(
+          "flex gap-2 items-center text-xs text-muted-foreground",
+          message.senderType === "learner" && "justify-end"
+        )}>
+          <span>{format(message.timestamp, "p")}</span>
+          {message.readAt && message.senderType === "learner" && (
+            <span className="text-primary">✓✓</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -45,56 +100,59 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="px-4 py-3 border-b">
-        <h3 className="font-semibold text-lg">Conversation</h3>
+      <div className="px-4 py-3 border-b flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8" />
+          <div>
+            <h3 className="font-semibold text-lg">Project Chat</h3>
+            {isTyping && (
+              <p className="text-xs text-muted-foreground">Typing...</p>
+            )}
+          </div>
+        </div>
+        <Button variant="ghost" size="icon">
+          <MoreVertical className="h-4 w-4" />
+        </Button>
       </div>
       
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea ref={scrollRef} className="flex-1 p-4">
         <div className="space-y-4">
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={cn(
-                "flex items-start gap-3",
-                message.senderType === "learner" && "flex-row-reverse"
-              )}
-            >
-              <Avatar className="h-8 w-8 shrink-0" />
-              <div
-                className={cn(
-                  "max-w-[80%] rounded-lg p-3",
-                  message.senderType === "learner"
-                    ? "bg-primary text-primary-foreground rounded-tr-none"
-                    : "bg-muted rounded-tl-none"
-                )}
-              >
-                <p className="text-sm break-words leading-relaxed">{message.content}</p>
-                <span className="text-xs opacity-70 mt-1 block">
-                  {format(message.timestamp, "p")}
-                </span>
-              </div>
-            </div>
+            <MessageBubble key={message.id} message={message} />
           ))}
         </div>
       </ScrollArea>
 
       <div className="p-4 border-t bg-background">
         <div className="flex gap-2 items-end">
-          <Textarea
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Write your message..."
-            className="min-h-[80px] resize-none"
-          />
-          <Button 
-            onClick={handleSendMessage} 
-            size="icon"
-            className="h-10 w-10 shrink-0"
-            disabled={!newMessage.trim()}
-          >
-            <SendHorizontal className="h-4 w-4" />
-          </Button>
+          <div className="flex-1 flex gap-2">
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <Paperclip className="h-4 w-4" />
+            </Button>
+            <Textarea
+              value={newMessage}
+              onChange={(e) => {
+                setNewMessage(e.target.value);
+                handleTyping();
+              }}
+              onKeyPress={handleKeyPress}
+              placeholder="Write your message..."
+              className="min-h-[80px] resize-none"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <SmilePlus className="h-4 w-4" />
+            </Button>
+            <Button 
+              onClick={handleSendMessage} 
+              size="icon"
+              className="h-10 w-10 shrink-0"
+              disabled={!newMessage.trim()}
+            >
+              <SendHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

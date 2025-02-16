@@ -7,6 +7,12 @@ export interface Message {
   content: string;
   timestamp: Date;
   readAt?: Date;
+  isEdited?: boolean;
+  editedAt?: Date;
+  reactions?: { emoji: string; count: number }[];
+  threadId?: string;
+  isPinned?: boolean;
+  attachments?: { name: string; url: string; type: string }[];
 }
 
 export interface Conversation {
@@ -17,6 +23,7 @@ export interface Conversation {
   lastMessage?: Message;
   unreadCount: number;
   updatedAt: Date;
+  isOnline?: boolean;
 }
 
 export interface DatabaseMessage {
@@ -28,6 +35,12 @@ export interface DatabaseMessage {
   created_at: string;
   read_at: string | null;
   type: 'text';
+  is_edited: boolean;
+  edited_at: string | null;
+  reactions: any[];
+  thread_id: string | null;
+  is_pinned: boolean;
+  attachments: any[];
 }
 
 export interface DatabaseApplication {

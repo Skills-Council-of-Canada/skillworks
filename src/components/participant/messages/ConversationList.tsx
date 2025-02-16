@@ -41,7 +41,12 @@ export const ConversationList = ({
             onClick={() => onSelect(conversation.applicationId)}
           >
             <div className="flex items-start gap-3 w-full">
-              <Avatar className="h-10 w-10 shrink-0" />
+              <div className="relative">
+                <Avatar className="h-10 w-10 shrink-0" />
+                {conversation.isOnline && (
+                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background" />
+                )}
+              </div>
               <div className="flex-1 text-left space-y-1 overflow-hidden">
                 <div className="flex justify-between items-start gap-2">
                   <p className="font-medium truncate">
@@ -52,7 +57,10 @@ export const ConversationList = ({
                   </span>
                 </div>
                 {conversation.lastMessage && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 break-words">
+                  <p className={cn(
+                    "text-sm text-muted-foreground line-clamp-2 break-words",
+                    conversation.unreadCount > 0 && "font-medium text-foreground"
+                  )}>
                     {conversation.lastMessage.content}
                   </p>
                 )}
