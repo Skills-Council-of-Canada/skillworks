@@ -37,16 +37,16 @@ const Messages = () => {
 
   return (
     <div className="container mx-auto space-y-4 py-6 h-[calc(100vh-4rem)]">
-      <h1 className="text-2xl font-bold">Messages</h1>
+      <h1 className="text-2xl font-bold text-primary">Messages</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-8rem)]">
         {/* Conversations List */}
-        <Card className="p-4 md:col-span-1 overflow-hidden flex flex-col">
+        <Card className="p-4 md:col-span-1 overflow-hidden flex flex-col bg-card border-border/40">
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Search conversations..."
-              className="pl-9"
+              className="pl-9 bg-background/50"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -61,7 +61,7 @@ const Messages = () => {
           <div className="mt-4 flex gap-2">
             <Button 
               variant="outline" 
-              className="flex-1"
+              className="flex-1 bg-primary/5 hover:bg-primary/10"
               onClick={() => {/* TODO: Implement new conversation */}}
             >
               <UserPlus className="h-4 w-4 mr-2" />
@@ -72,6 +72,7 @@ const Messages = () => {
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="hover:bg-primary/5"
                 >
                   <Settings className="h-4 w-4" />
                 </Button>
@@ -87,12 +88,16 @@ const Messages = () => {
         </Card>
 
         {/* Message Thread */}
-        <Card className="p-0 md:col-span-2 overflow-hidden flex flex-col">
+        <Card className="p-0 md:col-span-2 overflow-hidden flex flex-col bg-card border-border/40">
           {selectedConversation ? (
             <MessageThread conversationId={selectedConversation} />
           ) : (
-            <div className="h-full flex items-center justify-center text-muted-foreground">
-              Select a conversation to start messaging
+            <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 space-y-4">
+              <MessageCircle className="h-12 w-12 text-muted-foreground/50" />
+              <h3 className="text-lg font-medium">No Conversation Selected</h3>
+              <p className="text-sm text-center text-muted-foreground/70">
+                Select a conversation from the list to start messaging or create a new one.
+              </p>
             </div>
           )}
         </Card>

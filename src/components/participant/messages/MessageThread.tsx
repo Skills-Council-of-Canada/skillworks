@@ -87,7 +87,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const MessageBubble = ({ message }: { message: Message }) => (
     <div
       className={cn(
-        "flex items-start gap-3 group",
+        "flex items-start gap-3 group animate-fade-in",
         message.senderType === "learner" && "flex-row-reverse"
       )}
     >
@@ -98,7 +98,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
             "rounded-lg p-3 group-hover:shadow-sm transition-shadow",
             message.senderType === "learner"
               ? "bg-primary text-primary-foreground rounded-tr-none"
-              : "bg-muted rounded-tl-none"
+              : "bg-secondary/20 rounded-tl-none"
           )}
         >
           <p className="text-sm break-words leading-relaxed">{message.content}</p>
@@ -132,17 +132,17 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="px-4 py-3 border-b flex items-center justify-between">
+      <div className="px-4 py-3 border-b flex items-center justify-between bg-card/50">
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8" />
           <div>
             <h3 className="font-semibold text-lg">Project Chat</h3>
             {userTyping && (
-              <p className="text-xs text-muted-foreground">Someone is typing...</p>
+              <p className="text-xs text-muted-foreground animate-pulse">Someone is typing...</p>
             )}
           </div>
         </div>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="hover:bg-primary/5">
           <MoreVertical className="h-4 w-4" />
         </Button>
       </div>
@@ -155,10 +155,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t bg-background">
+      <div className="p-4 border-t bg-card/50">
         <div className="flex gap-2 items-end">
           <div className="flex-1 flex gap-2">
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button variant="ghost" size="icon" className="shrink-0 hover:bg-primary/5">
               <Paperclip className="h-4 w-4" />
             </Button>
             <Textarea
@@ -169,11 +169,11 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
               }}
               onKeyPress={handleKeyPress}
               placeholder="Write your message..."
-              className="min-h-[80px] resize-none"
+              className="min-h-[80px] resize-none bg-background"
             />
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button variant="ghost" size="icon" className="shrink-0 hover:bg-primary/5">
               <SmilePlus className="h-4 w-4" />
             </Button>
             <Button 

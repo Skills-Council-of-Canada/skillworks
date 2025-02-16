@@ -21,8 +21,9 @@ export const ConversationList = ({
 }: ConversationListProps) => {
   if (!conversations.length) {
     return (
-      <div className="h-full flex items-center justify-center text-muted-foreground">
-        No conversations yet
+      <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 space-y-4">
+        <MessageSquare className="h-12 w-12 text-muted-foreground/50" />
+        <p className="text-center text-sm">No conversations yet. Start a new chat to begin messaging.</p>
       </div>
     );
   }
@@ -35,8 +36,8 @@ export const ConversationList = ({
             key={conversation.applicationId}
             variant="ghost"
             className={cn(
-              "w-full justify-start p-3 h-auto",
-              selectedId === conversation.applicationId && "bg-muted"
+              "w-full justify-start p-3 h-auto transition-colors hover:bg-primary/5",
+              selectedId === conversation.applicationId && "bg-primary/10"
             )}
             onClick={() => onSelect(conversation.applicationId)}
           >
