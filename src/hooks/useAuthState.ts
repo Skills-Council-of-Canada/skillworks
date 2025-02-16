@@ -70,7 +70,7 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Redirect logic for profile
+            // Only redirect if we're on login or root page
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Redirecting authenticated user to:", redirectPath);
