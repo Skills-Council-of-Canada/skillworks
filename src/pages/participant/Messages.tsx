@@ -5,7 +5,7 @@ import { ConversationList } from "@/components/participant/messages/Conversation
 import { MessageThread } from "@/components/participant/messages/MessageThread";
 import { useMessages } from "@/hooks/participant/useMessages";
 import { Input } from "@/components/ui/input";
-import { Settings, Search, UserPlus } from "lucide-react";
+import { Settings, Search, UserPlus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -93,7 +93,7 @@ const Messages = () => {
             <MessageThread conversationId={selectedConversation} />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 space-y-4">
-              <MessageCircle className="h-12 w-12 text-muted-foreground/50" />
+              <MessageSquare className="h-12 w-12 text-muted-foreground/50" />
               <h3 className="text-lg font-medium">No Conversation Selected</h3>
               <p className="text-sm text-center text-muted-foreground/70">
                 Select a conversation from the list to start messaging or create a new one.
