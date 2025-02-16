@@ -30,7 +30,8 @@ export const useMessageThread = (conversationId: string) => {
 
       return {
         name: application.project?.title || "Direct Message",
-        type: 'direct' as const
+        type: 'direct' as const,
+        memberCount: 2
       } satisfies ChatInfo;
     },
     enabled: !!conversationId
