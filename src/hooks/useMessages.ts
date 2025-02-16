@@ -119,6 +119,71 @@ export const useMessages = (conversationId: string) => {
     }
   };
 
+  const pinMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .update({ is_pinned: true })
+        .eq("id", messageId);
+
+      if (error) throw error;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId ? { ...m, isPinned: true } : m
+        )
+      );
+    } catch (error) {
+      console.error("Error pinning message:", error);
+      throw error;
+    }
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .delete()
+        .eq("id", messageId);
+
+      if (error) throw error;
+
+      setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      throw error;
+    }
+  };
+
+  const editMessage = async (messageId: string, content: string) => {
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .update({ 
+          content,
+          is_edited: true,
+          edited_at: new Date().toISOString()
+        })
+        .eq("id", messageId);
+
+      if (error) throw error;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId ? { 
+            ...m, 
+            content,
+            isEdited: true,
+            editedAt: new Date()
+          } : m
+        )
+      );
+    } catch (error) {
+      console.error("Error editing message:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (conversationId) {
       fetchMessages();
@@ -142,35 +207,12 @@ export const useMessages = (conversationId: string) => {
                 content: payload.new.content,
                 timestamp: new Date(payload.new.created_at),
                 readAt: payload.new.read_at ? new Date(payload.new.read_at) : undefined,
-                reactions: Array.isArray(payload.new.reactions) ? payload.new.reactions.map(r => ({
-                  emoji: (r as any).emoji,
-                  count: (r as any).count
-                })) : [],
-                isEdited: payload.new.is_edited || false,
-                editedAt: payload.new.edited_at ? new Date(payload.new.edited_at) : undefined,
-                threadId: payload.new.thread_id || undefined,
-                isPinned: payload.new.is_pinned || false,
-                attachments: Array.isArray(payload.new.attachments) ? payload.new.attachments.map(a => ({
-                  name: (a as any).name,
-                  url: (a as any).url,
-                  type: (a as any).type
-                })) : [],
+                reactions: [],
+                isEdited: false,
+                isPinned: false,
+                attachments: [],
               };
               setMessages((prev) => [...prev, newMessage]);
-            } else if (payload.eventType === "UPDATE") {
-              setMessages((prev) =>
-                prev.map((msg) =>
-                  msg.id === payload.new.id
-                    ? {
-                        ...msg,
-                        reactions: Array.isArray(payload.new.reactions) ? payload.new.reactions.map(r => ({
-                          emoji: (r as any).emoji,
-                          count: (r as any).count
-                        })) : [],
-                      }
-                    : msg
-                )
-              );
             }
           }
         )
@@ -187,5 +229,8 @@ export const useMessages = (conversationId: string) => {
     isLoading,
     sendMessage,
     handleReactionAdd,
+    pinMessage,
+    deleteMessage,
+    editMessage
   };
 };

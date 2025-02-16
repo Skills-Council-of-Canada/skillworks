@@ -7,23 +7,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Smile } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface MessageReactionsProps {
   messageId: string;
   reactions: { emoji: string; count: number }[];
-  onReactionAdd: (emoji: string) => void;
+  onReactionAdd: (messageId: string, emoji: string) => void;
 }
-
-const AVAILABLE_REACTIONS = ["👍", "❤️", "😂"];
 
 export const MessageReactions = ({ messageId, reactions, onReactionAdd }: MessageReactionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleReactionClick = async (emoji: string) => {
-    onReactionAdd(emoji);
+  const handleReactionClick = (emoji: string) => {
+    onReactionAdd(messageId, emoji);
     setIsOpen(false);
   };
+
+  const AVAILABLE_REACTIONS = ["👍", "❤️", "😂"];
 
   return (
     <div className="flex items-center gap-1">

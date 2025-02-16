@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
 import { Message } from "@/types/message";
@@ -26,7 +25,7 @@ interface ChatMessageProps {
   isCurrentUser: boolean;
   onReply: (messageId: string) => void;
   onPin: (messageId: string) => void;
-  onEdit: (messageId: string) => void;
+  onEdit: (messageId: string, content: string) => void;
   onDelete: (messageId: string) => void;
   onReactionAdd: (messageId: string, emoji: string) => void;
 }
@@ -44,7 +43,7 @@ export const ChatMessage = ({
   const [editedContent, setEditedContent] = useState(message.content);
 
   const handleEditSubmit = () => {
-    onEdit(message.id);
+    onEdit(message.id, editedContent);
     setIsEditing(false);
   };
 
