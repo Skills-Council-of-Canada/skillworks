@@ -1,10 +1,11 @@
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMessageThread } from "@/hooks/participant/useMessageThread";
 import { ChatMessage } from "./ChatMessage";
 import { MessageInput } from "./MessageInput";
+import { ChatHeader } from "./ChatHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,6 +17,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
   const { 
     messages, 
     isLoading, 
@@ -23,7 +25,9 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     handleReactionAdd,
     pinMessage,
     deleteMessage,
-    editMessage 
+    editMessage,
+    searchMessages, // This will be added to the hook
+    chatInfo // This will be added to the hook
   } = useMessageThread(conversationId);
 
   useEffect(() => {
@@ -31,6 +35,21 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim()) {
+      searchMessages(query);
+    }
+  };
+
+  const handleManageMembers = () => {
+    // This will be implemented when we add the member management UI
+    toast({
+      title: "Coming Soon",
+      description: "Member management will be available soon.",
+    });
+  };
 
   const handlePinMessage = async (messageId: string) => {
     try {
@@ -90,9 +109,13 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b px-4 py-3 bg-background/95 backdrop-blur-sm">
-        <h3 className="font-semibold text-lg">Messages</h3>
-      </div>
+      <ChatHeader
+        title={chatInfo?.name || "Messages"}
+        memberCount={chatInfo?.memberCount}
+        onSearch={handleSearch}
+        onManageMembers={handleManageMembers}
+        type={chatInfo?.type || 'direct'}
+      />
       <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6 bg-background/80">
         <div className="space-y-6">
           {messages.map((message) => (
@@ -100,7 +123,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
               key={message.id}
               message={message}
               isCurrentUser={message.senderId === user?.id}
-              onReply={(id) => console.log("Reply to:", id)} // TODO: Implement reply
+              onReply={(id) => console.log("Reply to:", id)}
               onPin={handlePinMessage}
               onEdit={handleEditMessage}
               onDelete={handleDeleteMessage}

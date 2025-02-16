@@ -219,6 +219,7 @@ export type Database = {
           chat_id: string | null
           id: string
           joined_at: string | null
+          permissions: Json | null
           role: string | null
           user_id: string | null
         }
@@ -226,6 +227,7 @@ export type Database = {
           chat_id?: string | null
           id?: string
           joined_at?: string | null
+          permissions?: Json | null
           role?: string | null
           user_id?: string | null
         }
@@ -233,6 +235,7 @@ export type Database = {
           chat_id?: string | null
           id?: string
           joined_at?: string | null
+          permissions?: Json | null
           role?: string | null
           user_id?: string | null
         }
@@ -375,6 +378,7 @@ export type Database = {
           last_message_at: string | null
           organization_id: string | null
           project_id: string | null
+          settings: Json | null
           updated_at: string | null
           user_1_id: string | null
           user_2_id: string | null
@@ -388,6 +392,7 @@ export type Database = {
           last_message_at?: string | null
           organization_id?: string | null
           project_id?: string | null
+          settings?: Json | null
           updated_at?: string | null
           user_1_id?: string | null
           user_2_id?: string | null
@@ -401,6 +406,7 @@ export type Database = {
           last_message_at?: string | null
           organization_id?: string | null
           project_id?: string | null
+          settings?: Json | null
           updated_at?: string | null
           user_1_id?: string | null
           user_2_id?: string | null
@@ -2264,6 +2270,8 @@ export type Database = {
           deleted_at: string | null
           edited_at: string | null
           edited_by: string | null
+          encrypted_content: string | null
+          encryption_metadata: Json | null
           forwarded_from: string | null
           id: string
           is_edited: boolean | null
@@ -2291,6 +2299,8 @@ export type Database = {
           deleted_at?: string | null
           edited_at?: string | null
           edited_by?: string | null
+          encrypted_content?: string | null
+          encryption_metadata?: Json | null
           forwarded_from?: string | null
           id?: string
           is_edited?: boolean | null
@@ -2318,6 +2328,8 @@ export type Database = {
           deleted_at?: string | null
           edited_at?: string | null
           edited_by?: string | null
+          encrypted_content?: string | null
+          encryption_metadata?: Json | null
           forwarded_from?: string | null
           id?: string
           is_edited?: boolean | null
@@ -4306,6 +4318,14 @@ export type Database = {
           total_count: number
         }[]
       }
+      handle_chat_request_response: {
+        Args: {
+          request_id: string
+          response: string
+          responder_id: string
+        }
+        Returns: undefined
+      }
       handle_message_reaction: {
         Args: {
           message_id: string
@@ -4313,6 +4333,41 @@ export type Database = {
           emoji: string
         }
         Returns: undefined
+      }
+      search_messages: {
+        Args: {
+          search_query: string
+          chat_id: string
+        }
+        Returns: {
+          application_id: string
+          attachments: Json[] | null
+          chat_id: string | null
+          content: string
+          created_at: string | null
+          deleted_at: string | null
+          edited_at: string | null
+          edited_by: string | null
+          encrypted_content: string | null
+          encryption_metadata: Json | null
+          forwarded_from: string | null
+          id: string
+          is_edited: boolean | null
+          is_pinned: boolean | null
+          last_edit_at: string | null
+          mentions: Json | null
+          reactions: Json[] | null
+          read_at: string | null
+          recipient_id: string
+          reply_to: string | null
+          reply_to_id: string | null
+          search_vector: unknown | null
+          sender_id: string
+          status: string | null
+          thread_id: string | null
+          typing_state: boolean | null
+          typing_updated_at: string | null
+        }[]
       }
     }
     Enums: {
