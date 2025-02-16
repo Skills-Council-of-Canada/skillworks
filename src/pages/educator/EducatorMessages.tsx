@@ -36,11 +36,15 @@ const EducatorMessages = () => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0" align="end">
-              <div className="p-4 border-b">
+            <PopoverContent 
+              className="w-80 p-0 bg-background border shadow-lg" 
+              align="end"
+              sideOffset={5}
+            >
+              <div className="p-4 border-b bg-background">
                 <h4 className="font-semibold">Chat Requests</h4>
               </div>
-              <ScrollArea className="h-[300px]">
+              <ScrollArea className="h-[300px] bg-background">
                 <div className="p-4 space-y-4">
                   <RequestItem
                     name="Jane Smith"
@@ -78,7 +82,7 @@ interface RequestItemProps {
 
 const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
-    <div className="border rounded-lg p-3 space-y-2">
+    <div className="border rounded-lg p-3 space-y-2 bg-background">
       <div>
         <h4 className="font-semibold text-sm">{name}</h4>
         <p className="text-sm text-muted-foreground">{message}</p>

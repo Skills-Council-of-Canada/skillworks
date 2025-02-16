@@ -1,6 +1,6 @@
 
 export interface UseMessagesReturn {
-  conversations: Conversation[];
+  messages: Message[];
   isLoading: boolean;
 }
 
