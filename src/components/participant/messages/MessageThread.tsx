@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, SendHorizontal, Paperclip, SmilePlus, MoreVertical } from "lucide-react";
+import { MessageCircle, SendHorizontal, Paperclip, SmilePlus, MoreVertical, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,8 @@ import { useMessageThread } from "@/hooks/participant/useMessageThread";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import type { Message } from "@/types/message";
 
 interface MessageThreadProps {
@@ -20,12 +22,34 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const { user } = useAuth();
+  const [userTyping, setUserTyping] = useState<string | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('typing-channel')
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const typingUsers = Object.values(state).flat() as any[];
+        const typingUser = typingUsers.find(u => u.isTyping && u.user !== user?.id);
+        setUserTyping(typingUser ? typingUser.user : null);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({ user: user?.id, isTyping: false });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId, user?.id]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -38,21 +62,26 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     }
   };
 
+  const handleTyping = async () => {
+    setIsTyping(true);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    const channel = supabase.channel('typing-channel');
+    await channel.track({ user: user?.id, isTyping: true });
+
+    typingTimeoutRef.current = setTimeout(async () => {
+      setIsTyping(false);
+      await channel.track({ user: user?.id, isTyping: false });
+    }, 2000);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  const handleTyping = () => {
-    setIsTyping(true);
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-    typingTimeoutRef.current = setTimeout(() => {
-      setIsTyping(false);
-    }, 2000);
   };
 
   const MessageBubble = ({ message }: { message: Message }) => (
@@ -83,7 +112,10 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         )}>
           <span>{format(message.timestamp, "p")}</span>
           {message.readAt && message.senderType === "learner" && (
-            <span className="text-primary">✓✓</span>
+            <div className="flex gap-0.5">
+              <Check className="h-3 w-3" />
+              <Check className="h-3 w-3 -ml-2" />
+            </div>
           )}
         </div>
       </div>
@@ -105,8 +137,8 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
           <Avatar className="h-8 w-8" />
           <div>
             <h3 className="font-semibold text-lg">Project Chat</h3>
-            {isTyping && (
-              <p className="text-xs text-muted-foreground">Typing...</p>
+            {userTyping && (
+              <p className="text-xs text-muted-foreground">Someone is typing...</p>
             )}
           </div>
         </div>

@@ -5,13 +5,22 @@ import { ConversationList } from "@/components/participant/messages/Conversation
 import { MessageThread } from "@/components/participant/messages/MessageThread";
 import { useMessages } from "@/hooks/participant/useMessages";
 import { Input } from "@/components/ui/input";
-import { Search, Settings, UserPlus } from "lucide-react";
+import { Settings, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { MessageSettings } from "@/components/participant/messages/MessageSettings";
 
 const Messages = () => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { conversations, isLoading } = useMessages();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const filteredConversations = conversations.filter(conv => 
     conv.projectId.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -58,13 +67,22 @@ const Messages = () => {
               <UserPlus className="h-4 w-4 mr-2" />
               New Chat
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {/* TODO: Implement settings */}}
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
+            <Sheet open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Message Settings</SheetTitle>
+                </SheetHeader>
+                <MessageSettings />
+              </SheetContent>
+            </Sheet>
           </div>
         </Card>
 
