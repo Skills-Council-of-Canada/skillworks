@@ -2,16 +2,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useMessageMutations = (conversationId: string) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleReactionAdd = async (messageId: string, emoji: string) => {
-    if (!messageId) return;
+    if (!messageId || !user?.id) return;
 
     const { error } = await supabase.rpc('handle_message_reaction', {
       message_id: messageId,
+      user_id: user.id,
       emoji: emoji
     });
 
