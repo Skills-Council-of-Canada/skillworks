@@ -1968,9 +1968,12 @@ export type Database = {
           application_id: string
           content: string
           created_at: string
+          has_media: boolean | null
           id: string
           read_at: string | null
+          recipient_avatar_url: string | null
           recipient_id: string
+          sender_avatar_url: string | null
           sender_id: string
           status: Database["public"]["Enums"]["message_status"]
           type: Database["public"]["Enums"]["message_type"]
@@ -1980,9 +1983,12 @@ export type Database = {
           application_id: string
           content: string
           created_at?: string
+          has_media?: boolean | null
           id?: string
           read_at?: string | null
+          recipient_avatar_url?: string | null
           recipient_id: string
+          sender_avatar_url?: string | null
           sender_id: string
           status?: Database["public"]["Enums"]["message_status"]
           type?: Database["public"]["Enums"]["message_type"]
@@ -1992,9 +1998,12 @@ export type Database = {
           application_id?: string
           content?: string
           created_at?: string
+          has_media?: boolean | null
           id?: string
           read_at?: string | null
+          recipient_avatar_url?: string | null
           recipient_id?: string
+          sender_avatar_url?: string | null
           sender_id?: string
           status?: Database["public"]["Enums"]["message_status"]
           type?: Database["public"]["Enums"]["message_type"]
