@@ -2265,6 +2265,7 @@ export type Database = {
           application_id: string
           attachments: Json[] | null
           chat_id: string | null
+          chat_type: string | null
           content: string
           created_at: string | null
           deleted_at: string | null
@@ -2294,6 +2295,7 @@ export type Database = {
           application_id: string
           attachments?: Json[] | null
           chat_id?: string | null
+          chat_type?: string | null
           content: string
           created_at?: string | null
           deleted_at?: string | null
@@ -2323,6 +2325,7 @@ export type Database = {
           application_id?: string
           attachments?: Json[] | null
           chat_id?: string | null
+          chat_type?: string | null
           content?: string
           created_at?: string | null
           deleted_at?: string | null
@@ -4343,6 +4346,7 @@ export type Database = {
           application_id: string
           attachments: Json[] | null
           chat_id: string | null
+          chat_type: string | null
           content: string
           created_at: string | null
           deleted_at: string | null
