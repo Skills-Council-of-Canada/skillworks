@@ -214,6 +214,38 @@ export type Database = {
           },
         ]
       }
+      chat_members: {
+        Row: {
+          chat_id: string | null
+          id: string
+          joined_at: string | null
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chat_id?: string | null
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chat_id?: string | null
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_members_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_notifications: {
         Row: {
           chat_id: string | null
@@ -264,6 +296,7 @@ export type Database = {
       }
       chat_requests: {
         Row: {
+          auto_approved: boolean | null
           created_at: string | null
           id: string
           organization_id: string | null
@@ -274,6 +307,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          auto_approved?: boolean | null
           created_at?: string | null
           id?: string
           organization_id?: string | null
@@ -284,6 +318,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          auto_approved?: boolean | null
           created_at?: string | null
           id?: string
           organization_id?: string | null

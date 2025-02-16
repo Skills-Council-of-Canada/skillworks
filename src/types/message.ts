@@ -14,13 +14,15 @@ export interface Message {
   isPinned?: boolean;
   attachments?: { name: string; url: string; type: string }[];
   replyTo?: string;
-  mentions?: string[];
+  mentions?: { id: string; name: string }[];
+  chatType?: 'direct' | 'group';
+  chatId?: string;
 }
 
 export interface Conversation {
   applicationId: string;
   projectId: string;
-  projectTitle: string;  // Added this property
+  projectTitle: string;
   employerId: string;
   learnerId: string;
   lastMessage?: Message;
@@ -30,6 +32,8 @@ export interface Conversation {
   participantCount?: number;
   type: 'direct' | 'group';
   name?: string;
+  groupOwner?: string;
+  members?: { id: string; role: 'owner' | 'admin' | 'member' }[];
 }
 
 export interface DatabaseMessage {
@@ -47,6 +51,9 @@ export interface DatabaseMessage {
   thread_id: string | null;
   is_pinned: boolean;
   attachments: any[];
+  mentions: { id: string; name: string }[];
+  chat_type: 'direct' | 'group';
+  chat_id: string;
 }
 
 export interface DatabaseApplication {
@@ -60,4 +67,22 @@ export interface DatabaseApplication {
     title: string;
   } | null;
   messages: DatabaseMessage[];
+}
+
+export interface ChatMember {
+  id: string;
+  chatId: string;
+  userId: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: Date;
+}
+
+export interface ChatRequest {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  autoApproved: boolean;
+  projectId?: string;
+  createdAt: Date;
 }

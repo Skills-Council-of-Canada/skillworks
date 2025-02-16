@@ -52,7 +52,10 @@ export const useMessageThread = (conversationId: string) => {
         isEdited: msg.is_edited || false,
         editedAt: msg.edited_at ? new Date(msg.edited_at) : undefined,
         isPinned: msg.is_pinned || false,
-        threadId: msg.thread_id
+        threadId: msg.thread_id,
+        mentions: msg.mentions || [],
+        chatType: msg.chat_type || 'direct',
+        chatId: msg.chat_id
       }));
     },
     enabled: !!conversationId && !!user?.id,
@@ -68,12 +71,23 @@ export const useMessageThread = (conversationId: string) => {
 
       if (appError || !application) throw new Error("Application not found");
 
+      // Extract mentions from content
+      const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
+      const mentions: { id: string; name: string }[] = [];
+      let match;
+      
+      while ((match = mentionRegex.exec(content)) !== null) {
+        mentions.push({ name: match[1], id: match[2] });
+      }
+
       const { error } = await supabase.from("messages").insert({
         content,
         sender_id: user?.id,
         recipient_id: application.employer_id,
         application_id: conversationId,
         type: "text",
+        mentions,
+        chat_type: 'direct', // For now, keeping as direct messages
       });
 
       if (error) throw error;
