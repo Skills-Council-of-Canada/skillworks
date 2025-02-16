@@ -1,43 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import type { Message, DatabaseMessage } from "@/types/message";
+import { Message } from "@/types/message";
+import { useMessageMutations } from "./messages/useMessageMutations";
+import { useChatInfo } from "./messages/useChatInfo";
+import type { UseMessageThreadReturn } from "./messages/types";
 
-interface ChatInfo {
-  name: string;
-  memberCount?: number;
-  type: 'direct' | 'group';
-}
-
-export const useMessageThread = (conversationId: string) => {
+export const useMessageThread = (conversationId: string): UseMessageThreadReturn => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  
+  const { data: chatInfo } = useChatInfo(conversationId);
+  const { handleReactionAdd, pinMessage, deleteMessage, editMessage } = useMessageMutations(conversationId);
 
-  const { data: chatInfo } = useQuery({
-    queryKey: ["chat", conversationId],
-    queryFn: async () => {
-      const { data: application } = await supabase
-        .from("applications")
-        .select("employer_id, project:projects(title)")
-        .eq("id", conversationId)
-        .single();
-
-      if (!application) {
-        throw new Error("Application not found");
-      }
-
-      return {
-        name: application.project?.title || "Direct Message",
-        type: 'direct' as const,
-        memberCount: 2
-      } satisfies ChatInfo;
-    },
-    enabled: !!conversationId
-  });
-
-  const { data: messages, isLoading } = useQuery({
+  const { data: messages = [], isLoading } = useQuery({
     queryKey: ["messages", conversationId],
     queryFn: async () => {
       const { data: application } = await supabase
@@ -96,6 +72,37 @@ export const useMessageThread = (conversationId: string) => {
     enabled: !!conversationId && !!user?.id,
   });
 
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || !user?.id) return;
+
+    const { data: application, error: appError } = await supabase
+      .from("applications")
+      .select("employer_id")
+      .eq("id", conversationId)
+      .single();
+
+    if (appError || !application) throw new Error("Application not found");
+
+    const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
+    const mentions: { id: string; name: string }[] = [];
+    let match;
+    
+    while ((match = mentionRegex.exec(content)) !== null) {
+      mentions.push({ name: match[1], id: match[2] });
+    }
+
+    const { error } = await supabase.from("messages").insert({
+      content,
+      sender_id: user.id,
+      recipient_id: application.employer_id,
+      application_id: conversationId,
+      mentions,
+      status: 'sent'
+    });
+
+    if (error) throw error;
+  };
+
   const searchMessages = async (query: string) => {
     if (!query.trim()) return;
 
@@ -105,117 +112,16 @@ export const useMessageThread = (conversationId: string) => {
     });
 
     if (error) {
-      toast({
-        title: "Search failed",
-        description: "Failed to search messages. Please try again.",
-        variant: "destructive",
-      });
-      return;
+      throw error;
     }
 
     return data;
   };
 
-  const { mutateAsync: sendMessage } = useMutation({
-    mutationFn: async (content: string) => {
-      const { data: application, error: appError } = await supabase
-        .from("applications")
-        .select("employer_id")
-        .eq("id", conversationId)
-        .single();
-
-      if (appError || !application) throw new Error("Application not found");
-
-      const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
-      const mentions: { id: string; name: string }[] = [];
-      let match;
-      
-      while ((match = mentionRegex.exec(content)) !== null) {
-        mentions.push({ name: match[1], id: match[2] });
-      }
-
-      const { error } = await supabase.from("messages").insert({
-        content,
-        sender_id: user?.id,
-        recipient_id: application.employer_id,
-        application_id: conversationId,
-        mentions,
-        status: 'sent'
-      });
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleReactionAdd = async (messageId: string, emoji: string) => {
-    if (!user?.id) return;
-
-    const { error } = await supabase.rpc('handle_message_reaction', {
-      message_id: messageId,
-      user_id: user.id,
-      emoji: emoji
-    });
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add reaction",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-  };
-
-  const pinMessage = async (messageId: string) => {
-    const { error } = await supabase
-      .from("messages")
-      .update({ is_pinned: true })
-      .eq("id", messageId);
-
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-  };
-
-  const deleteMessage = async (messageId: string) => {
-    const { error } = await supabase
-      .from("messages")
-      .update({ deleted_at: new Date().toISOString() })
-      .eq("id", messageId);
-
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-  };
-
-  const editMessage = async (messageId: string, content: string) => {
-    const { error } = await supabase
-      .from("messages")
-      .update({
-        content,
-        is_edited: true,
-        edited_at: new Date().toISOString(),
-      })
-      .eq("id", messageId);
-
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-  };
-
   return {
-    messages: messages ?? [],
-    sendMessage,
+    messages,
     isLoading,
+    sendMessage,
     handleReactionAdd,
     pinMessage,
     deleteMessage,
