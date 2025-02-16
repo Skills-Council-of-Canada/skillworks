@@ -1,3 +1,4 @@
+
 import { Link, Outlet } from "react-router-dom";
 import { 
   LogOut, 
@@ -26,10 +27,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ParticipantLayout = () => {
   const { user, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const getInitials = (name: string) => {
     return name
@@ -38,6 +41,21 @@ const ParticipantLayout = () => {
       .join("")
       .toUpperCase();
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  // If no user is found, redirect to login
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex">
@@ -84,12 +102,6 @@ const ParticipantLayout = () => {
               <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
                 <Users className="mr-2 h-4 w-4" />
                 My Mentors
-              </Button>
-            </Link>
-            <Link to="/participant/calendar">
-              <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
-                <Calendar className="mr-2 h-4 w-4" />
-                Calendar
               </Button>
             </Link>
             <Link to="/participant/messages">
@@ -162,7 +174,10 @@ const ParticipantLayout = () => {
                   Notifications
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-500 hover:bg-gray-100" onClick={() => logout()}>
+                <DropdownMenuItem 
+                  className="text-red-500 hover:bg-gray-100"
+                  onClick={handleLogout}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
