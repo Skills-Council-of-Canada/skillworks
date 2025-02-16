@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import type { Conversation } from "@/types/message";
 
@@ -28,30 +29,30 @@ export const ConversationList = ({
 
   return (
     <ScrollArea className="h-[calc(100vh-14rem)]">
-      <div className="space-y-2">
+      <div className="space-y-1">
         {conversations.map((conversation) => (
           <Button
             key={conversation.applicationId}
             variant="ghost"
             className={cn(
-              "w-full justify-start px-4",
-              selectedId === conversation.applicationId && "bg-accent"
+              "w-full justify-start p-3 h-auto",
+              selectedId === conversation.applicationId && "bg-muted"
             )}
             onClick={() => onSelect(conversation.applicationId)}
           >
             <div className="flex items-start gap-3 w-full">
-              <MessageSquare className="h-5 w-5 mt-1 shrink-0" />
-              <div className="flex-1 text-left space-y-1">
-                <div className="flex justify-between items-start">
-                  <p className="font-medium line-clamp-1">
+              <Avatar className="h-10 w-10 shrink-0" />
+              <div className="flex-1 text-left space-y-1 overflow-hidden">
+                <div className="flex justify-between items-start gap-2">
+                  <p className="font-medium truncate">
                     {conversation.projectId}
                   </p>
-                  <span className="text-xs text-muted-foreground">
-                    {format(new Date(conversation.updatedAt), "MMM d")}
+                  <span className="text-xs text-muted-foreground shrink-0">
+                    {format(conversation.updatedAt, "MMM d")}
                   </span>
                 </div>
                 {conversation.lastMessage && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2 break-words">
                     {conversation.lastMessage.content}
                   </p>
                 )}
