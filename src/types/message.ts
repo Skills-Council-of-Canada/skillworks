@@ -1,4 +1,3 @@
-
 export interface Message {
   id: string;
   applicationId: string;
@@ -13,6 +12,8 @@ export interface Message {
   threadId?: string;
   isPinned?: boolean;
   attachments?: { name: string; url: string; type: string }[];
+  replyTo?: string;
+  mentions?: string[];
 }
 
 export interface Conversation {
@@ -24,6 +25,9 @@ export interface Conversation {
   unreadCount: number;
   updatedAt: Date;
   isOnline?: boolean;
+  participantCount?: number;
+  type: 'direct' | 'group';
+  name?: string;
 }
 
 export interface DatabaseMessage {
