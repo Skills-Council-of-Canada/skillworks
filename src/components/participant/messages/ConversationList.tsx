@@ -35,19 +35,20 @@ export const ConversationList = ({
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 bg-background/50"
           />
         </div>
       </div>
       <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+        <div className="space-y-2">
           {filteredConversations.map((conversation) => (
             <Button
               key={conversation.applicationId}
               variant="ghost"
               className={cn(
-                "w-full flex flex-col items-start p-4 h-auto gap-1 hover:bg-accent",
-                selectedId === conversation.applicationId && "bg-accent"
+                "w-full flex flex-col items-start p-4 h-auto gap-1 hover:bg-accent transition-colors",
+                selectedId === conversation.applicationId && "bg-accent",
+                "relative group animate-in fade-in-0"
               )}
               onClick={() => onSelect(conversation.applicationId)}
             >
@@ -55,7 +56,7 @@ export const ConversationList = ({
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-8 w-8 text-muted-foreground shrink-0" />
                   <div className="text-left">
-                    <h4 className="font-semibold">{conversation.projectTitle}</h4>
+                    <h4 className="font-semibold line-clamp-1">{conversation.projectTitle}</h4>
                     {conversation.lastMessage && (
                       <p className="text-sm text-muted-foreground line-clamp-1">
                         {conversation.lastMessage.content}
