@@ -1,6 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useTask } from "@/hooks/useTasks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,23 +11,7 @@ interface TaskDetailsProps {
 }
 
 export const TaskDetails = ({ taskId }: TaskDetailsProps) => {
-  const { data: task, isLoading } = useQuery({
-    queryKey: ['task', taskId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tasks')
-        .select(`
-          *,
-          assigned_by(name),
-          assigned_to(name)
-        `)
-        .eq('id', taskId)
-        .single();
-
-      if (error) throw error;
-      return data;
-    }
-  });
+  const { task, isLoading } = useTask(taskId);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -97,11 +80,11 @@ export const TaskDetails = ({ taskId }: TaskDetailsProps) => {
           <div className="space-y-2">
             <div className="flex items-center text-sm">
               <User className="mr-2 h-4 w-4" />
-              Assigned by: {task.assigned_by?.name || 'Unknown'}
+              Assigned by: {(task.assigned_by as any)?.name || 'Unknown'}
             </div>
             <div className="flex items-center text-sm">
               <User className="mr-2 h-4 w-4" />
-              Assigned to: {task.assigned_to?.name || 'Unknown'}
+              Assigned to: {(task.assigned_to as any)?.name || 'Unknown'}
             </div>
           </div>
 

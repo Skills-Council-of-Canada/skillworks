@@ -22,9 +22,11 @@ export const TaskSubmissionForm = ({ taskId, submissionType, onSuccess }: TaskSu
 
   const submitMutation = useMutation({
     mutationFn: async () => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+
       let fileUrls: string[] = [];
 
-      // Handle file uploads if present
       if (files.length > 0) {
         for (const file of files) {
           const fileName = `${crypto.randomUUID()}-${file.name}`;
@@ -44,12 +46,13 @@ export const TaskSubmissionForm = ({ taskId, submissionType, onSuccess }: TaskSu
 
       const { data, error } = await supabase
         .from('task_submissions')
-        .insert([{
+        .insert({
           task_id: taskId,
           content,
           file_urls: fileUrls,
-          status: 'pending'
-        }])
+          status: 'pending',
+          submitted_by: user.id
+        })
         .select()
         .single();
 
