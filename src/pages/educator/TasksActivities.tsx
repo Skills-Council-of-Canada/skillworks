@@ -29,8 +29,12 @@ interface Activity {
   id: string;
   type: string;
   title: string;
-  description: string | null;
+  message: string;
   created_at: string;
+  experience_id: string | null;
+  read: boolean;
+  read_at: string | null;
+  user_id: string;
 }
 
 const TasksActivities = () => {
@@ -190,11 +194,9 @@ const TasksActivities = () => {
                       </div>
                       <div className="flex-1 space-y-1">
                         <p className="font-medium">{activity.title}</p>
-                        {activity.description && (
-                          <p className="text-sm text-muted-foreground">
-                            {activity.description}
-                          </p>
-                        )}
+                        <p className="text-sm text-muted-foreground">
+                          {activity.message}
+                        </p>
                         <p className="text-sm text-muted-foreground">
                           {format(new Date(activity.created_at), 'PPp')}
                         </p>
