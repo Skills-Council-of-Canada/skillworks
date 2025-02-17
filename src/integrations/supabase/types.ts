@@ -4064,6 +4064,112 @@ export type Database = {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          assigned_by: string
+          assigned_to: string
+          created_at: string | null
+          created_by: string
+          dependencies: Json | null
+          description: string | null
+          due_date: string | null
+          experience_id: string | null
+          id: string
+          priority: string
+          project_id: string | null
+          requires_approval: boolean | null
+          status: Database["public"]["Enums"]["task_status"]
+          submission_requirements: Json | null
+          submission_type: string
+          title: string
+          type: Database["public"]["Enums"]["task_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_by: string
+          assigned_to: string
+          created_at?: string | null
+          created_by: string
+          dependencies?: Json | null
+          description?: string | null
+          due_date?: string | null
+          experience_id?: string | null
+          id?: string
+          priority?: string
+          project_id?: string | null
+          requires_approval?: boolean | null
+          status?: Database["public"]["Enums"]["task_status"]
+          submission_requirements?: Json | null
+          submission_type?: string
+          title: string
+          type?: Database["public"]["Enums"]["task_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_by?: string
+          assigned_to?: string
+          created_at?: string | null
+          created_by?: string
+          dependencies?: Json | null
+          description?: string | null
+          due_date?: string | null
+          experience_id?: string | null
+          id?: string
+          priority?: string
+          project_id?: string | null
+          requires_approval?: boolean | null
+          status?: Database["public"]["Enums"]["task_status"]
+          submission_requirements?: Json | null
+          submission_type?: string
+          title?: string
+          type?: Database["public"]["Enums"]["task_type"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "tasks_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ticket_messages: {
         Row: {
           created_at: string
@@ -4417,6 +4523,13 @@ export type Database = {
         | "rejected"
         | "needs_modification"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
+      task_status:
+        | "pending"
+        | "in_progress"
+        | "completed"
+        | "approved"
+        | "rejected"
+      task_type: "required" | "recommended" | "optional"
       ticket_category: "technical" | "approval" | "experience" | "other"
       ticket_priority: "low" | "medium" | "high" | "urgent"
       ticket_status: "open" | "in_progress" | "resolved" | "closed"
