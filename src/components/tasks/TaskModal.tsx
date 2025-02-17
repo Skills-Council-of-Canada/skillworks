@@ -60,13 +60,23 @@ export const TaskModal = ({ isOpen, onClose, taskId }: TaskModalProps) => {
 
   const createTaskMutation = useMutation({
     mutationFn: async (data: TaskFormData) => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+
       const { data: result, error } = await supabase
         .from('tasks')
-        .insert([{
-          ...data,
+        .insert({
+          title: data.title,
+          description: data.description,
+          type: data.type,
+          priority: data.priority,
+          due_date: data.due_date?.toISOString(),
+          submission_type: data.submission_type,
           status: 'pending',
-          created_by: (await supabase.auth.getUser()).data.user?.id
-        }])
+          created_by: user.id,
+          assigned_by: user.id,
+          assigned_to: data.assigned_to || user.id
+        })
         .select()
         .single();
 
@@ -94,7 +104,15 @@ export const TaskModal = ({ isOpen, onClose, taskId }: TaskModalProps) => {
     mutationFn: async (data: TaskFormData) => {
       const { data: result, error } = await supabase
         .from('tasks')
-        .update(data)
+        .update({
+          title: data.title,
+          description: data.description,
+          type: data.type,
+          priority: data.priority,
+          due_date: data.due_date?.toISOString(),
+          submission_type: data.submission_type,
+          assigned_to: data.assigned_to
+        })
         .eq('id', taskId)
         .select()
         .single();
@@ -250,7 +268,7 @@ export const TaskModal = ({ isOpen, onClose, taskId }: TaskModalProps) => {
             </Button>
             <Button
               type="submit"
-              isLoading={createTaskMutation.isPending || updateTaskMutation.isPending}
+              disabled={createTaskMutation.isPending || updateTaskMutation.isPending}
             >
               {taskId ? "Update Task" : "Create Task"}
             </Button>

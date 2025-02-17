@@ -21,9 +21,9 @@ export interface Task {
 }
 
 export const useTasks = (filters?: {
-  status?: string;
-  type?: string;
-  priority?: string;
+  status?: Task['status'];
+  type?: Task['type'];
+  priority?: Task['priority'];
   dueDate?: Date;
   search?: string;
 }) => {
