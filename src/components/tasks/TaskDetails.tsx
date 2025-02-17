@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Clock, Calendar, User, FileText } from "lucide-react";
+import { Clock, Calendar, User, FileText, X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 interface TaskDetailsProps {
   taskId: string;
+  onClose: () => void;
 }
 
-export const TaskDetails = ({ taskId }: TaskDetailsProps) => {
+export const TaskDetails = ({ taskId, onClose }: TaskDetailsProps) => {
   const { task, isLoading } = useTask(taskId);
 
   if (isLoading) {
@@ -48,11 +50,16 @@ export const TaskDetails = ({ taskId }: TaskDetailsProps) => {
   };
 
   return (
-    <Card>
-      <CardHeader className="space-y-2">
-        <div className="flex items-center justify-between">
-          <CardTitle>{task.title}</CardTitle>
-          <div className="space-x-2">
+    <Sheet open={true} onOpenChange={onClose}>
+      <SheetContent className="w-[600px] sm:w-[540px]">
+        <SheetHeader className="flex justify-between items-start">
+          <SheetTitle className="text-xl font-bold">{task.title}</SheetTitle>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </SheetHeader>
+        <div className="mt-6 space-y-6">
+          <div className="flex space-x-2">
             <Badge variant="secondary" className={getTypeColor(task.type)}>
               {task.type}
             </Badge>
@@ -60,54 +67,54 @@ export const TaskDetails = ({ taskId }: TaskDetailsProps) => {
               {task.status}
             </Badge>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">{task.description}</p>
-          
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-            <div className="flex items-center">
-              <Calendar className="mr-2 h-4 w-4" />
-              {task.due_date ? format(new Date(task.due_date), 'PPP') : 'No due date'}
-            </div>
-            <div className="flex items-center">
-              <Clock className="mr-2 h-4 w-4" />
-              Created: {format(new Date(task.created_at), 'PPP')}
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center text-sm">
-              <User className="mr-2 h-4 w-4" />
-              Assigned by: {(task.assigned_by as any)?.name || 'Unknown'}
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">{task.description}</p>
+            
+            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+              <div className="flex items-center">
+                <Calendar className="mr-2 h-4 w-4" />
+                {task.due_date ? format(new Date(task.due_date), 'PPP') : 'No due date'}
+              </div>
+              <div className="flex items-center">
+                <Clock className="mr-2 h-4 w-4" />
+                Created: {format(new Date(task.created_at), 'PPP')}
+              </div>
             </div>
-            <div className="flex items-center text-sm">
-              <User className="mr-2 h-4 w-4" />
-              Assigned to: {(task.assigned_to as any)?.name || 'Unknown'}
-            </div>
-          </div>
 
-          {task.submission_type && (
             <div className="space-y-2">
               <div className="flex items-center text-sm">
-                <FileText className="mr-2 h-4 w-4" />
-                Submission Type: {task.submission_type}
+                <User className="mr-2 h-4 w-4" />
+                Assigned by: {(task.assigned_by as any)?.name || 'Unknown'}
               </div>
-              {task.submission_requirements && (
-                <div className="text-sm text-muted-foreground">
-                  Requirements: {JSON.stringify(task.submission_requirements)}
-                </div>
-              )}
+              <div className="flex items-center text-sm">
+                <User className="mr-2 h-4 w-4" />
+                Assigned to: {(task.assigned_to as any)?.name || 'Unknown'}
+              </div>
             </div>
-          )}
-        </div>
 
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline">Edit Task</Button>
-          <Button>Submit Task</Button>
+            {task.submission_type && (
+              <div className="space-y-2">
+                <div className="flex items
+-center text-sm">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Submission Type: {task.submission_type}
+                </div>
+                {task.submission_requirements && (
+                  <div className="text-sm text-muted-foreground">
+                    Requirements: {JSON.stringify(task.submission_requirements)}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline">Edit Task</Button>
+            <Button>Submit Task</Button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </SheetContent>
+    </Sheet>
   );
 };
