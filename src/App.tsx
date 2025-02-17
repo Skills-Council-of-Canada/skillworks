@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -79,6 +78,26 @@ const App = () => (
           <Route path="/employer/registration" element={<EmployerRegistration />} />
           <Route path="/educator/registration" element={<EducatorRegistration />} />
 
+          {/* Protected participant routes */}
+          <Route
+            path="/participant"
+            element={
+              <ProtectedRoute allowedRoles={["participant"]}>
+                <ParticipantLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ParticipantDashboard />} />
+            <Route path="dashboard" element={<ParticipantDashboard />} />
+            <Route path="experiences" element={<ParticipantExperiences />} />
+            <Route path="create-experience" element={<CreateParticipantExperience />} />
+            <Route path="mentors" element={<MyMentors />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<ParticipantSettings />} />
+            <Route path="tasks" element={<TasksActivities />} />
+          </Route>
+
           {/* Protected employer routes */}
           <Route
             path="/employer"
@@ -138,25 +157,6 @@ const App = () => (
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="create-experience" element={<CreateExperience />} />
-          </Route>
-
-          {/* Protected participant routes */}
-          <Route
-            path="/participant"
-            element={
-              <ProtectedRoute allowedRoles={["participant"]}>
-                <ParticipantLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<ParticipantDashboard />} />
-            <Route path="dashboard" element={<ParticipantDashboard />} />
-            <Route path="experiences" element={<ParticipantExperiences />} />
-            <Route path="create-experience" element={<CreateParticipantExperience />} />
-            <Route path="mentors" element={<MyMentors />} />
-            <Route path="messages" element={<Messages />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="settings" element={<ParticipantSettings />} />
           </Route>
 
           {/* Catch all route */}
