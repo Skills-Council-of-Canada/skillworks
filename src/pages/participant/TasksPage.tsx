@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useTasks, useTaskRealtime } from "@/hooks/useTasks";
+import { useTasks, useTaskRealtime, Task } from "@/hooks/useTasks";
 import { TaskFilters } from "@/components/tasks/TaskFilters";
 import { TaskModal } from "@/components/tasks/TaskModal";
 import { TaskDetails } from "@/components/tasks/TaskDetails";
@@ -10,21 +9,31 @@ import { Plus } from "lucide-react";
 import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 
+type TaskStatus = Task['status'];
+type TaskType = Task['type'];
+type TaskPriority = Task['priority'];
+
+interface Filters {
+  status: TaskStatus | '';
+  type: TaskType | '';
+  priority: TaskPriority | '';
+  search: string;
+  dueDate?: Date;
+}
+
 export default function TasksPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     status: '',
     type: '',
     priority: '',
     search: '',
-    dueDate: undefined as Date | undefined,
   });
 
   const queryClient = useQueryClient();
   const { tasks, isLoading } = useTasks(filters);
 
-  // Set up realtime updates
   useTaskRealtime(() => {
     queryClient.invalidateQueries({ queryKey: ['tasks'] });
   });
