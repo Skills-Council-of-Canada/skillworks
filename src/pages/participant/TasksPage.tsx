@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useTasks, useTaskRealtime, Task } from "@/hooks/useTasks";
 import { TaskFilters } from "@/components/tasks/TaskFilters";
@@ -14,9 +15,9 @@ type TaskType = Task['type'];
 type TaskPriority = Task['priority'];
 
 interface Filters {
-  status: TaskStatus | '';
-  type: TaskType | '';
-  priority: TaskPriority | '';
+  status: TaskStatus | undefined;
+  type: TaskType | undefined;
+  priority: TaskPriority | undefined;
   search: string;
   dueDate?: Date;
 }
@@ -25,14 +26,20 @@ export default function TasksPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [filters, setFilters] = useState<Filters>({
-    status: '',
-    type: '',
-    priority: '',
+    status: undefined,
+    type: undefined,
+    priority: undefined,
     search: '',
   });
 
   const queryClient = useQueryClient();
-  const { tasks, isLoading } = useTasks(filters);
+  const { tasks, isLoading } = useTasks({
+    status: filters.status,
+    type: filters.type,
+    priority: filters.priority,
+    dueDate: filters.dueDate,
+    search: filters.search || undefined
+  });
 
   useTaskRealtime(() => {
     queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -40,6 +47,10 @@ export default function TasksPage() {
 
   const handleTaskClick = (taskId: string) => {
     setSelectedTaskId(taskId);
+  };
+
+  const handleFiltersChange = (newFilters: Filters) => {
+    setFilters(newFilters);
   };
 
   return (
@@ -54,7 +65,7 @@ export default function TasksPage() {
 
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-3">
-          <TaskFilters onFiltersChange={setFilters} />
+          <TaskFilters onFiltersChange={handleFiltersChange} />
         </div>
 
         <div className="col-span-9 space-y-4">

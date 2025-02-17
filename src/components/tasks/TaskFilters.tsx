@@ -8,29 +8,34 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Search } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Task } from "@/hooks/useTasks";
 
-interface TaskFilters {
+type TaskStatus = Task['status'];
+type TaskType = Task['type'];
+type TaskPriority = Task['priority'];
+
+interface Filters {
   search: string;
-  status: string;
-  type: string;
-  priority: string;
+  status: TaskStatus | undefined;
+  type: TaskType | undefined;
+  priority: TaskPriority | undefined;
   dueDate: Date | undefined;
 }
 
 interface TaskFiltersProps {
-  onFiltersChange: (filters: TaskFilters) => void;
+  onFiltersChange: (filters: Filters) => void;
 }
 
 export const TaskFilters = ({ onFiltersChange }: TaskFiltersProps) => {
-  const [filters, setFilters] = useState<TaskFilters>({
+  const [filters, setFilters] = useState<Filters>({
     search: "",
-    status: "",
-    type: "",
-    priority: "",
+    status: undefined,
+    type: undefined,
+    priority: undefined,
     dueDate: undefined
   });
 
-  const handleFilterChange = (key: keyof TaskFilters, value: any) => {
+  const handleFilterChange = (key: keyof Filters, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFiltersChange(newFilters);
@@ -52,8 +57,8 @@ export const TaskFilters = ({ onFiltersChange }: TaskFiltersProps) => {
         <div className="space-y-2">
           <label className="text-sm font-medium">Status</label>
           <Select
-            value={filters.status}
-            onValueChange={(value) => handleFilterChange('status', value)}
+            value={filters.status || ""}
+            onValueChange={(value) => handleFilterChange('status', value || undefined)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Filter by status" />
@@ -63,6 +68,8 @@ export const TaskFilters = ({ onFiltersChange }: TaskFiltersProps) => {
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="in_progress">In Progress</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -70,8 +77,8 @@ export const TaskFilters = ({ onFiltersChange }: TaskFiltersProps) => {
         <div className="space-y-2">
           <label className="text-sm font-medium">Type</label>
           <Select
-            value={filters.type}
-            onValueChange={(value) => handleFilterChange('type', value)}
+            value={filters.type || ""}
+            onValueChange={(value) => handleFilterChange('type', value || undefined)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Filter by type" />
@@ -88,8 +95,8 @@ export const TaskFilters = ({ onFiltersChange }: TaskFiltersProps) => {
         <div className="space-y-2">
           <label className="text-sm font-medium">Priority</label>
           <Select
-            value={filters.priority}
-            onValueChange={(value) => handleFilterChange('priority', value)}
+            value={filters.priority || ""}
+            onValueChange={(value) => handleFilterChange('priority', value || undefined)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Filter by priority" />
