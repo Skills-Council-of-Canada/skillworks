@@ -2,7 +2,7 @@
 import { UserRole } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Hammer, Wrench } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 interface PortalCardProps {
