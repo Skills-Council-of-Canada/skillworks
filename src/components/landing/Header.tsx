@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut, Home, Cog } from "lucide-react";
+import { LogIn, LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -20,11 +20,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-1 text-xl sm:text-2xl font-bold">
-          <span className="text-primary">Trades</span>
-          <Cog className="h-5 w-5 text-orange-500 animate-spin-slow" />
-          <span className="text-orange-500">Connect</span>
-        </div>
+        <div className="text-xl sm:text-2xl font-bold text-primary">TradesConnect</div>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -60,3 +56,4 @@ const Header = () => {
 };
 
 export default Header;
+
