@@ -11,8 +11,8 @@ const EmployerLanding = () => {
     <div className="min-h-screen bg-white">
       <Header />
       <HeroSection />
-      <HowItWorksSection />
       <BenefitsSection />
+      <HowItWorksSection />
       <FinalCTASection />
       <Footer />
     </div>

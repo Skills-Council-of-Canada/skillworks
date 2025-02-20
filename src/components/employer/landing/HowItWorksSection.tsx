@@ -9,12 +9,16 @@ interface StepProps {
 }
 
 const Step = ({ number, title, description, showArrow = true }: StepProps) => (
-  <div className="flex flex-col items-center text-center">
-    <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mb-4">
-      {number}
+  <div className="flex flex-col items-center">
+    <div className="w-full bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow text-center">
+      <div className="flex justify-center mb-4">
+        <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold">
+          {number}
+        </div>
+      </div>
+      <h3 className="text-xl font-semibold text-secondary mb-2">{title}</h3>
+      <p className="text-secondary/60">{description}</p>
     </div>
-    <h3 className="text-xl font-semibold text-secondary mb-2">{title}</h3>
-    <p className="text-secondary/60 mb-6">{description}</p>
     {showArrow && (
       <ArrowDown className="h-8 w-8 text-primary/60 my-4" />
     )}
@@ -51,7 +55,7 @@ export const HowItWorksSection = () => {
         <h2 className="text-3xl font-bold text-center text-secondary mb-12">
           How It Works
         </h2>
-        <div className="space-y-4">
+        <div className="space-y-8">
           {steps.map((step, index) => (
             <Step
               key={index}
