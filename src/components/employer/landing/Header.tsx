@@ -19,7 +19,7 @@ export const Header = () => {
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="text-secondary hover:text-primary"
+            className="text-primary hover:bg-primary/10"
           >
             <Home className="h-5 w-5" />
           </Button>
@@ -28,7 +28,7 @@ export const Header = () => {
         <div>
           <Button
             onClick={handleSignUp}
-            className="bg-primary hover:bg-primary/90"
+            className="bg-primary text-white hover:bg-primary/90"
           >
             Sign Up
           </Button>
