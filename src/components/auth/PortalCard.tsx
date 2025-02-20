@@ -26,6 +26,15 @@ const PortalCard = ({
   return (
     <Card 
       className="p-6 bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 -mb-24"
+      style={{
+        backgroundImage: `
+          radial-gradient(#F1F0FB 2px, transparent 2px), 
+          radial-gradient(#F1F0FB 2px, transparent 2px)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundPosition: '0 0, 20px 20px',
+        backgroundBlendMode: 'multiply'
+      }}
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <Icon className="h-12 w-12 text-primary" />
