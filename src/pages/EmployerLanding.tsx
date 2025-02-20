@@ -69,7 +69,7 @@ const EmployerLanding = () => {
             </div>
             <div className="hidden md:block">
               <img
-                src="/lovable-uploads/dc064868-45f0-4721-bb38-ea148e350719.png"
+                src="/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png"
                 alt="Construction workers in safety gear reviewing project plans"
                 className="rounded-lg shadow-xl object-cover w-full h-[400px]"
                 onError={(e) => {
