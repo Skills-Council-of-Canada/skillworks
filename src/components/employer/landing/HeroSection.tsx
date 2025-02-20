@@ -29,14 +29,6 @@ export const HeroSection = () => {
               >
                 Get Started <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate("/about")}
-                className="border-white text-white hover:bg-white/10"
-              >
-                Learn More
-              </Button>
             </div>
           </div>
           <div className="hidden md:block">
