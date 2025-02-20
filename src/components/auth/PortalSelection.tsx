@@ -45,7 +45,7 @@ const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
     <div className="w-full max-w-4xl space-y-8 animate-fadeIn">
       <div className="text-center">
         <h2 className="text-4xl font-bold text-secondary mb-2">Real-World Experience. Real Opportunities. Real Impact.</h2>
-        <p className="text-secondary/60 mb-8 text-lg">Choose your portal to continue</p>
+        <p className="text-secondary/60 mb-8 text-lg">Connect with top companies, gain hands-on experience, and build your career—all in one platform.</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
