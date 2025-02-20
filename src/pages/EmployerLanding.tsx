@@ -69,9 +69,9 @@ const EmployerLanding = () => {
             </div>
             <div className="hidden md:block">
               <img
-                src="/placeholder.svg"
-                alt="Skilled trades workers"
-                className="rounded-lg shadow-xl"
+                src="/lovable-uploads/42ebac45-0615-46c7-bec5-a1654e77b84d.png"
+                alt="Construction workers in safety gear having a meeting"
+                className="rounded-lg shadow-xl object-cover w-full h-[400px]"
               />
             </div>
           </div>
