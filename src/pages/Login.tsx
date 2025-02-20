@@ -1,6 +1,6 @@
 
-import { AuthForm } from "@/components/auth/AuthForm";
-import { PortalSelection } from "@/components/auth/PortalSelection";
+import AuthForm from "@/components/auth/AuthForm";
+import PortalSelection from "@/components/auth/PortalSelection";
 import { useState } from "react";
 
 const Login = () => {
