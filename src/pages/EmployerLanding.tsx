@@ -1,6 +1,7 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle, Home, LightBulb, FastForward, Building, UserPlus } from "lucide-react";
+import { ArrowRight, Briefcase, Users, CheckCircle, Home, Lightbulb, FastForward, Building, UserPlus } from "lucide-react";
 
 const EmployerLanding = () => {
   const navigate = useNavigate();
@@ -145,7 +146,7 @@ const EmployerLanding = () => {
             <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
-                  <LightBulb className="h-8 w-8 text-primary" />
+                  <Lightbulb className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-secondary mb-2">
