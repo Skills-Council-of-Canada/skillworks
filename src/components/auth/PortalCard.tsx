@@ -21,19 +21,17 @@ const PortalCard = ({
   title,
   description,
   icon: Icon,
-  gradient,
-  borderGradient,
   onSelect,
 }: PortalCardProps) => {
   return (
     <Card 
-      className={`p-6 transition-all duration-300 border-2 ${gradient} ${borderGradient} hover:shadow-lg`}
+      className="p-6 bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 -mb-8"
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <Icon className="h-12 w-12 text-primary" />
         <div>
-          <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <p className="text-secondary/60 mb-4">{description}</p>
+          <h3 className="text-xl font-semibold mb-2 text-gray-900">{title}</h3>
+          <p className="text-gray-600 mb-4">{description}</p>
         </div>
         <div className="w-full">
           <Button 
