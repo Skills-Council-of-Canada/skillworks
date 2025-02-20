@@ -11,10 +11,10 @@ const HeroSection = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
               Connect with Skilled Trade Professionals
             </h1>
-            <p className="text-lg text-secondary/60">
+            <p className="text-lg text-white">
               Your gateway to finding and hiring qualified trade professionals.
               Streamline your recruitment process and build your workforce efficiently.
             </p>
@@ -22,7 +22,7 @@ const HeroSection = () => {
               <Button
                 size="lg"
                 onClick={() => navigate("/login")}
-                className="bg-primary hover:bg-primary/90 gap-2"
+                className="bg-white text-primary hover:bg-white/90 gap-2"
               >
                 Get Started <ArrowRight className="h-4 w-4" />
               </Button>
@@ -30,7 +30,7 @@ const HeroSection = () => {
                 size="lg"
                 variant="outline"
                 onClick={() => navigate("/about")}
-                className="border-primary text-primary hover:bg-primary/10"
+                className="border-white text-white hover:bg-white/10"
               >
                 Learn More
               </Button>

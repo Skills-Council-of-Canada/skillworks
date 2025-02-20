@@ -1,65 +1,60 @@
 
-import { Users, Lightbulb, FastForward, Building, UserPlus } from "lucide-react";
-
-interface BenefitCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-const BenefitCard = ({ icon, title, description }: BenefitCardProps) => (
-  <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-    <div className="flex items-start gap-4">
-      <div className="flex-shrink-0">
-        {icon}
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold text-secondary mb-2">{title}</h3>
-        <p className="text-secondary/60">{description}</p>
-      </div>
-    </div>
-  </div>
-);
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight, Users, Briefcase, Award, Gift } from "lucide-react";
 
 export const BenefitsSection = () => {
+  const navigate = useNavigate();
+
   const benefits = [
     {
-      icon: <Users className="h-8 w-8 text-primary" />,
-      title: "Access a Curated Talent Pool",
-      description: "Work with students and professionals trained with industry-relevant skills.",
+      icon: <Users className="h-8 w-8 text-white" />,
+      title: "Access Top Talent",
+      description: "Connect with skilled professionals who are actively seeking opportunities in the trades.",
     },
     {
-      icon: <Lightbulb className="h-8 w-8 text-primary" />,
-      title: "Solve Real Challenges",
-      description: "Assign meaningful projects and gain fresh insights from emerging talent.",
+      icon: <Briefcase className="h-8 w-8 text-white" />,
+      title: "Streamlined Hiring",
+      description: "Our platform simplifies the recruitment process, saving you time and resources.",
     },
     {
-      icon: <FastForward className="h-8 w-8 text-primary" />,
-      title: "Fast & Efficient Matching",
-      description: "Get connected to the right candidates without the hassle.",
+      icon: <Award className="h-8 w-8 text-white" />,
+      title: "Quality Assurance",
+      description: "All candidates are pre-screened and verified for their skills and experience.",
     },
     {
-      icon: <Building className="h-8 w-8 text-primary" />,
-      title: "Build Your Talent Pipeline",
-      description: "Identify top candidates for internships, co-ops, and full-time hires.",
-    },
-    {
-      icon: <UserPlus className="h-8 w-8 text-primary" />,
-      title: "Diversity & Inclusion",
-      description: "Engage a wide range of learners from diverse backgrounds.",
+      icon: <Gift className="h-8 w-8 text-white" />,
+      title: "Cost Effective",
+      description: "Reduce hiring costs while maintaining high standards in recruitment.",
     },
   ];
 
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-primary">
       <div className="container mx-auto max-w-6xl">
-        <h2 className="text-3xl font-bold text-center text-secondary mb-12">
-          Supporting Benefits
+        <h2 className="text-3xl font-bold text-center text-white mb-12">
+          Why Choose TradesConnect?
         </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {benefits.map((benefit, index) => (
-            <BenefitCard key={index} {...benefit} />
+            <div
+              key={index}
+              className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg bg-white/5"
+            >
+              {benefit.icon}
+              <h3 className="text-xl font-semibold text-white">{benefit.title}</h3>
+              <p className="text-white/90">{benefit.description}</p>
+            </div>
           ))}
+        </div>
+        <div className="text-center">
+          <Button
+            onClick={() => navigate("/employer/registration")}
+            size="lg"
+            className="bg-white text-primary hover:bg-white/90 gap-2"
+          >
+            Join Now <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>
