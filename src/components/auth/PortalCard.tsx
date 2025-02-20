@@ -35,7 +35,7 @@ const PortalCard = ({
         </div>
         <div className="w-full">
           <Button 
-            className="w-full group" 
+            className="w-full group bg-orange-500 hover:bg-orange-600" 
             onClick={() => onSelect(id)}
           >
             Select Portal
