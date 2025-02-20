@@ -1,7 +1,6 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
+import { ArrowRight, Briefcase, Users, CheckCircle, Home, LightBulb, FastForward, Building, UserPlus } from "lucide-react";
 
 const EmployerLanding = () => {
   const navigate = useNavigate();
@@ -115,6 +114,96 @@ const EmployerLanding = () => {
               <p className="text-secondary/60">
                 All candidates are pre-screened and skill-verified
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Supporting Benefits Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-3xl font-bold text-center text-secondary mb-12">
+            Supporting Benefits
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-secondary mb-2">
+                    Access a Curated Talent Pool
+                  </h3>
+                  <p className="text-secondary/60">
+                    Work with students and professionals trained with industry-relevant skills.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <LightBulb className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-secondary mb-2">
+                    Solve Real Challenges
+                  </h3>
+                  <p className="text-secondary/60">
+                    Assign meaningful projects and gain fresh insights from emerging talent.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <FastForward className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-secondary mb-2">
+                    Fast & Efficient Matching
+                  </h3>
+                  <p className="text-secondary/60">
+                    Get connected to the right candidates without the hassle.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <Building className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-secondary mb-2">
+                    Build Your Talent Pipeline
+                  </h3>
+                  <p className="text-secondary/60">
+                    Identify top candidates for internships, co-ops, and full-time hires.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <UserPlus className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-secondary mb-2">
+                    Diversity & Inclusion
+                  </h3>
+                  <p className="text-secondary/60">
+                    Engage a wide range of learners from diverse backgrounds.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
