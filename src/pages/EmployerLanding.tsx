@@ -47,7 +47,7 @@ const EmployerLanding = () => {
                 Engage Top Emerging Talent & Build Your Future Workforce
               </h1>
               <p className="text-lg text-secondary/60">
-                Connect with qualified trade workers and build your workforce through our innovative platform.
+                Hire smarter. Connect with participants who are being becoming job-ready through real-world projects, internships, and work-integrated learning.
               </p>
               <div className="flex gap-4">
                 <Button
