@@ -37,10 +37,10 @@ export const portals = [
 ];
 
 interface PortalSelectionProps {
-  onPortalSelect: (portalId: string, role: UserRole) => void;
+  onSelect: (id: string) => void;
 }
 
-const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
+const PortalSelection = ({ onSelect }: PortalSelectionProps) => {
   return (
     <div className="w-full max-w-4xl space-y-8 animate-fadeIn">
       <div className="text-center">
@@ -53,7 +53,7 @@ const PortalSelection = ({ onPortalSelect }: PortalSelectionProps) => {
           <PortalCard
             key={portal.id}
             {...portal}
-            onSelect={() => onPortalSelect(portal.id, portal.role)}
+            onSelect={() => onSelect(portal.id)}
             registrationPath={portal.registrationPath}
           />
         ))}

@@ -5,38 +5,32 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
-import { LucideIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuthFormProps {
-  icon: LucideIcon;
-  title: string;
-  gradient: string;
-  isLoading: boolean;
-  onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
+  portal: string;
+  onBack: () => void;
 }
 
-const AuthForm = ({
-  icon: Icon,
-  title,
-  gradient,
-  isLoading,
-  onSubmit,
-}: AuthFormProps) => {
+const AuthForm = ({ portal, onBack }: AuthFormProps) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
     
     setError(null);
+    setIsLoading(true);
 
     try {
-      await onSubmit(identifier, password, false);
+      // Handle authentication logic here
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -46,11 +40,10 @@ const AuthForm = ({
   };
 
   return (
-    <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
+    <div className="w-full max-w-md space-y-8 animate-fadeIn">
       <div className="text-center">
         <div className="flex flex-col items-center gap-4">
-          <Icon className="h-16 w-16 text-primary" />
-          <h2 className="text-4xl font-bold text-secondary">{title}</h2>
+          <h2 className="text-4xl font-bold text-secondary">Welcome Back</h2>
           <p className="text-secondary/60">Sign in to your account</p>
         </div>
       </div>
