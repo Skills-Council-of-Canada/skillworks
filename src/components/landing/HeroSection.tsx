@@ -18,21 +18,13 @@ const HeroSection = () => {
               Your gateway to finding and hiring qualified trade professionals.
               Streamline your recruitment process and build your workforce efficiently.
             </p>
-            <div className="flex gap-4">
+            <div>
               <Button
                 size="lg"
                 onClick={() => navigate("/login")}
                 className="bg-white text-primary hover:bg-white/90 gap-2"
               >
                 Get Started <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate("/about")}
-                className="border-white text-white hover:bg-white/10"
-              >
-                Learn More
               </Button>
             </div>
           </div>
