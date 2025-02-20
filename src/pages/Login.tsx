@@ -2,33 +2,6 @@
 import AuthForm from "@/components/auth/AuthForm";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { useState } from "react";
-import { Building2, Hammer, Wrench } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-
-interface Portal {
-  id: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  gradient: string;
-}
-
-const portals: Portal[] = [
-  {
-    id: "trade",
-    title: "Trade Portal",
-    description: "For skilled trades and apprenticeships",
-    icon: Hammer,
-    gradient: "linear-gradient(to right, #4F46E5, #7C3AED)"
-  },
-  {
-    id: "technical",
-    title: "Technical Portal",
-    description: "For technical training and certification",
-    icon: Wrench,
-    gradient: "linear-gradient(to right, #2563EB, #3B82F6)"
-  }
-];
 
 const Login = () => {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
