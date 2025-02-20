@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Edit3, Search, HandShake, CheckCircle } from "lucide-react";
+import { ArrowRight, Edit3, Search, Handshake, CheckCircle } from "lucide-react";
 
 export const HowItWorksSection = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const HowItWorksSection = () => {
       description: "Access our pool of verified trade professionals.",
     },
     {
-      icon: <HandShake className="h-8 w-8 text-white" />,
+      icon: <Handshake className="h-8 w-8 text-white" />,
       title: "Connect & Engage",
       description: "Interact with potential candidates directly through our platform.",
     },
