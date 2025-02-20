@@ -6,6 +6,10 @@ import { useState } from "react";
 const Login = () => {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
 
+  const handlePortalSelect = (portalId: string, role: string) => {
+    setSelectedPortal(portalId);
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative"
       style={{
@@ -19,9 +23,17 @@ const Login = () => {
         backgroundBlendMode: 'multiply'
       }}>
       {selectedPortal ? (
-        <AuthForm portal={selectedPortal} onBack={() => setSelectedPortal(null)} />
+        <AuthForm 
+          icon={portals.find(p => p.id === selectedPortal)?.icon || Building2}
+          title={portals.find(p => p.id === selectedPortal)?.title || ""}
+          gradient={portals.find(p => p.id === selectedPortal)?.gradient || ""}
+          isLoading={false}
+          onSubmit={async (email, password, isSignUp) => {
+            // Authentication logic will be handled here
+          }}
+        />
       ) : (
-        <PortalSelection onSelect={setSelectedPortal} />
+        <PortalSelection onPortalSelect={handlePortalSelect} />
       )}
     </div>
   );
