@@ -32,7 +32,7 @@ const LandingPage = () => {
       {/* Portal Selection Section */}
       <section className="pt-24 pb-8 px-4">
         <div className="container mx-auto max-w-6xl flex justify-center">
-          <PortalSelection onPortalSelect={handlePortalSelect} />
+          <PortalSelection onSelect={handlePortalSelect} />
         </div>
       </section>
 

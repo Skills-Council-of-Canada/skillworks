@@ -17,8 +17,9 @@ const Index = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
 
-  const handlePortalSelect = (portalId: string, role: UserRole) => {
+  const handlePortalSelect = (portalId: string) => {
     switch (portalId) {
       case "employer":
         navigate("/employer-landing");
@@ -68,25 +69,25 @@ const Index = () => {
       
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
         <div className="flex flex-col justify-center order-2 md:order-1">
-          <PortalSelection onPortalSelect={handlePortalSelect} />
+          <PortalSelection onSelect={handlePortalSelect} />
         </div>
         
         <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
-          <AuthForm
-            icon={User}
-            title="Sign In"
-            gradient="bg-white"
-            isLoading={isSubmitting}
-            onSubmit={handleAuthSubmit}
-          />
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => navigate("/login")}
-          >
-            <LogIn className="mr-2 h-4 w-4" />
-            Login Page
-          </Button>
+          {selectedPortal ? (
+            <AuthForm 
+              portal={selectedPortal}
+              onBack={() => setSelectedPortal(null)}
+            />
+          ) : (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/login")}
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Login Page
+            </Button>
+          )}
         </div>
       </div>
     </div>
