@@ -82,44 +82,6 @@ const EmployerLanding = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-center text-secondary mb-12">
-            Why Choose Our Employer Portal?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 space-y-4 text-center">
-              <Briefcase className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Skilled Workforce
-              </h3>
-              <p className="text-secondary/60">
-                Access a pool of verified and skilled trade professionals
-              </p>
-            </div>
-            <div className="p-6 space-y-4 text-center">
-              <Users className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Easy Recruitment
-              </h3>
-              <p className="text-secondary/60">
-                Streamlined hiring process with verified credentials
-              </p>
-            </div>
-            <div className="p-6 space-y-4 text-center">
-              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Quality Assurance
-              </h3>
-              <p className="text-secondary/60">
-                All candidates are pre-screened and skill-verified
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Supporting Benefits Section */}
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
