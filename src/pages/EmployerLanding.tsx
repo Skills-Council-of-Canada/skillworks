@@ -44,7 +44,7 @@ const EmployerLanding = () => {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
-                Build your workforce with project based work integrating learning experiences
+                Engage Top Emerging Talent & Build Your Future Workforce
               </h1>
               <p className="text-lg text-secondary/60">
                 Connect with qualified trade workers and build your workforce through our innovative platform.
