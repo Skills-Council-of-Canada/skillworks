@@ -9,7 +9,7 @@ const HeroSection = () => {
   return (
     <section className="py-16 px-4 bg-muted">
       <div className="container mx-auto max-w-6xl">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-8 items-center pt-16">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
               Connect with Skilled Trade Professionals
