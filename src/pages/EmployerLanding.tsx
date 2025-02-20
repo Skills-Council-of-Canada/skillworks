@@ -69,9 +69,13 @@ const EmployerLanding = () => {
             </div>
             <div className="hidden md:block">
               <img
-                src="/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png"
+                src={`${window.location.origin}/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png`}
                 alt="Construction workers in safety gear reviewing project plans"
                 className="rounded-lg shadow-xl object-cover w-full h-[400px]"
+                onError={(e) => {
+                  console.error('Image failed to load:', e);
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </div>
           </div>
