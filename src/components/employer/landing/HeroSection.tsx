@@ -11,21 +11,21 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="pt-24 pb-16 px-4 bg-primary">
+    <section className="pt-24 pb-16 px-4 bg-secondary">
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
               Engage Top Emerging Talent & Build Your Future Workforce
             </h1>
-            <p className="text-lg text-white/80">
+            <p className="text-lg text-white">
               Hire smarter. Connect with participants who are being becoming job-ready through real-world projects, internships, and work-integrated learning.
             </p>
             <div className="flex gap-4">
               <Button
                 size="lg"
                 onClick={handleSignUp}
-                className="bg-white text-primary hover:bg-white/90 gap-2"
+                className="bg-white text-secondary hover:bg-white/90 gap-2"
               >
                 Get Started <ArrowRight className="h-4 w-4" />
               </Button>
