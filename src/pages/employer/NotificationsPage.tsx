@@ -1,3 +1,4 @@
+
 import { useCallback, useState } from "react";
 import { Bell, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -87,9 +88,19 @@ export default function NotificationsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-11 rounded-md border-[0.5px] p-1">
-          <TabsTrigger value="notifications" className="rounded text-sm">Notifications</TabsTrigger>
-          <TabsTrigger value="settings" className="rounded text-sm">Settings</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 h-11 bg-background border-[0.5px] p-1 rounded-md">
+          <TabsTrigger 
+            value="notifications" 
+            className="rounded text-sm data-[state=active]:bg-accent data-[state=active]:shadow-none"
+          >
+            Notifications
+          </TabsTrigger>
+          <TabsTrigger 
+            value="settings" 
+            className="rounded text-sm data-[state=active]:bg-accent data-[state=active]:shadow-none"
+          >
+            Settings
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="notifications" className="mt-6">
           <div className="space-y-2">
