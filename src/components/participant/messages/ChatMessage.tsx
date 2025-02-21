@@ -82,8 +82,8 @@ export const ChatMessage = ({
             className={cn(
               "rounded-lg p-3 shadow-sm transition-colors",
               isCurrentUser
-                ? "bg-primary text-primary-foreground rounded-tr-none"
-                : "bg-muted/50 backdrop-blur-sm rounded-tl-none hover:bg-muted/60"
+                ? "bg-emerald-500 text-white rounded-tr-none"
+                : "bg-blue-500 text-white rounded-tl-none"
             )}
           >
             <p className="text-sm break-words leading-relaxed">{message.content}</p>

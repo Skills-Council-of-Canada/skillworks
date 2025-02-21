@@ -120,8 +120,8 @@ export const ChatDialog = ({
                 <div
                   className={`max-w-[80%] px-4 py-2 rounded-lg ${
                     msg.sender_id === user?.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-blue-500 text-white'
                   }`}
                 >
                   {msg.content}
