@@ -33,39 +33,31 @@ const ParticipantLanding = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 bg-muted">
+      <section className="pt-24 pb-16 px-4 bg-secondary">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
-                Start Your Trade Career Journey
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+                Engage Top Emerging Talent & Build Your Future Career
               </h1>
-              <p className="text-lg text-secondary/60">
-                Learn valuable trade skills and connect with employers looking for talented professionals like you.
+              <p className="text-lg text-white">
+                Connect with employers who are looking for talented professionals like you. Get real-world experience through projects, internships, and work-integrated learning.
               </p>
               <div className="flex gap-4">
                 <Button
                   size="lg"
                   onClick={() => navigate("/participant/registration")}
-                  className="bg-primary hover:bg-primary/90 gap-2"
+                  className="bg-white text-secondary hover:bg-white/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => navigate("/about")}
-                  className="border-primary text-primary hover:bg-primary/10"
-                >
-                  Learn More
                 </Button>
               </div>
             </div>
             <div className="hidden md:block">
               <img
-                src="/placeholder.svg"
-                alt="Trade career opportunities"
-                className="rounded-lg shadow-xl"
+                src="/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png"
+                alt="Construction workers in safety gear reviewing project plans"
+                className="rounded-lg shadow-xl object-cover w-full h-[400px]"
               />
             </div>
           </div>
