@@ -1,9 +1,73 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
+import { 
+  ArrowRight, 
+  BookOpen, 
+  Building2, 
+  UsersRound, 
+  GraduationCap, 
+  Home,
+  Briefcase,
+  ClipboardCheck,
+  Puzzle,
+  Users,
+  CheckCircle
+} from "lucide-react";
 
 const EducatorLanding = () => {
   const navigate = useNavigate();
+
+  const benefits = [
+    {
+      icon: <Briefcase className="h-8 w-8 text-primary" />,
+      title: "Work-Integrated Learning",
+      description: "Bring industry-driven projects into your classroom.",
+    },
+    {
+      icon: <GraduationCap className="h-8 w-8 text-primary" />,
+      title: "Career-Ready Graduates",
+      description: "Give students practical, real-world experience.",
+    },
+    {
+      icon: <Puzzle className="h-8 w-8 text-primary" />,
+      title: "Seamless Curriculum Integration",
+      description: "Match projects to existing courses and training programs.",
+    },
+    {
+      icon: <Building2 className="h-8 w-8 text-primary" />,
+      title: "Employer & Industry Partnerships",
+      description: "Connect with companies looking to invest in student development.",
+    },
+    {
+      icon: <Users className="h-8 w-8 text-primary" />,
+      title: "Customizable Learning Paths",
+      description: "Allow students to explore career options while building their portfolios.",
+    },
+  ];
+
+  const steps = [
+    {
+      icon: <Users className="h-8 w-8 text-white" />,
+      title: "Sign Up & Set Preferences",
+      description: "Define your subject areas and desired employer collaborations.",
+    },
+    {
+      icon: <ClipboardCheck className="h-8 w-8 text-white" />,
+      title: "Match with Employer Projects",
+      description: "Receive industry-relevant projects that fit your curriculum.",
+    },
+    {
+      icon: <BookOpen className="h-8 w-8 text-white" />,
+      title: "Facilitate Learning & Mentorship",
+      description: "Guide students through real-world problem-solving.",
+    },
+    {
+      icon: <CheckCircle className="h-8 w-8 text-white" />,
+      title: "Showcase Student Success",
+      description: "Help learners build a portfolio that enhances their career prospects.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -56,51 +120,57 @@ const EducatorLanding = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4">
+      {/* Benefits Section */}
+      <section className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-secondary mb-4">
-              Why Choose Our Platform?
-            </h2>
-            <p className="text-lg text-secondary/70 max-w-2xl mx-auto">
-              Everything you need to manage and enhance your skilled trades education program.
-            </p>
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
+            Supporting Benefits
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg bg-gray-100 shadow-md hover:shadow-lg transition-shadow"
+              >
+                {benefit.icon}
+                <h3 className="text-xl font-semibold text-primary">{benefit.title}</h3>
+                <p className="text-gray-600">{benefit.description}</p>
+              </div>
+            ))}
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <Building2 className="h-6 w-6 text-primary" />
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-12 px-4 bg-primary">
+        <div className="container mx-auto max-w-3xl">
+          <h2 className="text-3xl font-bold text-center text-white mb-8">
+            How It Works
+          </h2>
+          <div className="flex flex-col space-y-4 mb-8">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="flex items-start space-x-4 p-6 rounded-lg bg-[#1A1F2C] hover:bg-[#1A1F2C]/90 transition-colors"
+              >
+                <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+                  {step.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
+                  <p className="text-white/90">{step.description}</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-secondary mb-3">
-                Industry Partnerships
-              </h3>
-              <p className="text-secondary/70">
-                Connect with leading employers to provide real-world opportunities and projects for your students.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold text-secondary mb-3">
-                Learning Management
-              </h3>
-              <p className="text-secondary/70">
-                Comprehensive tools to track student progress, manage courses, and coordinate hands-on training.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <UsersRound className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold text-secondary mb-3">
-                Student Engagement
-              </h3>
-              <p className="text-secondary/70">
-                Foster collaboration and track student participation in projects and practical assignments.
-              </p>
-            </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button
+              onClick={() => navigate("/educator/registration")}
+              size="lg"
+              className="bg-[#8B0000] hover:bg-[#8B0000]/90 text-white gap-2"
+            >
+              Join Now – It's Free! <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
