@@ -1,11 +1,7 @@
 
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, Users, Briefcase, Award, Gift } from "lucide-react";
+import { Users, Briefcase, Award, Gift } from "lucide-react";
 
 export const BenefitsSection = () => {
-  const navigate = useNavigate();
-
   const benefits = [
     {
       icon: <Users className="h-8 w-8 text-primary" />,
@@ -35,7 +31,7 @@ export const BenefitsSection = () => {
         <h2 className="text-3xl font-bold text-center text-primary mb-12">
           Why Choose TradesConnect?
         </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {benefits.map((benefit, index) => (
             <div
               key={index}
@@ -46,15 +42,6 @@ export const BenefitsSection = () => {
               <p className="text-gray-600">{benefit.description}</p>
             </div>
           ))}
-        </div>
-        <div className="text-center">
-          <Button
-            onClick={() => navigate("/employer/registration")}
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-white gap-2"
-          >
-            Join Now <ArrowRight className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </section>
