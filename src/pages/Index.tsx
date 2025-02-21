@@ -69,7 +69,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 space-y-8">
-      <h1 className="text-4xl font-bold text-center mb-6">Welcome to TradesConnect</h1>
+      <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
       
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
         <div className="flex flex-col justify-center order-2 md:order-1">
