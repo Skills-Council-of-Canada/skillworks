@@ -30,7 +30,7 @@ export const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-32 px-4 bg-primary">
+    <section className="py-16 px-4 bg-primary">
       <div className="container mx-auto max-w-6xl">
         <h2 className="text-3xl font-bold text-center text-white mb-12">
           How It Works
