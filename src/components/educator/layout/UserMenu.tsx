@@ -28,10 +28,10 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
+        <Button variant="ghost" className="flex items-center gap-2 hover:bg-transparent">
           <Avatar className="h-8 w-8">
-            <AvatarFallback>
-              {getInitials(user?.name || "")}
+            <AvatarFallback className="bg-gray-200">
+              {getInitials(user?.name || "U")}
             </AvatarFallback>
           </Avatar>
           <span className="text-sm hidden md:inline-block">
