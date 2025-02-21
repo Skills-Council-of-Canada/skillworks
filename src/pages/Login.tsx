@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { AuthForm } from "@/components/auth/AuthForm";
+import AuthForm from "@/components/auth/AuthForm";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
 
