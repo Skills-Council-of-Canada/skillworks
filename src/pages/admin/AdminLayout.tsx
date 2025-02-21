@@ -6,6 +6,7 @@ import { AdminHeader } from "@/components/admin/layout/AdminHeader";
 import { AdminFooter } from "@/components/admin/layout/AdminFooter";
 import { AdminNavigation } from "@/components/admin/layout/AdminNavigation";
 import { Toaster } from "@/components/ui/toaster";
+import AdminDashboard from "./AdminDashboard";
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
@@ -17,6 +18,7 @@ const AdminLayout = () => {
   const getCurrentPageTitle = () => {
     const paths = {
       "/admin": "Dashboard",
+      "/admin/dashboard": "Dashboard",
       "/admin/users": "User Management",
       "/admin/experiences": "Experience Oversight",
       "/admin/projects": "Project Management",
@@ -26,6 +28,9 @@ const AdminLayout = () => {
     
     return paths[location.pathname] || "Dashboard";
   };
+
+  // Determine if we should show the dashboard
+  const showDashboard = location.pathname === "/admin" || location.pathname === "/admin/dashboard";
 
   return (
     <SidebarProvider defaultOpen>
@@ -38,7 +43,7 @@ const AdminLayout = () => {
           <AdminHeader pageTitle={getCurrentPageTitle()} />
           
           <main className="flex-1 p-4 sm:p-6 overflow-auto">
-            <Outlet />
+            {showDashboard ? <AdminDashboard /> : <Outlet />}
           </main>
 
           <AdminFooter />
