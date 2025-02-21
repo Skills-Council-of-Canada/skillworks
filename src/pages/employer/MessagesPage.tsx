@@ -1,3 +1,4 @@
+
 import { BellDot, MoreVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
@@ -27,17 +28,17 @@ const MessagesPage = () => {
       {/* Left Panel - Chat List */}
       <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold">Conversations</h3>
+          <h3 className="font-semibold text-foreground">Conversations</h3>
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className="h-4 w-4 text-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-50" style={{ backgroundColor: 'white', backdropFilter: 'none' }}>
-                <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-accent text-foreground">Pin Chat</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-accent text-foreground">Mute Notifications</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
               </DropdownMenuContent>
@@ -45,7 +46,7 @@ const MessagesPage = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
-                  <BellDot className="h-5 w-5" />
+                  <BellDot className="h-5 w-5 text-foreground" />
                   {hasNewRequests && (
                     <Badge 
                       variant="destructive" 
@@ -61,10 +62,10 @@ const MessagesPage = () => {
                 align="end"
                 sideOffset={5}
               >
-                <div className="p-4 border-b bg-background">
-                  <h4 className="font-semibold">Chat Requests</h4>
+                <div className="p-4 border-b">
+                  <h4 className="font-semibold text-foreground">Chat Requests</h4>
                 </div>
-                <ScrollArea className="h-[300px] bg-background">
+                <ScrollArea className="h-[300px]">
                   <div className="p-4 space-y-4">
                     <RequestItem
                       name="Jane Smith"
@@ -85,7 +86,7 @@ const MessagesPage = () => {
         <ConversationList />
       </div>
 
-      <Separator orientation="vertical" />
+      <Separator orientation="vertical" className="bg-border" />
 
       {/* Right Panel - Chat Window */}
       <div className="flex-1 bg-background border rounded-lg overflow-hidden">
@@ -105,13 +106,13 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
     <div className="border rounded-lg p-3 space-y-2 bg-background">
       <div>
-        <h4 className="font-semibold text-sm">{name}</h4>
-        <p className="text-sm text-muted-foreground">{message}</p>
-        <span className="text-xs text-muted-foreground">{timestamp}</span>
+        <h4 className="font-semibold text-sm text-foreground">{name}</h4>
+        <p className="text-sm text-foreground/80">{message}</p>
+        <span className="text-xs text-foreground/70">{timestamp}</span>
       </div>
       <div className="flex gap-2">
         <Button size="sm" className="w-full">Accept</Button>
-        <Button size="sm" variant="outline" className="w-full">Decline</Button>
+        <Button size="sm" variant="outline" className="w-full text-foreground">Decline</Button>
       </div>
     </div>
   );

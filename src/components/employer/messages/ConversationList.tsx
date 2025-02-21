@@ -59,18 +59,18 @@ export const ConversationList = () => {
           onClick={() => handleSelectConversation(conversation.id)}
         >
           <CardContent className="flex items-start gap-4 p-4">
-            <MessageCircle className="h-8 w-8 text-muted-foreground mt-1" />
+            <MessageCircle className="h-8 w-8 text-foreground mt-1" />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold">{conversation.applicantName}</h3>
-                <span className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-foreground">{conversation.applicantName}</h3>
+                <span className="text-sm text-foreground/70">
                   {conversation.timestamp.toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground/80">
                 Re: {conversation.projectTitle}
               </p>
-              <p className="text-sm mt-1">{conversation.lastMessage}</p>
+              <p className="text-sm mt-1 text-foreground/90">{conversation.lastMessage}</p>
               {conversation.unread && (
                 <Badge variant="default" className="mt-2">
                   New
