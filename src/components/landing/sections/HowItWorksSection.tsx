@@ -42,15 +42,15 @@ export const HowItWorksSection = () => {
         <div className="flex flex-col space-y-6 mb-20">
           {steps.map((step, index) => (
             <div key={index} className="relative">
-              <div className="flex items-start space-x-4 p-6 rounded-lg border border-primary/10 hover:shadow-lg transition-shadow">
-                <div className="bg-primary/5 p-4 rounded-2xl shrink-0">
-                  <step.icon className="w-8 h-8 text-primary" />
+              <div className="flex items-start space-x-4 p-6 rounded-lg bg-[#1A1F2C] hover:bg-[#1A1F2C]/90 transition-colors">
+                <div className="bg-white/10 p-4 rounded-2xl shrink-0">
+                  <step.icon className="w-8 h-8 text-white" />
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-white">
                     {step.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-white/90 leading-relaxed">
                     {step.description}
                   </p>
                 </div>

@@ -39,9 +39,9 @@ export const HowItWorksSection = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="flex items-start space-x-4 p-6 rounded-lg bg-white/5"
+              className="flex items-start space-x-4 p-6 rounded-lg bg-[#1A1F2C] hover:bg-[#1A1F2C]/90 transition-colors"
             >
-              <div className="shrink-0">
+              <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
                 {step.icon}
               </div>
               <div>
