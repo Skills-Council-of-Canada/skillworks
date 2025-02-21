@@ -1,4 +1,3 @@
-
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -52,7 +51,6 @@ const ParticipantLayout = () => {
     }
   };
 
-  // If no user is found, redirect to login
   if (!user) {
     navigate("/login");
     return null;
@@ -60,7 +58,6 @@ const ParticipantLayout = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -68,7 +65,6 @@ const ParticipantLayout = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform 
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
@@ -121,9 +117,7 @@ const ParticipantLayout = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Header */}
         <header className="h-16 border-b bg-white flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Button
@@ -142,16 +136,12 @@ const ParticipantLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="relative bg-white text-[#1A1F2C] hover:bg-white"
-            >
-              <Bell className="h-5 w-5" />
+            <div className="relative inline-flex items-center justify-center w-10 h-10">
+              <Bell className="h-5 w-5 text-[#1A1F2C]" />
               <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
                 3
               </span>
-            </Button>
+            </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -190,7 +180,6 @@ const ParticipantLayout = () => {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 overflow-auto bg-gray-50 p-4 sm:p-6">
           <Outlet />
         </main>
