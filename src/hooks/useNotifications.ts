@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-interface Notification {
+type Notification = {
   id: string;
   title: string;
   content: string;
@@ -16,7 +16,7 @@ interface Notification {
   action_url?: string;
   action_text?: string;
   metadata: Record<string, any>;
-}
+};
 
 type DatabaseNotification = {
   id: string;
@@ -42,26 +42,26 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications', filters],
     queryFn: async () => {
-      let baseQuery = supabase
+      let query = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
       if (filters?.category) {
-        baseQuery = baseQuery.eq('type', filters.category);
+        query = query.eq('type', filters.category);
       }
       if (filters?.priority) {
-        baseQuery = baseQuery.eq('priority', filters.priority);
+        query = query.eq('priority', filters.priority);
       }
       if (filters?.is_read !== undefined) {
-        baseQuery = baseQuery.eq('read', filters.is_read);
+        query = query.eq('read', filters.is_read);
       }
 
-      const { data, error } = await baseQuery;
+      const { data, error } = await query;
       if (error) throw error;
       
-      return (data as DatabaseNotification[]).map(n => ({
+      return (data ?? []).map((n: DatabaseNotification) => ({
         id: n.id,
         title: n.title,
         content: n.message || '',

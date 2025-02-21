@@ -88,7 +88,7 @@ export default function NotificationsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-11 rounded-md border p-1">
+        <TabsList className="grid w-full grid-cols-2 h-11 rounded-md border-[0.5px] p-1">
           <TabsTrigger value="notifications" className="rounded text-sm">Notifications</TabsTrigger>
           <TabsTrigger value="settings" className="rounded text-sm">Settings</TabsTrigger>
         </TabsList>
@@ -104,9 +104,7 @@ export default function NotificationsPage() {
                 return (
                   <Card
                     key={notification.id}
-                    className={`p-4 hover:bg-accent/50 transition-colors ${
-                      !notification.is_read ? 'bg-blue-50/5' : ''
-                    }`}
+                    className="p-4 hover:bg-accent/50 transition-colors border-[0.5px]"
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 mt-1">
@@ -125,7 +123,7 @@ export default function NotificationsPage() {
                           </Badge>
                           <Badge 
                             variant="outline"
-                            className={`text-xs ${priorityColors[notification.priority]}`}
+                            className={`text-xs ${priorityColors[notification.priority]} border-[0.5px]`}
                           >
                             {notification.priority}
                           </Badge>
