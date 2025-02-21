@@ -14,8 +14,6 @@ interface AuthFormProps {
   gradient: string;
   isLoading: boolean;
   onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
-  portal?: string;
-  onBack?: () => void;
 }
 
 const AuthForm = ({
@@ -24,7 +22,6 @@ const AuthForm = ({
   gradient,
   isLoading,
   onSubmit,
-  onBack,
 }: AuthFormProps) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -50,16 +47,6 @@ const AuthForm = ({
 
   return (
     <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
-      {onBack && (
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={onBack}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-      )}
       <div className="text-center">
         <div className="flex flex-col items-center gap-4">
           <Icon className="h-16 w-16 text-primary" />

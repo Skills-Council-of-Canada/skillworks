@@ -2,9 +2,6 @@
 import AuthForm from "@/components/auth/AuthForm";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { useState } from "react";
-import { UserRole } from "@/types/auth";
-import { Building2 } from "lucide-react";
-import { portals } from "@/components/auth/PortalSelection";
 
 const Login = () => {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
@@ -22,16 +19,9 @@ const Login = () => {
         backgroundBlendMode: 'multiply'
       }}>
       {selectedPortal ? (
-        <AuthForm
-          icon={portals.find(p => p.id === selectedPortal)?.icon || Building2}
-          title={portals.find(p => p.id === selectedPortal)?.title || ""}
-          gradient=""
-          isLoading={false}
-          onSubmit={async () => {}}
-          onBack={() => setSelectedPortal(null)}
-        />
+        <AuthForm portal={selectedPortal} onBack={() => setSelectedPortal(null)} />
       ) : (
-        <PortalSelection onPortalSelect={(portalId, role) => setSelectedPortal(portalId)} />
+        <PortalSelection onSelect={setSelectedPortal} />
       )}
     </div>
   );
