@@ -103,7 +103,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="flex items-center gap-2 pointer-events-auto"
+                  className="flex items-center gap-2 pointer-events-auto hover:bg-transparent focus:bg-transparent active:bg-transparent"
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#1A1F2C] text-white">
@@ -116,16 +116,20 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent 
+                align="end" 
+                className="w-56 shadow-none hover:bg-transparent focus:bg-transparent"
+              >
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/settings')}
+                  className="hover:bg-transparent focus:bg-transparent cursor-pointer"
                 >
                   <User className="mr-2 h-4 w-4" />
                   Profile Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  className="text-red-500 focus:text-red-500"
+                  className="text-red-500 focus:text-red-500 hover:bg-transparent focus:bg-transparent cursor-pointer"
                   onClick={() => {
                     logout();
                     navigate('/login');
