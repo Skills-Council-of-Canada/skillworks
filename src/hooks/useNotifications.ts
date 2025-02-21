@@ -20,21 +20,7 @@ interface DatabaseNotification {
   experience_id?: string;
 }
 
-export interface Notification {
-  id: string;
-  title: string;
-  content: string;
-  category: NotificationCategory;
-  priority: NotificationPriority;
-  is_read: boolean;
-  is_archived: boolean;
-  created_at: string;
-  action_url?: string;
-  action_text?: string;
-  metadata: Record<string, unknown>;
-}
-
-interface NotificationFilters {
+export interface NotificationFilters {
   category?: NotificationCategory;
   priority?: NotificationPriority;
   is_read?: boolean;
@@ -45,17 +31,15 @@ const isValidNotificationCategory = (type: string): type is NotificationCategory
           'review_reminder', 'message_alert', 'milestone_alert', 'system'].includes(type);
 };
 
-type SimpleQueryKey = ['notifications', { 
-  filters: string 
-}];
-
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const queryKey = ['notifications', filters?.category, filters?.priority, filters?.is_read];
+
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', { filters: JSON.stringify(filters) }] as SimpleQueryKey,
+    queryKey,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -76,17 +60,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
       const { data, error } = await query;
       if (error) throw error;
 
-      return (data || []).map((n: DatabaseNotification) => ({
-        id: n.id,
-        title: n.title,
-        content: n.message || '',
-        category: isValidNotificationCategory(n.type) ? n.type : 'system',
-        priority: 'general' as NotificationPriority,
-        is_read: n.read,
-        is_archived: false,
-        created_at: n.created_at,
-        metadata: {}
-      }));
+      return data || [];
     },
     enabled: !!user?.id,
   });

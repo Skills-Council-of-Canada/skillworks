@@ -38,7 +38,6 @@ interface Activity {
 }
 
 const TasksActivities = () => {
-  // Fetch tasks
   const { data: tasks, isLoading: isLoadingTasks } = useQuery({
     queryKey: ['educator-tasks'],
     queryFn: async () => {
@@ -52,7 +51,6 @@ const TasksActivities = () => {
     }
   });
 
-  // Fetch activities
   const { data: activities, isLoading: isLoadingActivities } = useQuery({
     queryKey: ['educator-activities'],
     queryFn: async () => {
@@ -70,85 +68,72 @@ const TasksActivities = () => {
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'high':
-        return 'text-red-500 bg-red-100';
+        return 'text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/50';
       case 'medium':
-        return 'text-yellow-500 bg-yellow-100';
+        return 'text-yellow-700 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/50';
       case 'low':
-        return 'text-green-500 bg-green-100';
+        return 'text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/50';
       default:
-        return 'text-gray-500 bg-gray-100';
+        return 'text-gray-700 bg-gray-100 dark:text-gray-300 dark:bg-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
-        return 'bg-green-500';
+        return 'bg-green-600 text-white dark:bg-green-500';
       case 'in_progress':
-        return 'bg-blue-500';
+        return 'bg-blue-600 text-white dark:bg-blue-500';
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-yellow-600 text-white dark:bg-yellow-500';
       default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const getActivityIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'task':
-        return <List className="h-4 w-4" />;
-      case 'deadline':
-        return <Clock className="h-4 w-4" />;
-      case 'completion':
-        return <CheckCircle2 className="h-4 w-4" />;
-      default:
-        return <Calendar className="h-4 w-4" />;
+        return 'bg-gray-600 text-white dark:bg-gray-500';
     }
   };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Tasks & Activities</h1>
-        <Button>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Tasks & Activities</h1>
+        <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="h-4 w-4 mr-2" />
           New Task
         </Button>
       </div>
 
       <Tabs defaultValue="tasks" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="tasks">Tasks</TabsTrigger>
-          <TabsTrigger value="activities">Recent Activities</TabsTrigger>
+        <TabsList className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+          <TabsTrigger value="tasks" className="text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Tasks</TabsTrigger>
+          <TabsTrigger value="activities" className="text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Recent Activities</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tasks" className="space-y-6">
-          <Card>
+          <Card className="bg-white dark:bg-gray-800">
             <CardHeader>
-              <CardTitle>Current Tasks</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">Current Tasks</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoadingTasks ? (
-                <div className="text-center py-4">Loading tasks...</div>
+                <div className="text-center py-4 text-gray-600 dark:text-gray-400">Loading tasks...</div>
               ) : !tasks?.length ? (
-                <div className="text-center py-4 text-muted-foreground">
+                <div className="text-center py-4 text-gray-600 dark:text-gray-400">
                   No tasks found
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Due Date</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead className="text-gray-900 dark:text-white">Title</TableHead>
+                      <TableHead className="text-gray-900 dark:text-white">Due Date</TableHead>
+                      <TableHead className="text-gray-900 dark:text-white">Priority</TableHead>
+                      <TableHead className="text-gray-900 dark:text-white">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {tasks.map((task) => (
                       <TableRow key={task.id}>
-                        <TableCell className="font-medium">{task.title}</TableCell>
-                        <TableCell>
+                        <TableCell className="text-gray-900 dark:text-white font-medium">{task.title}</TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300">
                           {task.due_date ? format(new Date(task.due_date), 'PP') : 'No due date'}
                         </TableCell>
                         <TableCell>
@@ -157,7 +142,7 @@ const TasksActivities = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="default" className={getStatusColor(task.status)}>
+                          <Badge className={getStatusColor(task.status)}>
                             {task.status}
                           </Badge>
                         </TableCell>
@@ -171,15 +156,15 @@ const TasksActivities = () => {
         </TabsContent>
 
         <TabsContent value="activities" className="space-y-4">
-          <Card>
+          <Card className="bg-white dark:bg-gray-800">
             <CardHeader>
-              <CardTitle>Recent Activities</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">Recent Activities</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoadingActivities ? (
-                <div className="text-center py-4">Loading activities...</div>
+                <div className="text-center py-4 text-gray-600 dark:text-gray-400">Loading activities...</div>
               ) : !activities?.length ? (
-                <div className="text-center py-4 text-muted-foreground">
+                <div className="text-center py-4 text-gray-600 dark:text-gray-400">
                   No recent activities
                 </div>
               ) : (
@@ -187,17 +172,20 @@ const TasksActivities = () => {
                   {activities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex items-start space-x-4 p-4 rounded-lg border bg-card text-card-foreground shadow-sm"
+                      className="flex items-start space-x-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
                     >
-                      <div className="p-2 rounded-full bg-primary/10 text-primary">
-                        {getActivityIcon(activity.type)}
+                      <div className="p-2 rounded-full bg-primary/10 text-primary dark:text-primary-foreground">
+                        {activity.type === 'task' && <List className="h-4 w-4" />}
+                        {activity.type === 'deadline' && <Clock className="h-4 w-4" />}
+                        {activity.type === 'completion' && <CheckCircle2 className="h-4 w-4" />}
+                        {activity.type === 'other' && <Calendar className="h-4 w-4" />}
                       </div>
                       <div className="flex-1 space-y-1">
-                        <p className="font-medium">{activity.title}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium text-gray-900 dark:text-white">{activity.title}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           {activity.message}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
                           {format(new Date(activity.created_at), 'PPp')}
                         </p>
                       </div>
