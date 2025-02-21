@@ -7,7 +7,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <main className="flex-grow flex items-start justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 pt-24">
         <div className="w-full max-w-md mx-auto">
           <AuthForm 
             onBack={() => {}} 
