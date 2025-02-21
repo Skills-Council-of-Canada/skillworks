@@ -103,22 +103,21 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="flex items-center gap-2 hover:bg-transparent"
+                  className="flex items-center gap-2 pointer-events-auto"
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#1A1F2C] text-white">
                       {getInitials(user?.name || "A")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">
+                  <span className="text-sm select-none">
                     {user?.name || user?.email}
                   </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem 
-                  className="hover:bg-gray-100"
                   onClick={() => navigate('/admin/settings')}
                 >
                   <User className="mr-2 h-4 w-4" />
@@ -126,7 +125,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  className="text-red-500 hover:bg-gray-100 focus:text-red-500"
+                  className="text-red-500 focus:text-red-500"
                   onClick={() => {
                     logout();
                     navigate('/login');
