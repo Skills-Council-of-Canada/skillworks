@@ -119,8 +119,8 @@ const ParticipantLanding = () => {
             </div>
             <div className="hidden md:block">
               <img
-                src="/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png"
-                alt="Construction workers in safety gear reviewing project plans"
+                src="/lovable-uploads/d1c9ee85-c87d-4832-8d5d-1044f3b08ac1.png"
+                alt="Professional looking towards success with planning ideas"
                 className="rounded-lg shadow-xl object-cover w-full h-[400px]"
               />
             </div>
