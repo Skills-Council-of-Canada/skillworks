@@ -25,10 +25,10 @@ const QuickStatCard = ({
         <Icon className="h-6 w-6 text-primary" />
       </div>
       <div>
-        <p className="text-sm font-medium text-muted-foreground">{title}</p>
-        <h3 className="text-2xl font-bold">{value}</h3>
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <h3 className="text-2xl font-bold text-foreground">{value}</h3>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-sm text-foreground/80 mt-1">{description}</p>
         )}
       </div>
     </div>
@@ -72,7 +72,7 @@ const EmployerDashboard = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-foreground">Loading...</div>;
   }
 
   return (
@@ -125,17 +125,17 @@ const EmployerDashboard = () => {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">Recent Activity</h3>
+          <h3 className="font-semibold mb-4 text-foreground">Recent Activity</h3>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/80">
               No recent activity to display.
             </p>
           </div>
         </Card>
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">Upcoming Deadlines</h3>
+          <h3 className="font-semibold mb-4 text-foreground">Upcoming Deadlines</h3>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/80">
               No upcoming deadlines to display.
             </p>
           </div>
