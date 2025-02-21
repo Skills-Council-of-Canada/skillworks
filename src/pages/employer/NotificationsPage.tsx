@@ -56,8 +56,8 @@ export default function NotificationsPage() {
     return (
       <div className="container max-w-4xl mx-auto py-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
-          <Bell className="h-5 w-5 text-foreground" />
-          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
+          <Bell className="h-5 w-5" />
+          <h1 className="text-2xl font-semibold">Notifications</h1>
         </div>
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} className="w-full h-24" />
@@ -70,8 +70,8 @@ export default function NotificationsPage() {
     <div className="container max-w-4xl mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-foreground" />
-          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
+          <Bell className="h-5 w-5" />
+          <h1 className="text-2xl font-semibold">Notifications</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -118,7 +118,7 @@ export default function NotificationsPage() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 mt-1">
-                        <Icon className={`h-4 w-4 ${!notification.is_read ? 'text-blue-500' : 'text-muted-foreground'}`} />
+                        <Icon className={`h-4 w-4 ${!notification.is_read ? 'text-primary' : 'text-muted-foreground'}`} />
                       </div>
                       <div className="flex-grow min-w-0">
                         <h3 className="font-medium text-sm text-foreground truncate">
@@ -133,7 +133,7 @@ export default function NotificationsPage() {
                           </Badge>
                           <Badge 
                             variant="outline"
-                            className={`text-xs ${priorityColors[notification.priority]} border-[0.5px]`}
+                            className={`text-xs ${priorityColors[notification.priority]}`}
                           >
                             {notification.priority}
                           </Badge>
