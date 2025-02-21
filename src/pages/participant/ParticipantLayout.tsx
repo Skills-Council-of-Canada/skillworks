@@ -1,3 +1,4 @@
+
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -145,7 +146,7 @@ const ParticipantLayout = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 hover:bg-transparent">
+                <div className="flex items-center gap-2 cursor-pointer">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#1A1F2C] text-white">
                       {getInitials(user?.name || "")}
@@ -155,7 +156,7 @@ const ParticipantLayout = () => {
                     {user?.name}
                   </span>
                   <ChevronDown className="h-4 w-4" />
-                </Button>
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                 <Link to="/participant/profile">
