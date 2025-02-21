@@ -1,10 +1,73 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
+import { 
+  ArrowRight, 
+  Home,
+  Briefcase,
+  Users,
+  Globe2,
+  Building2,
+  Network,
+  UserPlus,
+  Search,
+  Laptop,
+  Trophy
+} from "lucide-react";
 
 const ParticipantLanding = () => {
   const navigate = useNavigate();
+
+  const benefits = [
+    {
+      icon: <Briefcase className="h-12 w-12 text-primary mx-auto" />,
+      title: "Gain Real-World Experience",
+      description: "Work on live projects from employers in your industry"
+    },
+    {
+      icon: <Trophy className="h-12 w-12 text-primary mx-auto" />,
+      title: "Showcase Your Skills",
+      description: "Build a portfolio that stands out to future employers"
+    },
+    {
+      icon: <Globe2 className="h-12 w-12 text-primary mx-auto" />,
+      title: "Flexible & Remote Opportunities",
+      description: "Work from anywhere on your schedule"
+    },
+    {
+      icon: <Building2 className="h-12 w-12 text-primary mx-auto" />,
+      title: "Direct Access to Hiring Employers",
+      description: "Get noticed by companies looking for fresh talent"
+    },
+    {
+      icon: <Network className="h-12 w-12 text-primary mx-auto" />,
+      title: "Build Your Network & Get Mentorship",
+      description: "Connect with professionals in your field"
+    }
+  ];
+
+  const steps = [
+    {
+      icon: <UserPlus className="h-8 w-8 text-white" />,
+      title: "Create Your Profile",
+      description: "Highlight your skills, interests, and career goals"
+    },
+    {
+      icon: <Search className="h-8 w-8 text-white" />,
+      title: "Find & Apply for Projects",
+      description: "Choose projects that match your aspirations"
+    },
+    {
+      icon: <Laptop className="h-8 w-8 text-white" />,
+      title: "Work & Learn",
+      description: "Gain hands-on experience while collaborating with employers"
+    },
+    {
+      icon: <Trophy className="h-8 w-8 text-white" />,
+      title: "Get Recognized & Hired",
+      description: "Receive feedback, build a strong portfolio, and land your next job"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -65,40 +128,58 @@ const ParticipantLanding = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Benefits Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-3xl font-bold text-center text-secondary mb-12">
-            Why Choose Our Participant Portal?
+            Supporting Benefits
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 space-y-4 text-center">
-              <Briefcase className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Career Growth
-              </h3>
-              <p className="text-secondary/60">
-                Access training and job opportunities in your chosen trade
-              </p>
-            </div>
-            <div className="p-6 space-y-4 text-center">
-              <Users className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Industry Connections
-              </h3>
-              <p className="text-secondary/60">
-                Connect with employers and educational institutions
-              </p>
-            </div>
-            <div className="p-6 space-y-4 text-center">
-              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold text-secondary">
-                Skill Development
-              </h3>
-              <p className="text-secondary/60">
-                Track your progress and earn certifications
-              </p>
-            </div>
+            {benefits.map((benefit, index) => (
+              <div key={index} className="p-6 space-y-4 text-center">
+                {benefit.icon}
+                <h3 className="text-xl font-semibold text-secondary">
+                  {benefit.title}
+                </h3>
+                <p className="text-secondary/60">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-12 px-4 bg-primary">
+        <div className="container mx-auto max-w-3xl">
+          <h2 className="text-3xl font-bold text-center text-white mb-8">
+            How It Works
+          </h2>
+          <div className="flex flex-col space-y-4 mb-8">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="flex items-start space-x-4 p-6 rounded-lg bg-[#1A1F2C] hover:bg-[#1A1F2C]/90 transition-colors"
+              >
+                <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+                  {step.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
+                  <p className="text-white/90">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button
+              onClick={() => navigate("/participant/registration")}
+              size="lg"
+              className="bg-[#8B0000] hover:bg-[#8B0000]/90 text-white gap-2"
+            >
+              Join Now – It's Free! <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
