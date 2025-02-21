@@ -47,7 +47,7 @@ export const BenefitsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">The Benefits Of this Platform</h2>
-          <p className="text-xl text-gray-600">What Makes Our Platform Stand Out</p>
+          <p className="text-xl text-gray-600">An ecosystem that brings together real change for opportunity</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
