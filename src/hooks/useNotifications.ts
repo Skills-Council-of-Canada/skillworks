@@ -50,7 +50,13 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const queryKey = ['notifications', filters?.category, filters?.priority, filters?.is_read] as const;
+  // Fix for TypeScript error by explicitly typing the query key
+  const queryKey = ['notifications', 
+    { category: filters?.category, 
+      priority: filters?.priority, 
+      is_read: filters?.is_read 
+    }
+  ] as const;
 
   const { data: notifications, isLoading } = useQuery({
     queryKey,
