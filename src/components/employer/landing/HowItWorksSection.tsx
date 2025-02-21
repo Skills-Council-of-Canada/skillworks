@@ -39,11 +39,15 @@ export const HowItWorksSection = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg bg-white/5"
+              className="flex items-start space-x-4 p-6 rounded-lg bg-white/5"
             >
-              {step.icon}
-              <h3 className="text-xl font-semibold text-white">{step.title}</h3>
-              <p className="text-white/90">{step.description}</p>
+              <div className="shrink-0">
+                {step.icon}
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
+                <p className="text-white/90">{step.description}</p>
+              </div>
             </div>
           ))}
         </div>
