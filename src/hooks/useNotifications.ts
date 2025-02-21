@@ -18,11 +18,13 @@ interface Notification {
   metadata: Record<string, any>;
 }
 
-export const useNotifications = (filters?: {
+type NotificationFilters = {
   category?: string;
   priority?: string;
   is_read?: boolean;
-}) => {
+};
+
+export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -43,12 +45,22 @@ export const useNotifications = (filters?: {
         query = query.eq('priority', filters.priority);
       }
       if (filters?.is_read !== undefined) {
-        query = query.eq('is_read', filters.is_read);
+        query = query.eq('read', filters.is_read);
       }
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as unknown as Notification[];
+      
+      // Transform the data to match our Notification interface
+      return (data || []).map(n => ({
+        ...n,
+        is_read: n.read || false,
+        is_archived: false, // Default value since it's not in the DB yet
+        content: n.message || '',
+        category: n.type as Notification['category'],
+        priority: 'general' as const, // Default value since it's not in the DB yet
+        metadata: {} // Default value since it's not in the DB yet
+      }));
     },
     enabled: !!user?.id,
   });
@@ -57,7 +69,7 @@ export const useNotifications = (filters?: {
     mutationFn: async (notificationIds: string[]) => {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true })
+        .update({ read: true })
         .in('id', notificationIds)
         .eq('user_id', user?.id);
       if (error) throw error;
