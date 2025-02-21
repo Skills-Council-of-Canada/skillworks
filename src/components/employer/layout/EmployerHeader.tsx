@@ -88,8 +88,8 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               className="flex items-center gap-2 text-foreground hover:text-foreground focus:text-foreground"
               style={{ backgroundColor: 'transparent' }}
             >
-              <Avatar className="h-8 w-8">
-                <AvatarFallback>
+              <Avatar className="h-8 w-8 bg-primary">
+                <AvatarFallback className="bg-primary text-primary-foreground">
                   {getInitials(user?.name || "")}
                 </AvatarFallback>
               </Avatar>
