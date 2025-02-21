@@ -111,4 +111,3 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
     </header>
   );
 };
-
