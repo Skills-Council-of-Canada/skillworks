@@ -32,20 +32,34 @@ const MessagesPage = () => {
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
                   <MoreVertical className="h-4 w-4 text-foreground" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="z-50" style={{ backgroundColor: 'white', backdropFilter: 'none' }}>
-                <DropdownMenuItem className="focus:bg-accent text-foreground">Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-accent text-foreground">Mute Notifications</DropdownMenuItem>
+              <DropdownMenuContent align="end" className="z-50 bg-background">
+                <DropdownMenuItem className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-foreground">
+                  Pin Chat
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-foreground">
+                  Mute Notifications
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer">
+                  Delete Chat
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
                   <BellDot className="h-5 w-5 text-foreground" />
                   {hasNewRequests && (
                     <Badge 
@@ -104,15 +118,26 @@ interface RequestItemProps {
 
 const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
-    <div className="border rounded-lg p-3 space-y-2 bg-background">
+    <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent transition-colors">
       <div>
         <h4 className="font-semibold text-sm text-foreground">{name}</h4>
         <p className="text-sm text-foreground/80">{message}</p>
         <span className="text-xs text-foreground/70">{timestamp}</span>
       </div>
       <div className="flex gap-2">
-        <Button size="sm" className="w-full">Accept</Button>
-        <Button size="sm" variant="outline" className="w-full text-foreground">Decline</Button>
+        <Button 
+          size="sm" 
+          className="w-full hover:bg-primary/90 transition-colors"
+        >
+          Accept
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="w-full text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
+          Decline
+        </Button>
       </div>
     </div>
   );

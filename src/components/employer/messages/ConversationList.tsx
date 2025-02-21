@@ -48,29 +48,34 @@ export const ConversationList = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4">
       {conversations.map((conversation) => (
         <Card
           key={conversation.id}
           className={cn(
-            "cursor-pointer hover:bg-accent transition-colors",
+            "cursor-pointer transition-colors",
+            "hover:bg-accent hover:shadow-md",
             conversation.unread && "border-primary"
           )}
           onClick={() => handleSelectConversation(conversation.id)}
         >
           <CardContent className="flex items-start gap-4 p-4">
-            <MessageCircle className="h-8 w-8 text-foreground mt-1" />
+            <MessageCircle className="h-8 w-8 text-primary mt-1" />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-foreground">{conversation.applicantName}</h3>
-                <span className="text-sm text-foreground/70">
+                <h3 className="font-semibold text-foreground group-hover:text-accent-foreground">
+                  {conversation.applicantName}
+                </h3>
+                <span className="text-sm text-foreground/70 group-hover:text-accent-foreground/70">
                   {conversation.timestamp.toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-sm text-foreground/80">
+              <p className="text-sm text-foreground/80 group-hover:text-accent-foreground/80">
                 Re: {conversation.projectTitle}
               </p>
-              <p className="text-sm mt-1 text-foreground/90">{conversation.lastMessage}</p>
+              <p className="text-sm mt-1 text-foreground/90 group-hover:text-accent-foreground/90">
+                {conversation.lastMessage}
+              </p>
               {conversation.unread && (
                 <Badge variant="default" className="mt-2">
                   New
