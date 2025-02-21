@@ -20,7 +20,7 @@ export const HowItWorksSection = () => {
     {
       icon: Users,
       title: "Students Work, Learn, and Collaborate",
-      description: "They gain real-world experience and while supporting employers."
+      description: "They gain real-world experience, while also supporting employers requirements."
     },
     {
       icon: GraduationCap,
