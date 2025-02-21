@@ -92,15 +92,15 @@ export const useAuthState = () => {
             if (isRoleRestrictedRoute(location.pathname, profile.role)) {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Unauthorized role access, redirecting to:", redirectPath);
-              navigate(redirectPath, { replace: true });
+              navigate(redirectPath);
               return;
             }
 
-            // If on public route and authenticated, redirect to role-based dashboard
-            if (isPublicRoute(location.pathname)) {
+            // If on login, root, or other public routes and authenticated, redirect to role-based dashboard
+            if (location.pathname === '/login' || location.pathname === '/' || isPublicRoute(location.pathname)) {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Public route with auth, redirecting to:", redirectPath);
-              navigate(redirectPath, { replace: true });
+              navigate(redirectPath);
             }
           } else {
             console.log("No profile found for user");
@@ -136,7 +136,7 @@ export const useAuthState = () => {
             setUser(null);
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
-              navigate('/login', { state: { from: location } });
+              navigate('/login');
             }
             return;
           }
@@ -146,11 +146,9 @@ export const useAuthState = () => {
               const profile = await getUserProfile(session);
               if (mounted && profile) {
                 setUser(profile);
-                if (isPublicRoute(location.pathname)) {
-                  const redirectPath = getRoleBasedRedirect(profile.role);
-                  console.log("Redirecting after sign in to:", redirectPath);
-                  navigate(redirectPath, { replace: true });
-                }
+                const redirectPath = getRoleBasedRedirect(profile.role);
+                console.log("Redirecting after sign in to:", redirectPath);
+                navigate(redirectPath);
               }
             } catch (error) {
               console.error("Error after sign in:", error);
@@ -160,9 +158,7 @@ export const useAuthState = () => {
                 variant: "destructive",
               });
               setUser(null);
-              if (!isPublicRoute(location.pathname)) {
-                navigate('/login', { state: { from: location } });
-              }
+              navigate('/login');
             } finally {
               if (mounted) {
                 setIsLoading(false);
