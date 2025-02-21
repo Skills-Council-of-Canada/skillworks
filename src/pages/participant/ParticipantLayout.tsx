@@ -1,5 +1,5 @@
 
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
   User, 
@@ -11,7 +11,6 @@ import {
   Calendar, 
   Settings,
   Bell,
-  Search,
   ChevronDown,
   Menu
 } from "lucide-react";
@@ -24,10 +23,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const ParticipantLayout = () => {
   const { user, logout } = useAuth();
@@ -133,12 +130,11 @@ const ParticipantLayout = () => {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <div className="hidden sm:block w-96">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search..." className="pl-8" />
-              </div>
-            </div>
+            <img 
+              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+              alt="Skill Works Logo" 
+              className="h-8"
+            />
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
