@@ -1,5 +1,6 @@
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, User, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -52,7 +53,7 @@ export const UserMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="text-red-500 hover:bg-gray-100"
-          onClick={handleLogout}
+          onClick={logout}
         >
           <LogOut className="mr-2 h-4 w-4" />
           Logout
