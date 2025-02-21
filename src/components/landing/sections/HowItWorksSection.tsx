@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { UserPlus, Search, Users, Trophy, ArrowRight } from "lucide-react";
+import { UserPlus, Search, Users, Trophy, GraduationCap, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const HowItWorksSection = () => {
@@ -21,6 +21,11 @@ export const HowItWorksSection = () => {
       icon: Users,
       title: "Work, Learn, and Collaborate",
       description: "Gain real-world experience and receive feedback."
+    },
+    {
+      icon: GraduationCap,
+      title: "Project Mentorship and Support",
+      description: "Educators support their students on real projects."
     },
     {
       icon: Trophy,
