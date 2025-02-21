@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
@@ -38,7 +39,7 @@ const EducatorLanding = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                Empowering Educators in Skilled Trades
+                Transform Learning with Real-World Projects & Employer Partnership
               </h1>
               <p className="text-lg text-white/70">
                 Connect your students with real-world industry opportunities and shape the future workforce through hands-on learning experiences.
