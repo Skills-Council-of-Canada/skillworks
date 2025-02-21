@@ -12,7 +12,7 @@ const HeroSection = () => {
         <div className="grid md:grid-cols-2 gap-8 items-center pt-16">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Connect with Skilled Trade Professionals
+              Real-World Experience. Real Opportunities. Real Impact.
             </h1>
             <p className="text-lg text-white">
               Connect with top companies, gain hands-on experience, and build your career—all in one platform.
