@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
@@ -33,14 +34,14 @@ const EducatorLanding = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 bg-gradient-to-br from-violet-50 to-indigo-50">
+      <section className="pt-32 pb-20 px-4 bg-[#1A1F2C]">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-secondary leading-tight">
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
                 Empowering Educators in Skilled Trades
               </h1>
-              <p className="text-lg text-secondary/70">
+              <p className="text-lg text-white/70">
                 Connect your students with real-world industry opportunities and shape the future workforce through hands-on learning experiences.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -55,7 +56,7 @@ const EducatorLanding = () => {
                   size="lg"
                   variant="outline"
                   onClick={() => navigate("#features")}
-                  className="border-primary text-primary hover:bg-primary/10"
+                  className="border-white text-white hover:bg-white/10"
                 >
                   Explore Features
                 </Button>
