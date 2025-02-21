@@ -74,7 +74,7 @@ export const useAuthState = () => {
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Login/root path detected, redirecting to:", redirectPath);
-              navigate(redirectPath);
+              navigate(redirectPath, { replace: true }); // Add replace: true to avoid history stack issues
             }
           } else {
             console.log("No profile found for user");
@@ -110,7 +110,7 @@ export const useAuthState = () => {
             setUser(null);
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
-              navigate('/login');
+              navigate('/login', { replace: true }); // Add replace: true
             }
             return;
           }
@@ -124,7 +124,7 @@ export const useAuthState = () => {
                 if (location.pathname === '/login' || location.pathname === '/') {
                   const redirectPath = getRoleBasedRedirect(profile.role);
                   console.log("Redirecting after sign in to:", redirectPath);
-                  navigate(redirectPath);
+                  navigate(redirectPath, { replace: true }); // Add replace: true
                 }
               }
             } catch (error) {
@@ -135,7 +135,7 @@ export const useAuthState = () => {
                 variant: "destructive",
               });
               setUser(null);
-              navigate('/login');
+              navigate('/login', { replace: true }); // Add replace: true
             } finally {
               if (mounted) {
                 setIsLoading(false);
