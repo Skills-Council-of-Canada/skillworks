@@ -88,7 +88,7 @@ const ParticipantLanding = () => {
           <div className="flex gap-4">
             <Button
               onClick={() => navigate("/participant/registration")}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-[#8B0000] hover:bg-[#8B0000]/90"
             >
               Sign Up Now
             </Button>
@@ -136,7 +136,7 @@ const ParticipantLanding = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="p-6 space-y-4 text-center">
+              <div key={index} className="p-6 space-y-4 text-center bg-[#F1F1F1] rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 {benefit.icon}
                 <h3 className="text-xl font-semibold text-secondary">
                   {benefit.title}
