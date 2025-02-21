@@ -50,8 +50,15 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Simplified query key structure to avoid infinite type instantiation
-  const queryKey = ['notifications', filters?.category || null, filters?.priority || null, filters?.is_read || null];
+  // Define the query key with explicit types
+  type NotificationQueryKey = readonly ['notifications', (NotificationCategory | null), (NotificationPriority | null), (boolean | null)];
+  
+  const queryKey: NotificationQueryKey = [
+    'notifications',
+    filters?.category || null,
+    filters?.priority || null,
+    filters?.is_read || null
+  ];
 
   const { data: notifications, isLoading } = useQuery({
     queryKey,
