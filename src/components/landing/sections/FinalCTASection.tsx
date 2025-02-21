@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const FinalCTASection = () => {
@@ -14,26 +14,15 @@ export const FinalCTASection = () => {
           Join thousands of learners, educators, and employers making real-world connections.
         </p>
         
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => navigate("/login")}
-            className="group"
-          >
-            Sign Up Now
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-          
-          <Button 
-            size="lg" 
-            variant="outline"
-            className="group border-white text-white hover:bg-white hover:text-primary"
-          >
-            Schedule a Demo
-            <CalendarDays className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        <Button 
+          size="lg" 
+          variant="secondary"
+          onClick={() => navigate("/login")}
+          className="group"
+        >
+          Sign Up Now
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Button>
       </div>
     </section>
   );
