@@ -20,7 +20,7 @@ export const QuickActionCard = ({ title, description, icon: Icon, onClick }: Qui
         <Icon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground break-normal whitespace-normal">{description}</p>
+        <p className="text-sm text-gray-700">{description}</p>
       </CardContent>
     </Card>
   );
