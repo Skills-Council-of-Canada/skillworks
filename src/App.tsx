@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -56,6 +55,7 @@ import CreateParticipantExperience from "./pages/participant/experiences/CreateP
 import ParticipantSettings from "./pages/participant/settings/ParticipantSettings";
 import Messages from "./pages/participant/Messages";
 import EducatorMessages from "./pages/educator/EducatorMessages";
+import NotificationsPage from "./pages/employer/NotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +119,7 @@ const App = () => (
             <Route path="settings" element={<ProfileSettings />} />
             <Route path="create-project" element={<CreateProject />} />
             <Route path="projects/:projectId" element={<ProjectDetails />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* Protected admin routes */}
