@@ -1,5 +1,5 @@
 
-import { Bell, ChevronDown, HelpCircle } from "lucide-react";
+import { Bell, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -62,21 +62,6 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
             </TooltipTrigger>
             <TooltipContent>
               <p>Notifications</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="text-foreground hover:text-foreground focus:text-foreground"
-              >
-                <HelpCircle className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Help & Support</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
