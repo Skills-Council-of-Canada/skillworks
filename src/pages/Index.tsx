@@ -1,12 +1,11 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, LogIn } from "lucide-react";
+import { ArrowRight, LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
-import { User } from "lucide-react";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -62,6 +61,12 @@ const Index = () => {
     }
   };
 
+  const handleBack = () => {
+    // Since this is the index page, we can either do nothing
+    // or navigate to a specific route if needed
+    console.log("Back button clicked on index page");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 space-y-8">
       <h1 className="text-4xl font-bold text-center mb-6">Welcome to TradesConnect</h1>
@@ -78,6 +83,7 @@ const Index = () => {
             gradient="bg-white"
             isLoading={isSubmitting}
             onSubmit={handleAuthSubmit}
+            onBack={handleBack}
           />
           <Button
             variant="outline"
