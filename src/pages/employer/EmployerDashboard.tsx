@@ -11,10 +11,12 @@ import { supabase } from "@/integrations/supabase/client";
 const QuickStatCard = ({
   title,
   value,
+  description,
   icon: Icon,
 }: {
   title: string;
   value: number;
+  description?: string;
   icon: React.ComponentType<{ className?: string }>;
 }) => (
   <Card className="p-6">
@@ -25,6 +27,9 @@ const QuickStatCard = ({
       <div>
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         <h3 className="text-2xl font-bold">{value}</h3>
+        {description && (
+          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        )}
       </div>
     </div>
   </Card>
@@ -52,9 +57,18 @@ const EmployerDashboard = () => {
 
   // Mock data - replace with real data later
   const stats = {
-    activeProjects: 3,
-    pendingApplications: 12,
-    totalApplicants: 45,
+    activeProjects: {
+      value: 3,
+      description: "Ongoing projects in your portfolio"
+    },
+    pendingApplications: {
+      value: 12,
+      description: "Applications awaiting review"
+    },
+    totalApplicants: {
+      value: 45,
+      description: "Total learner applications received"
+    }
   };
 
   if (isLoading) {
@@ -91,17 +105,20 @@ const EmployerDashboard = () => {
       <div className="grid gap-6 md:grid-cols-3">
         <QuickStatCard
           title="Active Projects"
-          value={stats.activeProjects}
+          value={stats.activeProjects.value}
+          description={stats.activeProjects.description}
           icon={Briefcase}
         />
         <QuickStatCard
           title="Pending Applications"
-          value={stats.pendingApplications}
+          value={stats.pendingApplications.value}
+          description={stats.pendingApplications.description}
           icon={Clock}
         />
         <QuickStatCard
           title="Total Applicants"
-          value={stats.totalApplicants}
+          value={stats.totalApplicants.value}
+          description={stats.totalApplicants.description}
           icon={Users}
         />
       </div>
