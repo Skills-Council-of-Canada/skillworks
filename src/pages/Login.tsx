@@ -2,6 +2,7 @@
 import AuthForm from "@/components/auth/AuthForm";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { useState } from "react";
+import { UserRole } from "@/types/auth";
 
 const Login = () => {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
@@ -19,9 +20,16 @@ const Login = () => {
         backgroundBlendMode: 'multiply'
       }}>
       {selectedPortal ? (
-        <AuthForm portal={selectedPortal} onBack={() => setSelectedPortal(null)} />
+        <AuthForm
+          icon={portals.find(p => p.id === selectedPortal)?.icon || Building2}
+          title={portals.find(p => p.id === selectedPortal)?.title || ""}
+          gradient=""
+          isLoading={false}
+          onSubmit={async () => {}}
+          onBack={() => setSelectedPortal(null)}
+        />
       ) : (
-        <PortalSelection onSelect={setSelectedPortal} />
+        <PortalSelection onPortalSelect={(portalId, role) => setSelectedPortal(portalId)} />
       )}
     </div>
   );
