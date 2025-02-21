@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut, Home, Link2 } from "lucide-react";
+import { LogIn, LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -20,8 +20,12 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="text-xl sm:text-2xl font-bold text-primary flex items-center gap-2">
-          Skill <Link2 className="h-5 w-5" /> Works
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+            alt="Skill Works Logo" 
+            className="h-8"
+          />
         </div>
         <div className="flex items-center gap-2">
           <Button
