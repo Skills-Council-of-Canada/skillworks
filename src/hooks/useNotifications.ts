@@ -50,18 +50,12 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Define the query key with explicit types
-  type NotificationQueryKey = readonly ['notifications', (NotificationCategory | null), (NotificationPriority | null), (boolean | null)];
-  
-  const queryKey: NotificationQueryKey = [
-    'notifications',
-    filters?.category || null,
-    filters?.priority || null,
-    filters?.is_read || null
-  ];
-
   const { data: notifications, isLoading } = useQuery({
-    queryKey,
+    queryKey: ['notifications', {
+      category: filters?.category || null,
+      priority: filters?.priority || null,
+      is_read: filters?.is_read || null
+    }] as const,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
