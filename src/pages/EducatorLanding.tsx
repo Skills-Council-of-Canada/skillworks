@@ -42,7 +42,7 @@ const EducatorLanding = () => {
                 Transform Learning with Real-World Projects & Employer Partnership
               </h1>
               <p className="text-lg text-white/70">
-                Connect your students with real-world industry opportunities and shape the future workforce through hands-on learning experiences.
+                Empower your students with hands-on, career-aligned experiences—directly integrated into your curriculum.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
