@@ -8,22 +8,23 @@ export const useAuthRedirect = () => {
   const getRoleBasedRedirect = (role: UserRole): string => {
     console.log("Getting redirect path for role:", role);
     
-    // If we have a 'from' location state, prioritize returning there
+    // If we have a 'from' location state and it matches the user's role, use that
     const state = location.state as { from?: Location };
     if (state?.from && state.from.pathname) {
-      // Verify the path matches the user's role
       const pathSegments = state.from.pathname.split('/');
       const rolePath = pathSegments[1]; // e.g., 'admin', 'employer', 'participant'
-      if (rolePath === role) {
+      
+      // Only redirect to previous location if it matches the user's role
+      if (rolePath === role || (role === 'admin' && rolePath === 'admin')) {
         console.log("Redirecting to previous location:", state.from.pathname);
         return state.from.pathname;
       }
     }
 
-    // Default role-based redirects
+    // Default role-based redirects - ensure admin goes directly to /admin
     switch (role) {
       case "admin":
-        return "/admin";
+        return "/admin"; // Direct path for admin
       case "employer":
         return "/employer/dashboard";
       case "educator":
@@ -38,4 +39,3 @@ export const useAuthRedirect = () => {
 
   return { getRoleBasedRedirect };
 };
-
