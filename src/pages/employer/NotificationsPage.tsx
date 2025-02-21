@@ -1,3 +1,4 @@
+
 import { useCallback, useState } from "react";
 import { Bell, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -102,13 +103,13 @@ export default function NotificationsPage() {
                 return (
                   <Card
                     key={notification.id}
-                    className={`p-4 hover:bg-accent/50 transition-colors ${
-                      !notification.is_read ? 'border-l-4 border-l-blue-500' : ''
+                    className={`p-4 hover:bg-accent/50 transition-colors relative ${
+                      !notification.is_read ? 'bg-blue-50/50 dark:bg-blue-950/10' : ''
                     }`}
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <Icon className="h-5 w-5" />
+                        <Icon className={`h-5 w-5 ${!notification.is_read ? 'text-blue-500' : ''}`} />
                       </div>
                       <div className="flex-grow">
                         <h3 className="font-medium">{notification.title}</h3>
