@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -54,10 +54,6 @@ const AuthForm = ({
 
       <Card className="p-6 bg-card/50 backdrop-blur-sm shadow-xl">
         <Tabs defaultValue="login" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 mb-6">
-            <TabsTrigger value="login" className="w-full">Sign In</TabsTrigger>
-          </TabsList>
-
           {error && (
             <Alert variant="destructive" className="mb-6">
               <AlertDescription>{error}</AlertDescription>
