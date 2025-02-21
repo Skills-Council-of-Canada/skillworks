@@ -1,3 +1,4 @@
+
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -35,7 +36,6 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-4 border-b border-white/10">
         <h2 className="text-xl font-bold mb-1">Admin Portal</h2>
-        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
       </div>
       <div className="p-3">
         <nav className="space-y-1">
