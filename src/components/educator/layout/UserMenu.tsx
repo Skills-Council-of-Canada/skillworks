@@ -28,34 +28,41 @@ export const UserMenu = () => {
     <div className="flex items-center gap-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 bg-transparent">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback>
+          <Button 
+            variant="ghost" 
+            className="flex items-center gap-2 text-foreground hover:text-foreground focus:text-foreground"
+            style={{ backgroundColor: 'transparent' }}
+          >
+            <Avatar className="h-8 w-8 bg-primary">
+              <AvatarFallback className="bg-primary text-primary-foreground">
                 {getInitials(user?.name || "")}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm hidden md:inline-block">
+            <span className="text-sm hidden md:inline-block font-medium">
               {user?.name}
             </span>
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-background border shadow-lg">
+        <DropdownMenuContent 
+          className="w-56 bg-white border shadow-lg" 
+          align="end"
+        >
           <DropdownMenuItem 
-            className="focus:bg-accent"
+            className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
             onClick={() => navigate('/educator/settings')}
           >
             Profile Settings
           </DropdownMenuItem>
           <DropdownMenuItem 
-            className="focus:bg-accent"
+            className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
             onClick={() => navigate('/educator/settings')}
           >
             Portal Settings
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-destructive focus:bg-accent"
+            className="text-destructive hover:bg-gray-100 focus:bg-gray-100 focus:text-destructive cursor-pointer"
             onClick={logout}
           >
             Log Out

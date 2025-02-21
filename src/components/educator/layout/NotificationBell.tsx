@@ -41,8 +41,8 @@ export const NotificationBell = () => {
       <TooltipTrigger asChild>
         <Button 
           variant="ghost" 
-          size="icon"
-          className="relative"
+          size="icon" 
+          className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
           onClick={() => navigate('/educator/notifications')}
         >
           <Bell className="h-5 w-5" />
