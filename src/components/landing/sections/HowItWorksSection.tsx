@@ -15,7 +15,7 @@ export const HowItWorksSection = () => {
     {
       icon: Search,
       title: "Find & Match with Opportunities",
-      description: "Employers post projects, educators integrate experiences, participants apply."
+      description: "Employers post projects, educators integrate experiences, students (participants) apply."
     },
     {
       icon: Users,
