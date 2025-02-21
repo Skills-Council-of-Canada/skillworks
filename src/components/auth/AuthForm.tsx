@@ -164,7 +164,7 @@ const AuthForm = ({
                   <Button
                     type="button"
                     variant="link"
-                    className="px-0 text-sm text-primary hover:text-primary/90"
+                    className="px-0 text-sm text-blue-500 hover:text-blue-600"
                     onClick={() => setIsResetMode(true)}
                   >
                     Forgot password?
