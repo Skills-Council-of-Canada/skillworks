@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,7 +11,8 @@ import {
   UserPlus,
   Search,
   Laptop,
-  Trophy
+  Trophy,
+  Link2
 } from "lucide-react";
 
 const ParticipantLanding = () => {
@@ -83,7 +83,9 @@ const ParticipantLanding = () => {
             >
               <Home className="h-5 w-5" />
             </Button>
-            <div className="text-2xl font-bold text-primary">TradesConnect - Participant Portal</div>
+            <div className="text-2xl font-bold text-primary flex items-center gap-2">
+              Skill <Link2 className="h-5 w-5" /> Works - Participant Portal
+            </div>
           </div>
           <div className="flex gap-4">
             <Button
@@ -189,7 +191,9 @@ const ParticipantLanding = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4 text-secondary">TradesConnect</h3>
+              <h3 className="font-bold text-lg mb-4 text-secondary flex items-center gap-2">
+                Skill <Link2 className="h-4 w-4" /> Works
+              </h3>
               <p className="text-secondary/60">
                 Your gateway to a successful trade career
               </p>
@@ -219,7 +223,7 @@ const ParticipantLanding = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-secondary/70">
-            <p>&copy; {new Date().getFullYear()} TradesConnect. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Skill Works. All rights reserved.</p>
           </div>
         </div>
       </footer>

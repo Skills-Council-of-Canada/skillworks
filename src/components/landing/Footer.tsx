@@ -1,11 +1,15 @@
 
+import { Link2 } from "lucide-react";
+
 export const Footer = () => {
   return (
     <footer className="bg-secondary text-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">TradesConnect</h3>
+            <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+              Skill <Link2 className="h-4 w-4" /> Works
+            </h3>
             <p className="text-white/60">
               Connecting employers with skilled trade professionals
             </p>
@@ -35,7 +39,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/60">
-          <p>&copy; {new Date().getFullYear()} TradesConnect. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Skill Works. All rights reserved.</p>
         </div>
       </div>
     </footer>
