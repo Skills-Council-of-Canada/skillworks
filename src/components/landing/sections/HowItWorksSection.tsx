@@ -38,7 +38,7 @@ export const HowItWorksSection = () => {
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold mb-4">How Skill Works Works</h2>
+          <h2 className="text-4xl font-bold mb-4">How Skill Works</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Simple & Actionable Steps to Success
           </p>
