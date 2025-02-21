@@ -11,9 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationsSettings } from "../admin/components/settings/NotificationsSettings";
 
 const priorityColors = {
-  critical: "bg-red-500",
-  important: "bg-yellow-500",
-  general: "bg-blue-500",
+  critical: "bg-red-500 text-white",
+  important: "bg-yellow-500 text-white",
+  general: "bg-blue-500 text-white",
 };
 
 const categoryIcons = {
@@ -56,8 +56,8 @@ export default function NotificationsPage() {
     return (
       <div className="container max-w-4xl mx-auto py-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
-          <Bell className="h-5 w-5" />
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <Bell className="h-5 w-5 text-foreground" />
+          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
         </div>
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} className="w-full h-24" />
@@ -70,8 +70,8 @@ export default function NotificationsPage() {
     <div className="container max-w-4xl mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <Bell className="h-5 w-5 text-foreground" />
+          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -94,8 +94,8 @@ export default function NotificationsPage() {
         <TabsContent value="notifications" className="mt-6">
           <div className="space-y-4">
             {notifications?.length === 0 ? (
-              <Card className="p-6 text-center text-muted-foreground">
-                No notifications yet
+              <Card className="p-6">
+                <p className="text-center text-foreground">No notifications yet</p>
               </Card>
             ) : (
               notifications?.map((notification) => {
@@ -109,15 +109,15 @@ export default function NotificationsPage() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <Icon className={`h-5 w-5 ${!notification.is_read ? 'text-blue-500' : ''}`} />
+                        <Icon className={`h-5 w-5 ${!notification.is_read ? 'text-blue-500' : 'text-foreground'}`} />
                       </div>
                       <div className="flex-grow">
-                        <h3 className="font-medium">{notification.title}</h3>
+                        <h3 className="font-medium text-foreground">{notification.title}</h3>
                         <p className="text-sm text-muted-foreground mt-1">
                           {notification.content}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary">
+                          <Badge variant="secondary" className="text-foreground">
                             {notification.category.replace('_', ' ')}
                           </Badge>
                           <Badge 

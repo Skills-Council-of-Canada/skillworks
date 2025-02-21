@@ -18,13 +18,21 @@ interface Notification {
   metadata: Record<string, any>;
 }
 
-type NotificationFilters = {
+interface DatabaseNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  created_at: string;
+  [key: string]: any;
+}
+
+export const useNotifications = (filters?: {
   category?: string;
   priority?: string;
   is_read?: boolean;
-};
-
-export const useNotifications = (filters?: NotificationFilters) => {
+}) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -32,34 +40,32 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications', filters],
     queryFn: async () => {
-      let query = supabase
+      const query = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (filters?.category) {
-        query = query.eq('category', filters.category);
-      }
-      if (filters?.priority) {
-        query = query.eq('priority', filters.priority);
-      }
-      if (filters?.is_read !== undefined) {
-        query = query.eq('read', filters.is_read);
-      }
+      const filteredQuery = Object.entries(filters || {}).reduce((q, [key, value]) => {
+        if (value !== undefined) {
+          return q.eq(key === 'is_read' ? 'read' : key, value);
+        }
+        return q;
+      }, query);
 
-      const { data, error } = await query;
+      const { data, error } = await filteredQuery;
       if (error) throw error;
       
-      // Transform the data to match our Notification interface
-      return (data || []).map(n => ({
-        ...n,
-        is_read: n.read || false,
-        is_archived: false, // Default value since it's not in the DB yet
+      return (data as DatabaseNotification[] || []).map(n => ({
+        id: n.id,
+        title: n.title,
         content: n.message || '',
         category: n.type as Notification['category'],
-        priority: 'general' as const, // Default value since it's not in the DB yet
-        metadata: {} // Default value since it's not in the DB yet
+        priority: 'general' as const,
+        is_read: n.read,
+        is_archived: false,
+        created_at: n.created_at,
+        metadata: {}
       }));
     },
     enabled: !!user?.id,
