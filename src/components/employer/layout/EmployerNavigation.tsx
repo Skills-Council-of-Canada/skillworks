@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import {
@@ -28,6 +29,15 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
   const getFirstName = (fullName: string) => {
     return fullName?.split(" ")[0] || "there";
   };
+
+  const menuItems = [
+    { title: "Dashboard", url: "/employer", icon: LayoutDashboard },
+    { title: "Projects", url: "/employer/projects", icon: Briefcase },
+    { title: "Applications", url: "/employer/applications", icon: ClipboardList },
+    { title: "Messages", url: "/employer/messages", icon: MessageSquare },
+    { title: "Resources", url: "/employer/resources", icon: BookOpen },
+    { title: "Settings", url: "/employer/settings", icon: Settings },
+  ];
 
   return (
     <SidebarContent className="bg-[#1A1F2C] text-white">
