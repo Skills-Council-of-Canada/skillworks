@@ -25,50 +25,39 @@ export const UserMenu = () => {
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
-            className="flex items-center gap-2 text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
-            style={{ backgroundColor: 'transparent' }}
-          >
-            <Avatar className="h-8 w-8 bg-primary">
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                {getInitials(user?.name || "")}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm hidden md:inline-block font-medium">
-              {user?.name}
-            </span>
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent 
-          className="w-56 bg-white border shadow-lg" 
-          align="end"
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>
+              {getInitials(user?.name || "")}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm hidden md:inline-block">
+            {user?.name}
+          </span>
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
+        <Link to="/participant/profile">
+          <DropdownMenuItem className="hover:bg-gray-100">
+            <User className="mr-2 h-4 w-4" />
+            View Profile
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuItem className="hover:bg-gray-100">
+          Notifications
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          className="text-red-500 hover:bg-gray-100"
+          onClick={handleLogout}
         >
-          <DropdownMenuItem 
-            className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
-            onClick={() => navigate('/educator/settings')}
-          >
-            Profile Settings
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
-            onClick={() => navigate('/educator/settings')}
-          >
-            Portal Settings
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive hover:bg-gray-100 focus:bg-gray-100 focus:text-destructive cursor-pointer"
-            onClick={logout}
-          >
-            Log Out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
