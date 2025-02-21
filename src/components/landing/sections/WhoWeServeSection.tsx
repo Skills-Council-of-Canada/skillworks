@@ -46,7 +46,7 @@ export const WhoWeServeSection = () => {
               <p className="text-gray-600 mb-8">{type.description}</p>
               <Button 
                 onClick={() => navigate(type.path)}
-                className="group"
+                className="group bg-[#8B0000] hover:bg-[#8B0000]/90 text-white"
               >
                 {type.cta}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

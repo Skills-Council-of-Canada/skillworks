@@ -51,7 +51,7 @@ export const HowItWorksSection = () => {
           <Button
             onClick={() => navigate("/employer/registration")}
             size="lg"
-            className="bg-[#ea384c] hover:bg-[#ea384c]/90 text-white gap-2"
+            className="bg-[#8B0000] hover:bg-[#8B0000]/90 text-white gap-2"
           >
             Start Your Journey <ArrowRight className="h-4 w-4" />
           </Button>
