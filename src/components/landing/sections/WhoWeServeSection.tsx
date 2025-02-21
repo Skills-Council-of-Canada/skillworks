@@ -38,7 +38,7 @@ export const WhoWeServeSection = () => {
           <p className="text-xl text-gray-600">Breaking down barriers for employers, educators and students</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-3 gap-8">
           {userTypes.map((type, index) => (
             <div key={index} className="flex flex-col items-center text-center p-8 bg-white rounded-lg shadow-lg">
               <type.icon className="w-16 h-16 text-primary mb-6" />
@@ -53,23 +53,6 @@ export const WhoWeServeSection = () => {
               </Button>
             </div>
           ))}
-        </div>
-
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-3xl">
-            <div className="absolute inset-0 bg-primary/5 rounded-lg transform -rotate-1"></div>
-            <div className="relative bg-white p-8 rounded-lg shadow-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex-1 text-center">Employers</div>
-                <ArrowRight className="mx-4 text-primary" />
-                <div className="flex-1 text-center">Projects</div>
-                <ArrowRight className="mx-4 text-primary" />
-                <div className="flex-1 text-center">Participants</div>
-                <ArrowRight className="mx-4 text-primary" />
-                <div className="flex-1 text-center">Educators</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
