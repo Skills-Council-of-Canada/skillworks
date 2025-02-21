@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -66,7 +67,7 @@ const ParticipantDashboard = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-muted-foreground">Here's an overview of your learning journey</p>
+          <p className="text-gray-600 text-base">Here's an overview of your learning journey</p>
         </div>
         {completionPercentage < 100 && (
           <Button onClick={() => navigate('/participant/profile')}>
@@ -83,7 +84,7 @@ const ParticipantDashboard = () => {
           </div>
           <Progress value={completionPercentage} />
           {completionPercentage < 100 && (
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-gray-600 mt-2">
               Complete your profile to unlock all features
             </p>
           )}
