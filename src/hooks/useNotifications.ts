@@ -54,7 +54,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { toast } = useToast();
 
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', filters] as const,
+    queryKey: ['notifications', JSON.stringify(filters)],
     queryFn: async () => {
       let query = supabase
         .from('notifications')
