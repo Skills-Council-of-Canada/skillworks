@@ -35,20 +35,20 @@ const MessagesPage = () => {
                 <Button 
                   variant="ghost" 
                   size="icon"
-                  className="hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="hover:bg-accent/50"
                 >
                   <MoreVertical className="h-4 w-4 text-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-50 bg-background">
-                <DropdownMenuItem className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-foreground">
+                <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
                   Pin Chat
                 </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-foreground">
+                <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
                   Mute Notifications
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer">
+                <DropdownMenuItem className="text-destructive hover:bg-destructive/10">
                   Delete Chat
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -58,7 +58,7 @@ const MessagesPage = () => {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="relative hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="relative hover:bg-accent/50"
                 >
                   <BellDot className="h-5 w-5 text-foreground" />
                   {hasNewRequests && (
@@ -118,7 +118,7 @@ interface RequestItemProps {
 
 const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
-    <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent transition-colors">
+    <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
         <h4 className="font-semibold text-sm text-foreground">{name}</h4>
         <p className="text-sm text-foreground/80">{message}</p>
@@ -127,14 +127,14 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
       <div className="flex gap-2">
         <Button 
           size="sm" 
-          className="w-full hover:bg-primary/90 transition-colors"
+          className="w-full hover:bg-primary/90"
         >
           Accept
         </Button>
         <Button 
           size="sm" 
           variant="outline" 
-          className="w-full text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+          className="w-full text-foreground hover:bg-accent/50"
         >
           Decline
         </Button>
