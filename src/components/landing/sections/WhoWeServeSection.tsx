@@ -35,7 +35,7 @@ export const WhoWeServeSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Clear pathway to building employment success</h2>
-          <p className="text-xl text-gray-600">Find the right experience for your journey</p>
+          <p className="text-xl text-gray-600">Breaking down barriers for employers, educators and students</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
