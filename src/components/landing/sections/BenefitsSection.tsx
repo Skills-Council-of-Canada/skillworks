@@ -1,8 +1,6 @@
 
-import { Button } from "@/components/ui/button";
 import { 
   Building2, 
-  ArrowRight,
   Puzzle,
   GraduationCap,
   Users,
@@ -46,7 +44,7 @@ export const BenefitsSection = () => {
           <p className="text-xl text-gray-600">What Makes Our Platform Stand Out</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="bg-white p-8 rounded-lg shadow-lg">
               <div className="flex items-start space-x-4">
@@ -60,13 +58,6 @@ export const BenefitsSection = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center">
-          <Button variant="outline" className="group">
-            See How It Works
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
         </div>
       </div>
     </section>
