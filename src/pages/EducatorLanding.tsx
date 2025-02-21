@@ -83,7 +83,11 @@ const EducatorLanding = () => {
             >
               <Home className="h-5 w-5" />
             </Button>
-            <div className="text-2xl font-bold text-primary">Skilled Trades Educator Portal</div>
+            <img 
+              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+              alt="Skill Works Logo" 
+              className="h-8"
+            />
           </div>
           <div>
             <Button
