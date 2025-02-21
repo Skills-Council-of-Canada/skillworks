@@ -35,7 +35,7 @@ export const NotificationBell = () => {
     <Button 
       variant="ghost" 
       size="icon"
-      className="relative hover:bg-transparent bg-[#1A1F2C] text-white"
+      className="relative bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]"
       onClick={() => navigate('/educator/notifications')}
     >
       <Bell className="h-5 w-5" />
