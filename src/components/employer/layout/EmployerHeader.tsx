@@ -79,7 +79,11 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              className="flex items-center gap-2"
+              style={{ backgroundColor: 'transparent' }}
+            >
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
                   {getInitials(user?.name || "")}
@@ -93,20 +97,18 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-white border shadow-lg">
             <DropdownMenuItem 
-              className="focus:bg-accent"
               onClick={() => navigate('/employer/settings')}
             >
               Profile Settings
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className="focus:bg-accent"
               onClick={() => navigate('/employer/settings')}
             >
               Company Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive focus:bg-accent"
+              className="text-destructive"
               onClick={logout}
             >
               Log Out
