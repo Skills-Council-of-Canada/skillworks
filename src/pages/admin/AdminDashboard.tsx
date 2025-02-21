@@ -42,9 +42,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
-      
+    <div className="space-y-6">      
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {statsCards.map((card, index) => (
           <StatsCard
