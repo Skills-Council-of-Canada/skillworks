@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -81,6 +81,30 @@ const App = () => (
           <Route path="/employer/registration" element={<EmployerRegistration />} />
           <Route path="/educator/registration" element={<EducatorRegistration />} />
 
+          {/* Protected educator routes */}
+          <Route
+            path="/educator"
+            element={
+              <ProtectedRoute allowedRoles={["educator"]}>
+                <EducatorLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/educator/dashboard" replace />} />
+            <Route path="dashboard" element={<EducatorDashboard />} />
+            <Route path="experiences" element={<ExperienceManagement />} />
+            <Route path="collaborations" element={<CollaborationManagement />} />
+            <Route path="portals" element={<PortalSearch />} />
+            <Route path="projects" element={<ProjectSearch />} />
+            <Route path="students" element={<StudentManagement />} />
+            <Route path="matches" element={<MatchRequests />} />
+            <Route path="tasks" element={<TasksActivities />} />
+            <Route path="messages" element={<EducatorMessages />} />
+            <Route path="calendar" element={<EducatorCalendar />} />
+            <Route path="settings" element={<EducatorSettings />} />
+            <Route path="create-experience" element={<CreateExperience />} />
+          </Route>
+
           {/* Protected participant routes */}
           <Route
             path="/participant"
@@ -139,29 +163,6 @@ const App = () => (
             <Route path="messages" element={<AdminMessages />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<AdminSettings />} />
-          </Route>
-
-          {/* Protected educator routes */}
-          <Route
-            path="/educator"
-            element={
-              <ProtectedRoute allowedRoles={["educator"]}>
-                <EducatorLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<EducatorDashboard />} />
-            <Route path="experiences" element={<ExperienceManagement />} />
-            <Route path="collaborations" element={<CollaborationManagement />} />
-            <Route path="portals" element={<PortalSearch />} />
-            <Route path="projects" element={<ProjectSearch />} />
-            <Route path="students" element={<StudentManagement />} />
-            <Route path="matches" element={<MatchRequests />} />
-            <Route path="tasks" element={<TasksActivities />} />
-            <Route path="messages" element={<EducatorMessages />} />
-            <Route path="calendar" element={<EducatorCalendar />} />
-            <Route path="settings" element={<EducatorSettings />} />
-            <Route path="create-experience" element={<CreateExperience />} />
           </Route>
 
           {/* Catch all route */}

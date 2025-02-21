@@ -37,18 +37,16 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     console.log(`User role ${user.role} not allowed. Redirecting to role-specific dashboard`);
     
     // Redirect to the appropriate dashboard based on user's role
-    switch (user.role) {
-      case 'participant':
-        return <Navigate to="/participant/dashboard" replace />;
-      case 'employer':
-        return <Navigate to="/employer/dashboard" replace />;
-      case 'educator':
-        return <Navigate to="/educator/dashboard" replace />;
-      case 'admin':
-        return <Navigate to="/admin" replace />;
-      default:
-        return <Navigate to="/unauthorized" replace />;
-    }
+    const dashboardPaths = {
+      participant: "/participant/dashboard",
+      employer: "/employer/dashboard",
+      educator: "/educator/dashboard",
+      admin: "/admin/dashboard"
+    };
+
+    const redirectPath = dashboardPaths[user.role] || "/unauthorized";
+    console.log("Redirecting to:", redirectPath);
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <>{children}</>;
