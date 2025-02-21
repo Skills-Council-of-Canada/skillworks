@@ -74,8 +74,7 @@ const EmployerDashboard = () => {
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground">
             Here's what's happening with your projects today.
           </p>
         </div>
