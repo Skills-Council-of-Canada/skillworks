@@ -61,8 +61,8 @@ const EmployerDashboard = () => {
     return <div>Loading...</div>;
   }
 
-  // For development, show the dashboard even without a profile
-  const displayName = employerProfile?.primary_contact_name || user?.name || "Developer";
+  // Get first name by splitting the full name and taking the first part
+  const firstName = user?.name?.split(' ')[0] || "there";
 
   return (
     <div className="space-y-8">
@@ -78,7 +78,7 @@ const EmployerDashboard = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
-            Welcome back, {displayName}
+            Welcome back, {firstName}
           </h2>
           <p className="text-muted-foreground mt-2">
             Here's what's happening with your projects today.
