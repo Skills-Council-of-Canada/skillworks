@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -74,47 +75,47 @@ const StudentManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Student Management</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Student Management</h1>
+          <p className="text-gray-600 dark:text-gray-400">
             Manage your students and track their progress
           </p>
         </div>
-        <Button>
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
           <UserPlus className="mr-2 h-4 w-4" />
           Add Student
         </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+        <Card className="bg-white dark:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Total Students</CardTitle>
+            <Users className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students?.length || 0}</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{students?.length || 0}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white dark:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-            <BookCheck className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Active Projects</CardTitle>
+            <BookCheck className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {students?.filter((s) => 
                 s.student_assignments?.some(a => a.status === "in_progress")
               ).length || 0}
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white dark:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Certifications</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Pending Certifications</CardTitle>
+            <Award className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {students?.filter((s) => 
                 s.student_certifications?.some(c => c.status === "pending")
               ).length || 0}
@@ -123,44 +124,44 @@ const StudentManagement = () => {
         </Card>
       </div>
 
-      <Card>
+      <Card className="bg-white dark:bg-gray-800">
         <CardHeader>
-          <CardTitle>Students</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-gray-900 dark:text-white">Students</CardTitle>
+          <CardDescription className="text-gray-600 dark:text-gray-400">
             A list of all students under your supervision
           </CardDescription>
           <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
+            <Search className="h-4 w-4 text-gray-600 dark:text-gray-400" />
             <Input
               placeholder="Search students..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="max-w-sm"
+              className="max-w-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700"
             />
           </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex justify-center p-4">Loading...</div>
+            <div className="flex justify-center p-4 text-gray-600 dark:text-gray-400">Loading...</div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Active Projects</TableHead>
-                  <TableHead>Certifications</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                  <TableHead className="text-left text-gray-900 dark:text-white font-medium">Name</TableHead>
+                  <TableHead className="text-left text-gray-900 dark:text-white font-medium">Email</TableHead>
+                  <TableHead className="text-left text-gray-900 dark:text-white font-medium">Active Projects</TableHead>
+                  <TableHead className="text-left text-gray-900 dark:text-white font-medium">Certifications</TableHead>
+                  <TableHead className="text-left text-gray-900 dark:text-white font-medium">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredStudents?.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell>
+                  <TableRow key={student.id} className="border-b border-gray-200 dark:border-gray-700">
+                    <TableCell className="text-gray-900 dark:text-white">
                       {student.first_name} {student.last_name}
                     </TableCell>
-                    <TableCell>{student.email}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{student.email}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">
                       {student.student_assignments?.length || 0}
                     </TableCell>
                     <TableCell>
@@ -169,6 +170,7 @@ const StudentManagement = () => {
                           <Badge
                             key={cert.id}
                             variant={cert.status === "completed" ? "default" : "secondary"}
+                            className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                           >
                             {cert.name}
                           </Badge>
@@ -176,7 +178,11 @@ const StudentManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                      >
                         <MessageSquare className="h-4 w-4" />
                       </Button>
                     </TableCell>
