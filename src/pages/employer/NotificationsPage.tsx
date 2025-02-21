@@ -11,9 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationsSettings } from "../admin/components/settings/NotificationsSettings";
 
 const priorityColors = {
-  critical: "bg-red-500 text-white",
-  important: "bg-yellow-500 text-white",
-  general: "bg-blue-500 text-white",
+  critical: "bg-destructive text-destructive-foreground",
+  important: "bg-yellow-500 text-yellow-50",
+  general: "bg-primary text-primary-foreground",
 } as const;
 
 const categoryIcons = {
@@ -56,8 +56,8 @@ export default function NotificationsPage() {
     return (
       <div className="container max-w-4xl mx-auto py-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
-          <Bell className="h-5 w-5" />
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <Bell className="h-5 w-5 text-black dark:text-white" />
+          <h1 className="text-2xl font-semibold text-black dark:text-white">Notifications</h1>
         </div>
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} className="w-full h-24" />
@@ -70,8 +70,8 @@ export default function NotificationsPage() {
     <div className="container max-w-4xl mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <Bell className="h-5 w-5 text-black dark:text-white" />
+          <h1 className="text-2xl font-semibold text-black dark:text-white">Notifications</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -88,16 +88,16 @@ export default function NotificationsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-11 bg-background border-[0.5px] p-1 rounded-md">
+        <TabsList className="grid w-full grid-cols-2 h-11 bg-card border-[0.5px] p-1 rounded-md">
           <TabsTrigger 
             value="notifications" 
-            className="rounded text-sm data-[state=active]:bg-accent data-[state=active]:shadow-none"
+            className="rounded text-sm text-black dark:text-white data-[state=active]:bg-accent data-[state=active]:shadow-none"
           >
             Notifications
           </TabsTrigger>
           <TabsTrigger 
             value="settings" 
-            className="rounded text-sm data-[state=active]:bg-accent data-[state=active]:shadow-none"
+            className="rounded text-sm text-black dark:text-white data-[state=active]:bg-accent data-[state=active]:shadow-none"
           >
             Settings
           </TabsTrigger>
@@ -106,7 +106,7 @@ export default function NotificationsPage() {
           <div className="space-y-2">
             {notifications?.length === 0 ? (
               <Card className="p-6">
-                <p className="text-center text-muted-foreground">No notifications yet</p>
+                <p className="text-center text-black dark:text-white">No notifications yet</p>
               </Card>
             ) : (
               notifications?.map((notification) => {
@@ -121,14 +121,14 @@ export default function NotificationsPage() {
                         <Icon className={`h-4 w-4 ${!notification.is_read ? 'text-primary' : 'text-muted-foreground'}`} />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h3 className="font-medium text-sm text-foreground truncate">
+                        <h3 className="font-medium text-sm text-black dark:text-white truncate">
                           {notification.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                        <p className="text-sm text-black/70 dark:text-white/70 mt-0.5 line-clamp-2">
                           {notification.content}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs text-black dark:text-white">
                             {notification.category.replace('_', ' ')}
                           </Badge>
                           <Badge 
@@ -137,7 +137,7 @@ export default function NotificationsPage() {
                           >
                             {notification.priority}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-black/60 dark:text-white/60">
                             {format(new Date(notification.created_at), 'PPp')}
                           </span>
                         </div>
@@ -147,7 +147,7 @@ export default function NotificationsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleMarkAsRead(notification.id)}
-                          className="text-xs"
+                          className="text-xs text-black dark:text-white"
                         >
                           Mark as Read
                         </Button>

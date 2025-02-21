@@ -4,17 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the notification category using the exact enum values from the database
 export type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
                           'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
 export type NotificationPriority = 'critical' | 'important' | 'general';
 
-// Database notification shape that matches Supabase's actual return type
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  type: string; // Keep as string since that's what Supabase returns
+  type: string;
   read: boolean;
   read_at?: string;
   created_at: string;
@@ -22,7 +20,6 @@ interface DatabaseNotification {
   experience_id?: string;
 }
 
-// Frontend notification shape with additional UI-specific properties
 export interface Notification {
   id: string;
   title: string;
@@ -53,8 +50,10 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const queryKey = ['notifications', filters?.category, filters?.priority, filters?.is_read] as const;
+
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', JSON.stringify(filters)],
+    queryKey,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -62,7 +61,6 @@ export const useNotifications = (filters?: NotificationFilters) => {
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      // Apply filters if they exist
       if (filters?.category) {
         query = query.eq('type', filters.category);
       }
@@ -76,7 +74,6 @@ export const useNotifications = (filters?: NotificationFilters) => {
       const { data, error } = await query;
       if (error) throw error;
 
-      // Transform the database results to the Notification interface
       return (data || []).map((n: DatabaseNotification) => ({
         id: n.id,
         title: n.title,
