@@ -30,16 +30,16 @@ export const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl font-bold mb-6">How TradesConnect Works</h2>
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold mb-4">How TradesConnect Works</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Simple & Actionable Steps to Success
           </p>
         </div>
 
-        <div className="flex flex-col space-y-6 mb-20">
+        <div className="flex flex-col space-y-4 mb-10">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <div className="flex items-start space-x-4 p-6 rounded-lg bg-[#1A1F2C] hover:bg-[#1A1F2C]/90 transition-colors">
