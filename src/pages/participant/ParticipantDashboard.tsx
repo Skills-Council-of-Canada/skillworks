@@ -64,10 +64,8 @@ const ParticipantDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome Back</h1>
           <p className="text-muted-foreground">Here's an overview of your learning journey</p>
         </div>
         {completionPercentage < 100 && (
@@ -77,7 +75,6 @@ const ParticipantDashboard = () => {
         )}
       </div>
 
-      {/* Profile Completion Progress */}
       <Card className="p-6">
         <div className="space-y-2">
           <div className="flex justify-between">
@@ -93,7 +90,6 @@ const ParticipantDashboard = () => {
         </div>
       </Card>
 
-      {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="p-4">
           <div className="flex items-center gap-4">
@@ -141,9 +137,7 @@ const ParticipantDashboard = () => {
         </Card>
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Tasks Overview */}
         <Card className="col-span-1">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
@@ -184,7 +178,6 @@ const ParticipantDashboard = () => {
           </div>
         </Card>
 
-        {/* Pending Applications */}
         <Card className="col-span-1">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
@@ -215,7 +208,6 @@ const ParticipantDashboard = () => {
         </Card>
       </div>
 
-      {/* Recommendations */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Recommended Experiences</h2>
@@ -255,7 +247,6 @@ const ParticipantDashboard = () => {
         </div>
       </Card>
 
-      {/* Recent Activity & Upcoming Events */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
