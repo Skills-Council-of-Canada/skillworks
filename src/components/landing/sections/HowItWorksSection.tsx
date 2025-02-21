@@ -31,7 +31,7 @@ export const HowItWorksSection = () => {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-bold mb-6">How TradesConnect Works</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -39,7 +39,7 @@ export const HowItWorksSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-12 mb-20">
+        <div className="flex flex-col space-y-6 mb-20">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <div className="flex items-start space-x-4 p-6 rounded-lg border border-primary/10 hover:shadow-lg transition-shadow">

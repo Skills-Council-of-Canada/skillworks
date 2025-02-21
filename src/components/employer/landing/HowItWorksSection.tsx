@@ -31,11 +31,11 @@ export const HowItWorksSection = () => {
 
   return (
     <section className="py-16 px-4 bg-primary">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-3xl">
         <h2 className="text-3xl font-bold text-center text-white mb-12">
           How TradesConnect Works
         </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="flex flex-col space-y-6 mb-12">
           {steps.map((step, index) => (
             <div
               key={index}
