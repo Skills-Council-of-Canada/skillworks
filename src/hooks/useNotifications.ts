@@ -45,17 +45,25 @@ const isValidNotificationCategory = (type: string): type is NotificationCategory
           'review_reminder', 'message_alert', 'milestone_alert', 'system'].includes(type);
 };
 
+type NotificationsQueryKey = ['notifications', { 
+  category: NotificationCategory | null;
+  priority: NotificationPriority | null; 
+  is_read: boolean | null;
+}];
+
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const queryKey: NotificationsQueryKey = ['notifications', {
+    category: filters?.category || null,
+    priority: filters?.priority || null,
+    is_read: filters?.is_read || null
+  }];
+
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', {
-      category: filters?.category || null,
-      priority: filters?.priority || null,
-      is_read: filters?.is_read || null
-    }] as const,
+    queryKey,
     queryFn: async () => {
       let query = supabase
         .from('notifications')

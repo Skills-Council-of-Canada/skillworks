@@ -91,7 +91,7 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/educator/dashboard" replace />} />
+            <Route index element={<EducatorDashboard />} />
             <Route path="dashboard" element={<EducatorDashboard />} />
             <Route path="experiences" element={<ExperienceManagement />} />
             <Route path="collaborations" element={<CollaborationManagement />} />
