@@ -22,7 +22,7 @@ const RegistrationPage = () => {
     setIsLoading(true);
 
     try {
-      await signup(email, password, name, portal as "employer" | "educator" | "participant");
+      await signup(email, password, portal as "employer" | "educator" | "participant");
       toast({
         title: "Success",
         description: "Registration successful. Please log in.",
