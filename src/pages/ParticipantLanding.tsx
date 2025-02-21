@@ -84,11 +84,13 @@ const ParticipantLanding = () => {
             >
               <Home className="h-5 w-5" />
             </Button>
-            <img 
-              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
-              alt="Skill Works Logo" 
-              className="h-8"
-            />
+            <button onClick={() => navigate("/")} className="hover:opacity-80 transition-opacity">
+              <img 
+                src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+                alt="Skill Works Logo" 
+                className="h-8"
+              />
+            </button>
           </div>
           <div className="flex gap-4">
             <Button
