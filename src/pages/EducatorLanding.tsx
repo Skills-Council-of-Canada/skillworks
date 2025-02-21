@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Building2, UsersRound, GraduationCap, Home } from "lucide-react";
@@ -51,14 +50,6 @@ const EducatorLanding = () => {
                   className="bg-primary hover:bg-primary/90 gap-2"
                 >
                   Get Started <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => navigate("#features")}
-                  className="border-white text-white hover:bg-white/10"
-                >
-                  Explore Features
                 </Button>
               </div>
             </div>
