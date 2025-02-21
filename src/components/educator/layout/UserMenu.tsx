@@ -30,7 +30,7 @@ export const UserMenu = () => {
         <DropdownMenuTrigger asChild>
           <Button 
             variant="ghost" 
-            className="flex items-center gap-2 text-foreground hover:text-foreground focus:text-foreground"
+            className="flex items-center gap-2 text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
             style={{ backgroundColor: 'transparent' }}
           >
             <Avatar className="h-8 w-8 bg-primary">
