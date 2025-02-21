@@ -82,14 +82,14 @@ const AuthForm = ({
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-background/50 pr-10"
+                    className="w-full bg-background/50 pr-12"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-background/80"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
