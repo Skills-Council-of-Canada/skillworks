@@ -111,8 +111,8 @@ const EducatorLanding = () => {
             <div className="hidden md:block relative">
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg" />
               <img
-                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
-                alt="Educator working with students"
+                src="/lovable-uploads/e9fd4aeb-4a35-479d-941f-cfeba95591d2.png"
+                alt="Student using digital tablet with augmented reality in library"
                 className="rounded-lg shadow-xl w-full object-cover h-[400px]"
               />
             </div>
