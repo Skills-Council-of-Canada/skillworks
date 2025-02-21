@@ -1,11 +1,18 @@
 
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, Routes, Route, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
 import { AdminFooter } from "@/components/admin/layout/AdminFooter";
 import { AdminNavigation } from "@/components/admin/layout/AdminNavigation";
 import { Toaster } from "@/components/ui/toaster";
+import AdminDashboard from "./AdminDashboard";
+import UserManagement from "./UserManagement";
+import ExperienceOversight from "./ExperienceOversight";
+import ProjectManagement from "./ProjectManagement";
+import AdminMessages from "./AdminMessages";
+import Reports from "./Reports";
+import AdminSettings from "./AdminSettings";
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
@@ -20,6 +27,7 @@ const AdminLayout = () => {
       "/admin/users": "User Management",
       "/admin/experiences": "Experience Oversight",
       "/admin/projects": "Project Management",
+      "/admin/messages": "Messages",
       "/admin/reports": "Reports & Analytics",
       "/admin/settings": "Settings"
     };
@@ -38,6 +46,15 @@ const AdminLayout = () => {
           <AdminHeader pageTitle={getCurrentPageTitle()} />
           
           <main className="flex-1 p-4 sm:p-6 overflow-auto">
+            <Routes>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="experiences" element={<ExperienceOversight />} />
+              <Route path="projects" element={<ProjectManagement />} />
+              <Route path="messages" element={<AdminMessages />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Routes>
             <Outlet />
           </main>
 
