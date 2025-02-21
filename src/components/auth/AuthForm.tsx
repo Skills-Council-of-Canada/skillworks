@@ -7,6 +7,8 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AuthFormProps {
   icon?: LucideIcon;
@@ -27,6 +29,10 @@ const AuthForm = ({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isResetMode, setIsResetMode] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,6 +50,84 @@ const AuthForm = ({
       }
     }
   };
+
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (resetLoading) return;
+
+    setError(null);
+    setResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      setResetEmailSent(true);
+      toast({
+        title: "Check your email",
+        description: "If you have an account with Skill Works, you will receive an email to change your password.",
+      });
+    } catch (err) {
+      console.error("Reset password error:", err);
+      // Don't show specific errors to avoid revealing if an email exists
+      setResetEmailSent(true);
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  if (isResetMode) {
+    return (
+      <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-primary">Reset Password</h1>
+          <p className="text-secondary/60">Enter your email to reset your password</p>
+        </div>
+
+        <Card className="p-6 bg-card/50 backdrop-blur-sm shadow-xl">
+          <form onSubmit={handleResetPassword} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-secondary">Email</label>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                className="w-full bg-background/50"
+                required
+              />
+            </div>
+
+            <div className="space-y-4">
+              <Button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={resetLoading}
+              >
+                {resetLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Send Reset Instructions"
+                )}
+              </Button>
+              
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                onClick={() => setIsResetMode(false)}
+              >
+                Back to Login
+              </Button>
+            </div>
+          </form>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
@@ -75,7 +159,17 @@ const AuthForm = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-secondary">Password</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-secondary">Password</label>
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="px-0 text-sm text-primary hover:text-primary/90"
+                    onClick={() => setIsResetMode(true)}
+                  >
+                    Forgot password?
+                  </Button>
+                </div>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
