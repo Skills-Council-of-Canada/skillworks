@@ -97,18 +97,20 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-white border shadow-lg">
             <DropdownMenuItem 
+              className="hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground"
               onClick={() => navigate('/employer/settings')}
             >
               Profile Settings
             </DropdownMenuItem>
             <DropdownMenuItem 
+              className="hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground"
               onClick={() => navigate('/employer/settings')}
             >
               Company Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive"
+              className="text-destructive hover:bg-gray-100 focus:bg-gray-100 focus:text-destructive"
               onClick={logout}
             >
               Log Out
