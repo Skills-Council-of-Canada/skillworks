@@ -29,7 +29,7 @@ export const HowItWorksSection = () => {
     },
     {
       icon: Trophy,
-      title: "Showcase Your Work & Get Hired",
+      title: "Students Showcase Their Work & Get Hired",
       description: "Build your portfolio and unlock career opportunities."
     }
   ];
