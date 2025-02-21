@@ -34,7 +34,7 @@ export const WhoWeServeSection = () => {
     <section className="py-24 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Clear Pathways for Users</h2>
+          <h2 className="text-4xl font-bold mb-4">Clear pathway to building employment success</h2>
           <p className="text-xl text-gray-600">Find the right experience for your journey</p>
         </div>
 
