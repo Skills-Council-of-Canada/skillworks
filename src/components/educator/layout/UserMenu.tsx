@@ -30,7 +30,7 @@ export const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center gap-2 hover:bg-transparent">
           <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-gray-200">
+            <AvatarFallback className="bg-[#1A1F2C] text-white">
               {getInitials(user?.name || "U")}
             </AvatarFallback>
           </Avatar>
