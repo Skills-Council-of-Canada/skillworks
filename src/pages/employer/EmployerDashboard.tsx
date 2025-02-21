@@ -61,9 +61,6 @@ const EmployerDashboard = () => {
     return <div>Loading...</div>;
   }
 
-  // Get first name by splitting the full name and taking the first part
-  const firstName = user?.name?.split(' ')[0] || "there";
-
   return (
     <div className="space-y-8">
       {!employerProfile && (
@@ -77,9 +74,7 @@ const EmployerDashboard = () => {
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Welcome back, {firstName}
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
           <p className="text-muted-foreground mt-2">
             Here's what's happening with your projects today.
           </p>
