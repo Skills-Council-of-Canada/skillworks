@@ -30,29 +30,37 @@ export const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-xl text-gray-600">Simple & Actionable Steps to Success</p>
+    <section className="py-32 bg-white">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl font-bold mb-6">How It Works</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Simple & Actionable Steps to Success
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-4 gap-12 mb-20">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/4 right-0 w-full h-0.5 bg-primary/20">
-                  <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2">
-                    <ArrowRight className="text-primary w-6 h-6" />
+                <div className="hidden md:block absolute top-12 right-0 w-full h-0.5 bg-primary/10">
+                  <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-white p-1 rounded-full">
+                    <ArrowRight className="text-primary w-5 h-5" />
                   </div>
                 </div>
               )}
-              <div className="flex flex-col items-center text-center">
-                <div className="bg-primary/10 p-4 rounded-full mb-6">
-                  <step.icon className="w-8 h-8 text-primary" />
+              <div className="flex flex-col items-center text-center space-y-6">
+                <div className="bg-primary/5 p-6 rounded-2xl shadow-sm border border-primary/10">
+                  <step.icon className="w-10 h-10 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-semibold text-gray-900">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
@@ -62,10 +70,10 @@ export const HowItWorksSection = () => {
           <Button 
             size="lg"
             onClick={() => navigate("/login")}
-            className="group"
+            className="group bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg h-auto"
           >
             Join Now – It's Free!
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </div>
