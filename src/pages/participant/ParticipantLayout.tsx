@@ -142,18 +142,22 @@ const ParticipantLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <Button variant="ghost" size="icon" className="relative">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]"
+            >
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
                 3
               </span>
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2 hover:bg-transparent">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-[#1A1F2C] text-white">
                       {getInitials(user?.name || "")}
                     </AvatarFallback>
                   </Avatar>
