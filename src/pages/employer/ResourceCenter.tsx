@@ -62,21 +62,21 @@ const ResourceCenter = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Resource Center</h1>
+        <h1 className="text-3xl font-bold text-foreground">Resource Center</h1>
       </div>
 
       <div className="mb-6 space-y-4">
         <div className="flex gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-foreground/70" />
             <Input
               placeholder="Search resources..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 text-foreground"
             />
           </div>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 text-foreground">
             <Filter className="h-4 w-4" />
             Filter
           </Button>
@@ -104,11 +104,11 @@ const ResourceCenter = () => {
         {filteredResources.map((resource) => (
           <Card key={resource.id} className="flex flex-col">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-foreground">
                 <BookOpen className="h-5 w-5 text-primary" />
                 {resource.title}
               </CardTitle>
-              <CardDescription>{resource.description}</CardDescription>
+              <CardDescription className="text-foreground/80">{resource.description}</CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
               <Button
