@@ -18,6 +18,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 interface EmployerNavigationProps {
@@ -41,12 +42,14 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
 
   return (
     <SidebarContent className="bg-[#1A1F2C] text-white">
-      <div className="p-4 mb-4">
-        <h2 className="text-xl font-bold mb-1">Employer Portal</h2>
+      <div className="p-4">
+        <h2 className="text-xl font-bold">Employer Portal</h2>
         <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
       </div>
+      
+      <SidebarSeparator className="bg-white/10 mx-4" />
+      
       <SidebarGroup>
-        <SidebarGroupLabel className="text-gray-400">Menu</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {menuItems.map((item) => (

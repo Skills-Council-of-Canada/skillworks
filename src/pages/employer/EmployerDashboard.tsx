@@ -88,7 +88,7 @@ const EmployerDashboard = () => {
 
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-muted-foreground">
+          <p className="text-foreground">
             Here's what's happening with your projects today.
           </p>
         </div>
