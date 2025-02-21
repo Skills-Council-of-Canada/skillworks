@@ -32,24 +32,6 @@ export const useAuthState = () => {
     return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
   };
 
-  const isRoleRestrictedRoute = (path: string, userRole: string) => {
-    const roleRoutes = {
-      admin: '/admin',
-      educator: '/educator',
-      employer: '/employer',
-      participant: '/participant'
-    };
-
-    // Check if the current path starts with any role-specific route
-    for (const [role, route] of Object.entries(roleRoutes)) {
-      if (path.startsWith(route)) {
-        // If the path starts with a role route, ensure it matches the user's role
-        return role !== userRole;
-      }
-    }
-    return false;
-  };
-
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
@@ -88,18 +70,10 @@ export const useAuthState = () => {
             console.log("Profile found:", profile);
             setUser(profile);
             
-            // Check if user is trying to access another role's routes
-            if (isRoleRestrictedRoute(location.pathname, profile.role)) {
+            // Only redirect if we're on a login page or root
+            if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
-              console.log("Unauthorized role access, redirecting to:", redirectPath);
-              navigate(redirectPath);
-              return;
-            }
-
-            // If on login, root, or other public routes and authenticated, redirect to role-based dashboard
-            if (location.pathname === '/login' || location.pathname === '/' || isPublicRoute(location.pathname)) {
-              const redirectPath = getRoleBasedRedirect(profile.role);
-              console.log("Public route with auth, redirecting to:", redirectPath);
+              console.log("Login/root path detected, redirecting to:", redirectPath);
               navigate(redirectPath);
             }
           } else {
@@ -146,9 +120,12 @@ export const useAuthState = () => {
               const profile = await getUserProfile(session);
               if (mounted && profile) {
                 setUser(profile);
-                const redirectPath = getRoleBasedRedirect(profile.role);
-                console.log("Redirecting after sign in to:", redirectPath);
-                navigate(redirectPath);
+                // Only redirect if we're on a login page or root
+                if (location.pathname === '/login' || location.pathname === '/') {
+                  const redirectPath = getRoleBasedRedirect(profile.role);
+                  console.log("Redirecting after sign in to:", redirectPath);
+                  navigate(redirectPath);
+                }
               }
             } catch (error) {
               console.error("Error after sign in:", error);
