@@ -4,23 +4,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the notification category and priority as literal types
+// Define the notification category using the exact enum values from the database
 type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
                           'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
 type NotificationPriority = 'critical' | 'important' | 'general';
 
-// Separate interface for the database structure
+// Database notification shape that matches our table structure
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  type: string;
+  type: NotificationCategory; // This now matches our database enum
   read: boolean;
   created_at: string;
   user_id: string;
 }
 
-// Separate interface for the transformed notification
+// Frontend notification shape with additional UI-specific properties
 interface Notification {
   id: string;
   title: string;
@@ -35,10 +35,9 @@ interface Notification {
   metadata: Record<string, unknown>;
 }
 
-// Explicitly type the filters
 interface NotificationFilters {
-  category?: string;
-  priority?: string;
+  category?: NotificationCategory;
+  priority?: NotificationPriority;
   is_read?: boolean;
 }
 
@@ -69,13 +68,13 @@ export const useNotifications = (filters?: NotificationFilters) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      
+
       // Transform the database results to the Notification interface
       return (data || []).map((n: DatabaseNotification) => ({
         id: n.id,
         title: n.title,
         content: n.message || '',
-        category: n.type as NotificationCategory,
+        category: n.type,
         priority: 'general' as NotificationPriority,
         is_read: n.read,
         is_archived: false,
