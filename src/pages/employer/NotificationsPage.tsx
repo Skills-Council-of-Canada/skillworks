@@ -77,25 +77,26 @@ export default function NotificationsPage() {
           <Button
             variant="outline"
             onClick={() => setShowUnreadOnly(!showUnreadOnly)}
+            className="text-sm"
           >
             {showUnreadOnly ? 'Show All' : 'Show Unread Only'}
           </Button>
-          <Button onClick={handleMarkAllAsRead}>
+          <Button onClick={handleMarkAllAsRead} className="text-sm">
             Mark All as Read
           </Button>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-11 rounded-md border p-1">
+          <TabsTrigger value="notifications" className="rounded text-sm">Notifications</TabsTrigger>
+          <TabsTrigger value="settings" className="rounded text-sm">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="notifications" className="mt-6">
-          <div className="space-y-4">
+          <div className="space-y-2">
             {notifications?.length === 0 ? (
               <Card className="p-6">
-                <p className="text-center text-foreground">No notifications yet</p>
+                <p className="text-center text-muted-foreground">No notifications yet</p>
               </Card>
             ) : (
               notifications?.map((notification) => {
@@ -103,25 +104,28 @@ export default function NotificationsPage() {
                 return (
                   <Card
                     key={notification.id}
-                    className={`p-4 hover:bg-accent/50 transition-colors relative ${
-                      !notification.is_read ? 'bg-blue-50/50 dark:bg-blue-950/10' : ''
+                    className={`p-4 hover:bg-accent/50 transition-colors ${
+                      !notification.is_read ? 'bg-blue-50/5' : ''
                     }`}
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">
-                        <Icon className={`h-5 w-5 ${!notification.is_read ? 'text-blue-500' : 'text-foreground'}`} />
+                      <div className="flex-shrink-0 mt-1">
+                        <Icon className={`h-4 w-4 ${!notification.is_read ? 'text-blue-500' : 'text-muted-foreground'}`} />
                       </div>
-                      <div className="flex-grow">
-                        <h3 className="font-medium text-foreground">{notification.title}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-medium text-sm text-foreground truncate">
+                          {notification.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
                           {notification.content}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-foreground">
+                          <Badge variant="secondary" className="text-xs">
                             {notification.category.replace('_', ' ')}
                           </Badge>
                           <Badge 
-                            className={priorityColors[notification.priority]}
+                            variant="outline"
+                            className={`text-xs ${priorityColors[notification.priority]}`}
                           >
                             {notification.priority}
                           </Badge>
@@ -135,13 +139,14 @@ export default function NotificationsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleMarkAsRead(notification.id)}
+                          className="text-xs"
                         >
                           Mark as Read
                         </Button>
                       )}
                     </div>
                   </Card>
-                )
+                );
               })
             )}
           </div>

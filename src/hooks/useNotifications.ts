@@ -18,21 +18,23 @@ interface Notification {
   metadata: Record<string, any>;
 }
 
-interface DatabaseNotification {
+type DatabaseNotification = {
   id: string;
   title: string;
   message: string;
   type: string;
   read: boolean;
   created_at: string;
-  [key: string]: any;
-}
+  user_id: string;
+};
 
-export const useNotifications = (filters?: {
+type NotificationFilters = {
   category?: string;
   priority?: string;
   is_read?: boolean;
-}) => {
+};
+
+export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -40,23 +42,26 @@ export const useNotifications = (filters?: {
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications', filters],
     queryFn: async () => {
-      const query = supabase
+      let baseQuery = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      const filteredQuery = Object.entries(filters || {}).reduce((q, [key, value]) => {
-        if (value !== undefined) {
-          return q.eq(key === 'is_read' ? 'read' : key, value);
-        }
-        return q;
-      }, query);
+      if (filters?.category) {
+        baseQuery = baseQuery.eq('type', filters.category);
+      }
+      if (filters?.priority) {
+        baseQuery = baseQuery.eq('priority', filters.priority);
+      }
+      if (filters?.is_read !== undefined) {
+        baseQuery = baseQuery.eq('read', filters.is_read);
+      }
 
-      const { data, error } = await filteredQuery;
+      const { data, error } = await baseQuery;
       if (error) throw error;
       
-      return (data as DatabaseNotification[] || []).map(n => ({
+      return (data as DatabaseNotification[]).map(n => ({
         id: n.id,
         title: n.title,
         content: n.message || '',
