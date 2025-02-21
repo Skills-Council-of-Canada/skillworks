@@ -110,7 +110,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                       {getInitials(user?.name || "A")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm hidden md:inline-block">
+                  <span className="text-sm">
                     {user?.name || user?.email}
                   </span>
                   <ChevronDown className="h-4 w-4" />
