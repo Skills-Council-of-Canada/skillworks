@@ -14,8 +14,8 @@ const LandingPage = () => {
       <main>
         <HeroSection />
         <WhoWeServeSection />
-        <HowItWorksSection />
         <BenefitsSection />
+        <HowItWorksSection />
         <FinalCTASection />
       </main>
       <Footer />
