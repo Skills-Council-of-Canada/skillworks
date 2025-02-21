@@ -87,7 +87,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                     className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
                     onClick={() => navigate('/admin/notifications')}
                   >
-                    <Bell className="h-5 w-5" />
+                    <Bell className="h-5 w-4" />
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
                       3
                     </span>
@@ -110,7 +110,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                       {getInitials(user?.name || "A")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm select-none">
+                  <span className="text-sm font-medium text-foreground">
                     {user?.name || user?.email}
                   </span>
                   <ChevronDown className="h-4 w-4" />
