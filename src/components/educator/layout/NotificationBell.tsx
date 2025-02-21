@@ -4,11 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 
 export const NotificationBell = () => {
@@ -37,25 +32,18 @@ export const NotificationBell = () => {
   });
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="relative"
-          onClick={() => navigate('/educator/notifications')}
-        >
-          <Bell className="h-5 w-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>Notifications</p>
-      </TooltipContent>
-    </Tooltip>
+    <Button 
+      variant="ghost" 
+      size="icon"
+      className="relative"
+      onClick={() => navigate('/educator/notifications')}
+    >
+      <Bell className="h-5 w-5" />
+      {unreadCount > 0 && (
+        <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
+          {unreadCount > 99 ? '99+' : unreadCount}
+        </span>
+      )}
+    </Button>
   );
 };

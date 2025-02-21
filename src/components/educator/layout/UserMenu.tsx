@@ -34,9 +34,6 @@ export const UserMenu = () => {
                 {getInitials(user?.name || "")}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm hidden md:inline-block">
-              {user?.name}
-            </span>
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
