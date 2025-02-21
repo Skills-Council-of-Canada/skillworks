@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import {
@@ -20,46 +19,22 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    url: "/employer",
-  },
-  {
-    title: "Projects",
-    icon: Briefcase,
-    url: "/employer/projects",
-  },
-  {
-    title: "Applications",
-    icon: Users,
-    url: "/employer/applications",
-  },
-  {
-    title: "Messages",
-    icon: MessageSquare,
-    url: "/employer/messages",
-  },
-  {
-    title: "Resources",
-    icon: BookOpen,
-    url: "/employer/resources",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    url: "/employer/settings",
-  },
-];
-
 interface EmployerNavigationProps {
   onLogout: () => void;
+  userName: string;
 }
 
-export const EmployerNavigation = ({ onLogout }: EmployerNavigationProps) => {
+export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationProps) => {
+  const getFirstName = (fullName: string) => {
+    return fullName?.split(" ")[0] || "there";
+  };
+
   return (
     <SidebarContent className="bg-[#1A1F2C] text-white">
+      <div className="p-4 mb-4">
+        <h2 className="text-xl font-bold mb-1">Employer Portal</h2>
+        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+      </div>
       <SidebarGroup>
         <SidebarGroupLabel className="text-gray-400">Menu</SidebarGroupLabel>
         <SidebarGroupContent>

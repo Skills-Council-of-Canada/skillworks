@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -14,9 +13,14 @@ import { Button } from "@/components/ui/button";
 
 interface AdminNavigationProps {
   onLogout: () => void;
+  userName: string;
 }
 
-export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
+export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) => {
+  const getFirstName = (fullName: string) => {
+    return fullName?.split(" ")[0] || "there";
+  };
+
   const navItems = [
     { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
     { to: "/admin/users", icon: Users, label: "User Management" },
@@ -29,10 +33,11 @@ export const AdminNavigation = ({ onLogout }: AdminNavigationProps) => {
 
   return (
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
+      <div className="p-4 border-b border-white/10">
+        <h2 className="text-xl font-bold mb-1">Admin Portal</h2>
+        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+      </div>
       <div className="p-3">
-        <div className="mb-4 px-4 py-2 border-b border-white/10">
-          <h2 className="text-lg font-semibold">Admin Portal</h2>
-        </div>
         <nav className="space-y-1">
           {navItems.map(({ to, icon: Icon, label, end }) => (
             <NavLink

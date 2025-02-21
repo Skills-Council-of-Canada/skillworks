@@ -36,7 +36,7 @@ const EducatorLayout = () => {
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar collapsible="icon" className="border-r">
-          <EducatorNavigation onLogout={logout} />
+          <EducatorNavigation onLogout={logout} userName={user?.name} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">

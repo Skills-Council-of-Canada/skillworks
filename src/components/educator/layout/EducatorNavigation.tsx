@@ -18,12 +18,20 @@ import { LogoutButton } from "./LogoutButton";
 
 interface EducatorNavigationProps {
   onLogout: () => void;
+  userName: string;
 }
 
-export const EducatorNavigation = ({ onLogout }: EducatorNavigationProps) => {
+export const EducatorNavigation = ({ onLogout, userName }: EducatorNavigationProps) => {
+  const getFirstName = (fullName: string) => {
+    return fullName?.split(" ")[0] || "there";
+  };
+
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C] text-white">
-      <NavigationHeader />
+      <div className="p-4 border-b border-white/10">
+        <h2 className="text-xl font-bold mb-1">Education Portal</h2>
+        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+      </div>
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">

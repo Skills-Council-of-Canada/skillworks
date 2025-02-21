@@ -8,7 +8,7 @@ import { EmployerFooter } from "@/components/employer/layout/EmployerFooter";
 import { EmployerNavigation } from "@/components/employer/layout/EmployerNavigation";
 
 const EmployerLayout = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
 
   const getCurrentPageTitle = () => {
@@ -28,7 +28,7 @@ const EmployerLayout = () => {
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar collapsible="icon" className="border-r">
-          <EmployerNavigation onLogout={logout} />
+          <EmployerNavigation onLogout={logout} userName={user?.name} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">

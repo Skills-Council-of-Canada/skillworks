@@ -39,6 +39,10 @@ const ParticipantLayout = () => {
       .toUpperCase();
   };
 
+  const getFirstName = (fullName: string) => {
+    return fullName?.split(" ")[0] || "there";
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -72,8 +76,8 @@ const ParticipantLayout = () => {
       `}>
         <div className="p-4">
           <div className="mb-8">
-            <h2 className="text-xl font-bold">Participant Portal</h2>
-            <p className="text-sm text-gray-400">Welcome, {user?.name}</p>
+            <h2 className="text-xl font-bold mb-1">Participant Portal</h2>
+            <p className="text-sm text-gray-400">Welcome back, {getFirstName(user?.name)}</p>
           </div>
           
           <nav className="space-y-2">
