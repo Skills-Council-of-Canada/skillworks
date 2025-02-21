@@ -5,23 +5,25 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the notification category using the exact enum values from the database
-type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
+export type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
                           'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
-type NotificationPriority = 'critical' | 'important' | 'general';
+export type NotificationPriority = 'critical' | 'important' | 'general';
 
-// Database notification shape that matches our table structure
+// Database notification shape that matches Supabase's actual return type
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  type: NotificationCategory; // This now matches our database enum
+  type: string; // Keep as string since that's what Supabase returns
   read: boolean;
+  read_at?: string;
   created_at: string;
   user_id: string;
+  experience_id?: string;
 }
 
 // Frontend notification shape with additional UI-specific properties
-interface Notification {
+export interface Notification {
   id: string;
   title: string;
   content: string;
@@ -41,13 +43,18 @@ interface NotificationFilters {
   is_read?: boolean;
 }
 
+const isValidNotificationCategory = (type: string): type is NotificationCategory => {
+  return ['project_request', 'project_match', 'submission_update', 
+          'review_reminder', 'message_alert', 'milestone_alert', 'system'].includes(type);
+};
+
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', filters],
+    queryKey: ['notifications', filters] as const,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -74,7 +81,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
         id: n.id,
         title: n.title,
         content: n.message || '',
-        category: n.type,
+        category: isValidNotificationCategory(n.type) ? n.type : 'system',
         priority: 'general' as NotificationPriority,
         is_read: n.read,
         is_archived: false,

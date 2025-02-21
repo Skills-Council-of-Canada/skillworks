@@ -1,9 +1,8 @@
-
 import { useCallback, useState } from "react";
 import { Bell, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications, NotificationCategory, NotificationPriority } from "@/hooks/useNotifications";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,7 +13,7 @@ const priorityColors = {
   critical: "bg-red-500 text-white",
   important: "bg-yellow-500 text-white",
   general: "bg-blue-500 text-white",
-};
+} as const;
 
 const categoryIcons = {
   project_request: AlertCircle,
@@ -24,11 +23,11 @@ const categoryIcons = {
   message_alert: Bell,
   milestone_alert: Bell,
   system: Bell,
-};
+} as const;
 
 export default function NotificationsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
-  const [selectedPriority, setSelectedPriority] = useState<string | undefined>();
+  const [selectedCategory, setSelectedCategory] = useState<NotificationCategory | undefined>();
+  const [selectedPriority, setSelectedPriority] = useState<NotificationPriority | undefined>();
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [activeTab, setActiveTab] = useState("notifications");
 
