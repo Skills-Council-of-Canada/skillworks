@@ -21,7 +21,6 @@ import {
 import { MoreVertical } from "lucide-react";
 
 const EducatorMessages = () => {
-  // This would normally be driven by real data
   const hasNewRequests = true;
 
   return (
@@ -29,24 +28,24 @@ const EducatorMessages = () => {
       {/* Left Panel - Chat List */}
       <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold">Conversations</h3>
+          <h3 className="font-semibold text-gray-900 dark:text-white">Conversations</h3>
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white border shadow-lg rounded-lg" style={{ backgroundColor: 'white' }}>
-                <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem>Pin Chat</DropdownMenuItem>
+                <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">Delete Chat</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative text-gray-700 dark:text-gray-300">
                   <BellDot className="h-5 w-5" />
                   {hasNewRequests && (
                     <Badge 
@@ -59,14 +58,14 @@ const EducatorMessages = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent 
-                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
+                className="w-80 p-0" 
                 align="end"
                 sideOffset={5}
               >
-                <div className="p-4 border-b bg-background">
-                  <h4 className="font-semibold">Chat Requests</h4>
+                <div className="p-4 border-b">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Chat Requests</h4>
                 </div>
-                <ScrollArea className="h-[300px] bg-background">
+                <ScrollArea className="h-[300px]">
                   <div className="p-4 space-y-4">
                     <RequestItem
                       name="Jane Smith"
@@ -105,11 +104,11 @@ interface RequestItemProps {
 
 const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
-    <div className="border rounded-lg p-3 space-y-2 bg-background">
+    <div className="border rounded-lg p-3 space-y-2">
       <div>
-        <h4 className="font-semibold text-sm">{name}</h4>
-        <p className="text-sm text-muted-foreground">{message}</p>
-        <span className="text-xs text-muted-foreground">{timestamp}</span>
+        <h4 className="font-semibold text-sm text-gray-900 dark:text-white">{name}</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{message}</p>
+        <span className="text-xs text-gray-500 dark:text-gray-400">{timestamp}</span>
       </div>
       <div className="flex gap-2">
         <Button size="sm" className="w-full">Accept</Button>

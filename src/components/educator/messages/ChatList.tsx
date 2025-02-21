@@ -12,18 +12,22 @@ export const ChatList = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="p-4 border-b">
+      <div className="p-4 border-b bg-background">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
             <Input
               placeholder="Search chats..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
           </div>
-          <Button size="icon" variant="outline">
+          <Button 
+            size="icon" 
+            variant="outline"
+            className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
+          >
             <Plus className="h-4 w-4" />
           </Button>
         </div>
@@ -32,7 +36,7 @@ export const ChatList = () => {
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-muted-foreground px-2">Direct Messages</h3>
+            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 px-2">Direct Messages</h3>
             {/* Direct Messages List */}
             <ChatListItem
               name="John Doe"
@@ -45,7 +49,7 @@ export const ChatList = () => {
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-muted-foreground px-2">Group Chats</h3>
+            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 px-2">Group Chats</h3>
             {/* Group Chats List */}
             <ChatListItem
               name="Project Alpha Team"
@@ -75,26 +79,31 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
     <Button
       variant="ghost"
       className={cn(
-        "w-full flex flex-col items-start p-3 h-auto gap-1 hover:bg-accent",
-        active && "bg-accent"
+        "w-full flex flex-col items-start p-3 h-auto gap-1",
+        "hover:bg-accent text-left",
+        active && "bg-accent",
+        "text-gray-900 dark:text-white"
       )}
     >
       <div className="flex items-start justify-between w-full">
         <div className="flex items-center gap-3">
           {isGroup ? (
-            <Users className="h-8 w-8 text-muted-foreground" />
+            <Users className="h-8 w-8 text-gray-600 dark:text-gray-400" />
           ) : (
-            <MessageSquare className="h-8 w-8 text-muted-foreground" />
+            <MessageSquare className="h-8 w-8 text-gray-600 dark:text-gray-400" />
           )}
-          <div className="text-left">
+          <div>
             <h4 className="font-semibold line-clamp-1">{name}</h4>
-            <p className="text-sm text-muted-foreground line-clamp-1">{message}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">{message}</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <span className="text-xs text-muted-foreground">{timestamp}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{timestamp}</span>
           {unreadCount && unreadCount > 0 && (
-            <Badge variant="default" className="h-5 w-5 flex items-center justify-center rounded-full">
+            <Badge 
+              variant="default" 
+              className="h-5 w-5 flex items-center justify-center rounded-full bg-primary text-primary-foreground"
+            >
               {unreadCount}
             </Badge>
           )}
