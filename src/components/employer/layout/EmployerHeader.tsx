@@ -51,7 +51,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative"
+                className="relative text-foreground hover:text-foreground focus:text-foreground"
                 onClick={() => navigate('/employer/notifications')}
               >
                 <Bell className="h-5 w-5" />
@@ -67,7 +67,11 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="text-foreground hover:text-foreground focus:text-foreground"
+              >
                 <HelpCircle className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
@@ -81,7 +85,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
           <DropdownMenuTrigger asChild>
             <Button 
               variant="ghost" 
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-foreground hover:text-foreground focus:text-foreground"
               style={{ backgroundColor: 'transparent' }}
             >
               <Avatar className="h-8 w-8">
@@ -89,28 +93,31 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
                   {getInitials(user?.name || "")}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm hidden md:inline-block">
+              <span className="text-sm hidden md:inline-block font-medium">
                 {user?.name}
               </span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-white border shadow-lg">
+          <DropdownMenuContent 
+            className="w-56 bg-white border shadow-lg" 
+            align="end"
+          >
             <DropdownMenuItem 
-              className="hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground"
+              className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
               onClick={() => navigate('/employer/settings')}
             >
               Profile Settings
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className="hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground"
+              className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
               onClick={() => navigate('/employer/settings')}
             >
               Company Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive hover:bg-gray-100 focus:bg-gray-100 focus:text-destructive"
+              className="text-destructive hover:bg-gray-100 focus:bg-gray-100 focus:text-destructive cursor-pointer"
               onClick={logout}
             >
               Log Out
