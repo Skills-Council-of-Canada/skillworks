@@ -50,8 +50,16 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
   return (
     <header className="border-b">
       <div className="flex h-16 items-center px-4 gap-4">
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold">{pageTitle}</h1>
+        <div className="flex-1 flex items-center">
+          {pageTitle === "Dashboard" ? (
+            <img 
+              src="/lovable-uploads/94a47665-7d23-445b-bbf6-888c7af17c65.png" 
+              alt="Skills Council Logo" 
+              className="h-8 w-auto"
+            />
+          ) : (
+            <h1 className="text-2xl font-semibold">{pageTitle}</h1>
+          )}
         </div>
 
         <div className="flex items-center gap-4">
