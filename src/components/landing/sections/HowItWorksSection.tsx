@@ -42,13 +42,6 @@ export const HowItWorksSection = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-20">
           {steps.map((step, index) => (
             <div key={index} className="relative">
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 right-0 w-full h-0.5 bg-primary/10">
-                  <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-white p-1 rounded-full">
-                    <ArrowRight className="text-primary w-5 h-5" />
-                  </div>
-                </div>
-              )}
               <div className="flex flex-col items-center text-center space-y-6">
                 <div className="bg-primary/5 p-6 rounded-2xl shadow-sm border border-primary/10">
                   <step.icon className="w-10 h-10 text-primary" />
