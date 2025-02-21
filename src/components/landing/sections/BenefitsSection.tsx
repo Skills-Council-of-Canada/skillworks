@@ -43,23 +43,23 @@ export const BenefitsSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-[#1A1F2C]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-[#1A1F2C]">The Benefits Of this Platform</h2>
-          <p className="text-xl text-gray-600">An ecosystem that brings together real change for opportunity</p>
+          <h2 className="text-4xl font-bold mb-4 text-white">The Benefits Of this Platform</h2>
+          <p className="text-xl text-gray-300">An ecosystem that brings together real change for opportunity</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
-            <div key={index} className="bg-white p-8 rounded-lg shadow-lg">
+            <div key={index} className="bg-white/10 p-8 rounded-lg backdrop-blur-sm">
               <div className="flex items-start space-x-4">
-                <div className="bg-primary/10 p-3 rounded-lg">
-                  <benefit.icon className="w-6 h-6 text-primary" />
+                <div className="bg-white/10 p-3 rounded-lg">
+                  <benefit.icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-                  <p className="text-gray-600">{benefit.description}</p>
+                  <h3 className="text-xl font-semibold mb-2 text-white">{benefit.title}</h3>
+                  <p className="text-gray-300">{benefit.description}</p>
                 </div>
               </div>
             </div>
