@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,9 +45,10 @@ const isValidNotificationCategory = (type: string): type is NotificationCategory
           'review_reminder', 'message_alert', 'milestone_alert', 'system'].includes(type);
 };
 
-type NotificationsQueryKey = ['notifications', { 
+// Define a fixed type for the query key
+type NotificationsQueryKey = readonly ['notifications', {
   category: NotificationCategory | null;
-  priority: NotificationPriority | null; 
+  priority: NotificationPriority | null;
   is_read: boolean | null;
 }];
 
@@ -55,8 +57,14 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const queryOptions = {
+    category: filters?.category ?? null,
+    priority: filters?.priority ?? null,
+    is_read: filters?.is_read ?? null,
+  } as const;
+
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', filters] as const,
+    queryKey: ['notifications', queryOptions] satisfies NotificationsQueryKey,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
