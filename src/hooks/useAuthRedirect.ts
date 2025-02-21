@@ -23,11 +23,11 @@ export const useAuthRedirect = () => {
     // Default role-based redirects
     switch (role) {
       case "admin":
-        return "/admin";
+        return "/admin/dashboard"; // Updated to include /dashboard
       case "employer":
         return "/employer/dashboard";
       case "educator":
-        return "/educator";
+        return "/educator/dashboard";
       case "participant":
         return "/participant/dashboard";
       default:
@@ -38,4 +38,3 @@ export const useAuthRedirect = () => {
 
   return { getRoleBasedRedirect };
 };
-
