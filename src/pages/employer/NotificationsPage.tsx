@@ -1,4 +1,3 @@
-
 import { useCallback, useState } from "react";
 import { Bell, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -7,6 +6,8 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { NotificationsSettings } from "../admin/components/settings/NotificationsSettings";
 
 const priorityColors = {
   critical: "bg-red-500",
@@ -28,6 +29,7 @@ export default function NotificationsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>();
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  const [activeTab, setActiveTab] = useState("notifications");
 
   const { notifications, isLoading, markAsRead } = useNotifications({
     category: selectedCategory,
@@ -51,7 +53,7 @@ export default function NotificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="container max-w-3xl mx-auto py-6 space-y-6">
+      <div className="container max-w-4xl mx-auto py-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
           <Bell className="h-5 w-5" />
           <h1 className="text-2xl font-semibold">Notifications</h1>
@@ -64,7 +66,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="container max-w-3xl mx-auto py-6 space-y-6">
+    <div className="container max-w-4xl mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Bell className="h-5 w-5" />
@@ -83,59 +85,73 @@ export default function NotificationsPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {notifications?.length === 0 ? (
-          <Card className="p-6 text-center text-muted-foreground">
-            No notifications yet
-          </Card>
-        ) : (
-          notifications?.map((notification) => {
-            const Icon = categoryIcons[notification.category];
-            return (
-              <Card
-                key={notification.id}
-                className={`p-4 hover:bg-accent/50 transition-colors ${
-                  !notification.is_read ? 'border-l-4 border-l-blue-500' : ''
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="font-medium">{notification.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {notification.content}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant="secondary">
-                        {notification.category.replace('_', ' ')}
-                      </Badge>
-                      <Badge 
-                        className={priorityColors[notification.priority]}
-                      >
-                        {notification.priority}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(notification.created_at), 'PPp')}
-                      </span>
-                    </div>
-                  </div>
-                  {!notification.is_read && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleMarkAsRead(notification.id)}
-                    >
-                      Mark as Read
-                    </Button>
-                  )}
-                </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+        <TabsContent value="notifications" className="mt-6">
+          <div className="space-y-4">
+            {notifications?.length === 0 ? (
+              <Card className="p-6 text-center text-muted-foreground">
+                No notifications yet
               </Card>
-            )
-          })
-        )}
-      </div>
+            ) : (
+              notifications?.map((notification) => {
+                const Icon = categoryIcons[notification.category];
+                return (
+                  <Card
+                    key={notification.id}
+                    className={`p-4 hover:bg-accent/50 transition-colors ${
+                      !notification.is_read ? 'border-l-4 border-l-blue-500' : ''
+                    }`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-medium">{notification.title}</h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {notification.content}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="secondary">
+                            {notification.category.replace('_', ' ')}
+                          </Badge>
+                          <Badge 
+                            className={priorityColors[notification.priority]}
+                          >
+                            {notification.priority}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {format(new Date(notification.created_at), 'PPp')}
+                          </span>
+                        </div>
+                      </div>
+                      {!notification.is_read && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMarkAsRead(notification.id)}
+                        >
+                          Mark as Read
+                        </Button>
+                      )}
+                    </div>
+                  </Card>
+                )
+              })
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="settings" className="mt-6">
+          <NotificationsSettings
+            settings={[]}
+            isLoading={false}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

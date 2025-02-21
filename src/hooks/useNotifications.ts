@@ -48,7 +48,7 @@ export const useNotifications = (filters?: {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as Notification[];
+      return data as unknown as Notification[];
     },
     enabled: !!user?.id,
   });
@@ -56,7 +56,10 @@ export const useNotifications = (filters?: {
   const markAsRead = useMutation({
     mutationFn: async (notificationIds: string[]) => {
       const { error } = await supabase
-        .rpc('mark_notifications_as_read', { notification_ids: notificationIds });
+        .from('notifications')
+        .update({ is_read: true })
+        .in('id', notificationIds)
+        .eq('user_id', user?.id);
       if (error) throw error;
     },
     onSuccess: () => {
