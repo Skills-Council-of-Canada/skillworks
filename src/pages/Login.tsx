@@ -3,6 +3,8 @@ import AuthForm from "@/components/auth/AuthForm";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { useState } from "react";
 import { UserRole } from "@/types/auth";
+import { Building2 } from "lucide-react";
+import { portals } from "@/components/auth/PortalSelection";
 
 const Login = () => {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
