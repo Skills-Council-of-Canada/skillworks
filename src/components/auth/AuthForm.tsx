@@ -4,24 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Eye, EyeOff, UserCircle } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuthFormProps {
-  icon: LucideIcon;
-  title: string;
-  gradient: string;
-  isLoading: boolean;
-  onSubmit: (email: string, password: string, isSignUp: boolean) => Promise<void>;
+  icon?: LucideIcon;
+  title?: string;
+  gradient?: string;
+  isLoading?: boolean;
+  onBack: () => void;
+  onSubmit?: (email: string, password: string, isSignUp: boolean) => Promise<void>;
 }
 
 const AuthForm = ({
-  icon: Icon,
-  title,
-  gradient,
-  isLoading,
-  onSubmit,
+  icon: Icon = UserCircle,
+  title = "Welcome Back",
+  gradient = "bg-gradient-to-br from-blue-500/10 to-purple-500/10",
+  isLoading = false,
+  onBack,
+  onSubmit = async () => {},
 }: AuthFormProps) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +50,14 @@ const AuthForm = ({
   return (
     <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
       <div className="text-center">
+        <Button
+          variant="ghost"
+          className="mb-4"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
         <div className="flex flex-col items-center gap-4">
           <Icon className="h-16 w-16 text-primary" />
           <h2 className="text-4xl font-bold text-secondary">{title}</h2>
