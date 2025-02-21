@@ -47,11 +47,12 @@ const AuthForm = ({
 
   return (
     <div className={`w-full max-w-md space-y-8 animate-fadeIn`}>
-      <div className="text-center">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold text-primary">Login</h1>
         <p className="text-secondary/60">Sign in to your account</p>
       </div>
 
-      <Card className="p-6 bg-card/50 backdrop-blur-sm shadow-xl border-0">
+      <Card className="p-6 bg-card/50 backdrop-blur-sm shadow-xl">
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-1 mb-6">
             <TabsTrigger value="login" className="w-full">Login</TabsTrigger>
