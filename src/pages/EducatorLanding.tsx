@@ -104,7 +104,7 @@ const EducatorLanding = () => {
               <h1 className="text-4xl md:text-5xl font-bold leading-tight">
                 Transform Learning with Real-World Projects & Employer Partnership
               </h1>
-              <p className="text-lg">
+              <p className="text-lg opacity-90">
                 Empower your students with hands-on, career-aligned experiences—directly integrated into your curriculum.
               </p>
             </div>
