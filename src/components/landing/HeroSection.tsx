@@ -15,8 +15,7 @@ const HeroSection = () => {
               Connect with Skilled Trade Professionals
             </h1>
             <p className="text-lg text-white">
-              Your gateway to finding and hiring qualified trade professionals.
-              Streamline your recruitment process and build your workforce efficiently.
+              Connect with top companies, gain hands-on experience, and build your career—all in one platform.
             </p>
             <div>
               <Button
