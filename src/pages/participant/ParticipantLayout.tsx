@@ -145,7 +145,7 @@ const ParticipantLayout = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]"
+              className="relative bg-white text-[#1A1F2C] hover:bg-white"
             >
               <Bell className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
