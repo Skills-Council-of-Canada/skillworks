@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -83,9 +84,11 @@ const ParticipantLanding = () => {
             >
               <Home className="h-5 w-5" />
             </Button>
-            <div className="text-2xl font-bold text-primary flex items-center gap-2">
-              Skill <Link2 className="h-5 w-5" /> Works - Participant Portal
-            </div>
+            <img 
+              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+              alt="Skill Works Logo" 
+              className="h-8"
+            />
           </div>
           <div className="flex gap-4">
             <Button
