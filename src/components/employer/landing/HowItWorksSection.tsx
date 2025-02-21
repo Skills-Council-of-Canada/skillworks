@@ -33,7 +33,7 @@ export const HowItWorksSection = () => {
     <section className="py-16 px-4 bg-primary">
       <div className="container mx-auto max-w-6xl">
         <h2 className="text-3xl font-bold text-center text-white mb-12">
-          How It Works
+          How TradesConnect Works
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {steps.map((step, index) => (
