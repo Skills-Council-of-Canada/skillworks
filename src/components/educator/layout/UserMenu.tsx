@@ -1,5 +1,5 @@
 
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -9,11 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -31,17 +26,6 @@ export const UserMenu = () => {
 
   return (
     <div className="flex items-center gap-4">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" className="bg-transparent">
-            <HelpCircle className="h-5 w-5" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent className="bg-background border shadow-lg">
-          <p>Help & Support</p>
-        </TooltipContent>
-      </Tooltip>
-
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex items-center gap-2 bg-transparent">
