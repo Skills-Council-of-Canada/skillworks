@@ -100,11 +100,11 @@ const EducatorLanding = () => {
       <section className="pt-32 pb-20 px-4 bg-[#1A1F2C]">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 text-white">
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+            <div className="space-y-6">
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight text-white">
                 Transform Learning with Real-World Projects & Employer Partnership
               </h1>
-              <p className="text-lg opacity-90">
+              <p className="text-lg text-white/90">
                 Empower your students with hands-on, career-aligned experiences—directly integrated into your curriculum.
               </p>
             </div>
