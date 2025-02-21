@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, Users, CheckCircle, Home } from "lucide-react";
@@ -38,10 +39,10 @@ const ParticipantLanding = () => {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                Engage Top Emerging Talent & Build Your Future Career
+                Kickstart Your Career with Hands-On Experience
               </h1>
               <p className="text-lg text-white">
-                Connect with employers who are looking for talented professionals like you. Get real-world experience through projects, internships, and work-integrated learning.
+                Work on real projects with top companies. Build your resume. Land your dream job.
               </p>
               <div className="flex gap-4">
                 <Button
