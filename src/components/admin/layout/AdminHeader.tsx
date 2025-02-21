@@ -1,16 +1,22 @@
 
-import { User, Bell } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, Bell, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 
 interface AdminHeaderProps {
@@ -47,54 +53,95 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
     }
   };
 
+  const getInitials = (name: string) => {
+    return name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
-    <header className="border-b">
-      <div className="flex h-16 items-center px-4 gap-4">
-        <div className="flex-1 flex items-center">
-          {pageTitle === "Dashboard" ? (
-            <img 
-              src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
-              alt="Skills Works Logo" 
-              className="h-8 w-auto"
-            />
-          ) : (
-            <h1 className="text-2xl font-semibold">{pageTitle}</h1>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          {user ? (
-            <>
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
+    <header className="h-16 border-b flex items-center px-6 bg-card justify-between">
+      <div className="flex items-center gap-2">
+        {pageTitle === "Dashboard" ? (
+          <img 
+            src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
+            alt="Skills Works Logo" 
+            className="h-8"
+          />
+        ) : (
+          <h1 className="text-2xl font-semibold">{pageTitle}</h1>
+        )}
+      </div>
+      
+      <div className="flex items-center gap-4">
+        {user ? (
+          <>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
+                    onClick={() => navigate('/admin/notifications')}
+                  >
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
+                      3
+                    </span>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white border shadow-lg">
-                  <DropdownMenuLabel>
-                    {user?.email}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => {
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Notifications</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center gap-2 hover:bg-transparent"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-[#1A1F2C] text-white">
+                      {getInitials(user?.name || "A")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm hidden md:inline-block">
+                    {user?.name || user?.email}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
+                <DropdownMenuItem 
+                  className="hover:bg-gray-100"
+                  onClick={() => navigate('/admin/settings')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="text-red-500 hover:bg-gray-100 focus:text-red-500"
+                  onClick={() => {
                     logout();
                     navigate('/login');
-                  }}>
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          ) : (
-            <Button onClick={handleAdminLogin}>
-              Admin Login
-            </Button>
-          )}
-        </div>
+                  }}
+                >
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
+        ) : (
+          <Button onClick={handleAdminLogin}>
+            Admin Login
+          </Button>
+        )}
       </div>
     </header>
   );
