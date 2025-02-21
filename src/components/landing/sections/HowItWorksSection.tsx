@@ -63,7 +63,7 @@ export const HowItWorksSection = () => {
           <Button 
             size="lg"
             onClick={() => navigate("/login")}
-            className="group bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg h-auto"
+            className="group bg-[#ea384c] hover:bg-[#ea384c]/90 text-white px-8 py-6 text-lg h-auto"
           >
             Join Now – It's Free!
             <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
