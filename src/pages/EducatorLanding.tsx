@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -170,28 +169,6 @@ const EducatorLanding = () => {
               className="bg-[#8B0000] hover:bg-[#8B0000]/90 text-white gap-2"
             >
               Join Now – It's Free! <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20 px-4 bg-secondary">
-        <div className="container mx-auto max-w-4xl text-center">
-          <div className="flex flex-col items-center gap-6">
-            <GraduationCap className="h-16 w-16 text-white/90" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Ready to Transform Your Teaching?
-            </h2>
-            <p className="text-lg text-white/80 max-w-2xl">
-              Join our community of educators who are revolutionizing skilled trades education.
-            </p>
-            <Button
-              size="lg"
-              onClick={() => navigate("/educator/registration")}
-              className="bg-white text-secondary hover:bg-white/90 mt-4"
-            >
-              Get Started Today
             </Button>
           </div>
         </div>
