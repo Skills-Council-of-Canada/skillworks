@@ -29,9 +29,13 @@ const HeroSection = () => {
           </div>
           <div className="hidden md:block">
             <img
-              src="/placeholder.svg"
-              alt="Skilled trades professionals"
-              className="rounded-lg shadow-xl"
+              src="/lovable-uploads/09ce0ccb-99ed-4905-a10b-116026b9384c.png"
+              alt="Diverse group of professionals including business, medical, engineering, and culinary workers"
+              className="rounded-lg shadow-xl w-full h-[400px] object-cover"
+              onError={(e) => {
+                console.error('Image failed to load:', e);
+                e.currentTarget.style.display = 'none';
+              }}
             />
           </div>
         </div>
