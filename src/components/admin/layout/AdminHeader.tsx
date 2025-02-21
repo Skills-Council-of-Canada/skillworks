@@ -53,8 +53,8 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
         <div className="flex-1 flex items-center">
           {pageTitle === "Dashboard" ? (
             <img 
-              src="/lovable-uploads/42ebac45-0615-46c7-bec5-a1654e77b84d.png" 
-              alt="Skills Council Logo" 
+              src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
+              alt="Skills Works Logo" 
               className="h-8 w-auto"
             />
           ) : (
