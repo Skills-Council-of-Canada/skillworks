@@ -25,7 +25,7 @@ const PortalCard = ({
 }: PortalCardProps) => {
   return (
     <Card 
-      className="p-6 bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 -mb-24"
+      className="p-6 bg-[#F5F5DC] border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 -mb-24"
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <Icon className="h-12 w-12 text-primary" />
