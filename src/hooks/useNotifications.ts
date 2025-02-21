@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,14 +56,12 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const queryOptions = {
-    category: filters?.category ?? null,
-    priority: filters?.priority ?? null,
-    is_read: filters?.is_read ?? null,
-  } as const;
-
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', queryOptions] satisfies NotificationsQueryKey,
+    queryKey: ['notifications', {
+      category: filters?.category || null,
+      priority: filters?.priority || null,
+      is_read: filters?.is_read || null
+    }],
     queryFn: async () => {
       let query = supabase
         .from('notifications')
