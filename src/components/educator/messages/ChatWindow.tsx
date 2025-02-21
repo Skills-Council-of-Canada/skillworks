@@ -27,16 +27,16 @@ export const ChatWindow = () => {
         <div className="space-y-4">
           {/* Example messages */}
           <div className="flex items-start gap-2 max-w-[80%]">
-            <div className="rounded-lg bg-muted p-3">
+            <div className="rounded-lg bg-blue-500 text-white p-3">
               <p className="text-sm">Hello! How can I help you today?</p>
-              <span className="text-xs text-muted-foreground mt-1">12:30 PM</span>
+              <span className="text-xs text-blue-100 mt-1">12:30 PM</span>
             </div>
           </div>
 
           <div className="flex items-start gap-2 max-w-[80%] ml-auto">
-            <div className="rounded-lg bg-primary text-primary-foreground p-3">
+            <div className="rounded-lg bg-emerald-500 text-white p-3">
               <p className="text-sm">I had a question about the project timeline.</p>
-              <span className="text-xs text-primary-foreground/70 mt-1">12:31 PM ✓✓</span>
+              <span className="text-xs text-emerald-100 mt-1">12:31 PM ✓✓</span>
             </div>
           </div>
         </div>
@@ -45,10 +45,10 @@ export const ChatWindow = () => {
       {/* Message Input */}
       <div className="border-t p-4 bg-background">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-600 hover:bg-blue-50">
             <Paperclip className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-600 hover:bg-blue-50">
             <Smile className="h-4 w-4" />
           </Button>
           <Input
@@ -57,7 +57,7 @@ export const ChatWindow = () => {
             onChange={(e) => setMessage(e.target.value)}
             className="flex-1"
           />
-          <Button size="icon">
+          <Button size="icon" className="bg-emerald-500 hover:bg-emerald-600 text-white">
             <Send className="h-4 w-4" />
           </Button>
         </div>

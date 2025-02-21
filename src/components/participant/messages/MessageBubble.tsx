@@ -1,44 +1,43 @@
 
-import { format } from "date-fns";
-import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { MessageReactions } from "./MessageReactions";
-import type { Message } from "@/types/message";
+import { format } from "date-fns";
 
 interface MessageBubbleProps {
-  message: Message;
-  onReactionAdd: (messageId: string, emoji: string) => void;
+  content: string;
+  timestamp: Date;
+  isCurrentUser: boolean;
+  status?: "sent" | "delivered" | "read";
 }
 
-export const MessageBubble = ({ message, onReactionAdd }: MessageBubbleProps) => {
+export const MessageBubble = ({ content, timestamp, isCurrentUser, status }: MessageBubbleProps) => {
   return (
     <div
       className={cn(
-        "message-bubble flex items-start gap-3 group animate-in fade-in-0",
-        message.senderType === "participant" && "flex-row-reverse"
+        "flex items-start gap-2 max-w-[80%] animate-in fade-in-0 slide-in-from-bottom-1",
+        isCurrentUser && "ml-auto"
       )}
     >
-      <Avatar className="h-8 w-8 shrink-0 border-2 border-background shadow-md" />
-      <div className="flex flex-col gap-1 max-w-[80%]">
-        <div
-          className={cn(
-            "rounded-lg p-3 shadow-sm",
-            message.senderType === "participant"
-              ? "bg-primary text-primary-foreground rounded-tr-none"
-              : "bg-muted/50 backdrop-blur-sm rounded-tl-none"
-          )}
-        >
-          <p className="text-sm break-words leading-relaxed">{message.content}</p>
-        </div>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground/70">
-            {format(message.timestamp, "p")}
+      <div
+        className={cn(
+          "rounded-lg p-3",
+          isCurrentUser
+            ? "bg-emerald-500 text-white rounded-tr-none"
+            : "bg-blue-500 text-white rounded-tl-none"
+        )}
+      >
+        <p className="text-sm break-words">{content}</p>
+        <div className="flex items-center justify-end gap-1 mt-1">
+          <span className={cn(
+            "text-xs",
+            isCurrentUser ? "text-emerald-100" : "text-blue-100"
+          )}>
+            {format(timestamp, "p")}
           </span>
-          <MessageReactions
-            messageId={message.id}
-            reactions={message.reactions || []}
-            onReactionAdd={(emoji) => onReactionAdd(message.id, emoji)}
-          />
+          {isCurrentUser && status && (
+            <span className="text-xs text-emerald-100">
+              {status === "read" ? "✓✓" : "✓"}
+            </span>
+          )}
         </div>
       </div>
     </div>
