@@ -39,7 +39,7 @@ export const BenefitsSection = () => {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg bg-gray-50"
+              className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg bg-gray-100 shadow-md hover:shadow-lg transition-shadow"
             >
               {benefit.icon}
               <h3 className="text-xl font-semibold text-primary">{benefit.title}</h3>
