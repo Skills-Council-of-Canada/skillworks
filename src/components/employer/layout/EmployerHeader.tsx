@@ -51,7 +51,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative text-foreground hover:text-foreground focus:text-foreground"
+                className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
                 onClick={() => navigate('/employer/notifications')}
               >
                 <Bell className="h-5 w-5" />
