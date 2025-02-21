@@ -4,21 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-type Notification = {
-  id: string;
-  title: string;
-  content: string;
-  category: 'project_request' | 'project_match' | 'submission_update' | 'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
-  priority: 'critical' | 'important' | 'general';
-  is_read: boolean;
-  is_archived: boolean;
-  created_at: string;
-  action_url?: string;
-  action_text?: string;
-  metadata: Record<string, any>;
-};
+// Define the notification category and priority as literal types
+type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
+                          'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
+type NotificationPriority = 'critical' | 'important' | 'general';
 
-type DatabaseNotification = {
+// Separate interface for the database structure
+interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
@@ -26,13 +18,29 @@ type DatabaseNotification = {
   read: boolean;
   created_at: string;
   user_id: string;
-};
+}
 
-type NotificationFilters = {
+// Separate interface for the transformed notification
+interface Notification {
+  id: string;
+  title: string;
+  content: string;
+  category: NotificationCategory;
+  priority: NotificationPriority;
+  is_read: boolean;
+  is_archived: boolean;
+  created_at: string;
+  action_url?: string;
+  action_text?: string;
+  metadata: Record<string, unknown>;
+}
+
+// Explicitly type the filters
+interface NotificationFilters {
   category?: string;
   priority?: string;
   is_read?: boolean;
-};
+}
 
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
@@ -48,6 +56,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
+      // Apply filters if they exist
       if (filters?.category) {
         query = query.eq('type', filters.category);
       }
@@ -61,12 +70,13 @@ export const useNotifications = (filters?: NotificationFilters) => {
       const { data, error } = await query;
       if (error) throw error;
       
-      return (data ?? []).map((n: DatabaseNotification) => ({
+      // Transform the database results to the Notification interface
+      return (data || []).map((n: DatabaseNotification) => ({
         id: n.id,
         title: n.title,
         content: n.message || '',
-        category: n.type as Notification['category'],
-        priority: 'general' as const,
+        category: n.type as NotificationCategory,
+        priority: 'general' as NotificationPriority,
         is_read: n.read,
         is_archived: false,
         created_at: n.created_at,
