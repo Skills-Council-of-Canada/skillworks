@@ -4,7 +4,8 @@ import {
   Puzzle,
   GraduationCap,
   Users,
-  Zap
+  Zap,
+  Wrench
 } from "lucide-react";
 
 export const BenefitsSection = () => {
@@ -33,6 +34,11 @@ export const BenefitsSection = () => {
       icon: Zap,
       title: "Fast & Easy to Use",
       description: "No complex applications, just real experience."
+    },
+    {
+      icon: Wrench,
+      title: "Skilled Trade Pathways",
+      description: "Direct routes to trade certifications and apprenticeships."
     }
   ];
 
