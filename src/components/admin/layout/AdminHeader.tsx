@@ -87,7 +87,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                     className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
                     onClick={() => navigate('/admin/notifications')}
                   >
-                    <Bell className="h-5 w-4" />
+                    <Bell className="h-5 w-5" />
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
                       3
                     </span>
@@ -113,23 +113,23 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <span className="text-sm font-medium text-foreground">
                     {user?.name || user?.email}
                   </span>
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4 text-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
-                className="w-56 shadow-none hover:bg-transparent focus:bg-transparent"
+                className="w-56 bg-white border shadow-sm"
               >
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/settings')}
-                  className="hover:bg-transparent focus:bg-transparent cursor-pointer"
+                  className="hover:bg-gray-50 cursor-pointer"
                 >
                   <User className="mr-2 h-4 w-4" />
                   Profile Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  className="text-red-500 focus:text-red-500 hover:bg-transparent focus:bg-transparent cursor-pointer"
+                  className="text-red-500 hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
                     logout();
                     navigate('/login');
