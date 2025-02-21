@@ -100,19 +100,19 @@ const EducatorLanding = () => {
       <section className="pt-32 pb-20 px-4 bg-[#1A1F2C]">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+            <div className="space-y-6 text-white">
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
                 Transform Learning with Real-World Projects & Employer Partnership
               </h1>
-              <p className="text-lg text-white/70">
+              <p className="text-lg">
                 Empower your students with hands-on, career-aligned experiences—directly integrated into your curriculum.
               </p>
             </div>
             <div className="hidden md:block relative">
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg" />
               <img
-                src="/lovable-uploads/e9fd4aeb-4a35-479d-941f-cfeba95591d2.png"
-                alt="Student using digital tablet with augmented reality in library"
+                src="/lovable-uploads/638ea052-fa93-4bd7-ba45-e71de765b2be.png"
+                alt="Professional pointing to success concept with light bulbs and planning diagram"
                 className="rounded-lg shadow-xl w-full object-cover h-[400px]"
               />
             </div>
