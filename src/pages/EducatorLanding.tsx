@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -87,7 +88,7 @@ const EducatorLanding = () => {
           <div>
             <Button
               onClick={() => navigate("/educator/registration")}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-[#8B0000] hover:bg-[#8B0000]/90"
             >
               Sign Up
             </Button>
