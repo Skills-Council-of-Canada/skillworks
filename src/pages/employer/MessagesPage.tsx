@@ -1,5 +1,6 @@
 
-import { BellDot, MoreVertical, ChevronLeft } from "lucide-react";
+import { BellDot, MoreVertical } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,42 +18,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConversationList } from "@/components/employer/messages/ConversationList";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const MessagesPage = () => {
   const [isMobileListVisible, setIsMobileListVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const hasNewRequests = true;
 
-  // Proper mobile detection with window resize handling
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Helper function to determine if we're on mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-background/95 p-2 md:p-4 gap-4">
+    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
       {/* Left Panel - Chat List */}
       <div
         className={cn(
           "w-full md:w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden",
           "transition-all duration-300 ease-in-out",
-          "fixed md:relative",
-          "inset-0 md:inset-auto",
-          "h-[calc(100vh-4rem)] md:h-full",
-          "z-30 md:z-auto",
+          "absolute md:relative",
+          "h-full z-10",
           !isMobileListVisible && "translate-x-[-100%] md:translate-x-0"
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <h3 className="font-semibold text-foreground text-lg">Conversations</h3>
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="font-semibold text-foreground">Conversations</h3>
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -96,7 +85,7 @@ const MessagesPage = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent 
-                className="w-[280px] sm:w-80 p-0 bg-background border shadow-lg rounded-lg" 
+                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
                 align="end"
                 sideOffset={5}
               >
@@ -129,22 +118,17 @@ const MessagesPage = () => {
         className={cn(
           "flex-1 bg-background border rounded-lg overflow-hidden",
           "transition-all duration-300 ease-in-out",
-          "fixed md:relative",
-          "inset-0 md:inset-auto",
-          "h-[calc(100vh-4rem)] md:h-full",
-          "z-20",
-          isMobile && isMobileListVisible ? "translate-x-[100%] md:translate-x-0" : "translate-x-0"
+          isMobile && isMobileListVisible ? "hidden" : "block"
         )}
       >
         {/* Mobile back button */}
         {isMobile && !isMobileListVisible && (
           <Button
             variant="ghost"
-            className="md:hidden absolute top-2 left-2 z-10"
+            className="md:hidden m-2"
             onClick={() => setIsMobileListVisible(true)}
           >
-            <ChevronLeft className="h-5 w-5 mr-1" />
-            Back
+            ← Back to conversations
           </Button>
         )}
         <ChatWindow onMobileBack={() => setIsMobileListVisible(true)} />
@@ -164,7 +148,7 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
     <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
         <h4 className="font-semibold text-sm text-foreground">{name}</h4>
-        <p className="text-sm text-foreground/80 line-clamp-2">{message}</p>
+        <p className="text-sm text-foreground/80">{message}</p>
         <span className="text-xs text-foreground/70">{timestamp}</span>
       </div>
       <div className="flex gap-2">
