@@ -42,17 +42,17 @@ export const UserMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
         <Link to="/participant/profile">
-          <DropdownMenuItem className="hover:bg-gray-100">
+          <DropdownMenuItem className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             View Profile
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="hover:bg-gray-100">
+        <DropdownMenuItem className="cursor-pointer">
           Notifications
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
-          className="text-red-500 hover:bg-gray-100"
+          className="text-red-500 cursor-pointer"
           onClick={logout}
         >
           <LogOut className="mr-2 h-4 w-4" />
