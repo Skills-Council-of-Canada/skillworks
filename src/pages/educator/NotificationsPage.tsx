@@ -40,26 +40,30 @@ const NotificationsPage = () => {
   );
 
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-4">
-        <h1 className="text-xl md:text-2xl font-bold">Notifications</h1>
-        <div className="w-full md:w-auto flex items-center gap-2">
-          {isMobile && (
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl font-bold">Notifications</h1>
+        
+        {/* Mobile Filter Controls */}
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {isMobile ? (
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="shrink-0">
-                  <SlidersHorizontal className="h-4 w-4 mr-1" />
-                  Filters
+                <Button variant="outline" className="w-full sm:w-auto">
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filter Notifications
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[280px]">
-                <div className="pt-2">
+                <div className="pt-6">
                   <SidebarContent />
                 </div>
               </SheetContent>
             </Sheet>
-          )}
-          <div className="w-full md:w-auto">
+          ) : null}
+          
+          <div className="w-full sm:w-auto">
             <NotificationFilters
               selectedType={selectedType}
               timeFilter={timeFilter}
@@ -70,13 +74,19 @@ const NotificationsPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Sidebar - Hidden on mobile, shown as sheet */}
         {!isMobile && (
-          <div className="md:col-span-3 sticky top-0">
-            <SidebarContent />
+          <div className="lg:col-span-3">
+            <div className="sticky top-6">
+              <SidebarContent />
+            </div>
           </div>
         )}
-        <div className="md:col-span-9">
+        
+        {/* Notifications List */}
+        <div className="lg:col-span-9">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}
