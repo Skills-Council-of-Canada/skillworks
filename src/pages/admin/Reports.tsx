@@ -9,9 +9,26 @@ import { MatchesTab } from "./components/reports/MatchesTab";
 import { LearnersTab } from "./components/reports/LearnersTab";
 import { DateRangePicker } from "./components/reports/DateRangePicker";
 import { ExportButton } from "./components/reports/ExportButton";
+import { useQuery } from "@tanstack/react-query";
 
 const Reports = () => {
   const [date, setDate] = useState<DateRange | undefined>();
+
+  const { data: registrationStats = [], isLoading: isRegistrationStatsLoading } = useQuery({
+    queryKey: ['stats', 'registrations', date],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
+
+  const { data: experienceStats = [], isLoading: isExperienceStatsLoading } = useQuery({
+    queryKey: ['stats', 'experiences', date],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -33,13 +50,16 @@ const Reports = () => {
         </TabsList>
         <div className="mt-6">
           <TabsContent value="overview">
-            <OverviewTab />
+            <OverviewTab 
+              registrationStats={registrationStats}
+              experienceStats={experienceStats}
+            />
           </TabsContent>
           <TabsContent value="registrations">
-            <RegistrationsTab registrationStats={[]} />
+            <RegistrationsTab registrationStats={registrationStats} />
           </TabsContent>
           <TabsContent value="experiences">
-            <ExperiencesTab experienceStats={[]} />
+            <ExperiencesTab experienceStats={experienceStats} />
           </TabsContent>
           <TabsContent value="matches">
             <MatchesTab projectMatchStats={[]} />

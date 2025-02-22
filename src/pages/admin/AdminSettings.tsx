@@ -6,8 +6,41 @@ import { BrandingSettings } from "./components/settings/BrandingSettings";
 import { SecuritySettings } from "./components/settings/SecuritySettings";
 import { NotificationsSettings } from "./components/settings/NotificationsSettings";
 import { ExperienceVisibilitySettings } from "./components/settings/ExperienceVisibilitySettings";
+import { useQuery } from "@tanstack/react-query";
 
 const AdminSettings = () => {
+  const { data: brandingSettings, isLoading: isBrandingLoading } = useQuery({
+    queryKey: ['settings', 'branding'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
+
+  const { data: securitySettings, isLoading: isSecurityLoading } = useQuery({
+    queryKey: ['settings', 'security'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
+
+  const { data: notificationSettings, isLoading: isNotificationLoading } = useQuery({
+    queryKey: ['settings', 'notifications'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
+
+  const { data: visibilitySettings, isLoading: isVisibilityLoading } = useQuery({
+    queryKey: ['settings', 'visibility'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [];
+    }
+  });
+
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -24,16 +57,16 @@ const AdminSettings = () => {
           </TabsList>
           <div className="p-6">
             <TabsContent value="branding">
-              <BrandingSettings />
+              <BrandingSettings settings={brandingSettings || []} isLoading={isBrandingLoading} />
             </TabsContent>
             <TabsContent value="security">
-              <SecuritySettings />
+              <SecuritySettings settings={securitySettings || []} isLoading={isSecurityLoading} />
             </TabsContent>
             <TabsContent value="notifications">
-              <NotificationsSettings settings={[]} isLoading={false} />
+              <NotificationsSettings settings={notificationSettings || []} isLoading={isNotificationLoading} />
             </TabsContent>
             <TabsContent value="visibility">
-              <ExperienceVisibilitySettings settings={[]} isLoading={false} />
+              <ExperienceVisibilitySettings settings={visibilitySettings || []} isLoading={isVisibilityLoading} />
             </TabsContent>
           </div>
         </Tabs>

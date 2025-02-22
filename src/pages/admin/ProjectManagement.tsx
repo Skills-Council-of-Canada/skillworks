@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ProjectFilters } from "./components/project-management/ProjectFilters";
 import { ProjectsTable } from "./components/project-management/ProjectsTable";
-import type { ProjectReviewStatus } from "./ProjectManagement";
+import { ProjectReviewStatus } from "./types/project";
 
 export type StatusFilterType = ProjectReviewStatus | "all";
 
@@ -26,7 +26,11 @@ const ProjectManagement = () => {
 
       <div className="overflow-x-auto -mx-4 md:mx-0">
         <div className="min-w-full inline-block align-middle">
-          <ProjectsTable searchQuery={searchQuery} statusFilter={statusFilter} />
+          <ProjectsTable 
+            onStatusChange={() => {}}
+            projects={[]}
+            isLoading={false}
+          />
         </div>
       </div>
     </div>
