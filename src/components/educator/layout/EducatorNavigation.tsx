@@ -106,6 +106,7 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
             <NavLink
               key={item.path}
               to={item.path}
+              end={item.path === "/educator/dashboard"}
               className={({ isActive }) =>
                 cn(
                   "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
@@ -153,6 +154,7 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
                 <SidebarMenuItem key={item.path}>
                   <NavLink
                     to={item.path}
+                    end={item.path === "/educator/dashboard"}
                     className={({ isActive }) =>
                       cn(
                         "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
