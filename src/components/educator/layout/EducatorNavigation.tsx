@@ -8,7 +8,9 @@ import {
   Briefcase,
   UserCheck,
   PanelLeft,
-  PanelRight
+  PanelRight,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { 
   SidebarContent,
@@ -20,6 +22,8 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface EducatorNavigationProps {
   userName: string;
@@ -28,6 +32,7 @@ interface EducatorNavigationProps {
 
 export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationProps) => {
   const { state } = useSidebar();
+  const [page, setPage] = useState(0);
 
   const menuItems = [
     { title: "Dashboard", path: "/educator/dashboard", icon: LayoutDashboard },
@@ -38,24 +43,62 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
     { title: "Find Project", path: "/educator/projects", icon: Briefcase },
   ];
 
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(menuItems.length / itemsPerPage);
+
+  const nextPage = () => {
+    setPage((prev) => (prev + 1) % totalPages);
+  };
+
+  const prevPage = () => {
+    setPage((prev) => (prev - 1 + totalPages) % totalPages);
+  };
+
   if (isMobile) {
+    const startIdx = page * itemsPerPage;
+    const visibleItems = menuItems.slice(startIdx, startIdx + itemsPerPage);
+
     return (
-      <div className="flex justify-around items-center p-2">
-        {menuItems.slice(0, 5).map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              cn(
-                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
-                isActive ? "text-white" : "hover:text-white"
-              )
-            }
+      <div className="flex items-center justify-between p-2 bg-[#1A1F2C]">
+        {totalPages > 1 && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={prevPage}
+            className="text-gray-300 hover:text-white"
           >
-            <item.icon className="h-5 w-5" />
-            <span className="text-xs mt-1">{item.title}</span>
-          </NavLink>
-        ))}
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+        )}
+        
+        <div className="flex-1 flex justify-around items-center">
+          {visibleItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                cn(
+                  "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                  isActive ? "text-white" : "hover:text-white"
+                )
+              }
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="text-xs mt-1">{item.title}</span>
+            </NavLink>
+          ))}
+        </div>
+
+        {totalPages > 1 && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={nextPage}
+            className="text-gray-300 hover:text-white"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        )}
       </div>
     );
   }
