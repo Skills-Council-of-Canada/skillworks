@@ -1,5 +1,5 @@
 
-import { ChevronDown, Bell, User, MessageSquare, Settings } from "lucide-react";
+import { ChevronDown, Bell, User, MessageSquare, Settings, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface AdminHeaderProps {
   pageTitle: string;
@@ -27,6 +28,7 @@ interface AdminHeaderProps {
 export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
+  const { toggle } = useSidebar();
 
   const handleAdminLogin = async () => {
     try {
@@ -63,8 +65,17 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
   };
 
   return (
-    <header className={`h-16 border-b flex items-center px-6 bg-card justify-between ${className}`}>
+    <header className={`h-16 border-b flex items-center px-4 md:px-6 bg-card justify-between ${className}`}>
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={toggle}
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+        
         {pageTitle === "Dashboard" ? (
           <img 
             src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
@@ -72,11 +83,11 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
             className="h-8"
           />
         ) : (
-          <h1 className="text-2xl font-semibold">{pageTitle}</h1>
+          <h1 className="text-xl md:text-2xl font-semibold">{pageTitle}</h1>
         )}
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {user ? (
           <>
             <TooltipProvider>
@@ -86,6 +97,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
                     variant="ghost" 
                     size="icon"
                     onClick={() => navigate('/admin/messages')}
+                    className="hidden md:inline-flex"
                   >
                     <MessageSquare className="h-5 w-5" />
                   </Button>
@@ -102,7 +114,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="relative"
+                    className="relative hidden md:inline-flex"
                     onClick={() => navigate('/admin/notifications')}
                   >
                     <Bell className="h-5 w-5" />
@@ -122,7 +134,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
                       {getInitials(user?.name || "A")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm ml-2 font-medium">
+                  <span className="text-sm ml-2 font-medium hidden md:inline-block">
                     {user?.name || user?.email}
                   </span>
                   <ChevronDown className="h-4 w-4 ml-2" />
@@ -132,6 +144,20 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
                 align="end" 
                 className="w-56 bg-white border-0"
               >
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin/messages')}
+                  className="cursor-pointer md:hidden"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Messages
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin/notifications')}
+                  className="cursor-pointer md:hidden"
+                >
+                  <Bell className="mr-2 h-4 w-4" />
+                  Notifications
+                </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/profile')}
                   className="cursor-pointer"
