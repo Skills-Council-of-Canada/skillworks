@@ -35,18 +35,13 @@ const EmployerLayout = () => {
         <div className="flex-1 flex flex-col min-h-screen">
           <EmployerHeader pageTitle={getCurrentPageTitle()} />
           
-          <div className="flex-1 overflow-auto pb-16 md:pb-0">
+          <div className="flex-1 overflow-auto">
             <main className="p-4 sm:p-6">
               <Outlet />
             </main>
           </div>
 
           <EmployerFooter />
-
-          {/* Mobile navigation bar */}
-          <div className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] border-t border-white/10 md:hidden">
-            <EmployerNavigation userName={user?.name || ""} isMobile={true} />
-          </div>
         </div>
       </div>
     </SidebarProvider>
