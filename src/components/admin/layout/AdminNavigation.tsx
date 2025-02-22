@@ -8,7 +8,7 @@ import {
   PanelLeft,
   PanelRight
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 interface AdminNavigationProps {
@@ -18,13 +18,14 @@ interface AdminNavigationProps {
 
 export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) => {
   const { state } = useSidebar();
+  const location = useLocation();
 
   const getFirstName = (fullName: string) => {
     return fullName?.split(" ")[0] || "there";
   };
 
   const navItems = [
-    { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
+    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/admin/users", icon: Users, label: "User Management" },
     { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
@@ -45,22 +46,21 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
 
       <div className="p-3">
         <nav className="space-y-1">
-          {navItems.map(({ to, icon: Icon, label, end }) => (
-            <NavLink
+          {navItems.map(({ to, icon: Icon, label }) => (
+            <Link
               key={to}
               to={to}
-              end={end}
-              className={({ isActive }) =>
-                `flex items-center ${state === "collapsed" ? "justify-center" : "gap-3"} rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
-                  isActive ? 'bg-white/10' : ''
-                }`
-              }
+              className={`flex items-center ${
+                state === "collapsed" ? "justify-center" : "gap-3"
+              } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
+                location.pathname === to ? 'bg-white/10' : ''
+              }`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className={state === "collapsed" ? "hidden" : "block truncate"}>
                 {label}
               </span>
-            </NavLink>
+            </Link>
           ))}
         </nav>
       </div>
