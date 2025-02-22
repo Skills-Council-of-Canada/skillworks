@@ -18,16 +18,11 @@ const ParticipantLayout = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/login");
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
 
   const navItems = [
     { to: "/participant/dashboard", icon: Home, label: "Dashboard" },
@@ -44,7 +39,7 @@ const ParticipantLayout = () => {
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
-          <Header userName={user.name} onLogout={handleLogout} />
+          <Header userName={user?.name} onLogout={handleLogout} />
           <div className="flex-1 overflow-auto">
             <main className="p-4 sm:p-6">
               <Outlet />

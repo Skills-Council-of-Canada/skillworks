@@ -1,5 +1,5 @@
 
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { EmployerHeader } from "@/components/employer/layout/EmployerHeader";
@@ -9,6 +9,7 @@ import { EmployerNavigation } from "@/components/employer/layout/EmployerNavigat
 const EmployerLayout = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getCurrentPageTitle = () => {
     const menuItems = [
