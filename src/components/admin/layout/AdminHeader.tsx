@@ -84,10 +84,10 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="relative text-foreground hover:bg-transparent hover:text-foreground focus:text-foreground"
+                    className="relative bg-[#1A1F2C] hover:bg-[#1A1F2C]"
                     onClick={() => navigate('/admin/notifications')}
                   >
-                    <Bell className="h-5 w-5" />
+                    <Bell className="h-5 w-5 text-white" />
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
                       3
                     </span>
