@@ -9,7 +9,7 @@ export const Footer = () => {
           <div>
             <div className="mb-4">
               <img 
-                src="/lovable-uploads/c833d97b-87f6-4982-a302-11033ec11603.png" 
+                src="/lovable-uploads/cfed3ac3-8114-4276-9696-c08fcf981494.png" 
                 alt="Skill Works Logo" 
                 className="h-8"
               />
