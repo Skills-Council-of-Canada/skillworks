@@ -29,6 +29,31 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
     return fullName.split(" ")[0] || "there";
   };
 
+  const renderNavLink = (to: string, Icon: typeof Home, label: string, isActive: boolean, isMobileView: boolean) => {
+    const className = isMobileView
+      ? cn(
+          "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+          isActive ? "text-white" : "hover:text-white"
+        )
+      : cn(
+          "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
+          state === "collapsed" && "justify-center",
+          isActive ? "bg-white/10" : "hover:bg-white/10"
+        );
+
+    return (
+      <div className={className}>
+        <Icon className={isMobileView ? "h-5 w-5" : "h-4 w-4"} />
+        <span className={cn(
+          isMobileView ? "text-xs mt-1 truncate max-w-[60px]" : "ml-2",
+          !isMobileView && state === "collapsed" && "hidden"
+        )}>
+          {label}
+        </span>
+      </div>
+    );
+  };
+
   if (isMobile) {
     return (
       <div className="flex items-center justify-around p-2">
@@ -36,15 +61,13 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
           <NavLink
             key={item.to}
             to={item.to}
-            className={({ isActive }) =>
-              cn(
-                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
-                isActive ? "text-white" : "hover:text-white"
-              )
-            }
+            replace={true}
+            className={({ isActive }) => cn(
+              "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+              isActive ? "text-white" : "hover:text-white"
+            )}
           >
-            <item.icon className="h-5 w-5" />
-            <span className="text-xs mt-1 truncate max-w-[60px]">{item.label}</span>
+            {({ isActive }) => renderNavLink(item.to, item.icon, item.label, isActive, true)}
           </NavLink>
         ))}
       </div>
@@ -71,18 +94,14 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
                 <SidebarMenuItem key={item.to}>
                   <NavLink
                     to={item.to}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
-                        state === "collapsed" && "justify-center",
-                        isActive ? "bg-white/10" : "hover:bg-white/10"
-                      )
-                    }
+                    replace={true}
+                    className={({ isActive }) => cn(
+                      "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
+                      state === "collapsed" && "justify-center",
+                      isActive ? "bg-white/10" : "hover:bg-white/10"
+                    )}
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                      {item.label}
-                    </span>
+                    {({ isActive }) => renderNavLink(item.to, item.icon, item.label, isActive, false)}
                   </NavLink>
                 </SidebarMenuItem>
               ))}
