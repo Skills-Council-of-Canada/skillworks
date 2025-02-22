@@ -16,7 +16,7 @@ interface NotificationFiltersProps {
   onTimeFilterChange: (value: 'all' | 'today' | 'week' | 'month') => void;
 }
 
-export const NotificationFilters = ({
+const NotificationFilters = ({
   selectedType,
   timeFilter,
   onTypeChange,
@@ -50,3 +50,5 @@ export const NotificationFilters = ({
     </div>
   );
 };
+
+export default NotificationFilters;

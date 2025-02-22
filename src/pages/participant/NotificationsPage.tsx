@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNotifications, NotificationType } from "@/hooks/useNotifications";
 import NotificationTypesSidebar from "@/components/participant/notifications/NotificationTypesSidebar";
 import { NotificationList } from "@/components/educator/notifications/NotificationList";
-import { NotificationFilters } from "@/components/participant/notifications/NotificationFilters";
+import NotificationFilters from "@/components/participant/notifications/NotificationFilters";
 import { filterNotificationsByTime } from "@/components/educator/notifications/utils/notificationUtils";
 
 const NotificationsPage = () => {
