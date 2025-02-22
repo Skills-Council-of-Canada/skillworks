@@ -9,7 +9,7 @@ const EducatorDashboard = () => {
   const { tasks, events, experiences, isLoading } = useEducatorDashboard();
 
   return (
-    <div className="space-y-6 text-gray-900 dark:text-white">
+    <div className="space-y-6 text-foreground">
       <QuickActions />
       <StatsOverview
         tasks={tasks}

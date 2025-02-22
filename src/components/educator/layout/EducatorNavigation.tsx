@@ -27,9 +27,9 @@ export const EducatorNavigation = ({ onLogout, userName }: EducatorNavigationPro
   };
 
   return (
-    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C] text-white">
+    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
       <div className="p-4 border-b border-white/10">
-        <h2 className="text-xl font-bold mb-1">Education Portal</h2>
+        <h2 className="text-xl font-bold mb-1 text-white">Education Portal</h2>
         <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
       </div>
 

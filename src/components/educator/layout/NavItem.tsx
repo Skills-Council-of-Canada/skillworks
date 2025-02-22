@@ -15,7 +15,7 @@ export const NavItem = ({ to, icon: Icon, children, end }: NavItemProps) => {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `flex w-full items-center gap-2 ${
+        `flex w-full items-center gap-2 text-gray-300 ${
           isActive ? "bg-white/10" : "hover:bg-white/10"
         } px-2 py-1.5 rounded-md transition-colors`
       }
