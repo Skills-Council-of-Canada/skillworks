@@ -79,40 +79,43 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
       <div className="flex items-center gap-4">
         {user ? (
           <>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => navigate('/admin/messages')}
-                  >
-                    <MessageSquare className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Messages</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {/* Desktop only icons */}
+            <div className="hidden md:flex items-center gap-4">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => navigate('/admin/messages')}
+                    >
+                      <MessageSquare className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Messages</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    className="relative"
-                    onClick={() => navigate('/admin/notifications')}
-                  >
-                    <Bell className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Notifications</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="relative"
+                      onClick={() => navigate('/admin/notifications')}
+                    >
+                      <Bell className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Notifications</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -132,6 +135,25 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
                 align="end" 
                 className="w-56 bg-white border-0"
               >
+                {/* Mobile only menu items */}
+                <div className="md:hidden">
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/admin/messages')}
+                    className="cursor-pointer"
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Messages
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/admin/notifications')}
+                    className="cursor-pointer"
+                  >
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </div>
+
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/profile')}
                   className="cursor-pointer"
