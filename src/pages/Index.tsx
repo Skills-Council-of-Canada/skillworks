@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, LogIn, User } from "lucide-react";
+import { LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
 import { Link, useNavigate } from "react-router-dom";
