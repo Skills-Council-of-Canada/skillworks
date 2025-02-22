@@ -1,5 +1,5 @@
 
-import { ChevronDown, User, LogOut, Settings } from "lucide-react";
+import { ChevronDown, User, LogOut, Settings, Calendar, MessageSquare, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,9 +15,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface UserMenuProps {
   onLogout: () => void;
+  isMobile?: boolean;
 }
 
-export const UserMenu = ({ onLogout }: UserMenuProps) => {
+export const UserMenu = ({ onLogout, isMobile = false }: UserMenuProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -54,6 +55,28 @@ export const UserMenu = ({ onLogout }: UserMenuProps) => {
             View Profile
           </DropdownMenuItem>
         </Link>
+        {isMobile && (
+          <>
+            <Link to="/educator/calendar">
+              <DropdownMenuItem className="cursor-pointer">
+                <Calendar className="mr-2 h-4 w-4" />
+                Calendar
+              </DropdownMenuItem>
+            </Link>
+            <Link to="/educator/messages">
+              <DropdownMenuItem className="cursor-pointer">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Messages
+              </DropdownMenuItem>
+            </Link>
+            <Link to="/educator/tasks">
+              <DropdownMenuItem className="cursor-pointer">
+                <Activity className="mr-2 h-4 w-4" />
+                Tasks & Activities
+              </DropdownMenuItem>
+            </Link>
+          </>
+        )}
         <Link to="/educator/settings">
           <DropdownMenuItem className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
