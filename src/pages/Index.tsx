@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      <header className="w-full h-16 bg-white border-b shadow-sm flex-none" />
+    <div className="h-screen">
+      <header className="sticky top-0 w-full h-16 bg-white border-b shadow-sm" />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="h-[calc(100vh-4rem)] overflow-y-auto">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
