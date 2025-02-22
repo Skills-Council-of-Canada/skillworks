@@ -11,9 +11,6 @@ const EducatorLayout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  console.log("EducatorLayout - Current user:", user);
-  console.log("EducatorLayout - Current path:", location.pathname);
-
   const getCurrentPageTitle = () => {
     const paths = {
       "/educator": "Dashboard",
@@ -35,20 +32,26 @@ const EducatorLayout = () => {
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background text-foreground">
-        <Sidebar collapsible="icon" className="border-r">
-          <EducatorNavigation userName={user?.name || ""} />
+        {/* Desktop Sidebar */}
+        <Sidebar collapsible="icon" className="hidden md:flex border-r">
+          <EducatorNavigation userName={user?.name || ""} isMobile={false} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
           <EducatorHeader pageTitle={getCurrentPageTitle()} onLogout={logout} />
           
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto pb-16 md:pb-0">
             <main className="p-4 sm:p-6">
               <Outlet />
             </main>
           </div>
 
           <EducatorFooter />
+
+          {/* Mobile navigation bar */}
+          <div className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] border-t border-white/10 md:hidden">
+            <EducatorNavigation userName={user?.name || ""} isMobile={true} />
+          </div>
         </div>
       </div>
       <Toaster />

@@ -27,9 +27,10 @@ import { cn } from "@/lib/utils";
 
 interface EducatorNavigationProps {
   userName: string;
+  isMobile: boolean;
 }
 
-export const EducatorNavigation = ({ userName }: EducatorNavigationProps) => {
+export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationProps) => {
   const { state } = useSidebar();
 
   const menuItems = [
@@ -44,6 +45,28 @@ export const EducatorNavigation = ({ userName }: EducatorNavigationProps) => {
     { title: "Find Project", path: "/educator/projects", icon: Briefcase },
     { title: "Settings", path: "/educator/settings", icon: Settings },
   ];
+
+  if (isMobile) {
+    return (
+      <div className="flex justify-around items-center p-2">
+        {menuItems.slice(0, 5).map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                isActive ? "text-white" : "hover:text-white"
+              )
+            }
+          >
+            <item.icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{item.title}</span>
+          </NavLink>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
