@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NotificationsPage from "@/pages/participant/NotificationsPage";
+import AdminNotifications from "@/pages/admin/AdminNotifications";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import EducatorLanding from "./pages/EducatorLanding";
@@ -166,6 +166,7 @@ const App = () => (
             <Route path="messages" element={<AdminMessages />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="notifications" element={<AdminNotifications />} />
           </Route>
 
           {/* Catch all route */}
