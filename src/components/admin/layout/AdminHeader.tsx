@@ -1,5 +1,5 @@
 
-import { ChevronDown, Bell, User, MessageSquare } from "lucide-react";
+import { ChevronDown, Bell, User, MessageSquare, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -142,7 +142,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   onClick={() => navigate('/admin/settings')}
                   className="cursor-pointer"
                 >
-                  <User className="mr-2 h-4 w-4" />
+                  <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
