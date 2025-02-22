@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { signInUser } from "@/services/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { UserRole } from "@/types/auth";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,28 +23,20 @@ const Login = () => {
       }
 
       if (data?.user) {
+        // Ensure the user has a valid role
+        const validRoles: UserRole[] = ['admin', 'educator', 'employer', 'participant'];
+        if (!validRoles.includes(data.user.role)) {
+          throw new Error('Invalid user role');
+        }
+
         toast({
           title: "Success",
           description: "You have successfully logged in.",
         });
         
-        // Redirect based on user role
-        switch (data.user.role) {
-          case "admin":
-            navigate("/admin/dashboard");
-            break;
-          case "educator":
-            navigate("/educator/dashboard");
-            break;
-          case "employer":
-            navigate("/employer/dashboard");
-            break;
-          case "participant":
-            navigate("/participant/dashboard");
-            break;
-          default:
-            navigate("/");
-        }
+        // Always redirect to the role-specific dashboard
+        const dashboardPath = `/${data.user.role}/dashboard`;
+        navigate(dashboardPath, { replace: true });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -53,7 +46,7 @@ const Login = () => {
           description: error.message,
         });
       }
-      throw error;
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }

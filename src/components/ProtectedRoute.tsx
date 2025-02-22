@@ -32,21 +32,20 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If specific roles are required and user's role doesn't match, redirect to their role-specific dashboard
+  // If specific roles are required and user's role doesn't match, redirect to unauthorized
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    console.log(`User role ${user.role} not allowed. Redirecting to role-specific dashboard`);
-    
-    // Redirect to the appropriate dashboard based on user's role
-    const dashboardPaths = {
-      participant: "/participant/dashboard",
-      employer: "/employer/dashboard",
-      educator: "/educator/dashboard",
-      admin: "/admin/dashboard"
-    };
+    console.log(`User role ${user.role} not allowed. Redirecting to unauthorized`);
+    return <Navigate to="/unauthorized" replace />;
+  }
 
-    const redirectPath = dashboardPaths[user.role] || "/unauthorized";
-    console.log("Redirecting to:", redirectPath);
-    return <Navigate to={redirectPath} replace />;
+  // If user tries to access a role-specific path that doesn't match their role
+  const pathRole = location.pathname.split('/')[1]; // e.g., 'admin', 'educator', etc.
+  if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
+    if (pathRole !== user.role) {
+      console.log(`User with role ${user.role} attempting to access ${pathRole} path. Redirecting to appropriate dashboard.`);
+      const dashboardPath = `/${user.role}/dashboard`;
+      return <Navigate to={dashboardPath} replace />;
+    }
   }
 
   return <>{children}</>;
