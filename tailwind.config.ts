@@ -24,7 +24,7 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        foreground: "#1A1F2C",
         primary: {
           DEFAULT: "#1A1F2C",
           foreground: "#FFFFFF",
@@ -39,7 +39,7 @@ export default {
         },
         muted: {
           DEFAULT: "#1A1F2C",
-          foreground: "#FFFFFF",
+          foreground: "#6B7280",
         },
         accent: {
           DEFAULT: "#1A1F2C",
