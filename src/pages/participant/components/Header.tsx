@@ -36,7 +36,7 @@ export const Header = ({ userName, onLogout }: HeaderProps) => {
               <Bell className="h-5 w-5" />
             </Link>
           )}
-          <UserMenu onLogout={onLogout} showNotifications={isMobile} />
+          <UserMenu onLogout={onLogout} userName={userName} showNotifications={isMobile} />
         </div>
       </div>
     </header>
