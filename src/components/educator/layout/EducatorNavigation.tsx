@@ -35,12 +35,42 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
   const [page, setPage] = useState(0);
 
   const menuItems = [
-    { title: "Dashboard", path: "/educator/dashboard", icon: LayoutDashboard },
-    { title: "Experiences", path: "/educator/experiences", icon: BookOpen },
-    { title: "Students", path: "/educator/students", icon: Users },
-    { title: "Matches", path: "/educator/matches", icon: UserCheck },
-    { title: "Find Portal", path: "/educator/portals", icon: Search },
-    { title: "Find Project", path: "/educator/projects", icon: Briefcase },
+    { 
+      title: "Dashboard", 
+      mobileTitle: "Home",
+      path: "/educator/dashboard", 
+      icon: LayoutDashboard 
+    },
+    { 
+      title: "Experiences", 
+      mobileTitle: "Learn",
+      path: "/educator/experiences", 
+      icon: BookOpen 
+    },
+    { 
+      title: "Students", 
+      mobileTitle: "Students",
+      path: "/educator/students", 
+      icon: Users 
+    },
+    { 
+      title: "Matches", 
+      mobileTitle: "Matches",
+      path: "/educator/matches", 
+      icon: UserCheck 
+    },
+    { 
+      title: "Find Portal", 
+      mobileTitle: "Portal",
+      path: "/educator/portals", 
+      icon: Search 
+    },
+    { 
+      title: "Find Project", 
+      mobileTitle: "Project",
+      path: "/educator/projects", 
+      icon: Briefcase 
+    },
   ];
 
   const itemsPerPage = 5;
@@ -84,7 +114,7 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
               }
             >
               <item.icon className="h-5 w-5" />
-              <span className="text-xs mt-1">{item.title}</span>
+              <span className="text-xs mt-1 truncate max-w-[60px]">{item.mobileTitle}</span>
             </NavLink>
           ))}
         </div>
