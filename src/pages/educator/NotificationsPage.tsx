@@ -12,25 +12,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "@/hooks/use-toast";
 
 const NotificationsPage = () => {
   const [selectedType, setSelectedType] = useState<NotificationType | 'all'>('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const { notifications, isLoading, markAsRead } = useNotifications(
-    selectedType !== 'all' ? { type: selectedType as NotificationType } : undefined
+    selectedType !== 'all' ? { type: selectedType } : undefined
   );
 
   const handleMarkAsRead = async (notificationIds: string[]) => {
-    try {
-      await markAsRead.mutateAsync(notificationIds);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to mark notifications as read",
-        variant: "destructive",
-      });
-    }
+    await markAsRead.mutateAsync(notificationIds);
   };
 
   const getNotificationIcon = (type: NotificationType) => {
@@ -87,7 +78,10 @@ const NotificationsPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Notifications</h1>
         <div className="flex gap-4">
-          <Select value={selectedType} onValueChange={(value) => setSelectedType(value as NotificationType | 'all')}>
+          <Select
+            value={selectedType}
+            onValueChange={(value) => setSelectedType(value as NotificationType | 'all')}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>

@@ -31,7 +31,6 @@ export interface DatabaseNotification {
 
 interface NotificationFilters {
   type?: NotificationType;
-  priority?: NotificationPriority;
   read?: boolean;
 }
 
@@ -41,7 +40,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { toast } = useToast();
 
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ["notifications", user?.id, filters?.type, filters?.priority, filters?.read] as const,
+    queryKey: ["notifications", user?.id, filters?.type, filters?.read],
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -51,10 +50,6 @@ export const useNotifications = (filters?: NotificationFilters) => {
 
       if (filters?.type) {
         query = query.eq('type', filters.type);
-      }
-      
-      if (filters?.priority) {
-        query = query.eq('priority', filters.priority);
       }
       
       if (filters?.read !== undefined) {
@@ -81,7 +76,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ["notifications", user?.id] as const 
+        queryKey: ["notifications"] 
       });
       toast({
         title: "Success",
