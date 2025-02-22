@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
-import { DatabaseNotification, NotificationType } from "@/hooks/useNotifications";
+import { DatabaseNotification } from "@/hooks/useNotifications";
 import { getNotificationIcon, getPriorityClass } from "@/components/educator/notifications/utils/notificationUtils";
 
 interface NotificationListProps {

@@ -1,9 +1,10 @@
 
 import { useState } from "react";
-import { useNotifications, NotificationType } from "@/hooks/useNotifications";
-import { NotificationTypesSidebar } from "@/components/educator/notifications/NotificationTypesSidebar";
+import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationType } from "@/types/educator";
+import NotificationTypesSidebar from "@/components/participant/notifications/NotificationTypesSidebar";
 import { NotificationList } from "@/components/educator/notifications/NotificationList";
-import { NotificationFilters } from "@/components/educator/notifications/NotificationFilters";
+import NotificationFilters from "@/components/participant/notifications/NotificationFilters";
 import { filterNotificationsByTime } from "@/components/educator/notifications/utils/notificationUtils";
 
 const NotificationsPage = () => {
@@ -33,14 +34,14 @@ const NotificationsPage = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <NotificationTypesSidebar
             selectedType={selectedType}
             onTypeSelect={setSelectedType}
           />
         </div>
 
-        <div className="col-span-9">
+        <div className="col-span-8">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}

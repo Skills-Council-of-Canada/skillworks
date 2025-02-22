@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { NotificationType } from "@/hooks/useNotifications";
+import { NotificationType } from "@/types/educator";
 import { 
   CheckCircle, 
   Clock, 
@@ -19,12 +19,12 @@ interface NotificationTypesSidebarProps {
 const NotificationTypesSidebar = ({ selectedType, onTypeSelect }: NotificationTypesSidebarProps) => {
   const notificationTypes = {
     'all': { label: 'All Notifications', icon: Bell },
-    'application_status': { label: 'Application Status', icon: CheckCircle },
-    'task_assignment': { label: 'Task Assignments', icon: FileText },
-    'submission_reminder': { label: 'Submission Deadlines', icon: Clock },
-    'feedback_received': { label: 'Feedback Received', icon: Star },
-    'chat_message': { label: 'Chat Messages', icon: MessageSquare },
-    'experience_completion': { label: 'Experience Completion', icon: Trophy }
+    [NotificationType.APPLICATION_STATUS]: { label: 'Application Status', icon: CheckCircle },
+    [NotificationType.TASK_ASSIGNMENT]: { label: 'Task Assignments', icon: FileText },
+    [NotificationType.SUBMISSION_REMINDER]: { label: 'Submission Deadlines', icon: Clock },
+    [NotificationType.FEEDBACK_RECEIVED]: { label: 'Feedback Received', icon: Star },
+    [NotificationType.CHAT_MESSAGE]: { label: 'Chat Messages', icon: MessageSquare },
+    [NotificationType.EXPERIENCE_COMPLETION]: { label: 'Experience Completion', icon: Trophy }
   };
 
   return (

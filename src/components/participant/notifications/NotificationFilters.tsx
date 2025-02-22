@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NotificationType } from "@/hooks/useNotifications";
+import { NotificationType } from "@/types/educator";
 
 interface NotificationFiltersProps {
   selectedType: NotificationType | 'all';

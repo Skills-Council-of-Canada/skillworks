@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { useNotifications, NotificationType } from "@/hooks/useNotifications";
+import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationType } from "@/types/educator";
 import NotificationTypesSidebar from "@/components/participant/notifications/NotificationTypesSidebar";
 import { NotificationList } from "@/components/educator/notifications/NotificationList";
 import NotificationFilters from "@/components/participant/notifications/NotificationFilters";
