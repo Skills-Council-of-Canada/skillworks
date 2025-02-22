@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { BellDot, Clock, Check } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { getNotificationIcon } from "@/components/educator/notifications/utils/notificationUtils";
+import { Link } from "react-router-dom";
 
 interface NotificationListProps {
   notifications: DatabaseNotification[] | undefined;
