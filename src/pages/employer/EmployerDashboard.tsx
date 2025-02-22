@@ -17,12 +17,12 @@ const QuickStatCard = ({
   title: string;
   value: number;
   description?: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType;
 }) => (
   <Card className="p-6">
     <div className="flex items-center space-x-4">
       <div className="p-3 bg-primary/10 rounded-full">
-        <Icon className="h-6 w-6 text-primary" />
+        <Icon />
       </div>
       <div>
         <p className="text-sm font-medium text-foreground">{title}</p>
@@ -39,7 +39,6 @@ const EmployerDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch employer profile
   const { data: employerProfile, isLoading } = useQuery({
     queryKey: ['employerProfile', user?.id],
     queryFn: async () => {
@@ -55,7 +54,6 @@ const EmployerDashboard = () => {
     enabled: !!user?.id,
   });
 
-  // Mock data - replace with real data later
   const stats = {
     activeProjects: {
       value: 3,
@@ -79,7 +77,7 @@ const EmployerDashboard = () => {
     <div className="space-y-8">
       {!employerProfile && (
         <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle size={16} />
           <AlertDescription>
             Please complete your profile setup before creating projects.
           </AlertDescription>
@@ -93,11 +91,11 @@ const EmployerDashboard = () => {
           </p>
         </div>
         <Button 
-          className="flex items-center gap-2"
-          onClick={() => navigate("create-project")}
+          onClick={() => navigate("/employer/create-project")}
           disabled={!employerProfile}
+          className="flex items-center gap-2"
         >
-          <PlusCircle className="h-4 w-4" />
+          <PlusCircle size={16} />
           Create New Project
         </Button>
       </div>
