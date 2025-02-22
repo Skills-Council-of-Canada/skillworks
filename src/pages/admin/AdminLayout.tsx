@@ -1,7 +1,13 @@
 
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Sidebar, SidebarProvider, SidebarContent, SidebarTrigger } from "@/components/ui/sidebar";
+import { 
+  Sidebar, 
+  SidebarProvider, 
+  SidebarContent,
+  SidebarTrigger,
+  useSidebar
+} from "@/components/ui/sidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
 import { AdminFooter } from "@/components/admin/layout/AdminFooter";
 import { AdminNavigation } from "@/components/admin/layout/AdminNavigation";
@@ -27,22 +33,25 @@ const AdminLayout = () => {
     }
   };
 
+  // Get current page title from the path
+  const getCurrentPageTitle = () => {
+    const path = location.pathname.split('/').pop() || '';
+    return path.charAt(0).toUpperCase() + path.slice(1);
+  };
+
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
-        {/* Hide sidebar on mobile, show on desktop */}
-        <div className="hidden md:block">
-          <Sidebar collapsible="icon" className="border-r">
-            <SidebarContent>
-              <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} isMobile={false} />
-            </SidebarContent>
-          </Sidebar>
-        </div>
+        {/* Desktop Sidebar */}
+        <Sidebar collapsible="icon" className="hidden md:flex border-r">
+          <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} isMobile={false} />
+        </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
-          <AdminHeader pageTitle="Dashboard" className="sticky top-0 z-10">
-            <SidebarTrigger className="hidden md:inline-flex" />
-          </AdminHeader>
+          <AdminHeader 
+            pageTitle={getCurrentPageTitle()}
+            className="sticky top-0 z-10"
+          />
           
           <div className="flex-1 overflow-y-auto pb-16 md:pb-0">
             <main className="p-4 sm:p-6">

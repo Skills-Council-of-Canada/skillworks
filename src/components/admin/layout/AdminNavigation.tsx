@@ -1,17 +1,25 @@
 
-import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  FolderKanban,
-  ClipboardList,
-  PieChart,
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  Settings,
   MessageSquare,
   Bell,
-  User,
-  Settings,
-  LogOut
+  ClipboardList,
+  PanelLeft,
+  PanelRight
 } from "lucide-react";
+import { 
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar 
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 interface AdminNavigationProps {
@@ -20,71 +28,80 @@ interface AdminNavigationProps {
   isMobile: boolean;
 }
 
-export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigationProps) {
-  const location = useLocation();
-  
-  const navigationItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
-    { icon: Users, label: "Users", href: "/admin/users" },
-    { icon: ClipboardList, label: "Projects", href: "/admin/projects" },
-    { icon: PieChart, label: "Reports", href: "/admin/reports" },
-    { icon: Settings, label: "Settings", href: "/admin/settings" },
+export const AdminNavigation = ({ userName, isMobile }: AdminNavigationProps) => {
+  const { state } = useSidebar();
+
+  const menuItems = [
+    { title: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { title: "Users", path: "/admin/users", icon: Users },
+    { title: "Projects", path: "/admin/projects", icon: ClipboardList },
+    { title: "Reports", path: "/admin/reports", icon: FileText },
+    { title: "Messages", path: "/admin/messages", icon: MessageSquare },
+    { title: "Notifications", path: "/admin/notifications", icon: Bell },
+    { title: "Settings", path: "/admin/settings", icon: Settings },
   ];
 
   if (isMobile) {
     return (
-      <nav className="flex justify-around items-center h-16 px-4 bg-[#1A1F2C]">
-        {navigationItems.slice(0, 5).map((item) => (
-          <Link
-            key={item.href}
-            to={item.href}
-            className={cn(
-              "flex flex-col items-center transition-colors",
-              location.pathname === item.href
-                ? "text-white"
-                : "text-white/60 hover:text-white"
-            )}
+      <div className="flex justify-around items-center p-2">
+        {menuItems.slice(0, 5).map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                isActive ? "text-white" : "hover:text-white"
+              )
+            }
           >
             <item.icon className="h-5 w-5" />
-            <span className="text-xs mt-1">{item.label}</span>
-          </Link>
+            <span className="text-xs mt-1">{item.title}</span>
+          </NavLink>
         ))}
-      </nav>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#1A1F2C]">
-      <div className="p-4 border-b border-white/10">
-        <h2 className="text-lg font-semibold text-white">Admin Portal</h2>
-        <p className="text-sm text-white/60">{userName}</p>
+    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
+      <div className="flex items-center justify-between p-4 border-b border-white/10">
+        <div className={state === "collapsed" ? "hidden" : "block"}>
+          <h2 className="text-xl font-bold text-white">Admin Portal</h2>
+          <p className="text-sm text-gray-400">Welcome back, {userName}</p>
+        </div>
+        <SidebarTrigger className="text-white hover:text-white/80">
+          {state === "collapsed" ? <PanelRight size={20} /> : <PanelLeft size={20} />}
+        </SidebarTrigger>
       </div>
-      <nav className="space-y-1 p-4 flex-1">
-        {navigationItems.map((item) => (
-          <Link
-            key={item.href}
-            to={item.href}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
-              location.pathname === item.href
-                ? "bg-white/10 text-white"
-                : "text-white/60 hover:bg-white/10 hover:text-white"
-            )}
-          >
-            <item.icon className="h-5 w-5" />
-            <span>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-      <div className="p-4 border-t border-white/10">
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors w-full"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>Logout</span>
-        </button>
-      </div>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
+                        state === "collapsed" && "justify-center",
+                        isActive ? "bg-white/10" : "hover:bg-white/10"
+                      )
+                    }
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className={cn("ml-2", state === "collapsed" && "hidden")}>
+                      {item.title}
+                    </span>
+                  </NavLink>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
     </div>
   );
-}
+};
