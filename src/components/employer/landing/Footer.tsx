@@ -5,35 +5,22 @@ export const Footer = () => {
   return (
     <footer className="bg-white text-secondary py-12">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h3 className="font-bold text-lg mb-4">SkillWorks</h3>
             <p className="text-secondary/70">
               Building the future of trade workforce
             </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2">
+            <ul className="mt-4 space-y-2">
               <li><a href="https://www.skillscouncil.ca/" target="_blank" rel="noopener noreferrer" className="text-secondary/70 hover:text-primary">About Skills Council of Canada</a></li>
-              <li><a href="/contact" className="text-secondary/70 hover:text-primary">Contact</a></li>
-              <li><a href="/support" className="text-secondary/70 hover:text-primary">Support</a></li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-semibold mb-4">Platform</h4>
-            <ul className="space-y-2">
-              <li><a href="/features" className="text-secondary/70 hover:text-primary">Features</a></li>
-              <li><a href="/pricing" className="text-secondary/70 hover:text-primary">Pricing</a></li>
-              <li><a href="/faq" className="text-secondary/70 hover:text-primary">FAQ</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2">
-              <li><a href="/privacy" className="text-secondary/70 hover:text-primary">Privacy Policy</a></li>
-              <li><a href="/terms" className="text-secondary/70 hover:text-primary">Terms of Service</a></li>
-            </ul>
+          <div className="flex justify-end">
+            <img 
+              src="/lovable-uploads/8bbf2276-ce55-4852-8104-36d43f6e2082.png" 
+              alt="Skills Council of Canada Logo" 
+              className="h-20 object-contain"
+            />
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-secondary/10 text-center text-secondary/70">
