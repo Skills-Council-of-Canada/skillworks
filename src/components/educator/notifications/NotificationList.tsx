@@ -17,7 +17,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
 
   if (isLoading) {
     return (
-      <Card className="p-4 w-full">
+      <Card className="p-4">
         <div className="flex items-center justify-center h-32">
           <p className="text-gray-500">Loading notifications...</p>
         </div>
@@ -27,7 +27,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
 
   if (!notifications?.length) {
     return (
-      <Card className="p-4 w-full">
+      <Card className="p-4">
         <div className="flex items-center justify-center h-32">
           <p className="text-gray-500">No notifications found</p>
         </div>
@@ -36,57 +36,48 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
   }
 
   return (
-    <div className="space-y-3 w-full">
+    <div className="space-y-3">
       {notifications.map((notification) => (
-        <Card 
-          key={notification.id} 
-          className="w-full"
-        >
-          <div
-            className={`p-3 md:p-4 ${
-              !notification.read ? 'bg-gray-50' : 'bg-white'
-            }`}
-          >
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+        <Card key={notification.id}>
+          <div className={`p-3 ${!notification.read ? 'bg-gray-50' : 'bg-white'}`}>
+            <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 {getNotificationIcon(notification.type)}
               </div>
               
-              <div className="flex-1 min-w-0 space-y-2">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                  <h3 className="font-semibold text-sm md:text-base break-words">
-                    {notification.title}
-                  </h3>
-                  {!notification.read && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onMarkAsRead([notification.id])}
-                      className="self-start md:self-center shrink-0 h-8 px-3 text-xs w-full md:w-auto"
-                    >
-                      Mark as Read
-                    </Button>
-                  )}
-                </div>
-                
-                <p className="text-xs md:text-sm text-gray-600 break-words">
-                  {notification.message}
-                </p>
-                
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                  <span
-                    className={`inline-flex items-center text-xs px-2 py-0.5 rounded-full ${getPriorityClass(
-                      notification.priority
-                    )}`}
-                  >
-                    {notification.priority}
-                  </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-semibold text-sm line-clamp-2">
+                      {notification.title}
+                    </h3>
+                    {!notification.read && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onMarkAsRead([notification.id])}
+                        className="self-start h-8 px-3 text-xs"
+                      >
+                        Mark as Read
+                      </Button>
+                    )}
+                  </div>
                   
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Clock className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                    <span className="whitespace-nowrap">
-                      {new Date(notification.created_at).toLocaleDateString()}
+                  <p className="text-xs text-gray-600 break-words line-clamp-3">
+                    {notification.message}
+                  </p>
+                  
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className={`inline-flex items-center text-xs px-2 py-0.5 rounded-full ${getPriorityClass(notification.priority)}`}>
+                      {notification.priority}
                     </span>
+                    
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <Clock className="h-3 w-3" />
+                      <span>
+                        {new Date(notification.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

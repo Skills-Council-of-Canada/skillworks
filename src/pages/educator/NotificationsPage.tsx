@@ -27,43 +27,35 @@ const NotificationsPage = () => {
 
   const filteredNotifications = filterNotificationsByTime(notifications, timeFilter);
 
-  const SidebarContent = () => (
-    <NotificationTypesSidebar
-      selectedType={selectedType}
-      onTypeSelect={(type) => {
-        setSelectedType(type);
-        if (isMobile) {
-          setIsSidebarOpen(false);
-        }
-      }}
-    />
-  );
-
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold">Notifications</h1>
-        
-        {/* Mobile Filter Controls */}
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {isMobile ? (
-            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="w-full sm:w-auto">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Filter Notifications
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px]">
-                <div className="pt-6">
-                  <SidebarContent />
-                </div>
-              </SheetContent>
-            </Sheet>
-          ) : null}
+    <div className="flex flex-col h-full">
+      <div className="p-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">Notifications</h1>
+            {isMobile && (
+              <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <SlidersHorizontal className="h-4 w-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                  <div className="pt-6">
+                    <NotificationTypesSidebar
+                      selectedType={selectedType}
+                      onTypeSelect={(type) => {
+                        setSelectedType(type);
+                        setIsSidebarOpen(false);
+                      }}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
           
-          <div className="w-full sm:w-auto">
+          <div className="w-full">
             <NotificationFilters
               selectedType={selectedType}
               timeFilter={timeFilter}
@@ -74,24 +66,24 @@ const NotificationsPage = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Sidebar - Hidden on mobile, shown as sheet */}
-        {!isMobile && (
-          <div className="lg:col-span-3">
-            <div className="sticky top-6">
-              <SidebarContent />
+      <div className="flex-1 p-4">
+        <div className="flex gap-4">
+          {!isMobile && (
+            <div className="hidden md:block w-64">
+              <NotificationTypesSidebar
+                selectedType={selectedType}
+                onTypeSelect={setSelectedType}
+              />
             </div>
+          )}
+          
+          <div className="flex-1">
+            <NotificationList
+              notifications={filteredNotifications}
+              isLoading={isLoading}
+              onMarkAsRead={handleMarkAsRead}
+            />
           </div>
-        )}
-        
-        {/* Notifications List */}
-        <div className="lg:col-span-9">
-          <NotificationList
-            notifications={filteredNotifications}
-            isLoading={isLoading}
-            onMarkAsRead={handleMarkAsRead}
-          />
         </div>
       </div>
     </div>
