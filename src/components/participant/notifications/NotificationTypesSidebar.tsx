@@ -16,7 +16,7 @@ interface NotificationTypesSidebarProps {
   onTypeSelect: (type: NotificationType | 'all') => void;
 }
 
-export const NotificationTypesSidebar = ({ selectedType, onTypeSelect }: NotificationTypesSidebarProps) => {
+const NotificationTypesSidebar = ({ selectedType, onTypeSelect }: NotificationTypesSidebarProps) => {
   const notificationTypes = {
     'all': { label: 'All Notifications', icon: Bell },
     'application_status': { label: 'Application Status', icon: CheckCircle },
