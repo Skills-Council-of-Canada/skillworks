@@ -23,6 +23,21 @@ interface DatabaseNotification {
   content?: string;
 }
 
+// This interface represents the actual structure from the database
+interface RawNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  read_at: string | null;
+  created_at: string;
+  user_id: string;
+  experience_id: string | null;
+  content?: string | null;
+  priority?: string;
+}
+
 interface NotificationFilters {
   category?: NotificationCategory;
   priority?: NotificationPriority;
@@ -37,38 +52,38 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications', filters],
     queryFn: async () => {
-      let query = supabase
+      // Explicitly type the query to avoid deep instantiation
+      const query = supabase
         .from('notifications')
-        .select('*')
+        .select<string, RawNotification>('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (filters?.category) {
-        query = query.eq('category', filters.category);
-      }
-      if (filters?.priority) {
-        query = query.eq('priority', filters.priority);
-      }
-      if (filters?.is_read !== undefined) {
-        query = query.eq('is_read', filters.is_read);
-      }
+      // Apply filters
+      const filteredQuery = filters?.category 
+        ? query.eq('type', filters.category)
+        : query;
 
-      const { data, error } = await query;
+      const finalQuery = filters?.is_read !== undefined 
+        ? filteredQuery.eq('read', filters.is_read)
+        : filteredQuery;
+
+      const { data, error } = await finalQuery;
       if (error) throw error;
       
-      // Transform the data to match our expected types
+      // Transform the raw data to match our expected types
       return (data || []).map(item => ({
         id: item.id,
         title: item.title,
         message: item.message,
         category: item.type as NotificationCategory,
-        priority: item.priority as NotificationPriority,
+        priority: (item.priority as NotificationPriority) || 'general',
         is_read: item.read,
-        read_at: item.read_at,
+        read_at: item.read_at || undefined,
         created_at: item.created_at,
         user_id: item.user_id,
-        experience_id: item.experience_id,
-        content: item.content
+        experience_id: item.experience_id || undefined,
+        content: item.content || undefined
       }));
     },
     enabled: !!user?.id,
