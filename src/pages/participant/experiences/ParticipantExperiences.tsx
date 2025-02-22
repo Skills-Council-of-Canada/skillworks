@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -37,29 +36,17 @@ const ParticipantExperiences = () => {
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="w-full justify-start h-auto p-0 bg-transparent space-x-2">
-          <TabsTrigger 
-            value="all" 
-            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-          >
+        <TabsList className="w-full justify-start bg-gray-50">
+          <TabsTrigger value="all">
             All Experiences
           </TabsTrigger>
-          <TabsTrigger 
-            value="active"
-            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-          >
+          <TabsTrigger value="active">
             Active
           </TabsTrigger>
-          <TabsTrigger 
-            value="completed"
-            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-          >
+          <TabsTrigger value="completed">
             Completed
           </TabsTrigger>
-          <TabsTrigger 
-            value="drafts"
-            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-          >
+          <TabsTrigger value="drafts">
             Drafts
           </TabsTrigger>
         </TabsList>
