@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <>
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b shadow-sm z-[999]" />
+    <div className="flex flex-col h-screen">
+      <header className="flex-none h-16 bg-white border-b shadow-sm z-[999]" />
       
-      <div className="pt-16 min-h-screen bg-background">
+      <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
@@ -99,7 +99,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
