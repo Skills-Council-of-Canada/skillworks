@@ -7,9 +7,9 @@ import type { Conversation, DatabaseApplication, Message } from "@/types/message
 export const useMessages = () => {
   const { user } = useAuth();
 
-  const query = useQuery({
+  const query = useQuery<Conversation[]>({
     queryKey: ["conversations", user?.id],
-    queryFn: async (): Promise<Conversation[]> => {
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("applications")
         .select(`
@@ -31,8 +31,7 @@ export const useMessages = () => {
           )
         `)
         .eq("learner_id", user?.id)
-        .order("last_message_at", { ascending: false })
-        .limit(20); // Limit initial load to 20 conversations
+        .order("last_message_at", { ascending: false });
 
       if (error) throw error;
       if (!data) return [];
@@ -40,7 +39,7 @@ export const useMessages = () => {
       const applications = data as DatabaseApplication[];
 
       return applications.map((app): Conversation => {
-        const messages = app.messages?.slice(0, 50) || []; // Limit to last 50 messages per conversation
+        const messages = app.messages || [];
         const unreadCount = messages.filter(
           (msg) => msg.sender_id !== user?.id && !msg.read_at
         ).length;
@@ -69,12 +68,10 @@ export const useMessages = () => {
       });
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60, // Cache data for 1 minute
-    gcTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
   });
 
   return {
-    conversations: query.data || [],
+    conversations: query.data ?? [],
     isLoading: query.isLoading,
   };
 };
