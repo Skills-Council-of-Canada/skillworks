@@ -129,7 +129,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
-                className="w-56 bg-white"
+                className="w-56 bg-white border-0"
               >
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/profile')}
