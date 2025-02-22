@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +6,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import NotificationsPage from "@/pages/participant/NotificationsPage";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import EducatorLanding from "./pages/EducatorLanding";
@@ -56,7 +56,6 @@ import CreateParticipantExperience from "./pages/participant/experiences/CreateP
 import ParticipantSettings from "./pages/participant/settings/ParticipantSettings";
 import Messages from "./pages/participant/Messages";
 import EducatorMessages from "./pages/educator/EducatorMessages";
-import NotificationsPage from "./pages/employer/NotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -125,6 +124,7 @@ const App = () => (
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<ParticipantSettings />} />
             <Route path="tasks" element={<TasksActivities />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* Protected employer routes */}
