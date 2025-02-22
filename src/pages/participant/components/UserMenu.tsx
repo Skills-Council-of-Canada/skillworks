@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/button";
 import { 
   UserCircle,
   Settings,
-  LogOut 
+  LogOut,
+  Bell
 } from "lucide-react";
 
 interface UserMenuProps {
@@ -38,6 +39,12 @@ export const UserMenu = ({ onLogout }: UserMenuProps) => {
           <Link to="/participant/profile" className="cursor-pointer">
             <UserCircle className="mr-2 h-4 w-4" />
             <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/participant/notifications" className="cursor-pointer">
+            <Bell className="mr-2 h-4 w-4" />
+            <span>Notifications</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

@@ -22,10 +22,7 @@ export const Header = ({ userName, onLogout }: HeaderProps) => {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
-          <Link to="/participant/notifications" className="text-sm text-gray-500 hover:text-gray-900">
-            Notifications
-          </Link>
+        <div className="flex items-center">
           <UserMenu onLogout={onLogout} />
         </div>
       </div>
