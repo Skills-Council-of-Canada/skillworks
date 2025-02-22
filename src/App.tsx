@@ -104,6 +104,7 @@ const App = () => (
             <Route path="calendar" element={<EducatorCalendar />} />
             <Route path="settings" element={<EducatorSettings />} />
             <Route path="create-experience" element={<CreateExperience />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* Protected participant routes */}
