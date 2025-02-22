@@ -66,7 +66,14 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-auto">
+    <div style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} className="h-screen flex flex-col overflow-auto" onScroll={(e) => e.currentTarget.style.overflow = 'auto'}>
+      <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
       <header className="flex-none h-16 bg-white border-b shadow-sm" />
       
       <main className="flex-1 flex items-center">
