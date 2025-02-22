@@ -1,5 +1,5 @@
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback, memo } from "react";
 import { MessageSquare } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMessageThread } from "@/hooks/participant/useMessageThread";
@@ -8,10 +8,13 @@ import { MessageInput } from "./MessageInput";
 import { ChatHeader } from "./ChatHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import type { Message } from "@/types/message";
 
 interface MessageThreadProps {
   conversationId: string;
 }
+
+const MemoizedChatMessage = memo(ChatMessage);
 
 export const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -30,27 +33,31 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
     chatInfo
   } = useMessageThread(conversationId);
 
-  useEffect(() => {
+  const scrollToBottom = useCallback(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, []);
 
-  const handleSearch = (query: string) => {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
       searchMessages(query);
     }
-  };
+  }, [searchMessages]);
 
-  const handleManageMembers = () => {
+  const handleManageMembers = useCallback(() => {
     toast({
       title: "Coming Soon",
       description: "Member management will be available soon.",
     });
-  };
+  }, [toast]);
 
-  const handlePinMessage = async (messageId: string) => {
+  const handlePinMessage = useCallback(async (messageId: string) => {
     try {
       await pinMessage(messageId);
       toast({
@@ -64,9 +71,9 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         variant: "destructive",
       });
     }
-  };
+  }, [pinMessage, toast]);
 
-  const handleDeleteMessage = async (messageId: string) => {
+  const handleDeleteMessage = useCallback(async (messageId: string) => {
     try {
       await deleteMessage(messageId);
       toast({
@@ -80,9 +87,9 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         variant: "destructive",
       });
     }
-  };
+  }, [deleteMessage, toast]);
 
-  const handleEditMessage = async (messageId: string, content: string) => {
+  const handleEditMessage = useCallback(async (messageId: string, content: string) => {
     try {
       await editMessage(messageId, content);
       toast({
@@ -96,7 +103,7 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
         variant: "destructive",
       });
     }
-  };
+  }, [editMessage, toast]);
 
   if (isLoading) {
     return (
@@ -117,8 +124,8 @@ export const MessageThread = ({ conversationId }: MessageThreadProps) => {
       />
       <ScrollArea ref={scrollRef} className="flex-1 px-4 py-6">
         <div className="space-y-6 max-w-4xl mx-auto">
-          {messages.map((message) => (
-            <ChatMessage
+          {messages.map((message: Message) => (
+            <MemoizedChatMessage
               key={message.id}
               message={message}
               isCurrentUser={message.senderId === user?.id}

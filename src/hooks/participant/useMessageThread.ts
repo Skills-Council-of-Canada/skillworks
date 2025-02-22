@@ -1,5 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Message } from "@/types/message";
@@ -9,7 +9,7 @@ import type { UseMessageThreadReturn } from "./messages/types";
 
 export const useMessageThread = (conversationId: string): UseMessageThreadReturn => {
   const { user } = useAuth();
-  
+  const queryClient = useQueryClient();
   const { data: chatInfo } = useChatInfo(conversationId);
   const { handleReactionAdd, pinMessage, deleteMessage, editMessage } = useMessageMutations(conversationId);
 
@@ -69,19 +69,20 @@ export const useMessageThread = (conversationId: string): UseMessageThreadReturn
         chatId: msg.chat_id
       }));
     },
+    staleTime: 30000, // Cache data for 30 seconds
     enabled: !!conversationId && !!user?.id,
   });
 
   const sendMessage = async (content: string) => {
     if (!content.trim() || !user?.id) return;
 
-    const { data: application, error: appError } = await supabase
+    const { data: application } = await supabase
       .from("applications")
       .select("employer_id")
       .eq("id", conversationId)
       .single();
 
-    if (appError || !application) throw new Error("Application not found");
+    if (!application) throw new Error("Application not found");
 
     const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
     const mentions: { id: string; name: string }[] = [];
@@ -101,6 +102,9 @@ export const useMessageThread = (conversationId: string): UseMessageThreadReturn
     });
 
     if (error) throw error;
+
+    // Invalidate the query to refresh messages
+    queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
   };
 
   const searchMessages = async (query: string) => {
