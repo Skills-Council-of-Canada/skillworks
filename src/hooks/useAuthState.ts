@@ -15,6 +15,7 @@ export const useAuthState = () => {
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
   const navigationRef = useRef(false);
+  const authCheckCompleted = useRef(false);
 
   // Cache profile data in memory
   const profileCache = new Map<string, User>();
@@ -46,13 +47,18 @@ export const useAuthState = () => {
   }, []);
 
   const handleSession = useCallback(async (session: any | null) => {
+    if (authCheckCompleted.current) {
+      return;
+    }
+
     if (!session?.user) {
       setUser(null);
       setIsLoading(false);
       if (!isPublicRoute(location.pathname) && !navigationRef.current) {
         navigationRef.current = true;
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
+      authCheckCompleted.current = true;
       return;
     }
 
@@ -71,8 +77,9 @@ export const useAuthState = () => {
         setIsLoading(false);
         if (!isPublicRoute(location.pathname) && !navigationRef.current) {
           navigationRef.current = true;
-          navigate('/login');
+          navigate('/login', { replace: true });
         }
+        authCheckCompleted.current = true;
         return;
       }
 
@@ -96,10 +103,11 @@ export const useAuthState = () => {
       setUser(null);
       if (!isPublicRoute(location.pathname) && !navigationRef.current) {
         navigationRef.current = true;
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
     } finally {
       setIsLoading(false);
+      authCheckCompleted.current = true;
     }
   }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
 
@@ -107,6 +115,7 @@ export const useAuthState = () => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
     navigationRef.current = false;
+    authCheckCompleted.current = false;
 
     const setupAuth = async () => {
       if (location.pathname.includes('/registration')) {
