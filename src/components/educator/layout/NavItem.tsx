@@ -1,6 +1,7 @@
 
 import { NavLink } from "react-router-dom";
 import { LucideIcon } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface NavItemProps {
   to: string;
@@ -10,6 +11,8 @@ interface NavItemProps {
 }
 
 export const NavItem = ({ to, icon: Icon, children, end }: NavItemProps) => {
+  const { state } = useSidebar();
+  
   return (
     <NavLink
       to={to}
@@ -20,8 +23,10 @@ export const NavItem = ({ to, icon: Icon, children, end }: NavItemProps) => {
         } px-2 py-1.5 rounded-md transition-colors`
       }
     >
-      <Icon className="h-4 w-4" />
-      <span>{children}</span>
+      <Icon className="h-4 w-4 shrink-0" />
+      <span className={state === "collapsed" ? "hidden" : "block truncate"}>
+        {children}
+      </span>
     </NavLink>
   );
 };
