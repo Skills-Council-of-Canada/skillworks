@@ -8,7 +8,9 @@ export const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              Skill <Link2 className="h-4 w-4" /> Works
+              <span className="flex items-center gap-2">
+                Skill<Link2 className="h-4 w-4" size={16} />Works
+              </span>
             </h3>
             <p className="text-secondary/70">
               Building the future of trade workforce
