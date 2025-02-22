@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Content area that scrolls */}
-      <div className="flex-1 overflow-y-auto mt-16">
-        <div className="flex flex-col items-center justify-center p-4 space-y-8 min-h-[calc(100vh-4rem)]">
+    <div className="h-screen flex flex-col">
+      <div className="h-16 flex-shrink-0" /> {/* Spacer for fixed header */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="flex flex-col items-center justify-center p-4 space-y-8 min-h-full">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
           <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
@@ -97,7 +97,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
