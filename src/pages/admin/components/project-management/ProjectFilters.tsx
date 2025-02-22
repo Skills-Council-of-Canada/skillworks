@@ -1,5 +1,3 @@
-
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,7 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ProjectReviewStatus, StatusFilterType } from "../../ProjectManagement";
+import { ProjectReviewStatus } from "../../types/project";
+
+type StatusFilterType = ProjectReviewStatus | "all";
 
 interface ProjectFiltersProps {
   searchQuery: string;
@@ -24,23 +24,20 @@ export function ProjectFilters({
   setStatusFilter,
 }: ProjectFiltersProps) {
   return (
-    <div className="flex gap-4 items-center">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        <Input
-          placeholder="Search projects..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-      <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilterType)}>
-        <SelectTrigger className="w-[180px] bg-transparent">
+    <div className="space-y-2">
+      <Input
+        type="search"
+        placeholder="Search projects..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>
-        <SelectContent className="bg-background border shadow-lg">
-          <SelectItem value="all">All statuses</SelectItem>
-          <SelectItem value="pending_review">Pending Review</SelectItem>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="pending">Pending</SelectItem>
           <SelectItem value="approved">Approved</SelectItem>
           <SelectItem value="rejected">Rejected</SelectItem>
           <SelectItem value="needs_modification">Needs Modification</SelectItem>

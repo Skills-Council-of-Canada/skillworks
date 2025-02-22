@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import type { ProjectReviewStatus } from "../../ProjectManagement";
+import { ProjectReviewStatus } from "../../types/project";
 
 interface ActionButtonsProps {
   projectId: string;

@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ProjectReviewStatus } from "../../ProjectManagement";
+import { ProjectReviewStatus } from "../../types/project";
 import { ActionButtons } from "./ActionButtons";
 
 interface Project {
