@@ -97,7 +97,6 @@ const ParticipantLayout = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="pointer-events-none"
                 asChild
               >
                 <Link to="/participant/messages">
@@ -108,7 +107,6 @@ const ParticipantLayout = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="pointer-events-none"
                 asChild
               >
                 <Link to="/participant/notifications">
