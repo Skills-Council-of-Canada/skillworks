@@ -7,9 +7,9 @@ import type { Conversation, DatabaseApplication, Message } from "@/types/message
 export const useMessages = () => {
   const { user } = useAuth();
 
-  const query = useQuery<Conversation[]>({
+  const query = useQuery({
     queryKey: ["conversations", user?.id],
-    queryFn: async () => {
+    queryFn: async (): Promise<Conversation[]> => {
       const { data, error } = await supabase
         .from("applications")
         .select(`
@@ -70,11 +70,11 @@ export const useMessages = () => {
     },
     enabled: !!user?.id,
     staleTime: 1000 * 60, // Cache data for 1 minute
-    cacheTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
+    gcTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
   });
 
   return {
-    conversations: query.data ?? [],
+    conversations: query.data || [],
     isLoading: query.isLoading,
   };
 };
