@@ -15,7 +15,7 @@ export type NotificationType =
 
 export type NotificationPriority = 'critical' | 'important' | 'general';
 
-interface DatabaseNotification {
+export interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
@@ -29,16 +29,18 @@ interface DatabaseNotification {
   content?: string;
 }
 
-export const useNotifications = (filters?: {
+type NotificationFilters = {
   type?: NotificationType;
   priority?: NotificationPriority;
   read?: boolean;
-}) => {
+};
+
+export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: notifications, isLoading } = useQuery({
+  const { data: notifications, isLoading } = useQuery<DatabaseNotification[]>({
     queryKey: ['notifications', filters],
     queryFn: async () => {
       const query = supabase

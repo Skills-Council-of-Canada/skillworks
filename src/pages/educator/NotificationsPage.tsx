@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { useNotifications, NotificationType, NotificationPriority } from "@/hooks/useNotifications";
-import { Bell, AlertCircle, Info, Clock, Graduation, BookOpen, MessageCircle } from "lucide-react";
+import { Bell, AlertCircle, Info, Clock, GraduationCap, BookOpen, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -46,7 +45,7 @@ const NotificationsPage = () => {
       case 'classroom_activity':
         return <Info className="h-5 w-5 text-indigo-600" />;
       case 'certification':
-        return <Graduation className="h-5 w-5 text-red-600" />;
+        return <GraduationCap className="h-5 w-5 text-red-600" />;
       default:
         return <Bell className="h-5 w-5 text-gray-600" />;
     }
@@ -116,7 +115,6 @@ const NotificationsPage = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        {/* Left Sidebar */}
         <div className="col-span-3">
           <Card className="p-4">
             <h2 className="font-semibold mb-4">Notification Types</h2>
@@ -146,7 +144,6 @@ const NotificationsPage = () => {
           </Card>
         </div>
 
-        {/* Main Content */}
         <div className="col-span-6">
           <Card className="p-4">
             {isLoading ? (
@@ -203,7 +200,6 @@ const NotificationsPage = () => {
           </Card>
         </div>
 
-        {/* Right Sidebar - Settings */}
         <div className="col-span-3">
           <Card className="p-4">
             <h2 className="font-semibold mb-4">Notification Settings</h2>

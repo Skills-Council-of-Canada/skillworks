@@ -1,41 +1,24 @@
-
-import { useCallback, useState } from "react";
-import { Bell, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { useState } from "react";
+import { Bell, AlertCircle, Info, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNotifications, NotificationCategory, NotificationPriority } from "@/hooks/useNotifications";
+import { useNotifications, NotificationType, NotificationPriority } from "@/hooks/useNotifications";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationsSettings } from "../admin/components/settings/NotificationsSettings";
 
-const priorityColors = {
-  critical: "bg-destructive text-destructive-foreground",
-  important: "bg-yellow-500 text-yellow-50",
-  general: "bg-primary text-primary-foreground",
-} as const;
-
-const categoryIcons = {
-  project_request: AlertCircle,
-  project_match: CheckCircle2,
-  submission_update: Clock,
-  review_reminder: Clock,
-  message_alert: Bell,
-  milestone_alert: Bell,
-  system: Bell,
-} as const;
-
-export default function NotificationsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<NotificationCategory | undefined>();
+const NotificationsPage = () => {
+  const [selectedType, setSelectedType] = useState<NotificationType | undefined>();
   const [selectedPriority, setSelectedPriority] = useState<NotificationPriority | undefined>();
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [activeTab, setActiveTab] = useState("notifications");
 
   const { notifications, isLoading, markAsRead } = useNotifications({
-    category: selectedCategory,
+    type: selectedType,
     priority: selectedPriority,
-    is_read: showUnreadOnly ? false : undefined,
+    read: showUnreadOnly ? false : undefined
   });
 
   const handleMarkAsRead = useCallback((notificationId: string) => {
@@ -45,7 +28,7 @@ export default function NotificationsPage() {
   const handleMarkAllAsRead = useCallback(() => {
     if (!notifications) return;
     const unreadIds = notifications
-      .filter(n => !n.is_read)
+      .filter(n => !n.read)
       .map(n => n.id);
     if (unreadIds.length > 0) {
       markAsRead.mutate(unreadIds);
@@ -110,15 +93,11 @@ export default function NotificationsPage() {
               </Card>
             ) : (
               notifications?.map((notification) => {
-                const Icon = categoryIcons[notification.category];
                 return (
-                  <Card
-                    key={notification.id}
-                    className="p-4 hover:bg-accent/50 transition-colors border-[0.5px]"
-                  >
+                  <Card key={notification.id} className="p-4">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 mt-1">
-                        <Icon className={`h-4 w-4 ${!notification.is_read ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <Info className={`h-4 w-4 ${!notification.read ? 'text-primary' : 'text-muted-foreground'}`} />
                       </div>
                       <div className="flex-grow min-w-0">
                         <h3 className="font-medium text-sm text-foreground truncate">
@@ -129,11 +108,11 @@ export default function NotificationsPage() {
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge variant="secondary" className="text-xs">
-                            {notification.category.replace('_', ' ')}
+                            {notification.type.replace('_', ' ')}
                           </Badge>
                           <Badge 
                             variant="outline"
-                            className={`text-xs ${priorityColors[notification.priority]}`}
+                            className={`text-xs`}
                           >
                             {notification.priority}
                           </Badge>
@@ -142,7 +121,7 @@ export default function NotificationsPage() {
                           </span>
                         </div>
                       </div>
-                      {!notification.is_read && (
+                      {!notification.read && (
                         <Button
                           variant="ghost"
                           size="sm"
@@ -168,4 +147,6 @@ export default function NotificationsPage() {
       </Tabs>
     </div>
   );
-}
+};
+
+export default NotificationsPage;
