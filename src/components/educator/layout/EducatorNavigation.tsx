@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NavigationHeader } from "./NavigationHeader";
 import { NavItem } from "./NavItem";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface EducatorNavigationProps {
   userName: string;
@@ -22,9 +23,12 @@ export const EducatorNavigation = ({ userName }: EducatorNavigationProps) => {
 
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
-      <div className="p-4 border-b border-white/10">
-        <h2 className="text-xl font-bold mb-1 text-white">Education Portal</h2>
-        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+      <div className="flex items-center justify-between p-4 border-b border-white/10">
+        <div>
+          <h2 className="text-xl font-bold mb-1 text-white">Education Portal</h2>
+          <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+        </div>
+        <SidebarTrigger className="text-white hover:text-white/80" />
       </div>
 
       <div className="flex-1 px-4">
