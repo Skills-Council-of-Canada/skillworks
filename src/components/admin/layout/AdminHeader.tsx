@@ -1,4 +1,3 @@
-
 import { ChevronDown, Bell, User, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -84,7 +83,6 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="relative"
                     onClick={() => navigate('/admin/messages')}
                   >
                     <MessageSquare className="h-5 w-5" />
@@ -102,10 +100,10 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="relative bg-[#1A1F2C] hover:bg-[#1A1F2C]"
+                    className="relative"
                     onClick={() => navigate('/admin/notifications')}
                   >
-                    <Bell className="h-5 w-5 text-white" />
+                    <Bell className="h-5 w-5" />
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
                       3
                     </span>
@@ -119,35 +117,32 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  className="flex items-center gap-2 pointer-events-auto hover:bg-transparent focus:bg-transparent active:bg-transparent"
-                >
+                <Button variant="ghost" className="p-0">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#1A1F2C] text-white">
                       {getInitials(user?.name || "A")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-sm ml-2 font-medium">
                     {user?.name || user?.email}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-foreground" />
+                  <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
-                className="w-56 bg-white border shadow-sm"
+                className="w-56 bg-white"
               >
                 <DropdownMenuItem 
                   onClick={() => navigate('/admin/settings')}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  className="cursor-pointer"
                 >
                   <User className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  className="text-red-500 hover:bg-gray-50 cursor-pointer"
+                  className="text-red-500 cursor-pointer"
                   onClick={() => {
                     logout();
                     navigate('/login');

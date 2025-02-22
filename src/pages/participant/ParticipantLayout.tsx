@@ -1,4 +1,3 @@
-
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -109,19 +108,19 @@ const ParticipantLayout = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-0 flex items-center gap-2">
+                  <Button variant="ghost" className="p-0">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
                         {getInitials(user?.name || "")}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm hidden md:inline-block">
+                    <span className="text-sm ml-2 hidden md:inline-block">
                       {user?.name}
                     </span>
-                    <ChevronDown size={16} />
+                    <ChevronDown size={16} className="ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
+                <DropdownMenuContent align="end" className="w-56 bg-white">
                   <DropdownMenuItem asChild>
                     <Link to="/participant/profile" className="flex w-full items-center">
                       <User size={16} className="mr-2" />
