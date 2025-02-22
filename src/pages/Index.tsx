@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight, LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
@@ -65,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden">
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b z-50" />
+    <div className="relative min-h-screen">
+      <header className="sticky top-0 left-0 right-0 h-16 bg-white border-b z-50" />
       
-      <div className="h-full pt-16 overflow-y-auto">
+      <main className="relative">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
@@ -97,7 +98,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
