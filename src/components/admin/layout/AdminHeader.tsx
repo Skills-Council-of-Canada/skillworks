@@ -1,3 +1,4 @@
+
 import { ChevronDown, Bell, User, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,9 +105,6 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                     onClick={() => navigate('/admin/notifications')}
                   >
                     <Bell className="h-5 w-5" />
-                    <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
-                      3
-                    </span>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
