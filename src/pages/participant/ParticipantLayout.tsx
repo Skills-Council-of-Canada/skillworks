@@ -88,11 +88,13 @@ const ParticipantLayout = () => {
 
         <div className="flex-1 flex flex-col min-h-screen">
           <header className="h-16 border-b bg-white flex items-center justify-between px-4 sm:px-6">
-            <img 
-              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
-              alt="Skill Works Logo" 
-              className="h-8"
-            />
+            <Link to="/participant/dashboard">
+              <img 
+                src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+                alt="Skill Works Logo" 
+                className="h-8"
+              />
+            </Link>
 
             <div className="flex items-center gap-2 sm:gap-4">
               <Button 
