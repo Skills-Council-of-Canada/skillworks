@@ -1,3 +1,4 @@
+
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sidebar, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface NavigationProps {
   userName: string | undefined;
@@ -94,37 +96,43 @@ const ParticipantLayout = () => {
                 </Link>
               </Button>
 
-              <Link to="/participant/notifications">
-                <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/participant/notifications">
                   <Bell className="h-5 w-5 text-[#1A1F2C]" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 p-0">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-[#1A1F2C] text-white">
-                        {getInitials(user?.name || "")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm hidden md:inline-block">
-                      {user?.name}
-                    </span>
-                    <ChevronDown className="h-4 w-4" />
+                  <Button variant="ghost" className="p-0">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-[#1A1F2C] text-white">
+                          {getInitials(user?.name || "")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm hidden md:inline-block">
+                        {user?.name}
+                      </span>
+                      <ChevronDown className="h-4 w-4" />
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/profile" className="flex items-center w-full">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>View Profile</span>
+                    <Link to="/participant/profile" className="w-full">
+                      <div className="flex items-center">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>View Profile</span>
+                      </div>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/settings" className="flex items-center w-full">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
+                    <Link to="/participant/settings" className="w-full">
+                      <div className="flex items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </div>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -132,8 +140,10 @@ const ParticipantLayout = () => {
                     onClick={handleLogout}
                     className="text-red-500"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Logout</span>
+                    <div className="flex items-center">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Logout</span>
+                    </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -170,23 +180,27 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          {navItems.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) => {
-                const baseClasses = "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors";
-                const alignmentClass = state === "collapsed" ? "justify-center" : "";
-                const activeClass = isActive ? "bg-white/10" : "hover:bg-white/10";
-                return `${baseClasses} ${alignmentClass} ${activeClass}`;
-              }}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className={state === "collapsed" ? "hidden" : "block truncate ml-2"}>
-                {label}
-              </span>
-            </NavLink>
-          ))}
+          {navItems.map(({ to, icon: Icon, label }) => {
+            const IconComponent = () => <Icon size={16} className="shrink-0" />;
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  cn(
+                    "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
+                    state === "collapsed" && "justify-center",
+                    isActive ? "bg-white/10" : "hover:bg-white/10"
+                  )
+                }
+              >
+                <IconComponent />
+                <span className={cn("ml-2", state === "collapsed" && "hidden")}>
+                  {label}
+                </span>
+              </NavLink>
+            );
+          })}
         </div>
       </div>
     </div>
