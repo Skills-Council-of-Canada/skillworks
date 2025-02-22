@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Eye, Edit2, Flag, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 interface Project {
   id: string;
@@ -74,8 +75,74 @@ export const ProjectList = ({ status }: ProjectListProps) => {
     }
   };
 
+  // Mobile card view
+  const MobileProjectCard = ({ project }: { project: Project }) => (
+    <Card className="p-4 mb-4">
+      <div className="space-y-3">
+        <div className="flex justify-between items-start">
+          <h3 className="font-medium">{project.title}</h3>
+          <Badge
+            variant="secondary"
+            className={`${getStatusColor(project.status)} text-white`}
+          >
+            {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+          </Badge>
+        </div>
+        <div className="text-sm text-gray-600">
+          Applications: {project.applications}
+        </div>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleView(project.id)}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleEdit(project.id)}
+            disabled={status === "completed"}
+          >
+            <Edit2 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleClose(project.id)}
+          >
+            <Flag className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleDelete(project.id)}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+
+  // Show mobile cards on small screens
+  if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    return (
+      <div className="space-y-4">
+        {projects.map((project) => (
+          <MobileProjectCard key={project.id} project={project} />
+        ))}
+        {projects.length === 0 && (
+          <p className="text-center text-gray-500 py-4">No projects found</p>
+        )}
+      </div>
+    );
+  }
+
+  // Desktop table view
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
