@@ -1,86 +1,63 @@
 
-import { Bell, AlertCircle, Info, GraduationCap, BookOpen, MessageCircle, FileCheck } from "lucide-react";
-import { NotificationType } from "@/types/educator";
+import { NotificationType, NotificationPriority } from "@/types/educator";
+import { Bell, MessageSquare, CheckCircle, Clock, Star, Trophy } from "lucide-react";
+import { DatabaseNotification } from "@/hooks/useNotifications";
 
 export const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
     case NotificationType.APPLICATION_STATUS:
-      return <FileCheck className="h-5 w-5 text-green-600" />;
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
     case NotificationType.TASK_ASSIGNMENT:
-      return <BookOpen className="h-5 w-5 text-blue-600" />;
+      return <Bell className="h-5 w-5 text-blue-500" />;
     case NotificationType.SUBMISSION_REMINDER:
-      return <Bell className="h-5 w-5 text-yellow-600" />;
+      return <Clock className="h-5 w-5 text-yellow-500" />;
     case NotificationType.FEEDBACK_RECEIVED:
-      return <MessageCircle className="h-5 w-5 text-purple-600" />;
+      return <Star className="h-5 w-5 text-purple-500" />;
     case NotificationType.CHAT_MESSAGE:
-      return <MessageCircle className="h-5 w-5 text-indigo-600" />;
+      return <MessageSquare className="h-5 w-5 text-indigo-500" />;
     case NotificationType.EXPERIENCE_COMPLETION:
-      return <GraduationCap className="h-5 w-5 text-red-600" />;
-    case NotificationType.SYSTEM:
-      return <Info className="h-5 w-5 text-gray-600" />;
+      return <Trophy className="h-5 w-5 text-orange-500" />;
     default:
-      return <Bell className="h-5 w-5 text-gray-600" />;
+      return <Bell className="h-5 w-5 text-gray-500" />;
   }
 };
 
-export const getPriorityClass = (priority: 'critical' | 'important' | 'normal') => {
+export const getPriorityClass = (priority: NotificationPriority) => {
   switch (priority) {
-    case 'critical':
+    case 'high':
       return 'bg-red-100 text-red-800';
-    case 'important':
+    case 'medium':
       return 'bg-yellow-100 text-yellow-800';
+    case 'low':
+      return 'bg-green-100 text-green-800';
     default:
-      return 'bg-blue-100 text-blue-800';
-  }
-};
-
-export const getNotificationColor = (type: NotificationType) => {
-  switch (type) {
-    case NotificationType.APPLICATION_STATUS:
-      return "green";
-    case NotificationType.TASK_ASSIGNMENT:
-      return "blue";
-    case NotificationType.SUBMISSION_REMINDER:
-      return "yellow";
-    case NotificationType.FEEDBACK_RECEIVED:
-      return "purple";
-    case NotificationType.CHAT_MESSAGE:
-      return "indigo";
-    case NotificationType.EXPERIENCE_COMPLETION:
-      return "red";
-    case NotificationType.SYSTEM:
-      return "gray";
-    default:
-      return "gray";
+      return 'bg-gray-100 text-gray-800';
   }
 };
 
 export const filterNotificationsByTime = (
-  notifications: any[],
+  notifications: DatabaseNotification[] | undefined,
   timeFilter: 'all' | 'today' | 'week' | 'month'
 ) => {
-  if (timeFilter === "all") return notifications;
+  if (!notifications) return [];
+  
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-  return notifications?.filter(notification => {
+  return notifications.filter((notification) => {
     const notificationDate = new Date(notification.created_at);
     
-    if (timeFilter === "today") {
-      const today = new Date();
-      return today.toDateString() === notificationDate.toDateString();
+    switch (timeFilter) {
+      case 'today':
+        return notificationDate >= today;
+      case 'week':
+        return notificationDate >= weekAgo;
+      case 'month':
+        return notificationDate >= monthAgo;
+      default:
+        return true;
     }
-    
-    if (timeFilter === "week") {
-      const weekAgo = new Date();
-      weekAgo.setDate(weekAgo.getDate() - 7);
-      return notificationDate > weekAgo;
-    }
-    
-    if (timeFilter === "month") {
-      const monthAgo = new Date();
-      monthAgo.setMonth(monthAgo.getMonth() - 1);
-      return notificationDate > monthAgo;
-    }
-    
-    return true;
   });
 };
