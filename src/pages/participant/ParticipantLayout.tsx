@@ -135,12 +135,12 @@ const ParticipantLayout = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="end" 
-                  className="w-56 bg-white"
+                  className="w-56 bg-white [&_*]:!focus:bg-transparent [&_*]:!focus:text-inherit"
                   style={{ animation: 'none' }}
                 >
                   <DropdownMenuItem 
                     asChild
-                    className="cursor-pointer"
+                    className="cursor-pointer data-[highlighted]:bg-transparent"
                   >
                     <Link to="/participant/profile" className="flex w-full items-center">
                       <User size={16} className="mr-2" />
@@ -149,7 +149,7 @@ const ParticipantLayout = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     asChild
-                    className="cursor-pointer"
+                    className="cursor-pointer data-[highlighted]:bg-transparent"
                   >
                     <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings size={16} className="mr-2" />
@@ -159,7 +159,7 @@ const ParticipantLayout = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
-                    className="text-red-500 cursor-pointer"
+                    className="text-red-500 cursor-pointer data-[highlighted]:bg-transparent"
                   >
                     <LogOut size={16} className="mr-2" />
                     <span>Logout</span>
