@@ -141,11 +141,8 @@ const ParticipantLayout = () => {
             </div>
 
             <Link to="/participant/notifications">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5 text-[#1A1F2C]" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
-                  3
-                </span>
               </Button>
             </Link>
 
