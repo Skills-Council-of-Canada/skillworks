@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
 
 interface AdminNavigationProps {
   onLogout: () => void;
@@ -19,6 +20,7 @@ interface AdminNavigationProps {
 export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) => {
   const { state } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getFirstName = (fullName: string) => {
     return fullName?.split(" ")[0] || "there";
@@ -31,6 +33,10 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
     { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
   ];
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
@@ -50,6 +56,10 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
             <NavLink
               key={to}
               to={to}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigation(to);
+              }}
               className={({ isActive }) =>
                 `flex items-center ${
                   state === "collapsed" ? "justify-center" : "gap-3"
