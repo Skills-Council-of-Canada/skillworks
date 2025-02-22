@@ -15,11 +15,11 @@ export const TasksAndEvents = ({ tasks, events, isLoading }: TasksAndEventsProps
       case 'high':
         return 'text-red-500';
       case 'medium':
-        return 'text-yellow-500';
+        return 'text-yellow-600';
       case 'active':
-        return 'text-green-500';
+        return 'text-green-600';
       default:
-        return 'text-blue-500';
+        return 'text-blue-600';
     }
   };
 
@@ -31,16 +31,16 @@ export const TasksAndEvents = ({ tasks, events, isLoading }: TasksAndEventsProps
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-foreground">Loading tasks...</p>
+            <p className="text-sm text-gray-600">Loading tasks...</p>
           ) : !tasks?.length ? (
-            <p className="text-foreground">No pending tasks</p>
+            <p className="text-sm text-gray-600">No pending tasks</p>
           ) : (
             <div className="space-y-4">
               {tasks.map((task) => (
                 <div key={task.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">{task.title}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium text-gray-900">{task.title}</p>
+                    <p className="text-sm text-gray-600">
                       {task.due_date && `Due: ${format(new Date(task.due_date), 'PP')}`}
                     </p>
                   </div>
@@ -60,20 +60,20 @@ export const TasksAndEvents = ({ tasks, events, isLoading }: TasksAndEventsProps
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-foreground">Loading events...</p>
+            <p className="text-sm text-gray-600">Loading events...</p>
           ) : !events?.length ? (
-            <p className="text-foreground">No upcoming events</p>
+            <p className="text-sm text-gray-600">No upcoming events</p>
           ) : (
             <div className="space-y-4">
               {events.map((event) => (
                 <div key={event.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">{event.title}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium text-gray-900">{event.title}</p>
+                    <p className="text-sm text-gray-600">
                       {format(new Date(event.event_date), 'PPp')}
                     </p>
                   </div>
-                  <span className="text-sm text-foreground capitalize">{event.type.replace('_', ' ')}</span>
+                  <span className="text-sm text-gray-700 capitalize">{event.type.replace('_', ' ')}</span>
                 </div>
               ))}
             </div>

@@ -12,11 +12,11 @@ export const ActiveExperiences = ({ experiences, isLoading }: ActiveExperiencesP
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
-        return 'text-green-500';
+        return 'text-green-600';
       case 'pending_approval':
-        return 'text-yellow-500';
+        return 'text-yellow-600';
       default:
-        return 'text-blue-500';
+        return 'text-blue-600';
     }
   };
 
@@ -27,16 +27,16 @@ export const ActiveExperiences = ({ experiences, isLoading }: ActiveExperiencesP
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-foreground">Loading experiences...</p>
+          <p className="text-sm text-gray-600">Loading experiences...</p>
         ) : !experiences?.length ? (
-          <p className="text-foreground">No active experiences</p>
+          <p className="text-sm text-gray-600">No active experiences</p>
         ) : (
           <div className="space-y-4">
             {experiences.map((exp) => (
               <div key={exp.id} className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-foreground">{exp.title}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-medium text-gray-900">{exp.title}</p>
+                  <p className="text-sm text-gray-600">
                     {format(new Date(exp.start_date), 'PP')} - 
                     {exp.end_date ? format(new Date(exp.end_date), 'PP') : 'Ongoing'}
                   </p>
