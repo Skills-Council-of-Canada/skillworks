@@ -1,5 +1,5 @@
 
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { EducatorHeader } from "@/components/educator/layout/EducatorHeader";
@@ -14,6 +14,7 @@ const EducatorLayout = () => {
   const getCurrentPageTitle = () => {
     const paths = {
       "/educator": "Dashboard",
+      "/educator/dashboard": "Dashboard",
       "/educator/experiences": "My Experiences",
       "/educator/collaborations": "Collaborations",
       "/educator/portals": "Find a Portal",
