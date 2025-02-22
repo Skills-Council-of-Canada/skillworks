@@ -37,6 +37,8 @@ const UserManagement = () => {
 
       return data as Profile[];
     },
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    gcTime: 300000, // Keep cache for 5 minutes
     meta: {
       onSettled: (_, error) => {
         if (error) {
