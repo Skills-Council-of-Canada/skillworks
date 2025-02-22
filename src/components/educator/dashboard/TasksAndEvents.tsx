@@ -31,15 +31,15 @@ export const TasksAndEvents = ({ tasks, events, isLoading }: TasksAndEventsProps
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading tasks...</p>
+            <p className="text-foreground">Loading tasks...</p>
           ) : !tasks?.length ? (
-            <p className="text-sm text-muted-foreground">No pending tasks</p>
+            <p className="text-foreground">No pending tasks</p>
           ) : (
             <div className="space-y-4">
               {tasks.map((task) => (
                 <div key={task.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{task.title}</p>
+                    <p className="font-medium text-foreground">{task.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {task.due_date && `Due: ${format(new Date(task.due_date), 'PP')}`}
                     </p>
@@ -60,20 +60,20 @@ export const TasksAndEvents = ({ tasks, events, isLoading }: TasksAndEventsProps
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading events...</p>
+            <p className="text-foreground">Loading events...</p>
           ) : !events?.length ? (
-            <p className="text-sm text-muted-foreground">No upcoming events</p>
+            <p className="text-foreground">No upcoming events</p>
           ) : (
             <div className="space-y-4">
               {events.map((event) => (
                 <div key={event.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{event.title}</p>
+                    <p className="font-medium text-foreground">{event.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {format(new Date(event.event_date), 'PPp')}
                     </p>
                   </div>
-                  <span className="text-sm capitalize">{event.type.replace('_', ' ')}</span>
+                  <span className="text-sm text-foreground capitalize">{event.type.replace('_', ' ')}</span>
                 </div>
               ))}
             </div>

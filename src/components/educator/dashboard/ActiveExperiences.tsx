@@ -27,15 +27,15 @@ export const ActiveExperiences = ({ experiences, isLoading }: ActiveExperiencesP
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading experiences...</p>
+          <p className="text-foreground">Loading experiences...</p>
         ) : !experiences?.length ? (
-          <p className="text-sm text-muted-foreground">No active experiences</p>
+          <p className="text-foreground">No active experiences</p>
         ) : (
           <div className="space-y-4">
             {experiences.map((exp) => (
               <div key={exp.id} className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{exp.title}</p>
+                  <p className="font-medium text-foreground">{exp.title}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(exp.start_date), 'PP')} - 
                     {exp.end_date ? format(new Date(exp.end_date), 'PP') : 'Ongoing'}
