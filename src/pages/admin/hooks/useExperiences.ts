@@ -6,7 +6,7 @@ import { Experience } from "../types/experience";
 import { useToast } from "@/hooks/use-toast";
 
 interface UseExperiencesProps {
-  statusFilter: Experience['approval_status'] | '';
+  statusFilter: Experience['approval_status'] | null;
   categoryFilter: string;
   searchQuery: string;
   dateRange: DateRange | undefined;
@@ -69,6 +69,6 @@ export const useExperiences = ({
       }
     },
     staleTime: 30000, // Data will be considered fresh for 30 seconds
-    cacheTime: 300000, // Cache will be kept for 5 minutes
+    gcTime: 300000, // Cache will be kept for 5 minutes (renamed from cacheTime)
   });
 };

@@ -8,7 +8,7 @@ import { Experience } from "./types/experience";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ExperienceOversight = () => {
-  const [statusFilter, setStatusFilter] = useState<Experience['approval_status'] | ''>('');
+  const [statusFilter, setStatusFilter] = useState<Experience['approval_status'] | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
