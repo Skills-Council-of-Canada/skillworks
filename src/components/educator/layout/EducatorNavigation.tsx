@@ -4,10 +4,6 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
-  Calendar,
-  Settings,
-  MessageSquare,
-  CheckSquare,
   Search,
   Briefcase,
   UserCheck,
@@ -38,12 +34,8 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
     { title: "Experiences", path: "/educator/experiences", icon: BookOpen },
     { title: "Students", path: "/educator/students", icon: Users },
     { title: "Matches", path: "/educator/matches", icon: UserCheck },
-    { title: "Tasks", path: "/educator/tasks", icon: CheckSquare },
-    { title: "Messages", path: "/educator/messages", icon: MessageSquare },
-    { title: "Calendar", path: "/educator/calendar", icon: Calendar },
     { title: "Find Portal", path: "/educator/portals", icon: Search },
     { title: "Find Project", path: "/educator/projects", icon: Briefcase },
-    { title: "Settings", path: "/educator/settings", icon: Settings },
   ];
 
   if (isMobile) {
