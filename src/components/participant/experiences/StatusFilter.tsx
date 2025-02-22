@@ -2,6 +2,7 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface StatusFilterProps {
   value: string;
@@ -9,9 +10,11 @@ interface StatusFilterProps {
 }
 
 export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className={`w-full sm:w-[180px] ${isMobile ? 'h-9 text-sm' : ''}`}>
         <Filter className="w-4 h-4 mr-2" />
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
