@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen">
-      <header className="sticky top-0 left-0 right-0 h-16 bg-white border-b z-50" />
+    <>
+      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b shadow-sm z-[999]" />
       
-      <main className="relative">
+      <div className="pt-16 min-h-screen bg-background">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
@@ -98,8 +98,8 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 };
 
