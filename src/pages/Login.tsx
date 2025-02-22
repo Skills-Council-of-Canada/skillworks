@@ -5,13 +5,14 @@ import Header from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { signInUser } from "@/services/auth";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserRole } from "@/types/auth";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (email: string, password: string) => {
     setIsLoading(true);
@@ -34,9 +35,12 @@ const Login = () => {
           description: "You have successfully logged in.",
         });
         
-        // Always redirect to the role-specific dashboard
-        const dashboardPath = `/${data.user.role}/dashboard`;
-        navigate(dashboardPath, { replace: true });
+        // Get the intended destination from location state or use role-based dashboard
+        const state = location.state as { from?: Location };
+        const destination = state?.from?.pathname || `/${data.user.role}/dashboard`;
+        
+        // Use replace: true to prevent back button from returning to login
+        navigate(destination, { replace: true });
       }
     } catch (error) {
       if (error instanceof Error) {
