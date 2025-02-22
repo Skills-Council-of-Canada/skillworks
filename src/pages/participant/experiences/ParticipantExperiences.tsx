@@ -37,11 +37,31 @@ const ParticipantExperiences = () => {
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList>
-          <TabsTrigger value="all">All Experiences</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="completed">Completed</TabsTrigger>
-          <TabsTrigger value="drafts">Drafts</TabsTrigger>
+        <TabsList className="w-full justify-start h-auto p-0 bg-transparent space-x-2">
+          <TabsTrigger 
+            value="all" 
+            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            All Experiences
+          </TabsTrigger>
+          <TabsTrigger 
+            value="active"
+            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            Active
+          </TabsTrigger>
+          <TabsTrigger 
+            value="completed"
+            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            Completed
+          </TabsTrigger>
+          <TabsTrigger 
+            value="drafts"
+            className="rounded-md px-4 py-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            Drafts
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="mt-6">
