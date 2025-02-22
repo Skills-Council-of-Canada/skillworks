@@ -1,4 +1,3 @@
-
 import { ChevronDown, Bell, User, MessageSquare, Settings, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,7 +27,7 @@ interface AdminHeaderProps {
 export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
-  const { toggle } = useSidebar();
+  const { toggleSidebar } = useSidebar();
 
   const handleAdminLogin = async () => {
     try {
@@ -71,7 +70,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
           variant="ghost"
           size="icon"
           className="md:hidden"
-          onClick={toggle}
+          onClick={toggleSidebar}
         >
           <Menu className="h-5 w-5" />
         </Button>
