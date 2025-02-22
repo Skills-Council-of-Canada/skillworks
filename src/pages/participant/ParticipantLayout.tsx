@@ -31,7 +31,7 @@ interface NavigationProps {
   userName: string | undefined;
   navItems: Array<{
     to: string;
-    icon: React.ComponentType;
+    icon: typeof Home;
     label: string;
   }>;
 }
@@ -87,13 +87,13 @@ const ParticipantLayout = () => {
             <div className="flex items-center gap-2 sm:gap-4">
               <Button variant="ghost" size="icon" asChild>
                 <Link to="/participant/messages">
-                  <MessageSquare className="h-5 w-5" />
+                  <MessageSquare size={20} />
                 </Link>
               </Button>
 
               <Button variant="ghost" size="icon" asChild>
                 <Link to="/participant/notifications">
-                  <Bell className="h-5 w-5 text-[#1A1F2C]" />
+                  <Bell size={20} className="text-[#1A1F2C]" />
                 </Link>
               </Button>
 
@@ -108,19 +108,19 @@ const ParticipantLayout = () => {
                     <span className="text-sm hidden md:inline-block">
                       {user?.name}
                     </span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown size={16} />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <DropdownMenuItem asChild>
                     <Link to="/participant/profile" className="flex w-full items-center">
-                      <User className="mr-2 h-4 w-4" />
+                      <User size={16} className="mr-2" />
                       <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/participant/settings" className="flex w-full items-center">
-                      <Settings className="mr-2 h-4 w-4" />
+                      <Settings size={16} className="mr-2" />
                       <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
@@ -129,7 +129,7 @@ const ParticipantLayout = () => {
                     onClick={handleLogout}
                     className="text-red-500"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut size={16} className="mr-2" />
                     <span>Logout</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -162,9 +162,9 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
         </div>
         <Button variant="ghost" size="sm" className="text-white hover:text-white/80 p-0">
           {state === "collapsed" ? (
-            <PanelRight className="h-5 w-5" />
+            <PanelRight size={20} />
           ) : (
-            <PanelLeft className="h-5 w-5" />
+            <PanelLeft size={20} />
           )}
         </Button>
       </div>
@@ -183,7 +183,7 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
                 )
               }
             >
-              <Icon className="h-4 w-4" />
+              <Icon size={16} />
               <span className={cn("ml-2", state === "collapsed" && "hidden")}>
                 {label}
               </span>
