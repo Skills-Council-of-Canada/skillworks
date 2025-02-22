@@ -32,14 +32,16 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Extract the role from the current path
+  const pathRole = location.pathname.split('/')[1]; // e.g., 'admin', 'educator', etc.
+
   // If specific roles are required and user's role doesn't match, redirect to unauthorized
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     console.log(`User role ${user.role} not allowed. Redirecting to unauthorized`);
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // If user tries to access a role-specific path that doesn't match their role
-  const pathRole = location.pathname.split('/')[1]; // e.g., 'admin', 'educator', etc.
+  // IMPORTANT: Validate that the user's role matches the path they're trying to access
   if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
     if (pathRole !== user.role) {
       console.log(`User with role ${user.role} attempting to access ${pathRole} path. Redirecting to appropriate dashboard.`);
