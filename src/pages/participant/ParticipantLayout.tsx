@@ -103,34 +103,36 @@ const ParticipantLayout = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="flex items-center gap-2 cursor-pointer">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-[#1A1F2C] text-white">
-                        {getInitials(user?.name || "")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm hidden md:inline-block">
-                      {user?.name}
-                    </span>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
+                  <Button variant="ghost" className="p-0">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-[#1A1F2C] text-white">
+                          {getInitials(user?.name || "")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm hidden md:inline-block">
+                        {user?.name}
+                      </span>
+                      <ChevronDown className="h-4 w-4" />
+                    </div>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <Link to="/participant/profile">
-                    <DropdownMenuItem className="hover:bg-gray-100">
+                    <DropdownMenuItem>
                       <User className="mr-2 h-4 w-4" />
                       View Profile
                     </DropdownMenuItem>
                   </Link>
                   <Link to="/participant/settings">
-                    <DropdownMenuItem className="hover:bg-gray-100">
+                    <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    className="text-red-500 hover:bg-gray-100"
+                    className="text-red-500"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
