@@ -30,49 +30,49 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
 
   return (
     <Card className="p-2 md:p-4">
-      <div className="space-y-2 md:space-y-4">
+      <div className="space-y-2">
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`p-3 md:p-4 rounded-lg border ${
+            className={`p-2 md:p-4 rounded-lg border ${
               !notification.read ? 'bg-gray-50' : 'bg-white'
             }`}
           >
-            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
-              <div className="flex md:block items-center gap-2">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0">
                 {getNotificationIcon(notification.type)}
-                <span
-                  className={`text-xs px-2 py-1 rounded inline-block md:mt-2 ${getPriorityClass(
-                    notification.priority
-                  )}`}
-                >
-                  {notification.priority}
-                </span>
               </div>
               
-              <div className="flex-grow space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-sm md:text-base">{notification.title}</h3>
+              <div className="flex-grow min-w-0">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <h3 className="font-semibold text-sm md:text-base truncate">{notification.title}</h3>
                   {!notification.read && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onMarkAsRead([notification.id])}
-                      className="shrink-0 -mt-1 h-8"
+                      className="flex-shrink-0 h-7 px-2 text-xs"
                     >
                       Mark as Read
                     </Button>
                   )}
                 </div>
                 
-                <p className="text-sm text-gray-600">{notification.message}</p>
-                {notification.content && (
-                  <p className="text-xs md:text-sm text-gray-500">{notification.content}</p>
-                )}
+                <p className="text-sm text-gray-600 line-clamp-2">{notification.message}</p>
                 
-                <div className="flex items-center gap-1 text-xs md:text-sm text-gray-500">
-                  <Clock className="h-3 w-3 md:h-4 md:w-4" />
-                  {new Date(notification.created_at).toLocaleDateString()}
+                <div className="flex items-center gap-4 mt-2">
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded ${getPriorityClass(
+                      notification.priority
+                    )}`}
+                  >
+                    {notification.priority}
+                  </span>
+                  
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Clock className="h-3 w-3" />
+                    {new Date(notification.created_at).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
             </div>
