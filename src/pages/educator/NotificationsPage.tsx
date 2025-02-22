@@ -22,9 +22,9 @@ const NotificationsPage = () => {
 
   const getIcon = (type: NotificationType) => {
     switch (type) {
-      case "CHAT_MESSAGE":
+      case NotificationType.CHAT_MESSAGE:
         return <MessageSquare className="h-5 w-5 text-purple-500" />;
-      case "TASK_ASSIGNMENT":
+      case NotificationType.TASK_ASSIGNMENT:
         return <Bell className="h-5 w-5 text-blue-500" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
