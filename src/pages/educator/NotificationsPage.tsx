@@ -10,7 +10,7 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div className="h-full">
+    <div className="container mx-auto px-4 py-6">
       <NotificationList 
         notifications={notifications}
         isLoading={isLoading}
