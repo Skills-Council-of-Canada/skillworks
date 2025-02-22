@@ -15,7 +15,7 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
-              <li><a href="/about" className="text-secondary/70 hover:text-primary">About</a></li>
+              <li><a href="https://www.skillscouncil.ca/" target="_blank" rel="noopener noreferrer" className="text-secondary/70 hover:text-primary">About Skills Council of Canada</a></li>
               <li><a href="/contact" className="text-secondary/70 hover:text-primary">Contact</a></li>
               <li><a href="/support" className="text-secondary/70 hover:text-primary">Support</a></li>
             </ul>
