@@ -11,6 +11,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { StudentHeader } from "./components/students/StudentHeader";
 import { StatCards } from "./components/students/StatCards";
 import { StudentSearch } from "./components/students/StudentSearch";
@@ -19,6 +20,8 @@ import { StudentTable } from "./components/students/StudentTable";
 const StudentManagement = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showStats, setShowStats] = useState(true);
+  const isMobile = useIsMobile();
 
   const { data: students, isLoading } = useQuery({
     queryKey: ["students"],
@@ -72,27 +75,34 @@ const StudentManagement = () => {
   ).length || 0;
 
   return (
-    <div className="space-y-4 md:space-y-6 p-2 md:p-6">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6">
       <StudentHeader />
       
       <StatCards 
         totalStudents={students?.length || 0}
         activeProjects={activeProjects}
         pendingCertifications={pendingCertifications}
+        showStats={showStats}
+        setShowStats={setShowStats}
+        isMobile={isMobile}
       />
 
       <Card className="bg-white dark:bg-gray-800">
-        <CardHeader>
-          <CardTitle>Students</CardTitle>
-          <CardDescription>
-            A list of all students under your supervision
-          </CardDescription>
+        <CardHeader className="space-y-2 md:space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Students</CardTitle>
+              <CardDescription className="text-sm">
+                A list of all students under your supervision
+              </CardDescription>
+            </div>
+          </div>
           <StudentSearch 
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
         </CardHeader>
-        <CardContent className="overflow-x-auto">
+        <CardContent className="overflow-x-auto p-0 md:p-6">
           <StudentTable 
             students={filteredStudents || []}
             isLoading={isLoading}
