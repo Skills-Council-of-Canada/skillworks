@@ -40,26 +40,26 @@ const NotificationsPage = () => {
   );
 
   return (
-    <div className="container mx-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Notifications</h1>
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-2 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-4">
+        <h1 className="text-xl md:text-2xl font-bold">Notifications</h1>
         <div className="w-full md:w-auto flex items-center gap-2">
           {isMobile && (
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="md:hidden">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                <Button variant="outline" size="sm" className="shrink-0">
+                  <SlidersHorizontal className="h-4 w-4 mr-1" />
                   Filters
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
-                <div className="py-4">
+              <SheetContent side="left" className="w-[280px]">
+                <div className="pt-2">
                   <SidebarContent />
                 </div>
               </SheetContent>
             </Sheet>
           )}
-          <div className="flex-grow md:flex-grow-0">
+          <div className="w-full md:w-auto">
             <NotificationFilters
               selectedType={selectedType}
               timeFilter={timeFilter}
@@ -70,13 +70,12 @@ const NotificationsPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
         {!isMobile && (
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 sticky top-0">
             <SidebarContent />
           </div>
         )}
-
         <div className="md:col-span-9">
           <NotificationList
             notifications={filteredNotifications}
