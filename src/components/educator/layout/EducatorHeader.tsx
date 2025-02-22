@@ -2,7 +2,7 @@
 import { NotificationBell } from "./NotificationBell";
 import { UserMenu } from "./UserMenu";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Calendar, MessageCircle, Activity } from "lucide-react";
+import { Calendar, MessageSquare, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -32,7 +32,7 @@ export const EducatorHeader = ({ pageTitle, onLogout }: EducatorHeaderProps) => 
           </Button>
           <Button variant="ghost" size="icon" asChild>
             <Link to="/educator/messages">
-              <MessageCircle className="h-5 w-5" />
+              <MessageSquare className="h-5 w-5" />
               <span className="sr-only">Messages</span>
             </Link>
           </Button>
