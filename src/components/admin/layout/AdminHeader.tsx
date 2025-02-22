@@ -21,10 +21,9 @@ import { toast } from "@/hooks/use-toast";
 
 interface AdminHeaderProps {
   pageTitle: string;
-  className?: string;
 }
 
-export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => {
+export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -63,7 +62,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
   };
 
   return (
-    <header className={`h-16 border-b flex items-center px-6 bg-card justify-between ${className}`}>
+    <header className="h-16 border-b flex items-center px-6 bg-card justify-between">
       <div className="flex items-center gap-2">
         {pageTitle === "Dashboard" ? (
           <img 
