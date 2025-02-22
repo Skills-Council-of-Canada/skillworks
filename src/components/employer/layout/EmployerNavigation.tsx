@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   Briefcase,
@@ -48,29 +48,34 @@ export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
         </SidebarTrigger>
       </div>
       
-      <div className="flex-1 px-4">
-        <div className="space-y-1 py-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.title}
-              to={item.url}
-              end={item.end}
-              className={({ isActive }) =>
-                `flex items-center ${
-                  state === "collapsed" ? "justify-center" : "gap-3"
-                } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
-                  isActive ? "bg-white/10" : ""
-                } text-white`
-              }
-            >
-              <item.icon className="h-4 w-4 shrink-0" />
-              <span className={state === "collapsed" ? "hidden" : "block truncate"}>
-                {item.title}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <NavLink
+                    to={item.url}
+                    end={item.end}
+                    className={({ isActive }) =>
+                      `flex items-center ${
+                        state === "collapsed" ? "justify-center" : "gap-3"
+                      } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
+                        isActive ? "bg-white/10" : ""
+                      } text-white w-full`
+                    }
+                  >
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span className={state === "collapsed" ? "hidden" : "block truncate"}>
+                      {item.title}
+                    </span>
+                  </NavLink>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
     </div>
   );
 };
