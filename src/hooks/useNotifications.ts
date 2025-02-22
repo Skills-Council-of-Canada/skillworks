@@ -35,12 +35,16 @@ interface NotificationFilters {
   read?: boolean;
 }
 
+// Define a type for the query key to prevent deep recursion
+type NotificationQueryKey = readonly ["unread-notifications" | "notifications", string | undefined];
+
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const queryKey = ['notifications', filters] as const;
+  // Explicitly type the query key
+  const queryKey: NotificationQueryKey = ["notifications", user?.id];
 
   const { data: notifications, isLoading } = useQuery({
     queryKey,
