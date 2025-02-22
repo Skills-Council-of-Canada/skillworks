@@ -35,19 +35,13 @@ interface NotificationFilters {
   read?: boolean;
 }
 
-// Define a type for the query key to prevent deep recursion
-type NotificationQueryKey = readonly ["unread-notifications" | "notifications", string | undefined];
-
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Explicitly type the query key
-  const queryKey: NotificationQueryKey = ["notifications", user?.id];
-
   const { data: notifications, isLoading } = useQuery({
-    queryKey,
+    queryKey: ["notifications", user?.id, filters?.type, filters?.priority, filters?.read] as const,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -86,7 +80,9 @@ export const useNotifications = (filters?: NotificationFilters) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ["notifications", user?.id] as const 
+      });
       toast({
         title: "Success",
         description: "Notifications marked as read",
