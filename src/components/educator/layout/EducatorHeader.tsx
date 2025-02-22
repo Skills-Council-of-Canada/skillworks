@@ -58,7 +58,9 @@ export const EducatorHeader = ({ pageTitle, onLogout }: EducatorHeaderProps) => 
           </Button>
         </div>
         <TooltipProvider>
-          <NotificationBell />
+          <div className="hidden md:block">
+            <NotificationBell />
+          </div>
           <div className="block md:hidden">
             <UserMenu onLogout={onLogout} isMobile={true} />
           </div>

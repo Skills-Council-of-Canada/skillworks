@@ -1,5 +1,5 @@
 
-import { ChevronDown, User, LogOut, Settings, Calendar, MessageSquare, Activity } from "lucide-react";
+import { ChevronDown, User, LogOut, Settings, Calendar, MessageSquare, Activity, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,6 +57,12 @@ export const UserMenu = ({ onLogout, isMobile = false }: UserMenuProps) => {
         </Link>
         {isMobile && (
           <>
+            <Link to="/educator/notifications">
+              <DropdownMenuItem className="cursor-pointer">
+                <Bell className="mr-2 h-4 w-4" />
+                Notifications
+              </DropdownMenuItem>
+            </Link>
             <Link to="/educator/calendar">
               <DropdownMenuItem className="cursor-pointer">
                 <Calendar className="mr-2 h-4 w-4" />
