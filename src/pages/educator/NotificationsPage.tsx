@@ -4,7 +4,6 @@ import { useNotifications, NotificationType } from "@/hooks/useNotifications";
 import { NotificationTypesSidebar } from "@/components/educator/notifications/NotificationTypesSidebar";
 import { NotificationList } from "@/components/educator/notifications/NotificationList";
 import { NotificationFilters } from "@/components/educator/notifications/NotificationFilters";
-import { NotificationSettings } from "@/components/educator/notifications/NotificationSettings";
 import { filterNotificationsByTime } from "@/components/educator/notifications/utils/notificationUtils";
 
 const NotificationsPage = () => {
@@ -41,16 +40,12 @@ const NotificationsPage = () => {
           />
         </div>
 
-        <div className="col-span-6">
+        <div className="col-span-9">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}
             onMarkAsRead={handleMarkAsRead}
           />
-        </div>
-
-        <div className="col-span-3">
-          <NotificationSettings />
         </div>
       </div>
     </div>
