@@ -18,15 +18,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConversationList } from "@/components/employer/messages/ConversationList";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const MessagesPage = () => {
-  // This would normally be driven by real data
+  const [isMobileListVisible, setIsMobileListVisible] = useState(true);
   const hasNewRequests = true;
 
+  // Helper function to determine if we're on mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
-    <div className="flex h-[calc(100vh-4rem)] gap-4 overflow-hidden">
+    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
       {/* Left Panel - Chat List */}
-      <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
+      <div
+        className={cn(
+          "w-full md:w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden",
+          "transition-all duration-300 ease-in-out",
+          "absolute md:relative",
+          "h-full z-10",
+          !isMobileListVisible && "translate-x-[-100%] md:translate-x-0"
+        )}
+      >
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold text-foreground">Conversations</h3>
           <div className="flex items-center gap-2">
@@ -100,11 +113,25 @@ const MessagesPage = () => {
         <ConversationList />
       </div>
 
-      <Separator orientation="vertical" className="bg-border" />
-
       {/* Right Panel - Chat Window */}
-      <div className="flex-1 bg-background border rounded-lg overflow-hidden">
-        <ChatWindow />
+      <div 
+        className={cn(
+          "flex-1 bg-background border rounded-lg overflow-hidden",
+          "transition-all duration-300 ease-in-out",
+          isMobile && isMobileListVisible ? "hidden" : "block"
+        )}
+      >
+        {/* Mobile back button */}
+        {isMobile && !isMobileListVisible && (
+          <Button
+            variant="ghost"
+            className="md:hidden m-2"
+            onClick={() => setIsMobileListVisible(true)}
+          >
+            ← Back to conversations
+          </Button>
+        )}
+        <ChatWindow onMobileBack={() => setIsMobileListVisible(true)} />
       </div>
     </div>
   );
