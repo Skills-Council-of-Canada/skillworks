@@ -66,7 +66,7 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col scrollbar-none overflow-auto">
       <header className="flex-none h-16 bg-white border-b shadow-sm" />
       
       <main className="flex-1 flex items-center">
