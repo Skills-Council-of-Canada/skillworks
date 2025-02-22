@@ -31,7 +31,7 @@ export const EducatorHeader = ({ pageTitle, onLogout }: EducatorHeaderProps) => 
       </div>
       
       <div className="flex items-center gap-4">
-        <div className="hidden md:flex items-center gap-2 mr-4">
+        <div className="flex items-center gap-2 mr-4">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -59,8 +59,7 @@ export const EducatorHeader = ({ pageTitle, onLogout }: EducatorHeaderProps) => 
         </div>
         <TooltipProvider>
           <NotificationBell />
-          <UserMenu onLogout={onLogout} isMobile={true} className="md:hidden" />
-          <UserMenu onLogout={onLogout} isMobile={false} className="hidden md:flex" />
+          <UserMenu onLogout={onLogout} />
         </TooltipProvider>
       </div>
     </header>
