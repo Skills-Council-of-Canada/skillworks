@@ -19,7 +19,7 @@ export const Header = ({ userName, onLogout }: HeaderProps) => {
         <div className="flex-1">
           <Link to="/participant/dashboard" className="flex items-center">
             <img 
-              src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
+              src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png" 
               alt="Skill Works Logo" 
               className="h-8"
             />
