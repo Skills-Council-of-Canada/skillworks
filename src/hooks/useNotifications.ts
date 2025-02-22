@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-export type NotificationCategory = 
+export type NotificationType = 
   | 'student_signup' 
   | 'progress_update' 
   | 'submission' 
@@ -13,26 +13,21 @@ export type NotificationCategory =
   | 'certification' 
   | 'system';
 
-export type NotificationPriority = 'critical' | 'important' | 'general';
-
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  category: NotificationCategory;
-  priority: NotificationPriority;
-  is_read: boolean;
-  read_at?: string;
+  type: NotificationType;
+  read: boolean;
+  read_at: string | null;
   created_at: string;
   user_id: string;
   experience_id?: string;
-  content?: string;
 }
 
 export const useNotifications = (filters?: {
-  category?: NotificationCategory;
-  priority?: NotificationPriority;
-  is_read?: boolean;
+  type?: NotificationType;
+  read?: boolean;
 }) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -47,22 +42,18 @@ export const useNotifications = (filters?: {
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (filters?.category) {
-        query.eq('category', filters.category);
+      if (filters?.type) {
+        query.eq('type', filters.type);
       }
       
-      if (filters?.priority) {
-        query.eq('priority', filters.priority);
-      }
-      
-      if (filters?.is_read !== undefined) {
-        query.eq('is_read', filters.is_read);
+      if (filters?.read !== undefined) {
+        query.eq('read', filters.read);
       }
 
       const { data, error } = await query;
       
       if (error) throw error;
-      return data;
+      return data as DatabaseNotification[];
     },
     enabled: !!user?.id,
   });
@@ -71,7 +62,7 @@ export const useNotifications = (filters?: {
     mutationFn: async (notificationIds: string[]) => {
       const { error } = await supabase
         .from('notifications')
-        .update({ read_at: new Date().toISOString(), is_read: true })
+        .update({ read_at: new Date().toISOString(), read: true })
         .in('id', notificationIds)
         .eq('user_id', user?.id);
 

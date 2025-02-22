@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications, NotificationCategory } from "@/hooks/useNotifications";
 import { Bell, AlertCircle, Info, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -49,11 +48,11 @@ const NotificationsPage = () => {
     }
   };
 
-  const getNotificationIcon = (category: string) => {
+  const getNotificationIcon = (category: NotificationCategory) => {
     switch (category) {
-      case 'critical':
+      case 'student_signup':
         return <AlertCircle className="h-5 w-5 text-red-600" />;
-      case 'important':
+      case 'progress_update':
         return <Bell className="h-5 w-5 text-yellow-600" />;
       default:
         return <Info className="h-5 w-5 text-blue-600" />;
@@ -177,7 +176,7 @@ const NotificationsPage = () => {
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        {getNotificationIcon(notification.priority)}
+                        {getNotificationIcon(notification.category)}
                       </div>
                       <div className="flex-grow">
                         <div className="flex items-center gap-2 mb-1">
