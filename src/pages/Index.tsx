@@ -66,9 +66,10 @@ const Index = () => {
   };
 
   return (
-    <>
-      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b z-50" /> {/* Header spacer */}
-      <div className="pt-16 min-h-screen">
+    <div className="relative flex flex-col h-screen overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-16 bg-white border-b z-50" />
+      <div className="h-16 flex-shrink-0" /> {/* Spacer that doesn't scroll */}
+      <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
@@ -98,7 +99,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
