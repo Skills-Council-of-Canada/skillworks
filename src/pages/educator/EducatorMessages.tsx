@@ -109,14 +109,14 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
     <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
-        <h4 className="font-semibold text-sm text-foreground">{name}</h4>
-        <p className="text-sm text-foreground/80">{message}</p>
-        <span className="text-xs text-foreground/70">{timestamp}</span>
+        <h4 className="font-medium text-sm text-foreground">{name}</h4>
+        <p className="text-sm text-muted-foreground">{message}</p>
+        <span className="text-xs text-muted-foreground">{timestamp}</span>
       </div>
       <div className="flex gap-2">
         <Button 
           size="sm" 
-          className="w-full hover:bg-primary/90"
+          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
         >
           Accept
         </Button>

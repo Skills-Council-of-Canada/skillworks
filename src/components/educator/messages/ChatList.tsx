@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, Plus, MessageSquare, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -95,16 +94,16 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
       <div className="flex items-start justify-between w-full">
         <div className="flex items-center gap-3">
           {isGroup ? (
-            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
               <Users className="h-4 w-4 text-emerald-500" />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
               <MessageSquare className="h-4 w-4 text-blue-500" />
             </div>
           )}
           <div>
-            <h4 className="font-semibold line-clamp-1 text-foreground">{name}</h4>
+            <h4 className="font-medium text-sm text-foreground">{name}</h4>
             <p className="text-sm text-muted-foreground line-clamp-1">{message}</p>
           </div>
         </div>

@@ -4,16 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-export type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
-                          'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
-export type NotificationPriority = 'critical' | 'important' | 'general';
+type NotificationType = 'project_request' | 'project_match' | 'submission_update' | 
+                       'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
 
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  type: NotificationCategory;
-  priority?: NotificationPriority;
+  type: NotificationType;
+  priority: string;
   read: boolean;
   read_at?: string;
   created_at: string;
@@ -21,28 +20,10 @@ interface DatabaseNotification {
   experience_id?: string;
 }
 
-export interface Notification extends Omit<DatabaseNotification, 'type' | 'read'> {
-  category: NotificationCategory;
-  is_read: boolean;
-  content?: string;
-  priority: NotificationPriority;
+interface NotificationFilters {
+  type?: NotificationType;
+  read?: boolean;
 }
-
-export interface NotificationFilters {
-  category?: NotificationCategory;
-  priority?: NotificationPriority;
-  is_read?: boolean;
-}
-
-const mapDatabaseToNotification = (dbNotification: DatabaseNotification): Notification => {
-  return {
-    ...dbNotification,
-    category: dbNotification.type,
-    is_read: dbNotification.read,
-    content: dbNotification.message,
-    priority: dbNotification.priority || 'general'
-  };
-};
 
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
@@ -50,7 +31,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const { toast } = useToast();
 
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', filters?.category, filters?.priority, filters?.is_read],
+    queryKey: ['notifications', filters],
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -58,20 +39,16 @@ export const useNotifications = (filters?: NotificationFilters) => {
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (filters?.category) {
-        query = query.eq('type', filters.category);
+      if (filters?.type) {
+        query = query.eq('type', filters.type);
       }
-      if (filters?.priority) {
-        query = query.eq('priority', filters.priority);
-      }
-      if (filters?.is_read !== undefined) {
-        query = query.eq('read', filters.is_read);
+      if (filters?.read !== undefined) {
+        query = query.eq('read', filters.read);
       }
 
       const { data, error } = await query;
       if (error) throw error;
-
-      return (data as DatabaseNotification[] || []).map(mapDatabaseToNotification);
+      return data as DatabaseNotification[];
     },
     enabled: !!user?.id,
   });
