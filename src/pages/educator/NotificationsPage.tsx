@@ -40,15 +40,26 @@ const NotificationsPage = () => {
   );
 
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-4">
-        <h1 className="text-xl md:text-2xl font-bold">Notifications</h1>
-        <div className="w-full md:w-auto flex items-center gap-2">
-          {isMobile && (
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
+        <div className="w-full md:w-auto">
+          <NotificationFilters
+            selectedType={selectedType}
+            timeFilter={timeFilter}
+            onTypeChange={(value) => setSelectedType(value as NotificationType | 'all')}
+            onTimeFilterChange={(value) => setTimeFilter(value)}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="md:col-span-4">
+          {isMobile ? (
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="shrink-0">
-                  <SlidersHorizontal className="h-4 w-4 mr-1" />
+                <Button variant="outline" className="mb-4 w-full md:w-auto">
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
                   Filters
                 </Button>
               </SheetTrigger>
@@ -58,25 +69,12 @@ const NotificationsPage = () => {
                 </div>
               </SheetContent>
             </Sheet>
-          )}
-          <div className="w-full md:w-auto">
-            <NotificationFilters
-              selectedType={selectedType}
-              timeFilter={timeFilter}
-              onTypeChange={(value) => setSelectedType(value as NotificationType | 'all')}
-              onTimeFilterChange={(value) => setTimeFilter(value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
-        {!isMobile && (
-          <div className="md:col-span-3 sticky top-0">
+          ) : (
             <SidebarContent />
-          </div>
-        )}
-        <div className="md:col-span-9">
+          )}
+        </div>
+
+        <div className="md:col-span-8">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}
