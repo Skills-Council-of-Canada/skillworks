@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { User } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,7 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
+  const navigationRef = useRef(false);
 
   // Cache profile data in memory
   const profileCache = new Map<string, User>();
@@ -41,7 +42,6 @@ export const useAuthState = () => {
       educator: '/educator'
     };
 
-    // Check if the current path starts with the correct role prefix
     return path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
   }, []);
 
@@ -49,7 +49,8 @@ export const useAuthState = () => {
     if (!session?.user) {
       setUser(null);
       setIsLoading(false);
-      if (!isPublicRoute(location.pathname)) {
+      if (!isPublicRoute(location.pathname) && !navigationRef.current) {
+        navigationRef.current = true;
         navigate('/login');
       }
       return;
@@ -68,7 +69,8 @@ export const useAuthState = () => {
       if (!profile) {
         setUser(null);
         setIsLoading(false);
-        if (!isPublicRoute(location.pathname)) {
+        if (!isPublicRoute(location.pathname) && !navigationRef.current) {
+          navigationRef.current = true;
           navigate('/login');
         }
         return;
@@ -77,9 +79,11 @@ export const useAuthState = () => {
       setUser(profile);
       
       // Only redirect if user is on login page, root, or wrong role route
-      if (location.pathname === '/login' || 
+      if ((location.pathname === '/login' || 
           location.pathname === '/' || 
-          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) {
+          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) && 
+          !navigationRef.current) {
+        navigationRef.current = true;
         navigate(getRoleBasedRedirect(profile.role), { replace: true });
       }
     } catch (error) {
@@ -90,7 +94,8 @@ export const useAuthState = () => {
         variant: "destructive",
       });
       setUser(null);
-      if (!isPublicRoute(location.pathname)) {
+      if (!isPublicRoute(location.pathname) && !navigationRef.current) {
+        navigationRef.current = true;
         navigate('/login');
       }
     } finally {
@@ -101,6 +106,7 @@ export const useAuthState = () => {
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
+    navigationRef.current = false;
 
     const setupAuth = async () => {
       if (location.pathname.includes('/registration')) {
@@ -121,7 +127,8 @@ export const useAuthState = () => {
             setUser(null);
             profileCache.clear();
             setIsLoading(false);
-            if (!isPublicRoute(location.pathname)) {
+            if (!isPublicRoute(location.pathname) && !navigationRef.current) {
+              navigationRef.current = true;
               navigate('/login', { replace: true });
             }
             return;
