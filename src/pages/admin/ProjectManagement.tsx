@@ -4,12 +4,14 @@ import { ProjectFilters } from "./components/project-management/ProjectFilters";
 import { ProjectsTable } from "./components/project-management/ProjectsTable";
 import { ProjectReviewStatus } from "./types/project";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type StatusFilterType = ProjectReviewStatus | "all";
 
 const ProjectManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>("all");
+  const isMobile = useIsMobile();
 
   const { data: projects, isLoading, refetch } = useQuery({
     queryKey: ['projects', { searchQuery, statusFilter }],
@@ -54,6 +56,7 @@ const ProjectManagement = () => {
             onStatusChange={handleStatusChange}
             projects={projects}
             isLoading={isLoading}
+            isMobile={isMobile}
           />
         </div>
       </div>

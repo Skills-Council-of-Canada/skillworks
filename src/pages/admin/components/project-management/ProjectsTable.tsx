@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { ProjectReviewStatus } from "../../types/project";
 import { ActionButtons } from "./ActionButtons";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 
 interface Project {
   id: string;
@@ -26,9 +27,63 @@ interface ProjectsTableProps {
   projects: Project[] | undefined;
   isLoading: boolean;
   onStatusChange: (projectId: string, newStatus: ProjectReviewStatus, feedback?: string) => Promise<void>;
+  isMobile?: boolean;
 }
 
-export function ProjectsTable({ projects, isLoading, onStatusChange }: ProjectsTableProps) {
+export function ProjectsTable({ projects, isLoading, onStatusChange, isMobile }: ProjectsTableProps) {
+  if (isMobile) {
+    return (
+      <div className="space-y-4">
+        {isLoading ? (
+          <div className="text-center py-4">Loading projects...</div>
+        ) : projects?.length === 0 ? (
+          <div className="text-center py-4">No projects found</div>
+        ) : (
+          projects?.map((project) => (
+            <Card key={project.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start gap-4">
+                  <div className="space-y-1">
+                    <h3 className="font-medium">{project.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {project.employers?.company_name}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={
+                      project.review_status === "approved"
+                        ? "default"
+                        : project.review_status === "rejected"
+                        ? "destructive"
+                        : "secondary"
+                    }
+                  >
+                    {project.review_status}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-muted-foreground">
+                  <p>Trade Type: {project.trade_type}</p>
+                  <p>Created: {new Date(project.created_at).toLocaleDateString()}</p>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="w-full flex justify-end">
+                  <ActionButtons
+                    projectId={project.id}
+                    currentStatus={project.review_status}
+                    onStatusChange={onStatusChange}
+                  />
+                </div>
+              </CardFooter>
+            </Card>
+          ))
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-md border">
       <Table>

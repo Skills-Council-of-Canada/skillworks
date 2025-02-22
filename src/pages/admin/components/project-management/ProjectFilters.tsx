@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,15 +25,16 @@ export function ProjectFilters({
   setStatusFilter,
 }: ProjectFiltersProps) {
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
       <Input
         type="search"
         placeholder="Search projects..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full sm:w-[240px]"
       />
       <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>
         <SelectContent>
