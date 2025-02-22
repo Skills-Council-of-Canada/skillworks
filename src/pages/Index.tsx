@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight, LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
@@ -66,45 +65,40 @@ const Index = () => {
   };
 
   return (
-    <>
-      {/* Fixed header at the top */}
+    <div className="h-screen overflow-hidden">
       <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b z-50" />
       
-      {/* Page wrapper */}
-      <div className="flex min-h-screen flex-col pt-16">
-        {/* Scrollable container */}
-        <div className="flex-grow overflow-y-auto">
-          <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
-            <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
+      <div className="h-full pt-16 overflow-y-auto">
+        <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
+          <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
+          
+          <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
+            <div className="flex flex-col justify-center order-2 md:order-1">
+              <PortalSelection onPortalSelect={handlePortalSelect} />
+            </div>
             
-            <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
-              <div className="flex flex-col justify-center order-2 md:order-1">
-                <PortalSelection onPortalSelect={handlePortalSelect} />
-              </div>
-              
-              <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
-                <AuthForm
-                  icon={User}
-                  title="Sign In"
-                  gradient="bg-white"
-                  isLoading={isSubmitting}
-                  onSubmit={handleAuthSubmit}
-                  onBack={handleBack}
-                />
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => navigate("/login")}
-                >
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Login Page
-                </Button>
-              </div>
+            <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
+              <AuthForm
+                icon={User}
+                title="Sign In"
+                gradient="bg-white"
+                isLoading={isSubmitting}
+                onSubmit={handleAuthSubmit}
+                onBack={handleBack}
+              />
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate("/login")}
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Login Page
+              </Button>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
