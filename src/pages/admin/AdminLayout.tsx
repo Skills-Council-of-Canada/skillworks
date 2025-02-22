@@ -29,14 +29,13 @@ const AdminLayout = () => {
     return paths[location.pathname] || "Dashboard";
   };
 
-  // Determine if we should show the dashboard
   const showDashboard = location.pathname === "/admin" || location.pathname === "/admin/dashboard";
 
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
-        <Sidebar collapsible="icon" className="border-r bg-[#1A1F2C]">
-          <AdminNavigation onLogout={logout} userName={user?.name} />
+        <Sidebar collapsible="icon" className="border-r">
+          <AdminNavigation userName={user?.name || ""} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
