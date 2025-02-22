@@ -63,35 +63,36 @@ const ExperienceManagement = () => {
   });
 
   if (isLoading) {
-    return <div className="p-8">Loading experience details...</div>;
+    return <div className="p-4 md:p-8">Loading experience details...</div>;
   }
 
   if (!experience) {
-    return <div className="p-8">Experience not found</div>;
+    return <div className="p-4 md:p-8">Experience not found</div>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 p-2 md:p-0">
       <div className="flex items-center justify-between border-b pb-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/educator/experiences")}
+            className="shrink-0"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">{experience.title}</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-lg md:text-2xl font-bold truncate">{experience.title}</h1>
+            <p className="text-xs md:text-sm text-muted-foreground">
               Manage learners, matches, and progress
             </p>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="learners" className="space-y-6">
-        <TabsList>
+      <Tabs defaultValue="learners" className="space-y-4 md:space-y-6">
+        <TabsList className="w-full overflow-x-auto flex whitespace-nowrap md:w-auto md:inline-flex">
           <TabsTrigger value="learners" className="space-x-2">
             <Users className="h-4 w-4" />
             <span>Learners</span>
@@ -118,24 +119,26 @@ const ExperienceManagement = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="learners">
-          <LearnersTab experienceId={experienceId || ''} />
-        </TabsContent>
-        <TabsContent value="matches">
-          <MatchesTab />
-        </TabsContent>
-        <TabsContent value="requests">
-          <RequestsTab />
-        </TabsContent>
-        <TabsContent value="members">
-          <MembersTab />
-        </TabsContent>
-        <TabsContent value="updates">
-          <UpdatesTab />
-        </TabsContent>
-        <TabsContent value="settings">
-          <SettingsTab />
-        </TabsContent>
+        <div className="overflow-x-hidden">
+          <TabsContent value="learners">
+            <LearnersTab experienceId={experienceId || ''} />
+          </TabsContent>
+          <TabsContent value="matches">
+            <MatchesTab />
+          </TabsContent>
+          <TabsContent value="requests">
+            <RequestsTab />
+          </TabsContent>
+          <TabsContent value="members">
+            <MembersTab />
+          </TabsContent>
+          <TabsContent value="updates">
+            <UpdatesTab />
+          </TabsContent>
+          <TabsContent value="settings">
+            <SettingsTab />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );
