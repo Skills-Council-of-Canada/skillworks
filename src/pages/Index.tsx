@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="h-16 flex-shrink-0" /> {/* Spacer for fixed header */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="flex flex-col items-center justify-center p-4 space-y-8 min-h-full">
+    <div className="flex flex-col min-h-screen">
+      <div className="fixed top-0 left-0 right-0 h-16 bg-white z-50" /> {/* Header placeholder */}
+      <div className="flex-1 mt-16"> {/* Main content starts after header */}
+        <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
           <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
@@ -97,7 +97,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

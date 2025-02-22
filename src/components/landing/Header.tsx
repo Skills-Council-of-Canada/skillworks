@@ -18,8 +18,8 @@ const Header = () => {
   };
   
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 bg-white border-b z-50 h-16">
+      <div className="container mx-auto px-4 h-full flex items-center justify-between">
         <div className="flex items-center">
           <img 
             src="/lovable-uploads/f55205da-68be-4106-a1f8-a42fa33f103f.png" 
