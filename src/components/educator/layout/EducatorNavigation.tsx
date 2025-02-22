@@ -107,10 +107,6 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
               key={item.path}
               to={item.path}
               end={item.path === "/educator/dashboard"}
-              onClick={(e) => {
-                e.preventDefault();
-                window.history.pushState({}, '', item.path);
-              }}
               className={({ isActive }) =>
                 cn(
                   "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
@@ -159,10 +155,6 @@ export const EducatorNavigation = ({ userName, isMobile }: EducatorNavigationPro
                   <NavLink
                     to={item.path}
                     end={item.path === "/educator/dashboard"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.history.pushState({}, '', item.path);
-                    }}
                     className={({ isActive }) =>
                       cn(
                         "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
