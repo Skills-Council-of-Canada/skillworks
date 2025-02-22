@@ -99,6 +99,7 @@ const ParticipantLayout = () => {
                 variant="ghost" 
                 size="icon" 
                 asChild
+                className="text-gray-600"
               >
                 <Link to="/participant/messages">
                   <MessageSquare size={20} />
@@ -109,6 +110,7 @@ const ParticipantLayout = () => {
                 variant="ghost" 
                 size="icon" 
                 asChild
+                className="text-gray-600"
               >
                 <Link to="/participant/notifications">
                   <Bell size={20} />
@@ -119,7 +121,7 @@ const ParticipantLayout = () => {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className="p-0"
+                    className="p-0 text-gray-600"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
@@ -134,7 +136,7 @@ const ParticipantLayout = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="end" 
-                  className="w-56 bg-white [&>*]:bg-transparent [&>*]:text-inherit [&>*]:cursor-pointer"
+                  className="w-56 bg-white [&>*]:bg-transparent [&>*]:text-inherit"
                 >
                   <DropdownMenuItem asChild>
                     <Link to="/participant/profile" className="flex w-full items-center">
