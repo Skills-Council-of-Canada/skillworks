@@ -14,7 +14,9 @@ export const StatusFilter = ({ value, onValueChange }: StatusFilterProps) => {
   
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className={`w-full sm:w-[180px] ${isMobile ? 'h-9 text-sm' : ''}`}>
+      <SelectTrigger 
+        className={`w-full ${isMobile ? 'h-9 text-sm' : 'h-10'}`}
+      >
         <Filter className="w-4 h-4 mr-2" />
         <SelectValue placeholder="Filter by status" />
       </SelectTrigger>
