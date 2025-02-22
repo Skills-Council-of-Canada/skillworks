@@ -26,12 +26,8 @@ export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigatio
   const navigationItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
     { icon: Users, label: "Users", href: "/admin/users" },
-    { icon: FolderKanban, label: "Experiences", href: "/admin/experiences" },
     { icon: ClipboardList, label: "Projects", href: "/admin/projects" },
     { icon: PieChart, label: "Reports", href: "/admin/reports" },
-    { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
-    { icon: Bell, label: "Notifications", href: "/admin/notifications" },
-    { icon: User, label: "Profile", href: "/admin/profile" },
     { icon: Settings, label: "Settings", href: "/admin/settings" },
   ];
 
@@ -45,8 +41,8 @@ export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigatio
             className={cn(
               "flex flex-col items-center transition-colors",
               location.pathname === item.href
-                ? "text-[#9b87f5]"
-                : "text-white/60 hover:text-[#9b87f5]"
+                ? "text-white"
+                : "text-white/60 hover:text-white"
             )}
           >
             <item.icon className="h-5 w-5" />
@@ -71,8 +67,8 @@ export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigatio
             className={cn(
               "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
               location.pathname === item.href
-                ? "bg-[#9b87f5]/10 text-[#9b87f5]"
-                : "text-white/60 hover:bg-[#9b87f5]/10 hover:text-[#9b87f5]"
+                ? "bg-white/10 text-white"
+                : "text-white/60 hover:bg-white/10 hover:text-white"
             )}
           >
             <item.icon className="h-5 w-5" />
@@ -83,7 +79,7 @@ export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigatio
       <div className="p-4 border-t border-white/10">
         <button
           onClick={onLogout}
-          className="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-[#9b87f5] hover:bg-[#9b87f5]/10 rounded-lg transition-colors w-full"
+          className="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors w-full"
         >
           <LogOut className="h-5 w-5" />
           <span>Logout</span>
