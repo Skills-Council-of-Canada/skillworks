@@ -12,9 +12,9 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger
+  SidebarMenuButton,
+  useSidebar
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +24,8 @@ interface EmployerNavigationProps {
 }
 
 export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationProps) => {
+  const { state, toggleSidebar } = useSidebar();
+  
   const getFirstName = (fullName: string) => {
     return fullName?.split(" ")[0] || "there";
   };
@@ -42,11 +44,14 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
           <h2 className="text-xl font-bold">Employer Portal</h2>
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
-        <SidebarTrigger asChild>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
-            <ChevronRight size={16} />
-          </Button>
-        </SidebarTrigger>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-white hover:bg-white/10"
+          onClick={toggleSidebar}
+        >
+          <ChevronRight size={16} />
+        </Button>
       </div>
       
       <SidebarGroup>
@@ -54,15 +59,13 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <Link
-                    to={item.url}
-                    className="flex items-center gap-2 px-4 py-2 w-full hover:bg-white/10 transition-colors"
-                  >
-                    <item.icon size={16} />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
+                <Link
+                  to={item.url}
+                  className="flex items-center gap-2 px-4 py-2 w-full hover:bg-white/10 transition-colors"
+                >
+                  <item.icon size={16} />
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>

@@ -28,13 +28,13 @@ const EmployerLayout = () => {
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar collapsible="icon" className="border-r">
-          <EmployerNavigation onLogout={logout} userName={user?.name} />
+          <EmployerNavigation onLogout={logout} userName={user?.name || ""} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
           <EmployerHeader pageTitle={getCurrentPageTitle()} />
           
-          <main className="flex-1 p-4 sm:p-6 overflow-auto">
+          <main className="flex-1 p-4 sm:p-6 overflow-auto bg-gray-50">
             <Outlet />
           </main>
 
