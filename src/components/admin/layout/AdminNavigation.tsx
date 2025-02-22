@@ -4,9 +4,6 @@ import {
   LayoutDashboard,
   Users,
   FileText,
-  Settings,
-  MessageSquare,
-  Bell,
   ClipboardList,
   PanelLeft,
   PanelRight
@@ -36,15 +33,12 @@ export const AdminNavigation = ({ userName, isMobile }: AdminNavigationProps) =>
     { title: "Users", path: "/admin/users", icon: Users },
     { title: "Projects", path: "/admin/projects", icon: ClipboardList },
     { title: "Reports", path: "/admin/reports", icon: FileText },
-    { title: "Messages", path: "/admin/messages", icon: MessageSquare },
-    { title: "Notifications", path: "/admin/notifications", icon: Bell },
-    { title: "Settings", path: "/admin/settings", icon: Settings },
   ];
 
   if (isMobile) {
     return (
       <div className="flex justify-around items-center p-2">
-        {menuItems.slice(0, 5).map((item) => (
+        {menuItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
