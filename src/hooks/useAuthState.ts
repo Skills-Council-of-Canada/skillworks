@@ -83,8 +83,8 @@ export const useAuthState = () => {
             profileCache.set(session.user.id, profile);
             setUser(profile);
             
-            // Only redirect if we're on a login page or root
-            if (location.pathname === '/login' || location.pathname === '/') {
+            // Only redirect if we're on a login page or root AND we haven't already navigated
+            if ((location.pathname === '/login' || location.pathname === '/') && !location.state?.from) {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Login/root path detected, redirecting to:", redirectPath);
               navigate(redirectPath, { replace: true });
@@ -142,7 +142,7 @@ export const useAuthState = () => {
               if (mounted && profile) {
                 profileCache.set(session.user.id, profile);
                 setUser(profile);
-                // Only redirect if we're on a login page or root
+                // Only redirect on sign in if we're on login/root
                 if (location.pathname === '/login' || location.pathname === '/') {
                   const redirectPath = getRoleBasedRedirect(profile.role);
                   console.log("Redirecting after sign in to:", redirectPath);
@@ -188,7 +188,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect, location.pathname, toast]);
+  }, [navigate, getRoleBasedRedirect, location, toast]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
