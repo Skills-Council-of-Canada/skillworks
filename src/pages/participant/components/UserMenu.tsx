@@ -27,7 +27,7 @@ export const UserMenu = ({ onLogout }: UserMenuProps) => {
           <UserCircle className="h-6 w-6" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56 z-50" align="end" forceMount>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
