@@ -7,6 +7,7 @@ import {
   BookOpen,
   PanelLeft,
   PanelRight,
+  MessageSquare,
 } from "lucide-react";
 import {
   SidebarContent,
@@ -21,9 +22,10 @@ import { cn } from "@/lib/utils";
 
 interface EmployerNavigationProps {
   userName: string;
+  isMobile: boolean;
 }
 
-export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
+export const EmployerNavigation = ({ userName, isMobile }: EmployerNavigationProps) => {
   const { state } = useSidebar();
   
   const getFirstName = (fullName: string) => {
@@ -31,11 +33,34 @@ export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
   };
 
   const menuItems = [
-    { title: "Dashboard", url: "/employer/dashboard", icon: LayoutDashboard, end: true },
+    { title: "Dashboard", url: "/employer/dashboard", icon: LayoutDashboard },
     { title: "Projects", url: "/employer/projects", icon: Briefcase },
     { title: "Applications", url: "/employer/applications", icon: ClipboardList },
+    { title: "Messages", url: "/employer/messages", icon: MessageSquare },
     { title: "Resources", url: "/employer/resources", icon: BookOpen },
   ];
+
+  if (isMobile) {
+    return (
+      <div className="flex justify-around items-center p-2">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.url}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                isActive ? "text-white" : "hover:text-white"
+              )
+            }
+          >
+            <item.icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{item.title}</span>
+          </NavLink>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
@@ -57,7 +82,6 @@ export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
                 <SidebarMenuItem key={item.url}>
                   <NavLink
                     to={item.url}
-                    end={item.end}
                     className={({ isActive }) =>
                       cn(
                         "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
