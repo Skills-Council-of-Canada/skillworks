@@ -48,10 +48,6 @@ const ParticipantLayout = () => {
       .toUpperCase();
   };
 
-  const getFirstName = (fullName: string) => {
-    return fullName?.split(" ")[0] || "there";
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -89,49 +85,43 @@ const ParticipantLayout = () => {
             />
 
             <div className="flex items-center gap-2 sm:gap-4">
-              <Link to="/participant/messages">
-                <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/participant/messages">
                   <MessageSquare className="h-5 w-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Link to="/participant/notifications">
-                <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/participant/notifications">
                   <Bell className="h-5 w-5 text-[#1A1F2C]" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-0">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-[#1A1F2C] text-white">
-                          {getInitials(user?.name || "")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm hidden md:inline-block">
-                        {user?.name}
-                      </span>
-                      <ChevronDown className="h-4 w-4" />
-                    </div>
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-[#1A1F2C] text-white">
+                        {getInitials(user?.name || "")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm hidden md:inline-block ml-2">
+                      {user?.name}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <DropdownMenuItem asChild>
                     <Link to="/participant/profile" className="w-full">
-                      <div className="flex items-center">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>View Profile</span>
-                      </div>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/participant/settings" className="w-full">
-                      <div className="flex items-center">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </div>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -139,10 +129,8 @@ const ParticipantLayout = () => {
                     onClick={handleLogout}
                     className="text-red-500"
                   >
-                    <div className="flex items-center">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Logout</span>
-                    </div>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -172,8 +160,14 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
           <h2 className="text-xl font-bold mb-1 text-white">Participant Portal</h2>
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
-        <SidebarTrigger className="text-white hover:text-white/80">
-          {state === "collapsed" ? <PanelRight className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
+        <SidebarTrigger asChild className="text-white hover:text-white/80">
+          <button>
+            {state === "collapsed" ? (
+              <PanelRight strokeWidth={1.5} />
+            ) : (
+              <PanelLeft strokeWidth={1.5} />
+            )}
+          </button>
         </SidebarTrigger>
       </div>
 
@@ -191,7 +185,7 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
                 )
               }
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon strokeWidth={1.5} />
               <span className={cn("ml-2", state === "collapsed" && "hidden")}>
                 {label}
               </span>
