@@ -8,7 +8,7 @@ import {
   PanelLeft,
   PanelRight
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 interface AdminNavigationProps {
@@ -47,20 +47,22 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
       <div className="p-3">
         <nav className="space-y-1">
           {navItems.map(({ to, icon: Icon, label }) => (
-            <Link
+            <NavLink
               key={to}
               to={to}
-              className={`flex items-center ${
-                state === "collapsed" ? "justify-center" : "gap-3"
-              } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
-                location.pathname === to ? 'bg-white/10' : ''
-              }`}
+              className={({ isActive }) =>
+                `flex items-center ${
+                  state === "collapsed" ? "justify-center" : "gap-3"
+                } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
+                  isActive ? 'bg-white/10' : ''
+                }`
+              }
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className={state === "collapsed" ? "hidden" : "block truncate"}>
                 {label}
               </span>
-            </Link>
+            </NavLink>
           ))}
         </nav>
       </div>
