@@ -26,26 +26,26 @@ const EducatorMessages = () => {
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4 overflow-hidden">
       {/* Left Panel - Chat List */}
-      <div className="w-80 flex-shrink-0 bg-gray-900 border-gray-700 border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 className="font-semibold text-white">Conversations</h3>
+      <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="font-semibold text-foreground">Conversations</h3>
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-gray-700">
+                <Button variant="ghost" size="icon">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-gray-800 border-gray-700">
-                <DropdownMenuItem className="text-gray-100 hover:bg-gray-700">Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem className="text-gray-100 hover:bg-gray-700">Mute Notifications</DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-700" />
-                <DropdownMenuItem className="text-red-400 hover:text-red-300 hover:bg-gray-700">Delete Chat</DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem>Pin Chat</DropdownMenuItem>
+                <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive">Delete Chat</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative text-gray-300 hover:text-white hover:bg-gray-700">
+                <Button variant="ghost" size="icon" className="relative">
                   <BellDot className="h-5 w-5" />
                   {hasNewRequests && (
                     <Badge 
@@ -58,12 +58,12 @@ const EducatorMessages = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent 
-                className="w-80 p-0 bg-gray-800 border-gray-700" 
+                className="w-80 p-0" 
                 align="end"
                 sideOffset={5}
               >
-                <div className="p-4 border-b border-gray-700">
-                  <h4 className="font-semibold text-white">Chat Requests</h4>
+                <div className="p-4 border-b">
+                  <h4 className="font-semibold text-foreground">Chat Requests</h4>
                 </div>
                 <ScrollArea className="h-[300px]">
                   <div className="p-4 space-y-4">
@@ -86,10 +86,10 @@ const EducatorMessages = () => {
         <ChatList />
       </div>
 
-      <Separator orientation="vertical" className="bg-gray-700" />
+      <Separator orientation="vertical" className="bg-border" />
 
       {/* Right Panel - Chat Window */}
-      <div className="flex-1 bg-gray-900 border-gray-700 border rounded-lg overflow-hidden">
+      <div className="flex-1 bg-background border rounded-lg overflow-hidden">
         <ChatWindow />
       </div>
     </div>
@@ -104,17 +104,15 @@ interface RequestItemProps {
 
 const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
   return (
-    <div className="border border-gray-700 rounded-lg p-3 space-y-2 bg-gray-800">
+    <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
-        <h4 className="font-semibold text-sm text-white">{name}</h4>
-        <p className="text-sm text-gray-300">{message}</p>
-        <span className="text-xs text-gray-400">{timestamp}</span>
+        <h4 className="font-semibold text-sm text-foreground">{name}</h4>
+        <p className="text-sm text-muted-foreground">{message}</p>
+        <span className="text-xs text-muted-foreground">{timestamp}</span>
       </div>
       <div className="flex gap-2">
-        <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white">Accept</Button>
-        <Button size="sm" variant="outline" className="w-full border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white">
-          Decline
-        </Button>
+        <Button size="sm" className="w-full">Accept</Button>
+        <Button size="sm" variant="outline" className="w-full">Decline</Button>
       </div>
     </div>
   );
