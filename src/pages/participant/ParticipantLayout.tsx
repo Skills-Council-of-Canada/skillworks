@@ -99,27 +99,27 @@ const ParticipantLayout = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-0">
+                  <Button variant="ghost" className="p-0 flex items-center gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
                         {getInitials(user?.name || "")}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm hidden md:inline-block ml-2">
+                    <span className="text-sm hidden md:inline-block">
                       {user?.name}
                     </span>
-                    <ChevronDown className="h-4 w-4 ml-1" />
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/profile" className="w-full">
+                    <Link to="/participant/profile" className="flex w-full items-center">
                       <User className="mr-2 h-4 w-4" />
                       <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/settings" className="w-full">
+                    <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
@@ -160,15 +160,13 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
           <h2 className="text-xl font-bold mb-1 text-white">Participant Portal</h2>
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
-        <SidebarTrigger asChild className="text-white hover:text-white/80">
-          <button>
-            {state === "collapsed" ? (
-              <PanelRight strokeWidth={1.5} />
-            ) : (
-              <PanelLeft strokeWidth={1.5} />
-            )}
-          </button>
-        </SidebarTrigger>
+        <Button variant="ghost" size="sm" className="text-white hover:text-white/80 p-0">
+          {state === "collapsed" ? (
+            <PanelRight className="h-5 w-5" />
+          ) : (
+            <PanelLeft className="h-5 w-5" />
+          )}
+        </Button>
       </div>
 
       <div className="flex-1 px-4">
@@ -185,7 +183,7 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
                 )
               }
             >
-              <Icon strokeWidth={1.5} />
+              <Icon className="h-4 w-4" />
               <span className={cn("ml-2", state === "collapsed" && "hidden")}>
                 {label}
               </span>
