@@ -34,11 +34,6 @@ export const useAuthState = () => {
     return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
   };
 
-  // Check if current route matches user role
-  const isValidRouteForRole = (path: string, role: string) => {
-    return path.startsWith(`/${role.toLowerCase()}`);
-  };
-
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
@@ -49,6 +44,7 @@ export const useAuthState = () => {
         
         if (!mounted) return;
 
+        // Early return for registration pages
         if (location.pathname.includes('/registration')) {
           setIsLoading(false);
           return;
@@ -56,11 +52,10 @@ export const useAuthState = () => {
 
         // Handle no session case
         if (!session?.user) {
-          console.log("No active session found");
           setUser(null);
           setIsLoading(false);
           if (!isPublicRoute(location.pathname)) {
-            navigate('/login', { state: { from: location } });
+            navigate('/login');
           }
           return;
         }
@@ -68,81 +63,70 @@ export const useAuthState = () => {
         // Handle existing session
         try {
           // Use cached profile if available
-          let profile: User | null = null;
-          if (profileCache.has(session.user.id)) {
-            profile = profileCache.get(session.user.id)!;
-            setUser(profile);
-            setIsLoading(false);
-          } else {
+          let profile = profileCache.get(session.user.id);
+          
+          if (!profile) {
             profile = await getUserProfile(session);
             if (profile) {
               profileCache.set(session.user.id, profile);
-              setUser(profile);
             }
           }
 
+          if (!mounted) return;
+
           if (!profile) {
-            console.log("No profile found for user");
             setUser(null);
+            setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
               navigate('/login');
             }
-            setIsLoading(false);
             return;
           }
 
-          // Only redirect if:
-          // 1. We're on a public route (login or root)
-          // 2. We're on a route that doesn't match the user's role
-          const shouldRedirect = 
-            (location.pathname === '/login' || location.pathname === '/') ||
-            (!isValidRouteForRole(location.pathname, profile.role) && !isPublicRoute(location.pathname));
+          setUser(profile);
 
-          if (shouldRedirect) {
-            const redirectPath = getRoleBasedRedirect(profile.role);
-            console.log(`Redirecting to ${redirectPath} from ${location.pathname}`);
-            navigate(redirectPath, { replace: true });
+          // Only redirect if we're on login or root
+          if (location.pathname === '/login' || location.pathname === '/') {
+            navigate(getRoleBasedRedirect(profile.role), { replace: true });
           }
 
           setIsLoading(false);
         } catch (error) {
           console.error("Profile error:", error);
-          toast({
-            title: "Error",
-            description: "Failed to load user profile. Please try logging in again.",
-            variant: "destructive",
-          });
-          setUser(null);
-          if (!isPublicRoute(location.pathname)) {
-            navigate('/login');
+          if (mounted) {
+            toast({
+              title: "Error",
+              description: "Failed to load user profile",
+              variant: "destructive",
+            });
+            setUser(null);
+            setIsLoading(false);
+            if (!isPublicRoute(location.pathname)) {
+              navigate('/login');
+            }
           }
-          setIsLoading(false);
         }
 
         // Set up auth subscription
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
 
-          console.log("Auth state changed:", event);
-
           if (event === 'SIGNED_OUT') {
             setUser(null);
             profileCache.clear();
+            setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
               navigate('/login', { replace: true });
             }
-            setIsLoading(false);
             return;
           }
 
           if (event === 'SIGNED_IN' && session?.user) {
             try {
-              let profile = profileCache.get(session.user.id) || await getUserProfile(session);
-              
+              const profile = profileCache.get(session.user.id) || await getUserProfile(session);
               if (profile && mounted) {
                 profileCache.set(session.user.id, profile);
                 setUser(profile);
-                
                 if (location.pathname === '/login' || location.pathname === '/') {
                   navigate(getRoleBasedRedirect(profile.role), { replace: true });
                 }
@@ -151,11 +135,10 @@ export const useAuthState = () => {
               console.error("Error after sign in:", error);
               toast({
                 title: "Error",
-                description: "Failed to load user profile. Please try logging in again.",
+                description: "Failed to load user profile",
                 variant: "destructive",
               });
               setUser(null);
-              navigate('/login', { replace: true });
             } finally {
               if (mounted) {
                 setIsLoading(false);
@@ -169,7 +152,7 @@ export const useAuthState = () => {
         if (mounted) {
           toast({
             title: "Authentication Error",
-            description: "There was a problem with the authentication service. Please try again.",
+            description: "There was a problem with the authentication service",
             variant: "destructive",
           });
           setUser(null);
@@ -186,7 +169,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [navigate, getRoleBasedRedirect, location.pathname, toast]);
+  }, [location.pathname]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
