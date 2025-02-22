@@ -17,15 +17,6 @@ const HeroSection = () => {
             <p className="text-lg text-white">
               Connect with top companies, gain hands-on experience, and build your career—all in one platform.
             </p>
-            <div>
-              <Button
-                size="lg"
-                onClick={() => navigate("/login")}
-                className="bg-white text-primary hover:bg-white/90 gap-2"
-              >
-                Get Started <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
           <div className="hidden md:block">
             <img
