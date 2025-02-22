@@ -41,7 +41,25 @@ export const EmployerNavigation = ({ userName, isMobile }: EmployerNavigationPro
   ];
 
   if (isMobile) {
-    return null; // Mobile navigation is now handled in the header dropdown
+    return (
+      <div className="flex justify-around items-center p-2">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.url}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                isActive ? "text-white" : "hover:text-white"
+              )
+            }
+          >
+            <item.icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{item.title}</span>
+          </NavLink>
+        ))}
+      </div>
+    );
   }
 
   return (

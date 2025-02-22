@@ -1,5 +1,5 @@
 
-import { Bell, ChevronDown, MessageSquare, LayoutDashboard, Briefcase, ClipboardList, BookOpen } from "lucide-react";
+import { Bell, ChevronDown, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 
 interface EmployerHeaderProps {
   pageTitle: string;
@@ -34,14 +33,6 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
       .join("")
       .toUpperCase();
   };
-
-  const mobileMenuItems = [
-    { title: "Dashboard", url: "/employer/dashboard", icon: LayoutDashboard },
-    { title: "Projects", url: "/employer/projects", icon: Briefcase },
-    { title: "Applications", url: "/employer/applications", icon: ClipboardList },
-    { title: "Messages", url: "/employer/messages", icon: MessageSquare },
-    { title: "Resources", url: "/employer/resources", icon: BookOpen },
-  ];
 
   return (
     <header className="h-16 border-b flex items-center px-6 bg-card justify-between">
@@ -60,7 +51,6 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="relative hidden md:inline-flex"
                 onClick={() => navigate('/employer/messages')}
               >
                 <MessageSquare className="h-5 w-5" />
@@ -78,7 +68,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="relative hidden md:inline-flex"
+                className="relative"
                 onClick={() => navigate('/employer/notifications')}
               >
                 <Bell className="h-5 w-5" />
@@ -112,21 +102,6 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
             className="w-56 bg-white border shadow-lg" 
             align="end"
           >
-            {/* Mobile Navigation Items */}
-            <div className="md:hidden">
-              {mobileMenuItems.map((item) => (
-                <DropdownMenuItem 
-                  key={item.url}
-                  className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
-                  onClick={() => navigate(item.url)}
-                >
-                  <item.icon className="mr-2 h-4 w-4" />
-                  {item.title}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-            </div>
-            
             <DropdownMenuItem 
               className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
               onClick={() => navigate('/employer/settings')}
