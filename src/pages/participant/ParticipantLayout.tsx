@@ -131,7 +131,7 @@ const ParticipantLayout = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings size={16} className="mr-2" />
-                      <span>Settings</span>
+                      <span>System Settings</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
