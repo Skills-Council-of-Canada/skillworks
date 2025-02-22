@@ -1,7 +1,7 @@
 
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { Sidebar, SidebarProvider, SidebarContent, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
 import { AdminFooter } from "@/components/admin/layout/AdminFooter";
 import { AdminNavigation } from "@/components/admin/layout/AdminNavigation";
@@ -33,12 +33,16 @@ const AdminLayout = () => {
         {/* Hide sidebar on mobile, show on desktop */}
         <div className="hidden md:block">
           <Sidebar collapsible="icon" className="border-r">
-            <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} isMobile={false} />
+            <SidebarContent>
+              <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} isMobile={false} />
+            </SidebarContent>
           </Sidebar>
         </div>
 
         <div className="flex-1 flex flex-col min-h-screen">
-          <AdminHeader pageTitle="Dashboard" className="sticky top-0 z-10" />
+          <AdminHeader pageTitle="Dashboard" className="sticky top-0 z-10">
+            <SidebarTrigger className="hidden md:inline-flex" />
+          </AdminHeader>
           
           <div className="flex-1 overflow-y-auto pb-16 md:pb-0">
             <main className="p-4 sm:p-6">
