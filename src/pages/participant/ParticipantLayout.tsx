@@ -140,12 +140,14 @@ const ParticipantLayout = () => {
               </Button>
             </div>
 
-            <div className="relative inline-flex items-center justify-center w-10 h-10">
-              <Bell className="h-5 w-5 text-[#1A1F2C]" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
-                3
-              </span>
-            </div>
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/participant/notifications" className="relative inline-flex items-center justify-center w-10 h-10">
+                <Bell className="h-5 w-5 text-[#1A1F2C]" />
+                <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
+                  3
+                </span>
+              </Link>
+            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
