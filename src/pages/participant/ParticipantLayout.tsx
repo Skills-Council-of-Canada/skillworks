@@ -104,36 +104,34 @@ const ParticipantLayout = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-0">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-[#1A1F2C] text-white">
-                          {getInitials(user?.name || "")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm hidden md:inline-block">
-                        {user?.name}
-                      </span>
-                      <ChevronDown className="h-4 w-4" />
-                    </div>
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-[#1A1F2C] text-white">
+                        {getInitials(user?.name || "")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm hidden md:inline-block ml-2">
+                      {user?.name}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
-                  <Link to="/participant/profile">
-                    <DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/participant/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       View Profile
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link to="/participant/settings">
-                    <DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/participant/settings" className="flex items-center">
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
-                    </DropdownMenuItem>
-                  </Link>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    className="text-red-500"
                     onClick={handleLogout}
+                    className="text-red-500"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
@@ -177,11 +175,13 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
             <NavLink
               key={to}
               to={to}
-              className={({ isActive }: { isActive: boolean }) =>
-                `flex w-full items-center ${state === "collapsed" ? "justify-center" : ""} text-gray-300 ${
-                  isActive ? "bg-white/10" : "hover:bg-white/10"
-                } px-2 py-1.5 rounded-md transition-colors`
-              }
+              className={({ isActive }) => [
+                "flex w-full items-center",
+                state === "collapsed" ? "justify-center" : "",
+                "text-gray-300",
+                isActive ? "bg-white/10" : "hover:bg-white/10",
+                "px-2 py-1.5 rounded-md transition-colors"
+              ].filter(Boolean).join(" ")}
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className={state === "collapsed" ? "hidden" : "block truncate ml-2"}>
