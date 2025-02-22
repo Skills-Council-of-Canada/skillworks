@@ -23,7 +23,7 @@ export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { data: profileData, isLoading } = useQuery<CombinedProfile | null>({
+  const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
@@ -92,8 +92,11 @@ export const useProfileCompletion = () => {
         return null;
       }
     },
-    retry: false,
-    staleTime: 30000,
+    staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
+    cacheTime: 1000 * 60 * 30, // Cache is kept for 30 minutes
+    refetchOnWindowFocus: false, // Prevent refetching when window regains focus
+    refetchOnMount: false, // Prevent refetching on component mount if data exists
+    refetchOnReconnect: false, // Prevent refetching when reconnecting
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
