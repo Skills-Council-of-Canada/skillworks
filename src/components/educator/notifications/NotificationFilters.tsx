@@ -1,4 +1,5 @@
 
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -6,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NotificationType } from "@/hooks/useNotifications";
+import { NotificationType } from "@/types/educator";
 
 interface NotificationFiltersProps {
   selectedType: NotificationType | 'all';
@@ -15,7 +16,7 @@ interface NotificationFiltersProps {
   onTimeFilterChange: (value: 'all' | 'today' | 'week' | 'month') => void;
 }
 
-export const NotificationFilters = ({
+const NotificationFilters = ({
   selectedType,
   timeFilter,
   onTypeChange,
@@ -29,12 +30,12 @@ export const NotificationFilters = ({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Notifications</SelectItem>
-          <SelectItem value="student_signup">Student Sign-ups</SelectItem>
-          <SelectItem value="progress_update">Progress Updates</SelectItem>
-          <SelectItem value="submission_reminder">Submissions</SelectItem>
-          <SelectItem value="feedback_request">Feedback Requests</SelectItem>
-          <SelectItem value="classroom_activity">Classroom Activity</SelectItem>
-          <SelectItem value="certification">Certifications</SelectItem>
+          <SelectItem value={NotificationType.APPLICATION_STATUS}>Application Status</SelectItem>
+          <SelectItem value={NotificationType.TASK_ASSIGNMENT}>Task Assignments</SelectItem>
+          <SelectItem value={NotificationType.SUBMISSION_REMINDER}>Submission Reminders</SelectItem>
+          <SelectItem value={NotificationType.FEEDBACK_RECEIVED}>Feedback Received</SelectItem>
+          <SelectItem value={NotificationType.CHAT_MESSAGE}>Chat Messages</SelectItem>
+          <SelectItem value={NotificationType.EXPERIENCE_COMPLETION}>Experience Completion</SelectItem>
         </SelectContent>
       </Select>
       <Select value={timeFilter} onValueChange={onTimeFilterChange}>
@@ -51,3 +52,5 @@ export const NotificationFilters = ({
     </div>
   );
 };
+
+export default NotificationFilters;
