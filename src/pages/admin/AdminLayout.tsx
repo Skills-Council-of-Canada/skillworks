@@ -22,12 +22,12 @@ const AdminLayout = () => {
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
-        <Sidebar collapsible="icon" className="border-r hidden md:block z-50">
+        <Sidebar collapsible="icon" className="border-r">
           <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} />
         </Sidebar>
 
-        <div className="flex-1 flex flex-col min-h-screen relative w-full md:w-[calc(100%-240px)] md:ml-[240px]">
-          <AdminHeader pageTitle="Dashboard" className="sticky top-0 left-0 right-0 z-40" />
+        <div className="flex-1 flex flex-col min-h-screen">
+          <AdminHeader pageTitle="Dashboard" className="sticky top-0 z-10" />
           
           <div className="flex-1 overflow-y-auto">
             <main className="p-4 sm:p-6">
