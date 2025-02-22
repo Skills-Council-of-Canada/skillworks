@@ -72,9 +72,6 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
                 onClick={() => navigate('/employer/notifications')}
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
-                  3
-                </span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
