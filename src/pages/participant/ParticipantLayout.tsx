@@ -1,3 +1,4 @@
+
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -133,22 +134,15 @@ const ParticipantLayout = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="end" 
-                  className="w-56 bg-white [&_*]:!focus:bg-transparent [&_*]:!focus:text-inherit"
-                  style={{ animation: 'none' }}
+                  className="w-56 bg-white [&>*]:bg-transparent [&>*]:text-inherit [&>*]:cursor-pointer"
                 >
-                  <DropdownMenuItem 
-                    asChild
-                    className="cursor-pointer data-[highlighted]:bg-transparent"
-                  >
+                  <DropdownMenuItem asChild>
                     <Link to="/participant/profile" className="flex w-full items-center">
                       <User size={16} className="mr-2" />
                       <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    asChild
-                    className="cursor-pointer data-[highlighted]:bg-transparent"
-                  >
+                  <DropdownMenuItem asChild>
                     <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings size={16} className="mr-2" />
                       <span>System Settings</span>
@@ -157,7 +151,7 @@ const ParticipantLayout = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
-                    className="text-red-500 cursor-pointer data-[highlighted]:bg-transparent"
+                    className="text-red-500"
                   >
                     <LogOut size={16} className="mr-2" />
                     <span>Logout</span>
