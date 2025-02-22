@@ -31,7 +31,8 @@ export const useMessages = () => {
           )
         `)
         .eq("learner_id", user?.id)
-        .order("last_message_at", { ascending: false });
+        .order("last_message_at", { ascending: false })
+        .limit(20); // Limit initial load to 20 conversations
 
       if (error) throw error;
       if (!data) return [];
@@ -39,7 +40,7 @@ export const useMessages = () => {
       const applications = data as DatabaseApplication[];
 
       return applications.map((app): Conversation => {
-        const messages = app.messages || [];
+        const messages = app.messages?.slice(0, 50) || []; // Limit to last 50 messages per conversation
         const unreadCount = messages.filter(
           (msg) => msg.sender_id !== user?.id && !msg.read_at
         ).length;
@@ -68,6 +69,8 @@ export const useMessages = () => {
       });
     },
     enabled: !!user?.id,
+    staleTime: 1000 * 60, // Cache data for 1 minute
+    cacheTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
   });
 
   return {
