@@ -1,3 +1,4 @@
+
 import { Link2 } from "lucide-react";
 
 export const Footer = () => {
@@ -36,7 +37,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/60">
-          <p>&copy; {new Date().getFullYear()} SkillWorks. All rights reserved.</p>
+          <p>&copy; 2025 Skills Council of Canada. All rights reserved.</p>
         </div>
       </div>
     </footer>
