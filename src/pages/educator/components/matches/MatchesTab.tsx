@@ -87,65 +87,78 @@ export const MatchesTab = () => {
       <CardHeader>
         <CardTitle>Employer Matches</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 md:p-6">
         {matches && matches.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Company</TableHead>
-                <TableHead>Industry</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Match Score</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {matches.map((match) => (
-                <TableRow key={match.id}>
-                  <TableCell>{match.employers.company_name}</TableCell>
-                  <TableCell>{match.employers.industry}</TableCell>
-                  <TableCell>{match.employers.location}</TableCell>
-                  <TableCell>{match.match_score}%</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        match.status === "accepted"
-                          ? "default"
-                          : match.status === "rejected"
-                          ? "destructive"
-                          : "secondary"
-                      }
-                    >
-                      {match.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="space-x-2">
-                    {match.status === "pending" && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => updateMatchStatus(match.id, "accepted")}
+          <div className="overflow-x-auto">
+            <div className="min-w-[640px] w-full">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Company</TableHead>
+                    <TableHead className="whitespace-nowrap hidden md:table-cell">Industry</TableHead>
+                    <TableHead className="whitespace-nowrap hidden md:table-cell">Location</TableHead>
+                    <TableHead className="whitespace-nowrap">Match Score</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {matches.map((match) => (
+                    <TableRow key={match.id}>
+                      <TableCell className="font-medium">
+                        <div>
+                          {match.employers.company_name}
+                          <div className="md:hidden text-xs text-gray-500">
+                            {match.employers.industry} • {match.employers.location}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{match.employers.industry}</TableCell>
+                      <TableCell className="hidden md:table-cell">{match.employers.location}</TableCell>
+                      <TableCell>{match.match_score}%</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            match.status === "accepted"
+                              ? "default"
+                              : match.status === "rejected"
+                              ? "destructive"
+                              : "secondary"
+                          }
                         >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Accept
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => updateMatchStatus(match.id, "rejected")}
-                        >
-                          <XCircle className="h-4 w-4 mr-1" />
-                          Reject
-                        </Button>
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                          {match.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {match.status === "pending" && (
+                          <div className="flex flex-col md:flex-row gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateMatchStatus(match.id, "accepted")}
+                              className="w-full md:w-auto"
+                            >
+                              <CheckCircle className="h-4 w-4 md:mr-1" />
+                              <span className="hidden md:inline">Accept</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateMatchStatus(match.id, "rejected")}
+                              className="w-full md:w-auto"
+                            >
+                              <XCircle className="h-4 w-4 md:mr-1" />
+                              <span className="hidden md:inline">Reject</span>
+                            </Button>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         ) : (
           <div className="text-center py-4 text-muted-foreground">
             No matches found for this experience.
@@ -155,4 +168,3 @@ export const MatchesTab = () => {
     </Card>
   );
 };
-
