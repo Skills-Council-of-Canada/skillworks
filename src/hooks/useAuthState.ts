@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { User } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -18,8 +18,7 @@ export const useAuthState = () => {
   // Cache profile data in memory
   const profileCache = new Map<string, User>();
 
-  // Define public routes that don't require authentication
-  const isPublicRoute = (path: string) => {
+  const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
       return true;
     }
@@ -32,82 +31,74 @@ export const useAuthState = () => {
       '/'
     ];
     return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
-  };
+  }, []);
+
+  const handleSession = useCallback(async (session: any | null) => {
+    if (!session?.user) {
+      setUser(null);
+      setIsLoading(false);
+      if (!isPublicRoute(location.pathname)) {
+        navigate('/login');
+      }
+      return;
+    }
+
+    try {
+      let profile = profileCache.get(session.user.id);
+      
+      if (!profile) {
+        profile = await getUserProfile(session);
+        if (profile) {
+          profileCache.set(session.user.id, profile);
+        }
+      }
+
+      if (!profile) {
+        setUser(null);
+        setIsLoading(false);
+        if (!isPublicRoute(location.pathname)) {
+          navigate('/login');
+        }
+        return;
+      }
+
+      setUser(profile);
+      
+      if (location.pathname === '/login' || location.pathname === '/') {
+        navigate(getRoleBasedRedirect(profile.role), { replace: true });
+      }
+    } catch (error) {
+      console.error("Profile error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load user profile",
+        variant: "destructive",
+      });
+      setUser(null);
+      if (!isPublicRoute(location.pathname)) {
+        navigate('/login');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [navigate, location.pathname, isPublicRoute, getRoleBasedRedirect, toast]);
 
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
 
     const setupAuth = async () => {
+      if (location.pathname.includes('/registration')) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!mounted) return;
-
-        // Early return for registration pages
-        if (location.pathname.includes('/registration')) {
-          setIsLoading(false);
-          return;
+        if (mounted) {
+          await handleSession(session);
         }
 
-        // Handle no session case
-        if (!session?.user) {
-          setUser(null);
-          setIsLoading(false);
-          if (!isPublicRoute(location.pathname)) {
-            navigate('/login');
-          }
-          return;
-        }
-
-        // Handle existing session
-        try {
-          // Use cached profile if available
-          let profile = profileCache.get(session.user.id);
-          
-          if (!profile) {
-            profile = await getUserProfile(session);
-            if (profile) {
-              profileCache.set(session.user.id, profile);
-            }
-          }
-
-          if (!mounted) return;
-
-          if (!profile) {
-            setUser(null);
-            setIsLoading(false);
-            if (!isPublicRoute(location.pathname)) {
-              navigate('/login');
-            }
-            return;
-          }
-
-          setUser(profile);
-
-          // Only redirect if we're on login or root
-          if (location.pathname === '/login' || location.pathname === '/') {
-            navigate(getRoleBasedRedirect(profile.role), { replace: true });
-          }
-
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Profile error:", error);
-          if (mounted) {
-            toast({
-              title: "Error",
-              description: "Failed to load user profile",
-              variant: "destructive",
-            });
-            setUser(null);
-            setIsLoading(false);
-            if (!isPublicRoute(location.pathname)) {
-              navigate('/login');
-            }
-          }
-        }
-
-        // Set up auth subscription
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
 
@@ -121,29 +112,8 @@ export const useAuthState = () => {
             return;
           }
 
-          if (event === 'SIGNED_IN' && session?.user) {
-            try {
-              const profile = profileCache.get(session.user.id) || await getUserProfile(session);
-              if (profile && mounted) {
-                profileCache.set(session.user.id, profile);
-                setUser(profile);
-                if (location.pathname === '/login' || location.pathname === '/') {
-                  navigate(getRoleBasedRedirect(profile.role), { replace: true });
-                }
-              }
-            } catch (error) {
-              console.error("Error after sign in:", error);
-              toast({
-                title: "Error",
-                description: "Failed to load user profile",
-                variant: "destructive",
-              });
-              setUser(null);
-            } finally {
-              if (mounted) {
-                setIsLoading(false);
-              }
-            }
+          if (event === 'SIGNED_IN') {
+            await handleSession(session);
           }
         }).data.subscription;
 
@@ -169,7 +139,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [location.pathname]);
+  }, [handleSession]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
