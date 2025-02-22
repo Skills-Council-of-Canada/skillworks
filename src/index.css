@@ -61,3 +61,25 @@
 .glass-effect {
   @apply backdrop-blur-sm bg-background/80;
 }
+
+/* Hide scrollbars globally */
+html, body {
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Ensure the root div also has no scrollbar */
+#root {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#root::-webkit-scrollbar {
+  display: none;
+}
+

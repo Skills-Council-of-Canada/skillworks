@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight, LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
@@ -66,14 +65,7 @@ const Index = () => {
   };
 
   return (
-    <div style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} className="h-screen flex flex-col overflow-auto" onScroll={(e) => e.currentTarget.style.overflow = 'auto'}>
-      <style>
-        {`
-          ::-webkit-scrollbar {
-            display: none;
-          }
-        `}
-      </style>
+    <div className="h-screen flex flex-col overflow-auto">
       <header className="flex-none h-16 bg-white border-b shadow-sm" />
       
       <main className="flex-1 flex items-center">
