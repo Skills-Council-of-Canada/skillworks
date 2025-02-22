@@ -18,9 +18,10 @@ import {
 
 interface UserMenuProps {
   onLogout: () => void;
+  showNotifications?: boolean;
 }
 
-export const UserMenu = ({ onLogout }: UserMenuProps) => {
+export const UserMenu = ({ onLogout, showNotifications = false }: UserMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,12 +42,14 @@ export const UserMenu = ({ onLogout }: UserMenuProps) => {
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/participant/notifications" className="cursor-pointer">
-            <Bell className="mr-2 h-4 w-4" />
-            <span>Notifications</span>
-          </Link>
-        </DropdownMenuItem>
+        {showNotifications && (
+          <DropdownMenuItem asChild>
+            <Link to="/participant/notifications" className="cursor-pointer">
+              <Bell className="mr-2 h-4 w-4" />
+              <span>Notifications</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link to="/participant/settings" className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />

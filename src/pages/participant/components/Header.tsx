@@ -2,6 +2,8 @@
 import { Link } from "react-router-dom";
 import { UserMenu } from "./UserMenu";
 import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HeaderProps {
   userName: string | undefined;
@@ -9,6 +11,8 @@ interface HeaderProps {
 }
 
 export const Header = ({ userName, onLogout }: HeaderProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <header className="border-b relative">
       <div className="flex h-16 items-center px-4 gap-4">
@@ -22,8 +26,17 @@ export const Header = ({ userName, onLogout }: HeaderProps) => {
           </Link>
         </div>
 
-        <div className="flex items-center">
-          <UserMenu onLogout={onLogout} />
+        <div className="flex items-center gap-4">
+          {!isMobile && (
+            <Link 
+              to="/participant/notifications"
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
+            >
+              <Bell className="h-5 w-5" />
+              <span>Notifications</span>
+            </Link>
+          )}
+          <UserMenu onLogout={onLogout} showNotifications={isMobile} />
         </div>
       </div>
     </header>
