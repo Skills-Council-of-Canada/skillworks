@@ -33,6 +33,18 @@ export const useAuthState = () => {
     return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
   }, []);
 
+  const isCorrectRoleRoute = useCallback((path: string, userRole: string) => {
+    const rolePaths = {
+      admin: '/admin',
+      participant: '/participant',
+      employer: '/employer',
+      educator: '/educator'
+    };
+
+    // Check if the current path starts with the correct role prefix
+    return path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
+  }, []);
+
   const handleSession = useCallback(async (session: any | null) => {
     if (!session?.user) {
       setUser(null);
@@ -64,7 +76,10 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      if (location.pathname === '/login' || location.pathname === '/') {
+      // Only redirect if user is on login page, root, or wrong role route
+      if (location.pathname === '/login' || 
+          location.pathname === '/' || 
+          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) {
         navigate(getRoleBasedRedirect(profile.role), { replace: true });
       }
     } catch (error) {
@@ -81,7 +96,7 @@ export const useAuthState = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, location.pathname, isPublicRoute, getRoleBasedRedirect, toast]);
+  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
 
   useEffect(() => {
     let mounted = true;
