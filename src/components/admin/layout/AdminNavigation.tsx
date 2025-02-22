@@ -5,12 +5,10 @@ import {
   BookOpen,
   Briefcase,
   BarChart,
-  LogOut,
   PanelLeft,
   PanelRight
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 interface AdminNavigationProps {
@@ -65,17 +63,6 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
             </NavLink>
           ))}
         </nav>
-      </div>
-
-      <div className="mt-auto p-3">
-        <Button
-          variant="ghost"
-          className={`w-full ${state === "collapsed" ? "justify-center" : "justify-start"} text-red-400 hover:text-red-300 hover:bg-white/10`}
-          onClick={onLogout}
-        >
-          <LogOut className="h-4 w-4" />
-          <span className={state === "collapsed" ? "hidden" : "ml-2"}>Log out</span>
-        </Button>
       </div>
     </div>
   );
