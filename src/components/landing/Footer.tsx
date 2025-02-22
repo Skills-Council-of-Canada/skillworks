@@ -4,7 +4,7 @@ import { Link2 } from "lucide-react";
 export const Footer = () => {
   return (
     <footer className="bg-secondary text-white py-12">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h3 className="font-bold text-lg mb-4">SkillWorks</h3>
