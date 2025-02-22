@@ -82,9 +82,9 @@ const AdminProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 bg-muted rounded-lg">
-              <p className="font-medium">Administrative Access</p>
-              <p className="text-sm text-muted-foreground">
+            <div className="p-4 bg-[#F1F1F1] rounded-lg">
+              <p className="font-medium text-black">Administrative Access</p>
+              <p className="text-sm text-black">
                 Full system access with administrative privileges
               </p>
             </div>
