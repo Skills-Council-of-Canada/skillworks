@@ -2,7 +2,6 @@
 import {
   Home,
   Search,
-  Settings,
   UserCheck,
   Briefcase,
   Users,
@@ -56,10 +55,6 @@ export const EducatorNavigation = ({ userName }: EducatorNavigationProps) => {
 
           <NavItem to="/educator/matches" icon={UserCheck}>
             Match Requests
-          </NavItem>
-
-          <NavItem to="/educator/settings" icon={Settings}>
-            Settings
           </NavItem>
         </div>
       </div>

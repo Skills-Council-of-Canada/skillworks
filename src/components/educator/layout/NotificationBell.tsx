@@ -2,6 +2,7 @@
 import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,7 +11,7 @@ export const NotificationBell = () => {
   const navigate = useNavigate();
 
   const { data: unreadCount = 0 } = useQuery({
-    queryKey: ["unread-notifications", user?.id],
+    queryKey: ["unread-notifications", user?.id] as const,
     queryFn: async () => {
       if (!user?.id) return 0;
       
@@ -31,13 +32,18 @@ export const NotificationBell = () => {
   });
 
   return (
-    <div className="relative cursor-pointer" onClick={() => navigate('/educator/notifications')}>
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      onClick={() => navigate('/educator/notifications')}
+      className="relative"
+    >
       <Bell className="h-5 w-5" />
       {unreadCount > 0 && (
         <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
-          3
+          {unreadCount}
         </span>
       )}
-    </div>
+    </Button>
   );
 };
