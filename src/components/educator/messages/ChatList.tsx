@@ -20,13 +20,13 @@ export const ChatList = () => {
               placeholder="Search chats..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 bg-background text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <Button 
             size="icon" 
             variant="outline"
-            className="hover:bg-accent/50"
+            className="text-foreground hover:bg-accent/50"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -36,8 +36,7 @@ export const ChatList = () => {
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-muted-foreground px-2">Direct Messages</h3>
-            {/* Direct Messages List */}
+            <h3 className="text-sm font-semibold text-foreground/70 px-2">Direct Messages</h3>
             <ChatListItem
               name="John Doe"
               message="Latest message here"
@@ -45,19 +44,27 @@ export const ChatList = () => {
               active={true}
               timestamp="12:30 PM"
             />
-            {/* Add more direct message items */}
+            <ChatListItem
+              name="Sarah Wilson"
+              message="Thanks for the update"
+              timestamp="11:45 AM"
+            />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-muted-foreground px-2">Group Chats</h3>
-            {/* Group Chats List */}
+            <h3 className="text-sm font-semibold text-foreground/70 px-2">Group Chats</h3>
             <ChatListItem
               name="Project Alpha Team"
               message="Team discussion about..."
               isGroup={true}
               timestamp="Yesterday"
             />
-            {/* Add more group chat items */}
+            <ChatListItem
+              name="Design Team"
+              message="New mockups review"
+              isGroup={true}
+              timestamp="2d ago"
+            />
           </div>
         </div>
       </ScrollArea>
@@ -82,15 +89,19 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
         "w-full flex flex-col items-start p-3 h-auto gap-1",
         "hover:bg-accent/50 text-left",
         active && "bg-accent/50",
-        "text-foreground"
+        "transition-colors duration-200"
       )}
     >
       <div className="flex items-start justify-between w-full">
         <div className="flex items-center gap-3">
           {isGroup ? (
-            <Users className="h-8 w-8 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+              <Users className="h-4 w-4 text-emerald-500" />
+            </div>
           ) : (
-            <MessageSquare className="h-8 w-8 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+              <MessageSquare className="h-4 w-4 text-blue-500" />
+            </div>
           )}
           <div>
             <h4 className="font-semibold line-clamp-1 text-foreground">{name}</h4>
