@@ -1,6 +1,11 @@
 
-import { useNavigate } from "react-router-dom";
-import { Home } from "lucide-react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { 
+  Home,
+  CheckSquare,
+  BookOpen, 
+  Users,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { Navigation } from "./components/Navigation";
@@ -26,9 +31,9 @@ const ParticipantLayout = () => {
 
   const navItems = [
     { to: "/participant/dashboard", icon: Home, label: "Dashboard" },
-    { to: "/participant/tasks", icon: Home, label: "Tasks & Activity" },
-    { to: "/participant/experiences", icon: Home, label: "My Experiences" },
-    { to: "/participant/mentors", icon: Home, label: "My Mentors" },
+    { to: "/participant/tasks", icon: CheckSquare, label: "Tasks & Activity" },
+    { to: "/participant/experiences", icon: BookOpen, label: "My Experiences" },
+    { to: "/participant/mentors", icon: Users, label: "My Mentors" },
   ];
 
   return (
