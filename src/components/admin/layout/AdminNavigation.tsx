@@ -1,104 +1,73 @@
 
-import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  Briefcase,
-  BarChart,
-  PanelLeft,
-  PanelRight
+import { Link } from "react-router-dom";
+import { 
+  LayoutDashboard, 
+  Users, 
+  FolderKanban,
+  ClipboardList,
+  PieChart,
+  MessageSquare,
+  Bell,
+  User,
+  Settings,
+  LogOut
 } from "lucide-react";
-import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarTrigger,
-  useSidebar
-} from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
 interface AdminNavigationProps {
-  onLogout: () => void;
   userName: string;
-  isMobile?: boolean;
+  onLogout: () => void;
+  isMobile: boolean;
 }
 
-export const AdminNavigation = ({ onLogout, userName, isMobile = false }: AdminNavigationProps) => {
-  const { state } = useSidebar();
-
-  const navItems = [
-    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/admin/users", icon: Users, label: "Users" },
-    { to: "/admin/experiences", icon: BookOpen, label: "Experiences" },
-    { to: "/admin/projects", icon: Briefcase, label: "Projects" },
-    { to: "/admin/reports", icon: BarChart, label: "Reports" },
+export function AdminNavigation({ userName, onLogout, isMobile }: AdminNavigationProps) {
+  const navigationItems = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
+    { icon: Users, label: "Users", href: "/admin/users" },
+    { icon: FolderKanban, label: "Experiences", href: "/admin/experiences" },
+    { icon: ClipboardList, label: "Projects", href: "/admin/projects" },
+    { icon: PieChart, label: "Reports", href: "/admin/reports" },
+    { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
+    { icon: Bell, label: "Notifications", href: "/admin/notifications" },
+    { icon: User, label: "Profile", href: "/admin/profile" },
+    { icon: Settings, label: "Settings", href: "/admin/settings" },
   ];
 
   if (isMobile) {
     return (
-      <nav className="flex justify-around items-center py-2 px-4">
-        {navItems.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              cn(
-                "flex flex-col items-center justify-center p-2 rounded-md",
-                "text-gray-400 hover:text-white",
-                isActive && "text-white"
-              )
-            }
+      <nav className="flex justify-around items-center h-16 px-4">
+        {navigationItems.slice(0, 5).map((item) => (
+          <Link
+            key={item.href}
+            to={item.href}
+            className="flex flex-col items-center text-white/60 hover:text-white transition-colors"
           >
-            <Icon className="h-5 w-5" />
-            <span className="text-xs mt-1">{label}</span>
-          </NavLink>
+            <item.icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{item.label}</span>
+          </Link>
         ))}
       </nav>
     );
   }
 
   return (
-    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
-        <div className={state === "collapsed" ? "hidden" : "block"}>
-          <h2 className="text-xl font-bold text-white">Admin Portal</h2>
-          <p className="text-sm text-gray-400">Welcome back, {userName}</p>
-        </div>
-        <SidebarTrigger className="text-white hover:text-white/80">
-          {state === "collapsed" ? <PanelRight size={20} /> : <PanelLeft size={20} />}
-        </SidebarTrigger>
-      </div>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map(({ to, icon: Icon, label }) => (
-                <SidebarMenuItem key={to}>
-                  <NavLink
-                    to={to}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
-                        state === "collapsed" && "justify-center",
-                        isActive ? "bg-white/10" : "hover:bg-white/10"
-                      )
-                    }
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                      {label}
-                    </span>
-                  </NavLink>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </div>
+    <nav className="space-y-2 py-4">
+      {navigationItems.map((item) => (
+        <Link
+          key={item.href}
+          to={item.href}
+          className="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+        >
+          <item.icon className="h-5 w-5" />
+          <span>{item.label}</span>
+        </Link>
+      ))}
+      <button
+        onClick={onLogout}
+        className="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition-colors w-full"
+      >
+        <LogOut className="h-5 w-5" />
+        <span>Logout</span>
+      </button>
+    </nav>
   );
-};
+}

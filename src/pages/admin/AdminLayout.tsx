@@ -1,5 +1,5 @@
 
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
