@@ -1,4 +1,3 @@
-
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -98,7 +97,7 @@ const ParticipantLayout = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="hover:bg-transparent"
+                className="pointer-events-none"
                 asChild
               >
                 <Link to="/participant/messages">
@@ -109,7 +108,7 @@ const ParticipantLayout = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="hover:bg-transparent"
+                className="pointer-events-none"
                 asChild
               >
                 <Link to="/participant/notifications">
@@ -121,7 +120,7 @@ const ParticipantLayout = () => {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className="p-0 hover:bg-transparent"
+                    className="p-0"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
@@ -141,7 +140,7 @@ const ParticipantLayout = () => {
                 >
                   <DropdownMenuItem 
                     asChild
-                    className="hover:bg-transparent cursor-pointer"
+                    className="cursor-pointer"
                   >
                     <Link to="/participant/profile" className="flex w-full items-center">
                       <User size={16} className="mr-2" />
@@ -150,7 +149,7 @@ const ParticipantLayout = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     asChild
-                    className="hover:bg-transparent cursor-pointer"
+                    className="cursor-pointer"
                   >
                     <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings size={16} className="mr-2" />
@@ -160,7 +159,7 @@ const ParticipantLayout = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
-                    className="text-red-500 hover:bg-transparent cursor-pointer"
+                    className="text-red-500 cursor-pointer"
                   >
                     <LogOut size={16} className="mr-2" />
                     <span>Logout</span>
