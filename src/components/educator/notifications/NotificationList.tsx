@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import { DatabaseNotification } from "@/hooks/useNotifications";
 import { getNotificationIcon, getPriorityClass } from "@/components/educator/notifications/utils/notificationUtils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NotificationListProps {
   notifications: DatabaseNotification[] | undefined;
@@ -12,9 +13,11 @@ interface NotificationListProps {
 }
 
 export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: NotificationListProps) => {
+  const isMobile = useIsMobile();
+
   if (isLoading) {
     return (
-      <Card className="p-4">
+      <Card className="p-4 w-full">
         <div className="flex items-center justify-center h-32">
           <p className="text-gray-500">Loading notifications...</p>
         </div>
@@ -24,7 +27,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
 
   if (!notifications?.length) {
     return (
-      <Card className="p-4">
+      <Card className="p-4 w-full">
         <div className="flex items-center justify-center h-32">
           <p className="text-gray-500">No notifications found</p>
         </div>
@@ -33,22 +36,25 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 w-full max-w-full overflow-hidden">
       {notifications.map((notification) => (
-        <Card key={notification.id} className="overflow-hidden">
+        <Card 
+          key={notification.id} 
+          className="overflow-hidden w-full"
+        >
           <div
-            className={`p-4 ${
+            className={`p-3 md:p-4 ${
               !notification.read ? 'bg-gray-50' : 'bg-white'
             }`}
           >
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 pt-1">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+              <div className="flex-shrink-0">
                 {getNotificationIcon(notification.type)}
               </div>
               
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
-                  <h3 className="font-semibold text-base truncate pr-4">
+              <div className="flex-1 min-w-0 space-y-2">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                  <h3 className="font-semibold text-sm md:text-base break-words pr-2">
                     {notification.title}
                   </h3>
                   {!notification.read && (
@@ -56,29 +62,31 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
                       variant="ghost"
                       size="sm"
                       onClick={() => onMarkAsRead([notification.id])}
-                      className="self-start shrink-0 h-8 px-3 text-xs"
+                      className="self-start md:self-center shrink-0 h-8 px-3 text-xs w-full md:w-auto"
                     >
                       Mark as Read
                     </Button>
                   )}
                 </div>
                 
-                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                <p className="text-xs md:text-sm text-gray-600 break-words">
                   {notification.message}
                 </p>
                 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3 pt-1">
                   <span
-                    className={`inline-flex items-center text-xs px-2.5 py-1 rounded-full ${getPriorityClass(
+                    className={`inline-flex items-center text-xs px-2 py-0.5 rounded-full ${getPriorityClass(
                       notification.priority
                     )}`}
                   >
                     {notification.priority}
                   </span>
                   
-                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <Clock className="h-3.5 w-3.5" />
-                    {new Date(notification.created_at).toLocaleDateString()}
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Clock className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                    <span className="whitespace-nowrap">
+                      {new Date(notification.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>
