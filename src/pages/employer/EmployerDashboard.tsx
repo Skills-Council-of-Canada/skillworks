@@ -19,16 +19,18 @@ const QuickStatCard = ({
   description?: string;
   icon: React.ComponentType;
 }) => (
-  <Card className="p-6">
+  <Card className="p-4 sm:p-6">
     <div className="flex items-center space-x-4">
-      <div className="p-3 bg-primary/10 rounded-full">
-        <Icon />
+      <div className="p-2 sm:p-3 bg-primary/10 rounded-full shrink-0">
+        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
       </div>
       <div>
         <p className="text-sm font-medium text-foreground">{title}</p>
-        <h3 className="text-2xl font-bold text-foreground">{value}</h3>
+        <h3 className="text-xl sm:text-2xl font-bold text-foreground">{value}</h3>
         {description && (
-          <p className="text-sm text-foreground/80 mt-1">{description}</p>
+          <p className="text-xs sm:text-sm text-foreground/80 mt-1 line-clamp-2">
+            {description}
+          </p>
         )}
       </div>
     </div>
@@ -74,33 +76,33 @@ const EmployerDashboard = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {!employerProfile && (
         <Alert variant="destructive" className="mb-6">
-          <AlertCircle size={16} />
+          <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Please complete your profile setup before creating projects.
           </AlertDescription>
         </Alert>
       )}
 
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-foreground">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="w-full sm:w-auto">
+          <p className="text-foreground text-sm sm:text-base">
             Here's what's happening with your projects today.
           </p>
         </div>
         <Button 
           onClick={() => navigate("/employer/create-project")}
           disabled={!employerProfile}
-          className="flex items-center gap-2"
+          className="w-full sm:w-auto flex items-center gap-2"
         >
-          <PlusCircle size={16} />
+          <PlusCircle className="h-4 w-4" />
           Create New Project
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <QuickStatCard
           title="Active Projects"
           value={stats.activeProjects.value}
@@ -121,8 +123,8 @@ const EmployerDashboard = () => {
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="p-6">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+        <Card className="p-4 sm:p-6">
           <h3 className="font-semibold mb-4 text-foreground">Recent Activity</h3>
           <div className="space-y-4">
             <p className="text-sm text-foreground/80">
@@ -130,7 +132,7 @@ const EmployerDashboard = () => {
             </p>
           </div>
         </Card>
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <h3 className="font-semibold mb-4 text-foreground">Upcoming Deadlines</h3>
           <div className="space-y-4">
             <p className="text-sm text-foreground/80">
@@ -142,7 +144,10 @@ const EmployerDashboard = () => {
 
       {!employerProfile && (
         <div className="flex justify-center">
-          <Button onClick={() => navigate("/employer/settings")}>
+          <Button 
+            onClick={() => navigate("/employer/settings")}
+            className="w-full sm:w-auto"
+          >
             Complete Profile Setup
           </Button>
         </div>

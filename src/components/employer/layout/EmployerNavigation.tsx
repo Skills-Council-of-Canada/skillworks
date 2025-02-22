@@ -45,7 +45,7 @@ export const EmployerNavigation = ({ userName, isMobile }: EmployerNavigationPro
       <div className="flex justify-around items-center p-2">
         {menuItems.map((item) => (
           <NavLink
-            key={item.path}
+            key={item.url}
             to={item.url}
             className={({ isActive }) =>
               cn(
