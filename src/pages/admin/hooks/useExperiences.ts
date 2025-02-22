@@ -35,7 +35,7 @@ export const useExperiences = ({
         query = query.eq('approval_status', statusFilter);
       }
 
-      if (categoryFilter) {
+      if (categoryFilter && categoryFilter !== 'all') {
         query = query.eq('trade_category', categoryFilter);
       }
 
@@ -67,6 +67,8 @@ export const useExperiences = ({
           variant: "destructive",
         });
       }
-    }
+    },
+    staleTime: 30000, // Data will be considered fresh for 30 seconds
+    cacheTime: 300000, // Cache will be kept for 5 minutes
   });
 };
