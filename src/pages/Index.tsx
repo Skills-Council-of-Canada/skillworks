@@ -66,10 +66,10 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="flex-none w-full h-16 bg-white border-b shadow-sm" />
+    <div className="fixed inset-0 flex flex-col">
+      <header className="w-full h-16 bg-white border-b shadow-sm z-10" />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="relative flex-1 overflow-y-auto">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
           <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
           
