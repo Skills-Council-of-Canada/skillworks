@@ -7,7 +7,13 @@ export const Footer = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h3 className="font-bold text-lg mb-4">SkillWorks</h3>
+            <div className="mb-4">
+              <img 
+                src="/lovable-uploads/8803d62e-86da-4278-91b7-5992abfc4aa7.png" 
+                alt="Skill Works Logo" 
+                className="h-8"
+              />
+            </div>
             <p className="text-secondary/70">
               Building the future of trade workforce
             </p>

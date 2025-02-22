@@ -4,7 +4,11 @@ export const AdminFooter = () => {
     <footer className="border-t py-4 px-6">
       <div className="flex justify-between items-center text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <span>SkillWorks</span>
+          <img 
+            src="/lovable-uploads/8803d62e-86da-4278-91b7-5992abfc4aa7.png" 
+            alt="Skill Works Logo" 
+            className="h-6"
+          />
           <span className="mx-2">·</span>
           <a href="/terms" className="hover:underline">Terms</a>
           <span className="mx-2">·</span>

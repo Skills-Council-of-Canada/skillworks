@@ -82,9 +82,13 @@ const ParticipantLanding = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4 text-secondary flex items-center gap-2">
-                Skill <Link2 className="h-4 w-4" /> Works
-              </h3>
+              <div className="mb-4">
+                <img 
+                  src="/lovable-uploads/8803d62e-86da-4278-91b7-5992abfc4aa7.png" 
+                  alt="Skill Works Logo" 
+                  className="h-8"
+                />
+              </div>
               <p className="text-secondary/60">
                 Your gateway to a successful trade career
               </p>
@@ -114,7 +118,7 @@ const ParticipantLanding = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-secondary/70">
-            <p>&copy; {new Date().getFullYear()} Skill Works. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Skills Council of Canada. All rights reserved.</p>
           </div>
         </div>
       </footer>
