@@ -27,9 +27,9 @@ const AdminLayout = () => {
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
-          <AdminHeader pageTitle="Dashboard" className="sticky top-0 z-10" />
+          <AdminHeader pageTitle="Dashboard" className="fixed top-0 right-0 left-[240px] z-50" />
           
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pt-16">
             <main className="p-4 sm:p-6">
               <Outlet />
             </main>
