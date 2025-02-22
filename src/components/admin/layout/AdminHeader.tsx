@@ -1,5 +1,5 @@
 
-import { ChevronDown, Bell, User } from "lucide-react";
+import { ChevronDown, Bell, User, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -84,6 +84,24 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   <Button 
                     variant="ghost" 
                     size="icon"
+                    className="relative"
+                    onClick={() => navigate('/admin/messages')}
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Messages</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
                     className="relative bg-[#1A1F2C] hover:bg-[#1A1F2C]"
                     onClick={() => navigate('/admin/notifications')}
                   >
@@ -125,7 +143,7 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                   className="hover:bg-gray-50 cursor-pointer"
                 >
                   <User className="mr-2 h-4 w-4" />
-                  Profile Settings
+                  Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
