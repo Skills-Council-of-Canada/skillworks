@@ -7,7 +7,6 @@ import {
   CheckSquare,
   BookOpen, 
   Users,
-  Calendar, 
   Settings,
   Bell,
   ChevronDown,
@@ -126,12 +125,6 @@ const ParticipantLayout = () => {
 
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" asChild>
-                <Link to="/participant/calendar">
-                  <Calendar className="h-5 w-5" />
-                  <span className="sr-only">Calendar</span>
-                </Link>
-              </Button>
               <Button variant="ghost" size="icon" asChild>
                 <Link to="/participant/messages">
                   <MessageSquare className="h-5 w-5" />
