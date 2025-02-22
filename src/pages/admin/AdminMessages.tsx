@@ -1,150 +1,186 @@
-
-import { BellDot, MoreVertical } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { ChatWindow } from "@/components/educator/messages/ChatWindow";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Send, Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ConversationList } from "@/components/employer/messages/ConversationList";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
-const AdminMessages = () => {
-  // This would normally be driven by real data
-  const hasNewRequests = true;
-
-  return (
-    <div className="flex h-[calc(100vh-4rem)] gap-4 overflow-hidden">
-      {/* Left Panel - Chat List */}
-      <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold">Conversations</h3>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="z-50" style={{ backgroundColor: 'white', backdropFilter: 'none' }}>
-                <DropdownMenuItem className="focus:bg-accent">Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-accent">Mute Notifications</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:bg-accent">Delete Chat</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <BellDot className="h-5 w-5" />
-                  {hasNewRequests && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
-                    >
-                      2
-                    </Badge>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent 
-                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
-                align="end"
-                sideOffset={5}
-              >
-                <div className="p-4 border-b bg-background">
-                  <h4 className="font-semibold">Chat Requests</h4>
-                </div>
-                <ScrollArea className="h-[300px] bg-background">
-                  <div className="p-4 space-y-4">
-                    <RequestItem
-                      name="Jane Smith"
-                      message="I would like to discuss the project requirements"
-                      timestamp="2 hours ago"
-                    />
-                    <RequestItem
-                      name="Mike Johnson"
-                      message="Can we schedule a meeting?"
-                      timestamp="3 hours ago"
-                    />
-                  </div>
-                </ScrollArea>
-              </PopoverContent>
-            </Popover>
-          </div>
-        </div>
-        <ConversationList />
-      </div>
-
-      <Separator orientation="vertical" />
-
-      {/* Right Panel - Chat Window */}
-      <div className="flex-1 bg-background border rounded-lg overflow-hidden">
-        <div className="flex flex-col h-full">
-          <div className="p-4 border-b">
-            <h3 className="font-semibold">Messages</h3>
-          </div>
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              <div className="flex justify-start">
-                <div className="max-w-[80%] bg-blue-500 text-white rounded-lg p-3">
-                  <p>Hello! How can I help you today?</p>
-                  <span className="text-xs text-white/70 mt-1 block">12:30 PM</span>
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <div className="max-w-[80%] bg-emerald-500 text-white rounded-lg p-3">
-                  <p>I had a question about the project timeline.</p>
-                  <span className="text-xs text-white/70 mt-1 block">12:31 PM</span>
-                </div>
-              </div>
-            </div>
-          </ScrollArea>
-          <div className="p-4 border-t">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Type a message..."
-                className="flex-1 rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
-              <Button size="icon">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface RequestItemProps {
-  name: string;
-  message: string;
+interface Message {
+  id: string;
+  sender: string;
+  content: string;
   timestamp: string;
+  read: boolean;
 }
 
-const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
+interface Conversation {
+  id: string;
+  user: string;
+  lastMessage: string;
+  timestamp: string;
+  unread: boolean;
+}
+
+const AdminMessages = () => {
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [messageInput, setMessageInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Mock data - replace with actual data fetching
+  const conversations: Conversation[] = [
+    {
+      id: "1",
+      user: "John Doe",
+      lastMessage: "When will the next session start?",
+      timestamp: "2024-01-20T10:00:00",
+      unread: true,
+    },
+    {
+      id: "2",
+      user: "Jane Smith",
+      lastMessage: "Thanks for the update",
+      timestamp: "2024-01-19T15:30:00",
+      unread: false,
+    },
+  ];
+
+  const messages: Message[] = [
+    {
+      id: "1",
+      sender: "John Doe",
+      content: "When will the next session start?",
+      timestamp: "2024-01-20T10:00:00",
+      read: false,
+    },
+    {
+      id: "2",
+      sender: "Admin",
+      content: "The next session starts next Monday at 9 AM",
+      timestamp: "2024-01-20T10:05:00",
+      read: true,
+    },
+  ];
+
+  const handleSendMessage = () => {
+    if (!messageInput.trim()) return;
+    // Add message sending logic here
+    setMessageInput("");
+  };
+
+  const filteredConversations = conversations.filter(conv =>
+    conv.user.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="border rounded-lg p-3 space-y-2 bg-background">
-      <div>
-        <h4 className="font-semibold text-sm">{name}</h4>
-        <p className="text-sm text-muted-foreground">{message}</p>
-        <span className="text-xs text-muted-foreground">{timestamp}</span>
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Messages</h1>
       </div>
-      <div className="flex gap-2">
-        <Button size="sm" className="w-full">Accept</Button>
-        <Button size="sm" variant="outline" className="w-full">Decline</Button>
+      
+      <div className="grid md:grid-cols-[300px,1fr] gap-4">
+        <div className="bg-white rounded-lg border">
+          <div className="p-4 border-b">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+              <Input
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+          <ScrollArea className="h-[500px]">
+            <div className="space-y-2 p-4">
+              {filteredConversations.map((conv) => (
+                <button
+                  key={conv.id}
+                  onClick={() => setSelectedConversation(conv.id)}
+                  className={cn(
+                    "w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors",
+                    selectedConversation === conv.id && "bg-gray-100"
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <Avatar>
+                      <AvatarFallback>
+                        {conv.user.split(" ").map(n => n[0]).join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <p className="font-medium truncate">{conv.user}</p>
+                        <span className="text-xs text-gray-500">
+                          {new Date(conv.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 truncate">{conv.lastMessage}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+
+        <div className="bg-white rounded-lg border flex flex-col">
+          {selectedConversation ? (
+            <>
+              <div className="p-4 border-b">
+                <h2 className="font-semibold">
+                  {conversations.find(c => c.id === selectedConversation)?.user}
+                </h2>
+              </div>
+              
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "flex flex-col max-w-[70%] space-y-1",
+                        message.sender === "Admin" ? "ml-auto items-end" : "items-start"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "rounded-lg px-4 py-2",
+                          message.sender === "Admin"
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100"
+                        )}
+                      >
+                        {message.content}
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        {new Date(message.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+
+              <div className="p-4 border-t">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Type a message..."
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  />
+                  <Button onClick={handleSendMessage}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-500">
+              Select a conversation to start messaging
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

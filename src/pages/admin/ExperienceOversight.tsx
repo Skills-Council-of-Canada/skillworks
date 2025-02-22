@@ -23,9 +23,9 @@ const ExperienceOversight = () => {
   const LoadingSkeleton = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="p-6 rounded-lg border">
-          <div className="flex justify-between items-center mb-4">
-            <Skeleton className="h-6 w-1/3" />
+        <div key={i} className="p-4 md:p-6 rounded-lg border">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+            <Skeleton className="h-6 w-full md:w-1/3" />
             <Skeleton className="h-6 w-24" />
           </div>
           <div className="space-y-2">
@@ -38,21 +38,23 @@ const ExperienceOversight = () => {
   );
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Experience Oversight</h1>
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Experience Oversight</h1>
       </div>
 
-      <ExperienceFilters
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        dateRange={dateRange}
-        setDateRange={setDateRange}
-      />
+      <div className="flex flex-col space-y-4">
+        <ExperienceFilters
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+        />
+      </div>
 
       <div className="grid gap-4">
         {isLoading ? (

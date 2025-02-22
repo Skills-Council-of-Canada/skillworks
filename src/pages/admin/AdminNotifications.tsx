@@ -22,26 +22,28 @@ const AdminNotifications = () => {
   const filteredNotifications = filterNotificationsByTime(notifications, timeFilter);
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Admin Notifications</h1>
-        <NotificationFilters
-          selectedType={selectedType}
-          timeFilter={timeFilter}
-          onTypeChange={(value) => setSelectedType(value as NotificationType | 'all')}
-          onTimeFilterChange={(value) => setTimeFilter(value)}
-        />
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
+        <div className="w-full md:w-auto">
+          <NotificationFilters
+            selectedType={selectedType}
+            timeFilter={timeFilter}
+            onTypeChange={(value) => setSelectedType(value as NotificationType | 'all')}
+            onTimeFilterChange={(value) => setTimeFilter(value)}
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="md:col-span-4">
           <NotificationTypesSidebar
             selectedType={selectedType}
             onTypeSelect={setSelectedType}
           />
         </div>
 
-        <div className="col-span-8">
+        <div className="md:col-span-8">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}

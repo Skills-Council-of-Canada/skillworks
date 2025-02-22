@@ -1,132 +1,53 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateRange } from "react-day-picker";
-import { DateRangePicker } from "./components/reports/DateRangePicker";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OverviewTab } from "./components/reports/OverviewTab";
 import { RegistrationsTab } from "./components/reports/RegistrationsTab";
 import { ExperiencesTab } from "./components/reports/ExperiencesTab";
 import { MatchesTab } from "./components/reports/MatchesTab";
 import { LearnersTab } from "./components/reports/LearnersTab";
+import { DateRangePicker } from "./components/reports/DateRangePicker";
 import { ExportButton } from "./components/reports/ExportButton";
 
 const Reports = () => {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(new Date().setMonth(new Date().getMonth() - 6)),
-    to: new Date(),
-  });
-
-  // Registration stats query
-  const { data: registrationStats } = useQuery({
-    queryKey: ["registration-stats", date],
-    queryFn: async () => {
-      if (!date?.from || !date?.to) return null;
-
-      const { data, error } = await supabase.rpc("get_registration_stats", {
-        start_date: date.from.toISOString(),
-        end_date: date.to.toISOString(),
-      });
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Experience stats query
-  const { data: experienceStats } = useQuery({
-    queryKey: ["experience-stats", date],
-    queryFn: async () => {
-      if (!date?.from || !date?.to) return null;
-
-      const { data, error } = await supabase.rpc("get_experience_stats", {
-        p_start_date: date.from.toISOString(),
-        p_end_date: date.to.toISOString(),
-      });
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Project match stats query
-  const { data: projectMatchStats } = useQuery({
-    queryKey: ["project-match-stats", date],
-    queryFn: async () => {
-      if (!date?.from || !date?.to) return null;
-
-      const { data, error } = await supabase.rpc("get_project_match_stats", {
-        p_start_date: date.from.toISOString(),
-        p_end_date: date.to.toISOString(),
-      });
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Learner participation stats query
-  const { data: learnerStats } = useQuery({
-    queryKey: ["learner-stats", date],
-    queryFn: async () => {
-      if (!date?.from || !date?.to) return null;
-
-      const { data, error } = await supabase.rpc("get_learner_participation_stats", {
-        start_date: date.from.toISOString(),
-        end_date: date.to.toISOString(),
-      });
-
-      if (error) throw error;
-      return data;
-    },
-  });
+  const [date, setDate] = useState<DateRange | undefined>();
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Reports & Analytics</h1>
-        <div className="flex items-center gap-4">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Reports</h1>
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
           <DateRangePicker date={date} setDate={setDate} />
-          <ExportButton
-            data={registrationStats || []}
-            filename="registration-stats"
-            type="csv"
-          />
+          <ExportButton data={[]} filename="report" type="csv" />
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="registrations">Registrations</TabsTrigger>
-          <TabsTrigger value="experiences">Experiences</TabsTrigger>
-          <TabsTrigger value="matches">Matches</TabsTrigger>
-          <TabsTrigger value="learners">Learner Participation</TabsTrigger>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="flex flex-wrap md:flex-nowrap w-full h-auto md:h-10 p-1">
+          <TabsTrigger value="overview" className="flex-1 md:flex-none">Overview</TabsTrigger>
+          <TabsTrigger value="registrations" className="flex-1 md:flex-none">Registrations</TabsTrigger>
+          <TabsTrigger value="experiences" className="flex-1 md:flex-none">Experiences</TabsTrigger>
+          <TabsTrigger value="matches" className="flex-1 md:flex-none">Matches</TabsTrigger>
+          <TabsTrigger value="learners" className="flex-1 md:flex-none">Learners</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview">
-          <OverviewTab
-            registrationStats={registrationStats}
-            experienceStats={experienceStats}
-          />
-        </TabsContent>
-
-        <TabsContent value="registrations">
-          <RegistrationsTab registrationStats={registrationStats} />
-        </TabsContent>
-
-        <TabsContent value="experiences">
-          <ExperiencesTab experienceStats={experienceStats} />
-        </TabsContent>
-
-        <TabsContent value="matches">
-          <MatchesTab projectMatchStats={projectMatchStats} />
-        </TabsContent>
-
-        <TabsContent value="learners">
-          <LearnersTab learnerStats={learnerStats} />
-        </TabsContent>
+        <div className="mt-6">
+          <TabsContent value="overview">
+            <OverviewTab />
+          </TabsContent>
+          <TabsContent value="registrations">
+            <RegistrationsTab registrationStats={[]} />
+          </TabsContent>
+          <TabsContent value="experiences">
+            <ExperiencesTab experienceStats={[]} />
+          </TabsContent>
+          <TabsContent value="matches">
+            <MatchesTab projectMatchStats={[]} />
+          </TabsContent>
+          <TabsContent value="learners">
+            <LearnersTab learnerStats={[]} />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );

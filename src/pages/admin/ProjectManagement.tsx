@@ -1,123 +1,34 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { ProjectFilters } from "./components/project-management/ProjectFilters";
 import { ProjectsTable } from "./components/project-management/ProjectsTable";
+import type { ProjectReviewStatus } from "./ProjectManagement";
 
-export type ProjectReviewStatus = "pending_review" | "approved" | "rejected" | "needs_modification";
 export type StatusFilterType = ProjectReviewStatus | "all";
 
 const ProjectManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>("all");
-  const { toast } = useToast();
-
-  const { data: projects, isLoading } = useQuery({
-    queryKey: ["admin-projects", statusFilter, searchQuery],
-    queryFn: async () => {
-      let query = supabase
-        .from("projects")
-        .select(`
-          *,
-          employers (
-            company_name
-          )
-        `)
-        .order("created_at", { ascending: false });
-
-      if (statusFilter && statusFilter !== "all") {
-        query = query.eq("review_status", statusFilter);
-      }
-
-      if (searchQuery) {
-        query = query.ilike("title", `%${searchQuery}%`);
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error("Error fetching projects:", error);
-        throw error;
-      }
-
-      return data;
-    },
-    meta: {
-      onSettled: (_, error) => {
-        if (error) {
-          toast({
-            title: "Error",
-            description: "Failed to load projects",
-            variant: "destructive",
-          });
-        }
-      }
-    }
-  });
-
-  const handleStatusChange = async (projectId: string, newStatus: ProjectReviewStatus, feedback?: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) throw new Error("No authenticated user");
-
-      // Create project approval record
-      const { error: approvalError } = await supabase
-        .from("project_approvals")
-        .insert({
-          project_id: projectId,
-          admin_id: user.id,
-          status: newStatus,
-          feedback
-        });
-
-      if (approvalError) throw approvalError;
-
-      // Update project status
-      const { error: updateError } = await supabase
-        .from("projects")
-        .update({ 
-          review_status: newStatus,
-          admin_feedback: feedback || null 
-        })
-        .eq("id", projectId);
-
-      if (updateError) throw updateError;
-
-      toast({
-        title: "Success",
-        description: "Project status updated successfully",
-      });
-    } catch (error) {
-      console.error("Error updating project status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update project status",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Project Management</h1>
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Project Management</h1>
+        <div className="w-full md:w-auto">
+          <ProjectFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+          />
+        </div>
       </div>
 
-      <ProjectFilters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-      />
-
-      <ProjectsTable
-        projects={projects}
-        isLoading={isLoading}
-        onStatusChange={handleStatusChange}
-      />
+      <div className="overflow-x-auto -mx-4 md:mx-0">
+        <div className="min-w-full inline-block align-middle">
+          <ProjectsTable searchQuery={searchQuery} statusFilter={statusFilter} />
+        </div>
+      </div>
     </div>
   );
 };

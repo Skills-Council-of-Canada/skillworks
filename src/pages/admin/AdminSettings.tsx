@@ -1,87 +1,43 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
-import { NotificationsSettings } from "./components/settings/NotificationsSettings";
-import { SecuritySettings } from "./components/settings/SecuritySettings";
-import { ExperienceVisibilitySettings } from "./components/settings/ExperienceVisibilitySettings";
+import { Card } from "@/components/ui/card";
 import { BrandingSettings } from "./components/settings/BrandingSettings";
-import type { SystemSetting } from "@/types/admin";
+import { SecuritySettings } from "./components/settings/SecuritySettings";
+import { NotificationsSettings } from "./components/settings/NotificationsSettings";
+import { ExperienceVisibilitySettings } from "./components/settings/ExperienceVisibilitySettings";
 
 const AdminSettings = () => {
-  const [activeTab, setActiveTab] = useState("notifications");
-
-  const { data: settings, isLoading } = useQuery({
-    queryKey: ["system-settings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("system_settings")
-        .select("*")
-        .order("category");
-
-      if (error) throw error;
-      return data as SystemSetting[];
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    );
-  }
-
-  const settingsByCategory = settings?.reduce((acc, setting) => {
-    if (!acc[setting.category]) {
-      acc[setting.category] = [];
-    }
-    acc[setting.category].push(setting);
-    return acc;
-  }, {} as Record<string, SystemSetting[]>);
-
   return (
-    <div className="container mx-auto py-6">
-      <h1 className="text-3xl font-bold mb-6">System Settings</h1>
-      
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="experience_visibility">Experience Visibility</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
-        </TabsList>
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Settings</h1>
+      </div>
 
-        <TabsContent value="notifications">
-          <NotificationsSettings 
-            settings={settingsByCategory?.notifications || []}
-            isLoading={isLoading}
-          />
-        </TabsContent>
-
-        <TabsContent value="experience_visibility">
-          <ExperienceVisibilitySettings 
-            settings={settingsByCategory?.experience_visibility || []}
-            isLoading={isLoading}
-          />
-        </TabsContent>
-
-        <TabsContent value="security">
-          <SecuritySettings 
-            settings={settingsByCategory?.security || []}
-            isLoading={isLoading}
-          />
-        </TabsContent>
-
-        <TabsContent value="branding">
-          <BrandingSettings 
-            settings={settingsByCategory?.branding || []}
-            isLoading={isLoading}
-          />
-        </TabsContent>
-      </Tabs>
+      <Card className="p-0">
+        <Tabs defaultValue="branding" className="w-full">
+          <TabsList className="flex flex-wrap md:flex-nowrap w-full h-auto md:h-10 p-1 bg-gray-50/50">
+            <TabsTrigger value="branding" className="flex-1 md:flex-none">Branding</TabsTrigger>
+            <TabsTrigger value="security" className="flex-1 md:flex-none">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="flex-1 md:flex-none">Notifications</TabsTrigger>
+            <TabsTrigger value="visibility" className="flex-1 md:flex-none">Experience Visibility</TabsTrigger>
+          </TabsList>
+          <div className="p-6">
+            <TabsContent value="branding">
+              <BrandingSettings />
+            </TabsContent>
+            <TabsContent value="security">
+              <SecuritySettings />
+            </TabsContent>
+            <TabsContent value="notifications">
+              <NotificationsSettings settings={[]} isLoading={false} />
+            </TabsContent>
+            <TabsContent value="visibility">
+              <ExperienceVisibilitySettings settings={[]} isLoading={false} />
+            </TabsContent>
+          </div>
+        </Tabs>
+      </Card>
     </div>
   );
 };
