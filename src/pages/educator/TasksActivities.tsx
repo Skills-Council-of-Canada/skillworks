@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Task {
   id: string;
@@ -38,6 +39,8 @@ interface Activity {
 }
 
 const TasksActivities = () => {
+  const isMobile = useIsMobile();
+  
   const { data: tasks, isLoading: isLoadingTasks } = useQuery({
     queryKey: ['educator-tasks'],
     queryFn: async () => {
@@ -91,20 +94,41 @@ const TasksActivities = () => {
     }
   };
 
+  const TaskCard = ({ task }: { task: Task }) => (
+    <Card className="mb-4">
+      <CardContent className="pt-6">
+        <div className="space-y-3">
+          <div className="flex justify-between items-start gap-2">
+            <h3 className="font-medium text-gray-900 dark:text-white">{task.title}</h3>
+            <Badge className={getStatusColor(task.status)}>
+              {task.status}
+            </Badge>
+          </div>
+          <div className="text-sm text-gray-700 dark:text-gray-300">
+            {task.due_date ? format(new Date(task.due_date), 'PP') : 'No due date'}
+          </div>
+          <Badge variant="secondary" className={getPriorityColor(task.priority)}>
+            {task.priority}
+          </Badge>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Tasks & Activities</h1>
-        <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+    <div className="container mx-auto p-4 md:p-6 space-y-6 max-w-7xl">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Tasks & Activities</h1>
+        <Button variant="default" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="h-4 w-4 mr-2" />
           New Task
         </Button>
       </div>
 
       <Tabs defaultValue="tasks" className="space-y-6">
-        <TabsList className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
-          <TabsTrigger value="tasks" className="text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Tasks</TabsTrigger>
-          <TabsTrigger value="activities" className="text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Recent Activities</TabsTrigger>
+        <TabsList className="w-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+          <TabsTrigger value="tasks" className="flex-1 text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Tasks</TabsTrigger>
+          <TabsTrigger value="activities" className="flex-1 text-gray-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Recent Activities</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tasks" className="space-y-6">
@@ -118,6 +142,12 @@ const TasksActivities = () => {
               ) : !tasks?.length ? (
                 <div className="text-center py-4 text-gray-600 dark:text-gray-400">
                   No tasks found
+                </div>
+              ) : isMobile ? (
+                <div className="space-y-4">
+                  {tasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
                 </div>
               ) : (
                 <Table>
@@ -180,12 +210,12 @@ const TasksActivities = () => {
                         {activity.type === 'completion' && <CheckCircle2 className="h-4 w-4" />}
                         {activity.type === 'other' && <Calendar className="h-4 w-4" />}
                       </div>
-                      <div className="flex-1 space-y-1">
-                        <p className="font-medium text-gray-900 dark:text-white">{activity.title}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{activity.title}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 break-words">
                           {activity.message}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
                           {format(new Date(activity.created_at), 'PPp')}
                         </p>
                       </div>
