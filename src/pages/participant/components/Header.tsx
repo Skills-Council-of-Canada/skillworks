@@ -30,10 +30,10 @@ export const Header = ({ userName, onLogout }: HeaderProps) => {
           {!isMobile && (
             <Link 
               to="/participant/notifications"
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
+              className="text-gray-500 hover:text-gray-900"
+              aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
-              <span>Notifications</span>
             </Link>
           )}
           <UserMenu onLogout={onLogout} showNotifications={isMobile} />
