@@ -38,7 +38,7 @@ export const NotificationBell = () => {
       className="relative bg-[#1A1F2C] hover:bg-[#1A1F2C]"
       onClick={() => navigate('/educator/notifications')}
     >
-      <Bell color="white" className="h-5 w-5" />
+      <Bell className="h-5 w-5 text-white" />
       {unreadCount > 0 && (
         <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
           3
