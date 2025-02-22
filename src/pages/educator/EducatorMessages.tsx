@@ -1,5 +1,5 @@
 
-import { BellDot } from "lucide-react";
+import { BellDot, MoreVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ChatList } from "@/components/educator/messages/ChatList";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
 
 const EducatorMessages = () => {
   const hasNewRequests = true;
@@ -32,20 +31,24 @@ const EducatorMessages = () => {
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="hover:bg-accent/50"
+                >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>Pin Chat</DropdownMenuItem>
-                <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
+                <DropdownMenuItem className="text-foreground hover:bg-accent/50">Pin Chat</DropdownMenuItem>
+                <DropdownMenuItem className="text-foreground hover:bg-accent/50">Mute Notifications</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">Delete Chat</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive hover:bg-destructive/10">Delete Chat</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative hover:bg-accent/50">
                   <BellDot className="h-5 w-5" />
                   {hasNewRequests && (
                     <Badge 
@@ -58,7 +61,7 @@ const EducatorMessages = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent 
-                className="w-80 p-0" 
+                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
                 align="end"
                 sideOffset={5}
               >
@@ -107,12 +110,23 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
     <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
         <h4 className="font-semibold text-sm text-foreground">{name}</h4>
-        <p className="text-sm text-muted-foreground">{message}</p>
-        <span className="text-xs text-muted-foreground">{timestamp}</span>
+        <p className="text-sm text-foreground/80">{message}</p>
+        <span className="text-xs text-foreground/70">{timestamp}</span>
       </div>
       <div className="flex gap-2">
-        <Button size="sm" className="w-full">Accept</Button>
-        <Button size="sm" variant="outline" className="w-full">Decline</Button>
+        <Button 
+          size="sm" 
+          className="w-full hover:bg-primary/90"
+        >
+          Accept
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="w-full text-foreground hover:bg-accent/50"
+        >
+          Decline
+        </Button>
       </div>
     </div>
   );

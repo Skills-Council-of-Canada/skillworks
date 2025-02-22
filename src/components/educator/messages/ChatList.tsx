@@ -26,6 +26,7 @@ export const ChatList = () => {
           <Button 
             size="icon" 
             variant="outline"
+            className="hover:bg-accent/50"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -79,8 +80,8 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
       variant="ghost"
       className={cn(
         "w-full flex flex-col items-start p-3 h-auto gap-1",
-        "hover:bg-accent text-left",
-        active && "bg-accent",
+        "hover:bg-accent/50 text-left",
+        active && "bg-accent/50",
         "text-foreground"
       )}
     >
@@ -92,7 +93,7 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
             <MessageSquare className="h-8 w-8 text-muted-foreground" />
           )}
           <div>
-            <h4 className="font-semibold line-clamp-1">{name}</h4>
+            <h4 className="font-semibold line-clamp-1 text-foreground">{name}</h4>
             <p className="text-sm text-muted-foreground line-clamp-1">{message}</p>
           </div>
         </div>
@@ -101,7 +102,7 @@ const ChatListItem = ({ name, message, timestamp, unreadCount, isGroup, active }
           {unreadCount && unreadCount > 0 && (
             <Badge 
               variant="default" 
-              className="h-5 w-5 flex items-center justify-center rounded-full"
+              className="h-5 w-5 flex items-center justify-center rounded-full bg-emerald-500 text-white hover:bg-emerald-600"
             >
               {unreadCount}
             </Badge>
