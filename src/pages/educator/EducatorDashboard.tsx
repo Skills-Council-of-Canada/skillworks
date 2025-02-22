@@ -1,5 +1,4 @@
 
-import { QuickActions } from "@/components/educator/dashboard/QuickActions";
 import { StatsOverview } from "@/components/educator/dashboard/StatsOverview";
 import { TasksAndEvents } from "@/components/educator/dashboard/TasksAndEvents";
 import { ActiveExperiences } from "@/components/educator/dashboard/ActiveExperiences";
@@ -10,7 +9,6 @@ const EducatorDashboard = () => {
 
   return (
     <div className="space-y-6 text-foreground">
-      <QuickActions />
       <StatsOverview
         tasks={tasks}
         events={events}
