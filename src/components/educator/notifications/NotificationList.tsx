@@ -14,7 +14,7 @@ interface NotificationListProps {
 export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: NotificationListProps) => {
   if (isLoading) {
     return (
-      <Card className="p-4">
+      <Card className="p-2 md:p-4">
         <div className="text-center py-4">Loading notifications...</div>
       </Card>
     );
@@ -22,7 +22,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
 
   if (!notifications?.length) {
     return (
-      <Card className="p-4">
+      <Card className="p-2 md:p-4">
         <div className="text-center py-4">No notifications found</div>
       </Card>
     );
