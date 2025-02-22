@@ -47,3 +47,5 @@ export const NotificationTypesSidebar = ({ selectedType, onTypeSelect }: Notific
     </Card>
   );
 };
+
+export default NotificationTypesSidebar;
