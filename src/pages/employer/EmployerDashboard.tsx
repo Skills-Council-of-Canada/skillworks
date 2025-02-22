@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PlusCircle, Users, Briefcase, Clock, AlertCircle } from "lucide-react";
+import { PlusCircle, Users, Briefcase, Clock, AlertCircle, LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +17,7 @@ const QuickStatCard = ({
   title: string;
   value: number;
   description?: string;
-  icon: React.ComponentType;
+  icon: LucideIcon;
 }) => (
   <Card className="p-4 sm:p-6">
     <div className="flex items-center space-x-4">
