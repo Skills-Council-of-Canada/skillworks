@@ -1,3 +1,4 @@
+
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -94,21 +95,34 @@ const ParticipantLayout = () => {
             />
 
             <div className="flex items-center gap-2 sm:gap-4">
-              <Button variant="ghost" size="icon" asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hover:bg-transparent"
+                asChild
+              >
                 <Link to="/participant/messages">
                   <MessageSquare size={20} />
                 </Link>
               </Button>
 
-              <Button variant="ghost" size="icon" asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hover:bg-transparent"
+                asChild
+              >
                 <Link to="/participant/notifications">
-                  <Bell size={20} className="text-[#1A1F2C]" />
+                  <Bell size={20} />
                 </Link>
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-0">
+                  <Button 
+                    variant="ghost" 
+                    className="p-0 hover:bg-transparent"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
                         {getInitials(user?.name || "")}
@@ -120,14 +134,24 @@ const ParticipantLayout = () => {
                     <ChevronDown size={16} className="ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white">
-                  <DropdownMenuItem asChild>
+                <DropdownMenuContent 
+                  align="end" 
+                  className="w-56 bg-white"
+                  style={{ animation: 'none' }}
+                >
+                  <DropdownMenuItem 
+                    asChild
+                    className="hover:bg-transparent cursor-pointer"
+                  >
                     <Link to="/participant/profile" className="flex w-full items-center">
                       <User size={16} className="mr-2" />
                       <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem 
+                    asChild
+                    className="hover:bg-transparent cursor-pointer"
+                  >
                     <Link to="/participant/settings" className="flex w-full items-center">
                       <Settings size={16} className="mr-2" />
                       <span>System Settings</span>
@@ -136,7 +160,7 @@ const ParticipantLayout = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
-                    className="text-red-500"
+                    className="text-red-500 hover:bg-transparent cursor-pointer"
                   >
                     <LogOut size={16} className="mr-2" />
                     <span>Logout</span>
