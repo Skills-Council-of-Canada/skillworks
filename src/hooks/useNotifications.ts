@@ -4,25 +4,29 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
-type NotificationType = 'project_request' | 'project_match' | 'submission_update' | 
-                       'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
+export type NotificationCategory = 'project_request' | 'project_match' | 'submission_update' | 
+                                 'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
+
+export type NotificationPriority = 'critical' | 'important' | 'general';
 
 interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  type: NotificationType;
-  priority: string;
-  read: boolean;
+  category: NotificationCategory;
+  priority: NotificationPriority;
+  is_read: boolean;
   read_at?: string;
   created_at: string;
   user_id: string;
   experience_id?: string;
+  content?: string;
 }
 
 interface NotificationFilters {
-  type?: NotificationType;
-  read?: boolean;
+  category?: NotificationCategory;
+  priority?: NotificationPriority;
+  is_read?: boolean;
 }
 
 export const useNotifications = (filters?: NotificationFilters) => {
@@ -39,11 +43,14 @@ export const useNotifications = (filters?: NotificationFilters) => {
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (filters?.type) {
-        query = query.eq('type', filters.type);
+      if (filters?.category) {
+        query = query.eq('category', filters.category);
       }
-      if (filters?.read !== undefined) {
-        query = query.eq('read', filters.read);
+      if (filters?.priority) {
+        query = query.eq('priority', filters.priority);
+      }
+      if (filters?.is_read !== undefined) {
+        query = query.eq('is_read', filters.is_read);
       }
 
       const { data, error } = await query;
@@ -57,7 +64,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
     mutationFn: async (notificationIds: string[]) => {
       const { error } = await supabase
         .from('notifications')
-        .update({ read: true })
+        .update({ is_read: true })
         .in('id', notificationIds)
         .eq('user_id', user?.id);
       if (error) throw error;
