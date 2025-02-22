@@ -7,12 +7,12 @@ import {
   CheckSquare,
   BookOpen, 
   Users,
-  MessageSquare, 
   Calendar, 
   Settings,
   Bell,
   ChevronDown,
-  Menu
+  Menu,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -102,18 +102,6 @@ const ParticipantLayout = () => {
                 My Mentors
               </Button>
             </Link>
-            <Link to="/participant/messages">
-              <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Messages
-              </Button>
-            </Link>
-            <Link to="/participant/settings">
-              <Button variant="ghost" className="w-full justify-start text-white hover:text-white hover:bg-gray-800">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </Button>
-            </Link>
           </nav>
         </div>
       </div>
@@ -137,6 +125,21 @@ const ParticipantLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/participant/calendar">
+                  <Calendar className="h-5 w-5" />
+                  <span className="sr-only">Calendar</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/participant/messages">
+                  <MessageSquare className="h-5 w-5" />
+                  <span className="sr-only">Messages</span>
+                </Link>
+              </Button>
+            </div>
+
             <div className="relative inline-flex items-center justify-center w-10 h-10">
               <Bell className="h-5 w-5 text-[#1A1F2C]" />
               <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#ea384c] text-white rounded-full text-xs flex items-center justify-center">
@@ -165,9 +168,12 @@ const ParticipantLayout = () => {
                     View Profile
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem className="hover:bg-gray-100">
-                  Notifications
-                </DropdownMenuItem>
+                <Link to="/participant/settings">
+                  <DropdownMenuItem className="hover:bg-gray-100">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   className="text-red-500 hover:bg-gray-100"
