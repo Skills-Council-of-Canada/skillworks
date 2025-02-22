@@ -194,3 +194,17 @@ export interface ExperienceSettings {
 export interface ExperienceManagementProps {
   experienceId: string;
 }
+
+export enum NotificationType {
+  STUDENT_SIGNUP = 'STUDENT_SIGNUP',
+  PROGRESS_UPDATE = 'PROGRESS_UPDATE',
+  FEEDBACK_REQUEST = 'FEEDBACK_REQUEST',
+  CLASSROOM_ACTIVITY = 'CLASSROOM_ACTIVITY',
+  CERTIFICATION = 'CERTIFICATION'
+}
+
+export interface NotificationPriority {
+  critical: 'critical';
+  important: 'important';
+  normal: 'normal';
+}
