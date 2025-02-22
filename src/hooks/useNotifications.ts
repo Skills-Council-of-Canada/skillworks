@@ -8,18 +8,24 @@ export type NotificationCategory = 'project_request' | 'project_match' | 'submis
                           'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
 export type NotificationPriority = 'critical' | 'important' | 'general';
 
-export interface Notification {
+interface DatabaseNotification {
   id: string;
   title: string;
   message: string;
-  content?: string;
-  category: NotificationCategory;
-  priority: NotificationPriority;
-  is_read: boolean;
+  type: NotificationCategory;
+  priority?: NotificationPriority;
+  read: boolean;
   read_at?: string;
   created_at: string;
   user_id: string;
   experience_id?: string;
+}
+
+export interface Notification extends Omit<DatabaseNotification, 'type' | 'read'> {
+  category: NotificationCategory;
+  is_read: boolean;
+  content?: string;
+  priority: NotificationPriority;
 }
 
 export interface NotificationFilters {
@@ -28,10 +34,10 @@ export interface NotificationFilters {
   is_read?: boolean;
 }
 
-const mapDatabaseToNotification = (dbNotification: any): Notification => {
+const mapDatabaseToNotification = (dbNotification: DatabaseNotification): Notification => {
   return {
     ...dbNotification,
-    category: dbNotification.type as NotificationCategory,
+    category: dbNotification.type,
     is_read: dbNotification.read,
     content: dbNotification.message,
     priority: dbNotification.priority || 'general'
@@ -43,10 +49,8 @@ export const useNotifications = (filters?: NotificationFilters) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const queryKey = ['notifications', filters?.category, filters?.priority, filters?.is_read];
-
   const { data: notifications, isLoading } = useQuery({
-    queryKey,
+    queryKey: ['notifications', filters?.category, filters?.priority, filters?.is_read],
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -67,7 +71,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
       const { data, error } = await query;
       if (error) throw error;
 
-      return (data || []).map(mapDatabaseToNotification);
+      return (data as DatabaseNotification[] || []).map(mapDatabaseToNotification);
     },
     enabled: !!user?.id,
   });
