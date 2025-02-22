@@ -10,6 +10,7 @@ import {
   PanelRight,
   Settings,
   MessageSquare,
+  LogOut
 } from "lucide-react";
 import {
   SidebarContent,
@@ -25,20 +26,44 @@ import { cn } from "@/lib/utils";
 interface AdminNavigationProps {
   onLogout: () => void;
   userName: string;
+  isMobile?: boolean;
 }
 
-export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) => {
+export const AdminNavigation = ({ onLogout, userName, isMobile = false }: AdminNavigationProps) => {
   const { state } = useSidebar();
 
   const navItems = [
     { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/admin/users", icon: Users, label: "User Management" },
-    { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
-    { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
+    { to: "/admin/users", icon: Users, label: "Users" },
+    { to: "/admin/experiences", icon: BookOpen, label: "Experiences" },
+    { to: "/admin/projects", icon: Briefcase, label: "Projects" },
     { to: "/admin/messages", icon: MessageSquare, label: "Messages" },
-    { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
+    { to: "/admin/reports", icon: BarChart, label: "Reports" },
     { to: "/admin/settings", icon: Settings, label: "Settings" },
   ];
+
+  if (isMobile) {
+    return (
+      <nav className="flex justify-around items-center py-2 px-4">
+        {navItems.map(({ to, icon: Icon, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center justify-center p-2 rounded-md",
+                "text-gray-400 hover:text-white",
+                isActive && "text-white"
+              )
+            }
+          >
+            <Icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{label}</span>
+          </NavLink>
+        ))}
+      </nav>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
@@ -75,6 +100,17 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
                   </NavLink>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <button
+                  onClick={onLogout}
+                  className="flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors hover:bg-white/10"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className={cn("ml-2", state === "collapsed" && "hidden")}>
+                    Logout
+                  </span>
+                </button>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
