@@ -36,11 +36,11 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
   }
 
   return (
-    <div className="space-y-3 w-full max-w-full overflow-hidden">
+    <div className="space-y-3 w-full">
       {notifications.map((notification) => (
         <Card 
           key={notification.id} 
-          className="overflow-hidden w-full"
+          className="w-full"
         >
           <div
             className={`p-3 md:p-4 ${
@@ -54,7 +54,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
               
               <div className="flex-1 min-w-0 space-y-2">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                  <h3 className="font-semibold text-sm md:text-base break-words pr-2">
+                  <h3 className="font-semibold text-sm md:text-base break-words">
                     {notification.title}
                   </h3>
                   {!notification.read && (
@@ -73,7 +73,7 @@ export const NotificationList = ({ notifications, isLoading, onMarkAsRead }: Not
                   {notification.message}
                 </p>
                 
-                <div className="flex flex-wrap items-center gap-2 md:gap-3 pt-1">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
                   <span
                     className={`inline-flex items-center text-xs px-2 py-0.5 rounded-full ${getPriorityClass(
                       notification.priority
