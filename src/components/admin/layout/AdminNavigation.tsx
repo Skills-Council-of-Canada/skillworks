@@ -5,9 +5,7 @@ import {
   BookOpen,
   Briefcase,
   BarChart,
-  Settings,
   LogOut,
-  MessageSquare,
   PanelLeft,
   PanelRight
 } from "lucide-react";
@@ -32,9 +30,7 @@ export const AdminNavigation = ({ onLogout, userName }: AdminNavigationProps) =>
     { to: "/admin/users", icon: Users, label: "User Management" },
     { to: "/admin/experiences", icon: BookOpen, label: "Experience Oversight" },
     { to: "/admin/projects", icon: Briefcase, label: "Project Management" },
-    { to: "/admin/messages", icon: MessageSquare, label: "Messages" },
     { to: "/admin/reports", icon: BarChart, label: "Reports & Analytics" },
-    { to: "/admin/settings", icon: Settings, label: "System Settings" },
   ];
 
   return (
