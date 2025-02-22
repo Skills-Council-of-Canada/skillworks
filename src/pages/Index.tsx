@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight, LogIn, User } from "lucide-react";
 import PortalSelection from "@/components/auth/PortalSelection";
 import { UserRole } from "@/types/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
@@ -17,18 +18,14 @@ const Index = () => {
   const { toast } = useToast();
 
   const handlePortalSelect = (portalId: string, role: UserRole) => {
-    switch (portalId) {
-      case "employer":
-        navigate("/employer-landing");
-        break;
-      case "educator":
-        navigate("/educator-landing");
-        break;
-      case "participant":
-        navigate("/participant-landing");
-        break;
-      default:
-        break;
+    const paths = {
+      employer: "/employer-landing",
+      educator: "/educator-landing",
+      participant: "/participant-landing"
+    };
+    
+    if (paths[portalId]) {
+      navigate(paths[portalId]);
     }
   };
 
@@ -86,14 +83,13 @@ const Index = () => {
                 onSubmit={handleAuthSubmit}
                 onBack={handleBack}
               />
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate("/login")}
+              <Link 
+                to="/login" 
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
               >
                 <LogIn className="mr-2 h-4 w-4" />
                 Login Page
-              </Button>
+              </Link>
             </div>
           </div>
         </div>
