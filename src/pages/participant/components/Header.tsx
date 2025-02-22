@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export const Header = ({ userName, onLogout }: HeaderProps) => {
   return (
-    <header className="border-b">
+    <header className="border-b relative">
       <div className="flex h-16 items-center px-4 gap-4">
         <div className="flex-1">
           <Link to="/participant/dashboard" className="flex items-center">
