@@ -51,6 +51,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
+                className="relative hidden md:inline-flex"
                 onClick={() => navigate('/employer/messages')}
               >
                 <MessageSquare className="h-5 w-5" />
@@ -68,7 +69,7 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="relative"
+                className="relative hidden md:inline-flex"
                 onClick={() => navigate('/employer/notifications')}
               >
                 <Bell className="h-5 w-5" />
@@ -102,6 +103,25 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
             className="w-56 bg-white border shadow-lg" 
             align="end"
           >
+            {/* Mobile-only navigation items */}
+            <div className="md:hidden">
+              <DropdownMenuItem 
+                className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
+                onClick={() => navigate('/employer/messages')}
+              >
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Messages
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
+                onClick={() => navigate('/employer/notifications')}
+              >
+                <Bell className="mr-2 h-4 w-4" />
+                Notifications
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </div>
+            
             <DropdownMenuItem 
               className="text-foreground hover:bg-gray-100 focus:bg-gray-100 focus:text-foreground cursor-pointer"
               onClick={() => navigate('/employer/settings')}
