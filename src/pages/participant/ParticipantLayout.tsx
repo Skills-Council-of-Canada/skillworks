@@ -1,5 +1,4 @@
-
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
   User, 
@@ -25,6 +24,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sidebar, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+
+interface NavigationProps {
+  userName: string | undefined;
+  navItems: Array<{
+    to: string;
+    icon: React.ComponentType;
+    label: string;
+  }>;
+}
 
 const ParticipantLayout = () => {
   const { user, logout } = useAuth();
@@ -141,12 +149,11 @@ const ParticipantLayout = () => {
   );
 };
 
-// Navigation component for ParticipantLayout
-const Navigation = ({ userName, navItems }) => {
+const Navigation = ({ userName, navItems }: NavigationProps) => {
   const { state } = useSidebar();
 
-  const getFirstName = (fullName: string) => {
-    return fullName?.split(" ")[0] || "there";
+  const getFirstName = (fullName: string = "") => {
+    return fullName.split(" ")[0] || "there";
   };
 
   return (

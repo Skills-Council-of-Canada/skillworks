@@ -31,11 +31,19 @@ const AdminLayout = () => {
 
   const showDashboard = location.pathname === "/admin" || location.pathname === "/admin/dashboard";
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar collapsible="icon" className="border-r">
-          <AdminNavigation userName={user?.name || ""} />
+          <AdminNavigation userName={user?.name || ""} onLogout={handleLogout} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-h-screen">
