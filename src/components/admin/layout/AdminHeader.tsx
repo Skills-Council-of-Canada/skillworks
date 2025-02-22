@@ -132,6 +132,13 @@ export const AdminHeader = ({ pageTitle }: AdminHeaderProps) => {
                 className="w-56 bg-white"
               >
                 <DropdownMenuItem 
+                  onClick={() => navigate('/admin/profile')}
+                  className="cursor-pointer"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem 
                   onClick={() => navigate('/admin/settings')}
                   className="cursor-pointer"
                 >
