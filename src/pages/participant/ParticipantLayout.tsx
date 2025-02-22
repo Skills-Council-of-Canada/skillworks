@@ -1,4 +1,3 @@
-
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -103,29 +102,29 @@ const ParticipantLayout = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-0">
+                  <Button variant="ghost" className="flex items-center gap-2 p-0">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-[#1A1F2C] text-white">
                         {getInitials(user?.name || "")}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm hidden md:inline-block ml-2">
+                    <span className="text-sm hidden md:inline-block">
                       {user?.name}
                     </span>
-                    <ChevronDown className="h-4 w-4 ml-1" />
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg">
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/profile" className="flex items-center">
+                    <Link to="/participant/profile" className="flex items-center w-full">
                       <User className="mr-2 h-4 w-4" />
-                      View Profile
+                      <span>View Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/participant/settings" className="flex items-center">
+                    <Link to="/participant/settings" className="flex items-center w-full">
                       <Settings className="mr-2 h-4 w-4" />
-                      Settings
+                      <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -134,7 +133,7 @@ const ParticipantLayout = () => {
                     className="text-red-500"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                    <span>Logout</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -175,13 +174,12 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
             <NavLink
               key={to}
               to={to}
-              className={({ isActive }) => [
-                "flex w-full items-center",
-                state === "collapsed" ? "justify-center" : "",
-                "text-gray-300",
-                isActive ? "bg-white/10" : "hover:bg-white/10",
-                "px-2 py-1.5 rounded-md transition-colors"
-              ].filter(Boolean).join(" ")}
+              className={({ isActive }) => {
+                const baseClasses = "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors";
+                const alignmentClass = state === "collapsed" ? "justify-center" : "";
+                const activeClass = isActive ? "bg-white/10" : "hover:bg-white/10";
+                return `${baseClasses} ${alignmentClass} ${activeClass}`;
+              }}
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className={state === "collapsed" ? "hidden" : "block truncate ml-2"}>
