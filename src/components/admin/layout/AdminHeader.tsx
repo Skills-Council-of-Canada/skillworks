@@ -1,3 +1,4 @@
+
 import { ChevronDown, Bell, User, MessageSquare, Settings, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,8 +65,8 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
   };
 
   return (
-    <header className={`h-16 border-b flex items-center px-4 md:px-6 bg-card justify-between ${className}`}>
-      <div className="flex items-center gap-2">
+    <header className={`h-16 border-b flex items-center px-4 md:px-6 bg-card ${className}`}>
+      <div className="flex items-center gap-4 flex-1">
         <Button
           variant="ghost"
           size="icon"
@@ -75,18 +76,18 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
           <Menu className="h-5 w-5" />
         </Button>
         
-        {pageTitle === "Dashboard" ? (
-          <img 
-            src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
-            alt="Skills Works Logo" 
-            className="h-8"
-          />
-        ) : (
-          <h1 className="text-xl md:text-2xl font-semibold">{pageTitle}</h1>
+        <img 
+          src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
+          alt="Skills Works Logo" 
+          className="h-8"
+        />
+        
+        {pageTitle !== "Dashboard" && (
+          <h1 className="text-xl md:text-2xl font-semibold ml-4">{pageTitle}</h1>
         )}
       </div>
       
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-2 md:gap-4 shrink-0">
         {user ? (
           <>
             <TooltipProvider>
