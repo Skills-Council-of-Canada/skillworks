@@ -1,27 +1,22 @@
 
 import {
-  Calendar,
-  GraduationCap,
   Home,
   Search,
   Settings,
   UserCheck,
   Briefcase,
-  ClipboardList,
   Users,
   Building2,
-  MessageSquare
+  GraduationCap,
 } from "lucide-react";
 import { NavigationHeader } from "./NavigationHeader";
 import { NavItem } from "./NavItem";
-import { LogoutButton } from "./LogoutButton";
 
 interface EducatorNavigationProps {
-  onLogout: () => void;
   userName: string;
 }
 
-export const EducatorNavigation = ({ onLogout, userName }: EducatorNavigationProps) => {
+export const EducatorNavigation = ({ userName }: EducatorNavigationProps) => {
   const getFirstName = (fullName: string) => {
     return fullName?.split(" ")[0] || "there";
   };
@@ -63,25 +58,11 @@ export const EducatorNavigation = ({ onLogout, userName }: EducatorNavigationPro
             Match Requests
           </NavItem>
 
-          <NavItem to="/educator/tasks" icon={ClipboardList}>
-            Tasks & Activities
-          </NavItem>
-
-          <NavItem to="/educator/messages" icon={MessageSquare}>
-            Messages
-          </NavItem>
-
-          <NavItem to="/educator/calendar" icon={Calendar}>
-            Calendar
-          </NavItem>
-
           <NavItem to="/educator/settings" icon={Settings}>
             Settings
           </NavItem>
         </div>
       </div>
-
-      <LogoutButton onLogout={onLogout} />
     </div>
   );
 };

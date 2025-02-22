@@ -2,12 +2,16 @@
 import { NotificationBell } from "./NotificationBell";
 import { UserMenu } from "./UserMenu";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Calendar, MessageCircle, Activity } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface EducatorHeaderProps {
   pageTitle: string;
+  onLogout: () => void;
 }
 
-export const EducatorHeader = ({ pageTitle }: EducatorHeaderProps) => {
+export const EducatorHeader = ({ pageTitle, onLogout }: EducatorHeaderProps) => {
   return (
     <header className="h-16 border-b flex items-center px-6 bg-card justify-between">
       <div className="flex items-center gap-2">
@@ -19,9 +23,29 @@ export const EducatorHeader = ({ pageTitle }: EducatorHeaderProps) => {
       </div>
       
       <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 mr-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/educator/calendar">
+              <Calendar className="h-5 w-5" />
+              <span className="sr-only">Calendar</span>
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/educator/messages">
+              <MessageCircle className="h-5 w-5" />
+              <span className="sr-only">Messages</span>
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/educator/tasks">
+              <Activity className="h-5 w-5" />
+              <span className="sr-only">Tasks & Activities</span>
+            </Link>
+          </Button>
+        </div>
         <TooltipProvider>
           <NotificationBell />
-          <UserMenu />
+          <UserMenu onLogout={onLogout} />
         </TooltipProvider>
       </div>
     </header>
