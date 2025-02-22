@@ -1,5 +1,5 @@
 
-import { Bell, ChevronDown } from "lucide-react";
+import { Bell, ChevronDown, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -50,11 +50,28 @@ export const EmployerHeader = ({ pageTitle }: EmployerHeaderProps) => {
             <TooltipTrigger asChild>
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="relative bg-[#1A1F2C] hover:bg-[#1A1F2C]"
+                size="icon"
+                onClick={() => navigate('/employer/messages')}
+              >
+                <MessageSquare className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Messages</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="relative"
                 onClick={() => navigate('/employer/notifications')}
               >
-                <Bell className="h-5 w-5 text-white" />
+                <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
                   3
                 </span>
