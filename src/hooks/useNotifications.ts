@@ -3,17 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-
-export type NotificationType = 
-  | 'application_status'      // When an employer accepts or declines
-  | 'task_assignment'         // New tasks assigned
-  | 'submission_reminder'     // Deadline reminders
-  | 'feedback_received'       // Reviews and feedback
-  | 'chat_message'           // New messages
-  | 'experience_completion'   // Project completion
-  | 'system';                // System notifications
-
-export type NotificationPriority = 'critical' | 'important' | 'general';
+import { NotificationType, NotificationPriority } from "@/types/educator";
 
 export interface DatabaseNotification {
   id: string;

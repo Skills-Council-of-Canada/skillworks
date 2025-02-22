@@ -196,15 +196,13 @@ export interface ExperienceManagementProps {
 }
 
 export enum NotificationType {
-  STUDENT_SIGNUP = 'STUDENT_SIGNUP',
-  PROGRESS_UPDATE = 'PROGRESS_UPDATE',
-  FEEDBACK_REQUEST = 'FEEDBACK_REQUEST',
-  CLASSROOM_ACTIVITY = 'CLASSROOM_ACTIVITY',
-  CERTIFICATION = 'CERTIFICATION'
+  APPLICATION_STATUS = 'application_status',
+  TASK_ASSIGNMENT = 'task_assignment',
+  SUBMISSION_REMINDER = 'submission_reminder',
+  FEEDBACK_RECEIVED = 'feedback_received',
+  CHAT_MESSAGE = 'chat_message',
+  EXPERIENCE_COMPLETION = 'experience_completion',
+  SYSTEM = 'system'
 }
 
-export interface NotificationPriority {
-  critical: 'critical';
-  important: 'important';
-  normal: 'normal';
-}
+export type NotificationPriority = 'critical' | 'important' | 'normal';

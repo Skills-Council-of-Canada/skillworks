@@ -1,19 +1,23 @@
 
-import { Bell, AlertCircle, Info, GraduationCap, BookOpen, MessageCircle } from "lucide-react";
+import { Bell, AlertCircle, Info, GraduationCap, BookOpen, MessageCircle, FileCheck } from "lucide-react";
 import { NotificationType } from "@/types/educator";
 
 export const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
-    case NotificationType.STUDENT_SIGNUP:
-      return <Bell className="h-5 w-5 text-green-600" />;
-    case NotificationType.PROGRESS_UPDATE:
+    case NotificationType.APPLICATION_STATUS:
+      return <FileCheck className="h-5 w-5 text-green-600" />;
+    case NotificationType.TASK_ASSIGNMENT:
       return <BookOpen className="h-5 w-5 text-blue-600" />;
-    case NotificationType.FEEDBACK_REQUEST:
+    case NotificationType.SUBMISSION_REMINDER:
+      return <Bell className="h-5 w-5 text-yellow-600" />;
+    case NotificationType.FEEDBACK_RECEIVED:
       return <MessageCircle className="h-5 w-5 text-purple-600" />;
-    case NotificationType.CLASSROOM_ACTIVITY:
-      return <Info className="h-5 w-5 text-indigo-600" />;
-    case NotificationType.CERTIFICATION:
+    case NotificationType.CHAT_MESSAGE:
+      return <MessageCircle className="h-5 w-5 text-indigo-600" />;
+    case NotificationType.EXPERIENCE_COMPLETION:
       return <GraduationCap className="h-5 w-5 text-red-600" />;
+    case NotificationType.SYSTEM:
+      return <Info className="h-5 w-5 text-gray-600" />;
     default:
       return <Bell className="h-5 w-5 text-gray-600" />;
   }
@@ -32,16 +36,20 @@ export const getPriorityClass = (priority: 'critical' | 'important' | 'normal') 
 
 export const getNotificationColor = (type: NotificationType) => {
   switch (type) {
-    case NotificationType.STUDENT_SIGNUP:
-      return "blue";
-    case NotificationType.PROGRESS_UPDATE:
+    case NotificationType.APPLICATION_STATUS:
       return "green";
-    case NotificationType.FEEDBACK_REQUEST:
+    case NotificationType.TASK_ASSIGNMENT:
+      return "blue";
+    case NotificationType.SUBMISSION_REMINDER:
       return "yellow";
-    case NotificationType.CLASSROOM_ACTIVITY:
+    case NotificationType.FEEDBACK_RECEIVED:
       return "purple";
-    case NotificationType.CERTIFICATION:
+    case NotificationType.CHAT_MESSAGE:
+      return "indigo";
+    case NotificationType.EXPERIENCE_COMPLETION:
       return "red";
+    case NotificationType.SYSTEM:
+      return "gray";
     default:
       return "gray";
   }
