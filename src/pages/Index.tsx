@@ -66,39 +66,41 @@ const Index = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col">
-      <header className="w-full h-16 bg-white border-b shadow-sm z-10" />
+    <div className="h-screen flex flex-col overflow-hidden">
+      <header className="flex-none w-full h-16 bg-white border-b shadow-sm" />
       
-      <main className="relative flex-1 overflow-y-auto">
-        <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
-          <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
-          
-          <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
-            <div className="flex flex-col justify-center order-2 md:order-1">
-              <PortalSelection onPortalSelect={handlePortalSelect} />
-            </div>
+      <div className="flex-1 overflow-y-auto">
+        <main className="h-full">
+          <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
+            <h1 className="text-4xl font-bold text-center mb-6">Real-World Experience. Real Opportunities. Real Impact.</h1>
             
-            <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
-              <AuthForm
-                icon={User}
-                title="Sign In"
-                gradient="bg-white"
-                isLoading={isSubmitting}
-                onSubmit={handleAuthSubmit}
-                onBack={handleBack}
-              />
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate("/login")}
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Login Page
-              </Button>
+            <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
+              <div className="flex flex-col justify-center order-2 md:order-1">
+                <PortalSelection onPortalSelect={handlePortalSelect} />
+              </div>
+              
+              <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
+                <AuthForm
+                  icon={User}
+                  title="Sign In"
+                  gradient="bg-white"
+                  isLoading={isSubmitting}
+                  onSubmit={handleAuthSubmit}
+                  onBack={handleBack}
+                />
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => navigate("/login")}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login Page
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
