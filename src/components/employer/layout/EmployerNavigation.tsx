@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { LogOut } from "lucide-react";
 import {
   LayoutDashboard,
   Briefcase,
@@ -14,11 +13,9 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 interface EmployerNavigationProps {
@@ -37,7 +34,6 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
     { title: "Applications", url: "/employer/applications", icon: ClipboardList },
     { title: "Messages", url: "/employer/messages", icon: MessageSquare },
     { title: "Resources", url: "/employer/resources", icon: BookOpen },
-    { title: "Settings", url: "/employer/settings", icon: Settings },
   ];
 
   return (
@@ -46,8 +42,6 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
         <h2 className="text-xl font-bold">Employer Portal</h2>
         <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
       </div>
-      
-      <SidebarSeparator className="bg-white/10 mx-4" />
       
       <SidebarGroup>
         <SidebarGroupContent>
@@ -65,15 +59,6 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={onLogout}
-                className="flex items-center gap-2 text-red-400 hover:text-red-300 hover:bg-white/10 transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
