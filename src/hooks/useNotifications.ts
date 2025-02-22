@@ -55,7 +55,21 @@ export const useNotifications = (filters?: NotificationFilters) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as DatabaseNotification[];
+      
+      // Transform the data to match our expected types
+      return (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        message: item.message,
+        category: item.type as NotificationCategory,
+        priority: item.priority as NotificationPriority,
+        is_read: item.read,
+        read_at: item.read_at,
+        created_at: item.created_at,
+        user_id: item.user_id,
+        experience_id: item.experience_id,
+        content: item.content
+      }));
     },
     enabled: !!user?.id,
   });
@@ -64,7 +78,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
     mutationFn: async (notificationIds: string[]) => {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true })
+        .update({ read: true })
         .in('id', notificationIds)
         .eq('user_id', user?.id);
       if (error) throw error;
@@ -74,6 +88,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
       toast({
         title: "Success",
         description: "Notifications marked as read",
+        variant: "default",
       });
     },
     onError: (error) => {

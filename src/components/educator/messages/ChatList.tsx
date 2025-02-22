@@ -35,7 +35,7 @@ export const ChatList = () => {
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-foreground/70 px-2">Direct Messages</h3>
+            <h3 className="text-sm font-semibold text-foreground px-2">Direct Messages</h3>
             <ChatListItem
               name="John Doe"
               message="Latest message here"
@@ -51,7 +51,7 @@ export const ChatList = () => {
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-foreground/70 px-2">Group Chats</h3>
+            <h3 className="text-sm font-semibold text-foreground px-2">Group Chats</h3>
             <ChatListItem
               name="Project Alpha Team"
               message="Team discussion about..."
