@@ -89,18 +89,17 @@ const ParticipantLayout = () => {
             />
 
             <div className="flex items-center gap-2 sm:gap-4">
-              <Button variant="ghost" size="icon" asChild>
-                <Link to="/participant/messages">
+              <Link to="/participant/messages">
+                <Button variant="ghost" size="icon">
                   <MessageSquare className="h-5 w-5" />
-                  <span className="sr-only">Messages</span>
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
-              <Button variant="ghost" size="icon" asChild>
-                <Link to="/participant/notifications">
+              <Link to="/participant/notifications">
+                <Button variant="ghost" size="icon">
                   <Bell className="h-5 w-5 text-[#1A1F2C]" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -174,33 +173,30 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
         <SidebarTrigger className="text-white hover:text-white/80">
-          {state === "collapsed" ? <PanelRight size={20} /> : <PanelLeft size={20} />}
+          {state === "collapsed" ? <PanelRight className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
         </SidebarTrigger>
       </div>
 
       <div className="flex-1 px-4">
         <div className="space-y-1 py-2">
-          {navItems.map(({ to, icon: Icon, label }) => {
-            const IconComponent = () => <Icon size={16} className="shrink-0" />;
-            return (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  cn(
-                    "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
-                    state === "collapsed" && "justify-center",
-                    isActive ? "bg-white/10" : "hover:bg-white/10"
-                  )
-                }
-              >
-                <IconComponent />
-                <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                  {label}
-                </span>
-              </NavLink>
-            );
-          })}
+          {navItems.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
+                  state === "collapsed" && "justify-center",
+                  isActive ? "bg-white/10" : "hover:bg-white/10"
+                )
+              }
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className={cn("ml-2", state === "collapsed" && "hidden")}>
+                {label}
+              </span>
+            </NavLink>
+          ))}
         </div>
       </div>
     </div>
