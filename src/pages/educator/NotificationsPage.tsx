@@ -43,7 +43,7 @@ const NotificationsPage = () => {
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Notifications</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">Notifications</h1>
         
         {/* Mobile Filter Controls */}
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
