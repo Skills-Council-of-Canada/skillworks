@@ -13,8 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const UserMenu = () => {
-  const { user, logout } = useAuth();
+interface UserMenuProps {
+  onLogout: () => void;
+}
+
+export const UserMenu = ({ onLogout }: UserMenuProps) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const getInitials = (name: string) => {
@@ -56,7 +60,7 @@ export const UserMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="text-red-500 cursor-pointer"
-          onClick={logout}
+          onClick={onLogout}
         >
           <LogOut className="mr-2 h-4 w-4" />
           Logout

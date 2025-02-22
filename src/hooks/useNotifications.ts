@@ -29,19 +29,21 @@ export interface DatabaseNotification {
   content?: string;
 }
 
-type NotificationFilters = Partial<{
-  type: NotificationType;
-  priority: NotificationPriority;
-  read: boolean;
-}>;
+interface NotificationFilters {
+  type?: NotificationType;
+  priority?: NotificationPriority;
+  read?: boolean;
+}
 
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const queryKey = ['notifications', filters] as const;
+
   const { data: notifications, isLoading } = useQuery({
-    queryKey: ['notifications', filters] as const,
+    queryKey,
     queryFn: async () => {
       let query = supabase
         .from('notifications')
@@ -80,7 +82,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey });
       toast({
         title: "Success",
         description: "Notifications marked as read",
