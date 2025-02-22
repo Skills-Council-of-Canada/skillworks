@@ -1,14 +1,23 @@
 
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
 import { AdminFooter } from "@/components/admin/layout/AdminFooter";
 import { AdminNavigation } from "@/components/admin/layout/AdminNavigation";
+import { useEffect } from "react";
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Redirect to /admin/dashboard if on root /admin path
+    if (location.pathname === '/admin') {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   const handleLogout = async () => {
     try {
