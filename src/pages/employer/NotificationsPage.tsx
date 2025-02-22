@@ -1,151 +1,58 @@
 
-import { useState, useCallback } from "react";
-import { Bell, AlertCircle, Info, Clock } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useNotifications, NotificationType, NotificationPriority } from "@/hooks/useNotifications";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NotificationsSettings } from "../admin/components/settings/NotificationsSettings";
+import { useState } from "react";
+import { useNotifications, NotificationType } from "@/hooks/useNotifications";
+import { NotificationTypesSidebar } from "@/components/educator/notifications/NotificationTypesSidebar";
+import { NotificationList } from "@/components/educator/notifications/NotificationList";
+import { NotificationFilters } from "@/components/educator/notifications/NotificationFilters";
+import { NotificationSettings } from "@/components/educator/notifications/NotificationSettings";
+import { filterNotificationsByTime } from "@/components/educator/notifications/utils/notificationUtils";
 
 const NotificationsPage = () => {
-  const [selectedType, setSelectedType] = useState<NotificationType | undefined>();
-  const [selectedPriority, setSelectedPriority] = useState<NotificationPriority | undefined>();
-  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
-  const [activeTab, setActiveTab] = useState("notifications");
+  const [selectedType, setSelectedType] = useState<NotificationType | 'all'>('all');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
+  
+  const { notifications, isLoading, markAsRead } = useNotifications(
+    selectedType !== 'all' ? { type: selectedType } : undefined
+  );
 
-  const { notifications, isLoading, markAsRead } = useNotifications({
-    type: selectedType,
-    priority: selectedPriority,
-    read: showUnreadOnly ? false : undefined
-  });
+  const handleMarkAsRead = async (notificationIds: string[]) => {
+    await markAsRead.mutateAsync(notificationIds);
+  };
 
-  const handleMarkAsRead = useCallback((notificationId: string) => {
-    markAsRead.mutate([notificationId]);
-  }, [markAsRead]);
-
-  const handleMarkAllAsRead = useCallback(() => {
-    if (!notifications) return;
-    const unreadIds = notifications
-      .filter(n => !n.read)
-      .map(n => n.id);
-    if (unreadIds.length > 0) {
-      markAsRead.mutate(unreadIds);
-    }
-  }, [notifications, markAsRead]);
-
-  if (isLoading) {
-    return (
-      <div className="container max-w-4xl mx-auto py-6 space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Bell className="h-5 w-5 text-foreground" />
-          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
-        </div>
-        {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="w-full h-24" />
-        ))}
-      </div>
-    );
-  }
+  const filteredNotifications = filterNotificationsByTime(notifications, timeFilter);
 
   return (
-    <div className="container max-w-4xl mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-foreground" />
-          <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setShowUnreadOnly(!showUnreadOnly)}
-            className="text-sm"
-          >
-            {showUnreadOnly ? 'Show All' : 'Show Unread Only'}
-          </Button>
-          <Button onClick={handleMarkAllAsRead} className="text-sm">
-            Mark All as Read
-          </Button>
-        </div>
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Notifications</h1>
+        <NotificationFilters
+          selectedType={selectedType}
+          timeFilter={timeFilter}
+          onTypeChange={(value) => setSelectedType(value as NotificationType | 'all')}
+          onTimeFilterChange={(value) => setTimeFilter(value)}
+        />
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-11 bg-background border-[0.5px] p-1 rounded-md">
-          <TabsTrigger 
-            value="notifications" 
-            className="rounded text-sm text-foreground data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-          >
-            Notifications
-          </TabsTrigger>
-          <TabsTrigger 
-            value="settings" 
-            className="rounded text-sm text-foreground data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-          >
-            Settings
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="notifications" className="mt-6">
-          <div className="space-y-2">
-            {notifications?.length === 0 ? (
-              <Card className="p-6">
-                <p className="text-center text-foreground">No notifications yet</p>
-              </Card>
-            ) : (
-              notifications?.map((notification) => {
-                return (
-                  <Card key={notification.id} className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 mt-1">
-                        <Info className={`h-4 w-4 ${!notification.read ? 'text-primary' : 'text-muted-foreground'}`} />
-                      </div>
-                      <div className="flex-grow min-w-0">
-                        <h3 className="font-medium text-sm text-foreground truncate">
-                          {notification.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                          {notification.content || notification.message}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {notification.type.replace('_', ' ')}
-                          </Badge>
-                          <Badge 
-                            variant="outline"
-                            className={`text-xs`}
-                          >
-                            {notification.priority}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {format(new Date(notification.created_at), 'PPp')}
-                          </span>
-                        </div>
-                      </div>
-                      {!notification.read && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleMarkAsRead(notification.id)}
-                          className="text-xs"
-                        >
-                          Mark as Read
-                        </Button>
-                      )}
-                    </div>
-                  </Card>
-                );
-              })
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="settings" className="mt-6">
-          <NotificationsSettings
-            settings={[]}
-            isLoading={false}
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-3">
+          <NotificationTypesSidebar
+            selectedType={selectedType}
+            onTypeSelect={setSelectedType}
           />
-        </TabsContent>
-      </Tabs>
+        </div>
+
+        <div className="col-span-6">
+          <NotificationList
+            notifications={filteredNotifications}
+            isLoading={isLoading}
+            onMarkAsRead={handleMarkAsRead}
+          />
+        </div>
+
+        <div className="col-span-3">
+          <NotificationSettings />
+        </div>
+      </div>
     </div>
   );
 };
