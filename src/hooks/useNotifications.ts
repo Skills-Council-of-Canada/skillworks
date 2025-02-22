@@ -5,13 +5,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 export type NotificationType = 
-  | 'student_signup'      // New student joins
-  | 'progress_update'     // Milestone reached
-  | 'submission_reminder' // Student work submitted
-  | 'feedback_request'    // Review requested
-  | 'classroom_activity'  // Discussions and engagement
-  | 'certification'       // Completion alerts
-  | 'system';            // System notifications
+  | 'student_signup'      
+  | 'progress_update'     
+  | 'submission_reminder' 
+  | 'feedback_request'    
+  | 'classroom_activity'  
+  | 'certification'       
+  | 'system';            
 
 export type NotificationPriority = 'critical' | 'important' | 'general';
 
@@ -29,36 +29,36 @@ export interface DatabaseNotification {
   content?: string;
 }
 
-type NotificationFilters = {
-  type?: NotificationType;
-  priority?: NotificationPriority;
-  read?: boolean;
-};
+type NotificationFilters = Partial<{
+  type: NotificationType;
+  priority: NotificationPriority;
+  read: boolean;
+}>;
 
 export const useNotifications = (filters?: NotificationFilters) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: notifications, isLoading } = useQuery<DatabaseNotification[]>({
-    queryKey: ['notifications', filters],
+  const { data: notifications, isLoading } = useQuery({
+    queryKey: ['notifications', filters] as const,
     queryFn: async () => {
-      const query = supabase
+      let query = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
       if (filters?.type) {
-        query.eq('type', filters.type);
+        query = query.eq('type', filters.type);
       }
       
       if (filters?.priority) {
-        query.eq('priority', filters.priority);
+        query = query.eq('priority', filters.priority);
       }
       
       if (filters?.read !== undefined) {
-        query.eq('read', filters.read);
+        query = query.eq('read', filters.read);
       }
 
       const { data, error } = await query;
