@@ -4,10 +4,7 @@ import {
   LayoutDashboard,
   Briefcase,
   ClipboardList,
-  MessageSquare,
   BookOpen,
-  Users,
-  Settings,
 } from "lucide-react";
 import {
   SidebarContent,
@@ -32,7 +29,6 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
     { title: "Dashboard", url: "/employer", icon: LayoutDashboard },
     { title: "Projects", url: "/employer/projects", icon: Briefcase },
     { title: "Applications", url: "/employer/applications", icon: ClipboardList },
-    { title: "Messages", url: "/employer/messages", icon: MessageSquare },
     { title: "Resources", url: "/employer/resources", icon: BookOpen },
   ];
 
