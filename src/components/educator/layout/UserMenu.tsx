@@ -1,5 +1,5 @@
 
-import { ChevronDown, User, LogOut, Settings } from "lucide-react";
+import { ChevronDown, User, LogOut, Settings, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,9 +60,13 @@ export const UserMenu = ({ onLogout }: UserMenuProps) => {
             Settings
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="cursor-pointer">
-          Notifications
-        </DropdownMenuItem>
+        <Link to="/educator/notifications">
+          <DropdownMenuItem className="cursor-pointer">
+            <Bell className="mr-2 h-4 w-4" />
+            <span className="flex-1">Notifications</span>
+            <Settings className="h-4 w-4 text-gray-500" />
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="text-red-500 cursor-pointer"
