@@ -5,6 +5,7 @@ import {
   Briefcase,
   ClipboardList,
   BookOpen,
+  ChevronRight
 } from "lucide-react";
 import {
   SidebarContent,
@@ -13,7 +14,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
 interface EmployerNavigationProps {
   onLogout: () => void;
@@ -34,9 +37,16 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
 
   return (
     <SidebarContent className="bg-[#1A1F2C] text-white">
-      <div className="p-4">
-        <h2 className="text-xl font-bold">Employer Portal</h2>
-        <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+      <div className="flex items-center justify-between p-4">
+        <div>
+          <h2 className="text-xl font-bold">Employer Portal</h2>
+          <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
+        </div>
+        <SidebarTrigger asChild>
+          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </SidebarTrigger>
       </div>
       
       <SidebarGroup>
@@ -44,7 +54,10 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton 
+                  asChild
+                  tooltip={item.title}
+                >
                   <Link
                     to={item.url}
                     className="flex items-center gap-2 relative hover:bg-white/10 transition-colors"
