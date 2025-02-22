@@ -15,6 +15,9 @@ export const useAuthState = () => {
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
 
+  // Cache profile data in memory
+  const profileCache = new Map<string, User>();
+
   // Define public routes that don't require authentication
   const isPublicRoute = (path: string) => {
     // Registration routes should always be public
@@ -61,6 +64,14 @@ export const useAuthState = () => {
         }
 
         try {
+          // Check if profile is in cache
+          if (profileCache.has(session.user.id)) {
+            console.log("Using cached profile");
+            setUser(profileCache.get(session.user.id)!);
+            setIsLoading(false);
+            return;
+          }
+
           console.log("Fetching profile for user:", session.user.id);
           const profile = await getUserProfile(session);
           
@@ -68,13 +79,15 @@ export const useAuthState = () => {
 
           if (profile) {
             console.log("Profile found:", profile);
+            // Cache the profile
+            profileCache.set(session.user.id, profile);
             setUser(profile);
             
             // Only redirect if we're on a login page or root
             if (location.pathname === '/login' || location.pathname === '/') {
               const redirectPath = getRoleBasedRedirect(profile.role);
               console.log("Login/root path detected, redirecting to:", redirectPath);
-              navigate(redirectPath, { replace: true }); // Add replace: true to avoid history stack issues
+              navigate(redirectPath, { replace: true });
             }
           } else {
             console.log("No profile found for user");
@@ -109,22 +122,31 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
+            profileCache.clear(); // Clear cache on sign out
             if (!isPublicRoute(location.pathname)) {
-              navigate('/login', { replace: true }); // Add replace: true
+              navigate('/login', { replace: true });
             }
             return;
           }
 
           if (event === 'SIGNED_IN' && session?.user) {
             try {
+              // Check cache first
+              if (profileCache.has(session.user.id)) {
+                setUser(profileCache.get(session.user.id)!);
+                setIsLoading(false);
+                return;
+              }
+
               const profile = await getUserProfile(session);
               if (mounted && profile) {
+                profileCache.set(session.user.id, profile);
                 setUser(profile);
                 // Only redirect if we're on a login page or root
                 if (location.pathname === '/login' || location.pathname === '/') {
                   const redirectPath = getRoleBasedRedirect(profile.role);
                   console.log("Redirecting after sign in to:", redirectPath);
-                  navigate(redirectPath, { replace: true }); // Add replace: true
+                  navigate(redirectPath, { replace: true });
                 }
               }
             } catch (error) {
@@ -135,7 +157,7 @@ export const useAuthState = () => {
                 variant: "destructive",
               });
               setUser(null);
-              navigate('/login', { replace: true }); // Add replace: true
+              navigate('/login', { replace: true });
             } finally {
               if (mounted) {
                 setIsLoading(false);
