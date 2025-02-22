@@ -28,7 +28,10 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2 hover:bg-transparent">
+        <Button 
+          variant="ghost" 
+          className="flex items-center gap-2 hover:bg-transparent text-foreground hover:text-foreground"
+        >
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-[#1A1F2C] text-white">
               {getInitials(user?.name || "U")}
