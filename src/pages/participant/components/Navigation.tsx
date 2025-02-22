@@ -1,6 +1,6 @@
 
 import { NavLink } from "react-router-dom";
-import { Home, CheckSquare, BookOpen, Users, PanelLeft, PanelRight } from "lucide-react";
+import { Home, PanelLeft, PanelRight } from "lucide-react";
 import { 
   SidebarContent,
   SidebarGroup,
@@ -19,20 +19,43 @@ interface NavigationProps {
     icon: typeof Home;
     label: string;
   }>;
+  isMobile: boolean;
 }
 
-export const Navigation = ({ userName, navItems }: NavigationProps) => {
+export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) => {
   const { state } = useSidebar();
 
   const getFirstName = (fullName: string = "") => {
     return fullName.split(" ")[0] || "there";
   };
 
+  if (isMobile) {
+    return (
+      <div className="flex items-center justify-around p-2">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
+                isActive ? "text-white" : "hover:text-white"
+              )
+            }
+          >
+            <item.icon className="h-5 w-5" />
+            <span className="text-xs mt-1 truncate max-w-[60px]">{item.label}</span>
+          </NavLink>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className={state === "collapsed" ? "hidden" : "block"}>
-          <h2 className="text-xl font-bold mb-1 text-white">Participant Portal</h2>
+          <h2 className="text-xl font-bold text-white">Participant Portal</h2>
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
         <SidebarTrigger className="text-white hover:text-white/80">
@@ -44,21 +67,21 @@ export const Navigation = ({ userName, navItems }: NavigationProps) => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map(({ to, icon: Icon, label }) => (
-                <SidebarMenuItem key={to}>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.to}>
                   <NavLink
-                    to={to}
+                    to={item.to}
                     className={({ isActive }) =>
                       cn(
-                        "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
+                        "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
                         state === "collapsed" && "justify-center",
                         isActive ? "bg-white/10" : "hover:bg-white/10"
                       )
                     }
                   >
-                    <Icon size={16} />
+                    <item.icon className="h-4 w-4" />
                     <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                      {label}
+                      {item.label}
                     </span>
                   </NavLink>
                 </SidebarMenuItem>
