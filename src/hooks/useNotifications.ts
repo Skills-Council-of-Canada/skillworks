@@ -8,12 +8,14 @@ export type NotificationCategory = 'project_request' | 'project_match' | 'submis
                           'review_reminder' | 'message_alert' | 'milestone_alert' | 'system';
 export type NotificationPriority = 'critical' | 'important' | 'general';
 
-interface DatabaseNotification {
+export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: string;
-  read: boolean;
+  content?: string;
+  category: NotificationCategory;
+  priority: NotificationPriority;
+  is_read: boolean;
   read_at?: string;
   created_at: string;
   user_id: string;
@@ -26,9 +28,14 @@ export interface NotificationFilters {
   is_read?: boolean;
 }
 
-const isValidNotificationCategory = (type: string): type is NotificationCategory => {
-  return ['project_request', 'project_match', 'submission_update', 
-          'review_reminder', 'message_alert', 'milestone_alert', 'system'].includes(type);
+const mapDatabaseToNotification = (dbNotification: any): Notification => {
+  return {
+    ...dbNotification,
+    category: dbNotification.type as NotificationCategory,
+    is_read: dbNotification.read,
+    content: dbNotification.message,
+    priority: dbNotification.priority || 'general'
+  };
 };
 
 export const useNotifications = (filters?: NotificationFilters) => {
@@ -60,7 +67,7 @@ export const useNotifications = (filters?: NotificationFilters) => {
       const { data, error } = await query;
       if (error) throw error;
 
-      return data || [];
+      return (data || []).map(mapDatabaseToNotification);
     },
     enabled: !!user?.id,
   });

@@ -125,7 +125,7 @@ export default function NotificationsPage() {
                           {notification.title}
                         </h3>
                         <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                          {notification.content}
+                          {notification.content || notification.message}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge variant="secondary" className="text-xs">
