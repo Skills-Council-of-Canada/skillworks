@@ -15,6 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { User, MessageCircle, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Application, ApplicationStatus } from "@/types/application";
 import { TradeType, SkillLevel } from "@/types/project";
+import { Card } from "@/components/ui/card";
 
 interface ApplicationListProps {
   projectId: string;
@@ -62,7 +63,6 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
   };
 
   const handleUpdateStatus = (applicationId: string, newStatus: ApplicationStatus) => {
-    // Handle status update
     toast({
       title: "Application Updated",
       description: `Application status changed to ${newStatus}`,
@@ -84,8 +84,88 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
     }
   };
 
+  // Mobile card view
+  const MobileApplicationCard = ({ application }: { application: Application }) => (
+    <Card className="p-4 mb-4">
+      <div className="space-y-3">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-medium">{application.applicantName}</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {application.tradeSkills.join(", ")}
+            </p>
+          </div>
+          <Badge
+            variant="secondary"
+            className={`${getStatusColor(application.status)} text-white`}
+          >
+            {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+          </Badge>
+        </div>
+        
+        <div className="text-sm text-gray-600">
+          Applied: {application.applicationDate.toLocaleDateString()}
+        </div>
+        
+        <div className="flex justify-end gap-2 pt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleViewProfile(application.applicantId)}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleMessage(application.applicantId)}
+          >
+            <MessageCircle className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleUpdateStatus(application.id, "accepted")}
+            disabled={
+              application.status === "accepted" ||
+              application.status === "rejected"
+            }
+          >
+            <CheckCircle className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleUpdateStatus(application.id, "rejected")}
+            disabled={
+              application.status === "accepted" ||
+              application.status === "rejected"
+            }
+          >
+            <XCircle className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+
+  // Show mobile cards on small screens
+  if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    return (
+      <div className="space-y-4">
+        {applications.map((application) => (
+          <MobileApplicationCard key={application.id} application={application} />
+        ))}
+        {applications.length === 0 && (
+          <p className="text-center text-gray-500 py-4">No applications found</p>
+        )}
+      </div>
+    );
+  }
+
+  // Desktop table view
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>

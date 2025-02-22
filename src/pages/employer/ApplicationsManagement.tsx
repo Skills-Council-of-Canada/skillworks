@@ -17,17 +17,17 @@ const ApplicationsManagement = () => {
   );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-2 sm:p-6 space-y-4 sm:space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Applications Management</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">Applications Management</h1>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <Select
           value={selectedProject}
           onValueChange={(value) => setSelectedProject(value)}
         >
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-full sm:w-[200px]">
             <SelectValue placeholder="Filter by Project" />
           </SelectTrigger>
           <SelectContent>
@@ -41,7 +41,7 @@ const ApplicationsManagement = () => {
           value={selectedStatus}
           onValueChange={(value) => setSelectedStatus(value as ApplicationStatus | "all")}
         >
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-full sm:w-[200px]">
             <SelectValue placeholder="Filter by Status" />
           </SelectTrigger>
           <SelectContent>
