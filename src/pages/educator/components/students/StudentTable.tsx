@@ -23,9 +23,9 @@ export const StudentTable = ({ students, isLoading }: StudentTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead className="font-medium">Name</TableHead>
-            <TableHead className="font-medium">Email</TableHead>
-            <TableHead className="font-medium">Active Projects</TableHead>
-            <TableHead className="font-medium">Certifications</TableHead>
+            <TableHead className="font-medium hidden md:table-cell">Email</TableHead>
+            <TableHead className="font-medium">Projects</TableHead>
+            <TableHead className="font-medium hidden md:table-cell">Certifications</TableHead>
             <TableHead className="font-medium">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -39,13 +39,14 @@ export const StudentTable = ({ students, isLoading }: StudentTableProps) => {
           ) : students?.map((student) => (
             <TableRow key={student.id}>
               <TableCell>
-                {student.first_name} {student.last_name}
+                <div>
+                  <div>{student.first_name} {student.last_name}</div>
+                  <div className="text-xs text-gray-500 md:hidden">{student.email}</div>
+                </div>
               </TableCell>
-              <TableCell>{student.email}</TableCell>
-              <TableCell>
-                {student.student_assignments?.length || 0}
-              </TableCell>
-              <TableCell>
+              <TableCell className="hidden md:table-cell">{student.email}</TableCell>
+              <TableCell>{student.student_assignments?.length || 0}</TableCell>
+              <TableCell className="hidden md:table-cell">
                 <div className="flex flex-wrap gap-1">
                   {student.student_certifications?.map((cert: any) => (
                     <Badge
