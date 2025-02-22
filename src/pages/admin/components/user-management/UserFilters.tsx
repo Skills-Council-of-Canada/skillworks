@@ -24,7 +24,7 @@ export function UserFilters({
   setRoleFilter,
 }: UserFiltersProps) {
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex flex-col sm:flex-row gap-4">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         <Input
@@ -35,7 +35,7 @@ export function UserFilters({
         />
       </div>
       <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | "all")}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="Filter by role" />
         </SelectTrigger>
         <SelectContent>
