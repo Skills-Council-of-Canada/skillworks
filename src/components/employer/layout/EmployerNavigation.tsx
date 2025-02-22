@@ -44,7 +44,7 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
         </div>
         <SidebarTrigger asChild>
           <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight size={16} />
           </Button>
         </SidebarTrigger>
       </div>
@@ -54,15 +54,12 @@ export const EmployerNavigation = ({ onLogout, userName }: EmployerNavigationPro
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton 
-                  asChild
-                  tooltip={item.title}
-                >
+                <SidebarMenuButton asChild>
                   <Link
                     to={item.url}
-                    className="flex items-center gap-2 relative hover:bg-white/10 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 w-full hover:bg-white/10 transition-colors"
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon size={16} />
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
