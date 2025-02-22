@@ -7,10 +7,7 @@ import {
   Briefcase,
   BarChart,
   PanelLeft,
-  PanelRight,
-  Settings,
-  MessageSquare,
-  LogOut
+  PanelRight
 } from "lucide-react";
 import {
   SidebarContent,
@@ -37,9 +34,7 @@ export const AdminNavigation = ({ onLogout, userName, isMobile = false }: AdminN
     { to: "/admin/users", icon: Users, label: "Users" },
     { to: "/admin/experiences", icon: BookOpen, label: "Experiences" },
     { to: "/admin/projects", icon: Briefcase, label: "Projects" },
-    { to: "/admin/messages", icon: MessageSquare, label: "Messages" },
     { to: "/admin/reports", icon: BarChart, label: "Reports" },
-    { to: "/admin/settings", icon: Settings, label: "Settings" },
   ];
 
   if (isMobile) {
@@ -100,17 +95,6 @@ export const AdminNavigation = ({ onLogout, userName, isMobile = false }: AdminN
                   </NavLink>
                 </SidebarMenuItem>
               ))}
-              <SidebarMenuItem>
-                <button
-                  onClick={onLogout}
-                  className="flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors hover:bg-white/10"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                    Logout
-                  </span>
-                </button>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
