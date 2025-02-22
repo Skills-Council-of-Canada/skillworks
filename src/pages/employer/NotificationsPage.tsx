@@ -33,14 +33,14 @@ const NotificationsPage = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <NotificationTypesSidebar
             selectedType={selectedType}
             onTypeSelect={setSelectedType}
           />
         </div>
 
-        <div className="col-span-9">
+        <div className="col-span-8">
           <NotificationList
             notifications={filteredNotifications}
             isLoading={isLoading}
