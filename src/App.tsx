@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -71,6 +72,7 @@ const App = () => (
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/index" element={<Navigate to="/" replace />} />
           <Route path="/home" element={<Index />} />
           <Route path="/educator-landing" element={<EducatorLanding />} />
           <Route path="/employer-landing" element={<EmployerLanding />} />
@@ -92,7 +94,7 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<EducatorDashboard />} />
+            <Route index element={<Navigate to="/educator/dashboard" replace />} />
             <Route path="dashboard" element={<EducatorDashboard />} />
             <Route path="experiences" element={<ExperienceManagement />} />
             <Route path="collaborations" element={<CollaborationManagement />} />
@@ -117,7 +119,7 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<ParticipantDashboard />} />
+            <Route index element={<Navigate to="/participant/dashboard" replace />} />
             <Route path="dashboard" element={<ParticipantDashboard />} />
             <Route path="experiences" element={<ParticipantExperiences />} />
             <Route path="create-experience" element={<CreateParticipantExperience />} />
@@ -138,7 +140,7 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<EmployerDashboard />} />
+            <Route index element={<Navigate to="/employer/dashboard" replace />} />
             <Route path="dashboard" element={<EmployerDashboard />} />
             <Route path="projects" element={<EmployerProjectManagement />} />
             <Route path="applications" element={<ApplicationsManagement />} />
@@ -159,7 +161,7 @@ const App = () => (
               </ProtectedRoute>
             }
           >
-            <Route index element={<AdminDashboard />} />
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="experiences" element={<ExperienceOversight />} />
