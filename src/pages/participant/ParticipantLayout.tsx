@@ -1,3 +1,4 @@
+
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { 
   LogOut, 
@@ -174,7 +175,7 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
             <NavLink
               key={to}
               to={to}
-              className={({ isActive }) =>
+              className={({ isActive }: { isActive: boolean }) =>
                 `flex w-full items-center ${state === "collapsed" ? "justify-center" : ""} text-gray-300 ${
                   isActive ? "bg-white/10" : "hover:bg-white/10"
                 } px-2 py-1.5 rounded-md transition-colors`
