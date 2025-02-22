@@ -22,9 +22,10 @@ import { toast } from "@/hooks/use-toast";
 interface AdminHeaderProps {
   pageTitle: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => {
+export const AdminHeader = ({ pageTitle, className = "", children }: AdminHeaderProps) => {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -65,6 +66,7 @@ export const AdminHeader = ({ pageTitle, className = "" }: AdminHeaderProps) => 
   return (
     <header className={`h-16 border-b flex items-center px-6 bg-card justify-between ${className}`}>
       <div className="flex items-center gap-2">
+        {children}
         {pageTitle === "Dashboard" ? (
           <img 
             src="/lovable-uploads/7d93f2b2-4e01-41c2-b87b-dbead3e8730b.png" 
