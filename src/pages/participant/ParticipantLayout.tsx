@@ -24,7 +24,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Sidebar, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { 
+  Sidebar, 
+  SidebarProvider, 
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar 
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -160,37 +170,38 @@ const Navigation = ({ userName, navItems }: NavigationProps) => {
           <h2 className="text-xl font-bold mb-1 text-white">Participant Portal</h2>
           <p className="text-sm text-gray-400">Welcome back, {getFirstName(userName)}</p>
         </div>
-        <Button variant="ghost" size="sm" className="text-white hover:text-white/80 p-0">
-          {state === "collapsed" ? (
-            <PanelRight size={20} />
-          ) : (
-            <PanelLeft size={20} />
-          )}
-        </Button>
+        <SidebarTrigger className="text-white hover:text-white/80">
+          {state === "collapsed" ? <PanelRight size={20} /> : <PanelLeft size={20} />}
+        </SidebarTrigger>
       </div>
 
-      <div className="flex-1 px-4">
-        <div className="space-y-1 py-2">
-          {navItems.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                cn(
-                  "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
-                  state === "collapsed" && "justify-center",
-                  isActive ? "bg-white/10" : "hover:bg-white/10"
-                )
-              }
-            >
-              <Icon size={16} />
-              <span className={cn("ml-2", state === "collapsed" && "hidden")}>
-                {label}
-              </span>
-            </NavLink>
-          ))}
-        </div>
-      </div>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map(({ to, icon: Icon, label }) => (
+                <SidebarMenuItem key={to}>
+                  <NavLink
+                    to={to}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex w-full items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors",
+                        state === "collapsed" && "justify-center",
+                        isActive ? "bg-white/10" : "hover:bg-white/10"
+                      )
+                    }
+                  >
+                    <Icon size={16} />
+                    <span className={cn("ml-2", state === "collapsed" && "hidden")}>
+                      {label}
+                    </span>
+                  </NavLink>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
     </div>
   );
 };
