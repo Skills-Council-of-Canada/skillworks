@@ -17,6 +17,7 @@ import {
   SidebarTrigger,
   useSidebar
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface EmployerNavigationProps {
   userName: string;
@@ -30,7 +31,7 @@ export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
   };
 
   const menuItems = [
-    { title: "Dashboard", url: "/employer", icon: LayoutDashboard, end: true },
+    { title: "Dashboard", url: "/employer/dashboard", icon: LayoutDashboard, end: true },
     { title: "Projects", url: "/employer/projects", icon: Briefcase },
     { title: "Applications", url: "/employer/applications", icon: ClipboardList },
     { title: "Resources", url: "/employer/resources", icon: BookOpen },
@@ -53,20 +54,20 @@ export const EmployerNavigation = ({ userName }: EmployerNavigationProps) => {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.url}>
                   <NavLink
                     to={item.url}
                     end={item.end}
                     className={({ isActive }) =>
-                      `flex items-center ${
-                        state === "collapsed" ? "justify-center" : "gap-3"
-                      } rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10 ${
-                        isActive ? "bg-white/10" : ""
-                      } text-white w-full`
+                      cn(
+                        "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
+                        state === "collapsed" && "justify-center",
+                        isActive ? "bg-white/10" : "hover:bg-white/10"
+                      )
                     }
                   >
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    <span className={state === "collapsed" ? "hidden" : "block truncate"}>
+                    <item.icon className="h-4 w-4" />
+                    <span className={cn("ml-2", state === "collapsed" && "hidden")}>
                       {item.title}
                     </span>
                   </NavLink>

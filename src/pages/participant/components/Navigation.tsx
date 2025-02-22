@@ -1,13 +1,6 @@
 
 import { NavLink } from "react-router-dom";
-import { 
-  Home,
-  CheckSquare,
-  BookOpen, 
-  Users,
-  PanelLeft,
-  PanelRight
-} from "lucide-react";
+import { Home, CheckSquare, BookOpen, Users, PanelLeft, PanelRight } from "lucide-react";
 import { 
   SidebarContent,
   SidebarGroup,
