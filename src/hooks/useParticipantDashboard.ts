@@ -53,15 +53,15 @@ export const useParticipantDashboard = () => {
   return useQuery({
     queryKey: ["participant-dashboard"],
     queryFn: async (): Promise<DashboardData> => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('No user found');
 
       // Fetch experiences stats
       const { data: experiences } = await supabase
         .from("participant_experiences")
         .select("status");
 
-      // Fetch tasks with proper caching
+      // Fetch tasks
       const { data: tasks } = await supabase
         .from("participant_tasks")
         .select("*")
@@ -83,7 +83,7 @@ export const useParticipantDashboard = () => {
         .eq("status", "active")
         .limit(3);
 
-      // Fetch recent activities
+      // Fetch notifications for activities
       const { data: notificationsData } = await supabase
         .from("notifications")
         .select("id, title, message, type, created_at")
@@ -91,7 +91,7 @@ export const useParticipantDashboard = () => {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // Fetch pending applications
+      // Fetch applications
       const { data: applications } = await supabase
         .from("applications")
         .select("id, created_at, status, project_id")
@@ -151,8 +151,8 @@ export const useParticipantDashboard = () => {
         pendingApplications: applicationData
       };
     },
-    staleTime: 300000, // Consider data fresh for 5 minutes
-    gcTime: 3600000, // Keep in cache for 1 hour
+    staleTime: 300000, // 5 minutes
+    gcTime: 3600000, // 1 hour
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
