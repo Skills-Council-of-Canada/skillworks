@@ -19,7 +19,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
   return (
     <div className="mb-8">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-blue-600 to-blue-400" />
+        <div className="h-32 bg-gradient-to-r from-blue-900 to-white" />
         <div className="relative px-4 sm:px-6 pb-6">
           <Avatar className="h-24 w-24 sm:h-32 sm:w-32 absolute -top-12 ring-4 ring-white">
             {profile?.avatar_url ? (
