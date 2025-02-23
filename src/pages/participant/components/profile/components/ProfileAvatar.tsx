@@ -53,8 +53,13 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       // Update local state immediately
       setCurrentAvatarUrl(publicUrl);
       
-      // Invalidate queries to refresh data
-      await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
+      // Use setQueryData instead of invalidating to prevent refetch
+      queryClient.setQueryData(["participant-profile", user.id], (oldData: any) => {
+        return oldData ? {
+          ...oldData,
+          avatar_url: publicUrl
+        } : oldData;
+      });
 
       toast({
         title: "Success",
@@ -81,7 +86,7 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
         {displayAvatarUrl ? (
           <AvatarImage 
-            src={`${displayAvatarUrl}?t=${Date.now()}`}
+            src={displayAvatarUrl}
             alt={name || userName || "Profile"} 
             className="object-cover"
           />
