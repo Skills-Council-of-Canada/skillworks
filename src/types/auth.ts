@@ -8,6 +8,16 @@ export interface User {
   name: string;
   avatar_url?: string;
   bio?: string;
+  phone?: string;
+  preferred_contact?: string;
+  skill_level?: string;
+  availability?: string;
+  educational_background?: string;
+  preferred_learning_areas?: string[];
+  created_at?: string;
+  updated_at?: string;
+  status?: string;
+  online_status?: boolean;
 }
 
 export interface AuthContextType {
