@@ -1,5 +1,5 @@
 
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { EmployerHeader } from "@/components/employer/layout/EmployerHeader";
@@ -9,14 +9,12 @@ import { EmployerNavigation } from "@/components/employer/layout/EmployerNavigat
 const EmployerLayout = () => {
   const { user } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const getCurrentPageTitle = () => {
     const menuItems = [
       { url: "/employer", title: "Dashboard" },
       { url: "/employer/projects", title: "Projects" },
       { url: "/employer/applications", title: "Applications" },
-      { url: "/employer/messages", title: "Messages" },
       { url: "/employer/resources", title: "Resources" },
       { url: "/employer/settings", title: "Settings" },
     ];
@@ -35,11 +33,11 @@ const EmployerLayout = () => {
         <div className="flex-1 flex flex-col min-h-screen">
           <EmployerHeader pageTitle={getCurrentPageTitle()} />
           
-          <div className="flex-1 overflow-auto pb-16 md:pb-0">
-            <main className="p-4 sm:p-6">
+          <main className="flex-1 overflow-auto pb-16 md:pb-0">
+            <div className="p-4 sm:p-6">
               <Outlet />
-            </main>
-          </div>
+            </div>
+          </main>
 
           <EmployerFooter />
 
