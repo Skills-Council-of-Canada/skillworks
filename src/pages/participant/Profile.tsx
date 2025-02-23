@@ -15,6 +15,7 @@ import { AchievementList } from "./components/profile/AchievementList";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 import { format } from "date-fns";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 
 export const Profile = () => {
   const { user } = useAuth();
@@ -53,7 +54,7 @@ export const Profile = () => {
                       {profile?.full_name}
                     </h1>
                     <p className="text-gray-600 text-sm sm:text-base mt-1 break-words">
-                      {profile?.educational_background || "No educational background provided"}
+                      {profile?.bio || "No bio provided"}
                     </p>
                   </div>
                   <Link to="/participant/profile/edit" className="shrink-0">
@@ -63,7 +64,7 @@ export const Profile = () => {
                     </Button>
                   </Link>
                 </div>
-                
+
                 {/* Profile Completion Progress */}
                 <div className="mt-4 w-full">
                   <Progress value={completionPercentage} className="mb-2" />
@@ -135,46 +136,49 @@ export const Profile = () => {
                       </div>
                       <div className="p-2 sm:p-3 bg-gray-50 rounded-md overflow-hidden">
                         <p className="text-gray-600 text-sm sm:text-base">
-                          <span className="font-medium block sm:inline">Date of Birth:</span>{' '}
-                          <span className="break-all">
-                            {profile?.date_of_birth ? format(new Date(profile.date_of_birth), 'PPP') : "Not provided"}
-                          </span>
-                        </p>
-                      </div>
-                      <div className="p-2 sm:p-3 bg-gray-50 rounded-md overflow-hidden">
-                        <p className="text-gray-600 text-sm sm:text-base">
                           <span className="font-medium block sm:inline">Skill Level:</span>{' '}
-                          <span className="break-all">{profile?.skill_level}</span>
+                          <span className="break-all">{profile?.skill_level || "Not specified"}</span>
                         </p>
                       </div>
                       <div className="p-2 sm:p-3 bg-gray-50 rounded-md overflow-hidden">
                         <p className="text-gray-600 text-sm sm:text-base">
                           <span className="font-medium block sm:inline">Availability:</span>{' '}
-                          <span className="break-all">{profile?.availability}</span>
+                          <span className="break-all">{profile?.availability || "Not specified"}</span>
+                        </p>
+                      </div>
+                      <div className="p-2 sm:p-3 bg-gray-50 rounded-md overflow-hidden">
+                        <p className="text-gray-600 text-sm sm:text-base">
+                          <span className="font-medium block sm:inline">Educational Background:</span>{' '}
+                          <span className="break-all">{profile?.educational_background || "Not provided"}</span>
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Learning Areas */}
+                {/* Preferred Learning Areas */}
                 <div className="bg-white p-3 sm:p-6 rounded-lg shadow-sm">
                   <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Preferred Learning Areas</h2>
                   <div className="flex flex-wrap gap-2">
-                    {profile?.preferred_learning_areas?.map((area, index) => (
-                      <span 
-                        key={index}
-                        className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm"
-                      >
-                        {area}
-                      </span>
-                    )) || "No learning areas specified"}
+                    {profile?.preferred_learning_areas?.length ? (
+                      profile.preferred_learning_areas.map((area, index) => (
+                        <Badge 
+                          key={index}
+                          variant="secondary"
+                          className="px-2.5 py-1 bg-blue-100 text-blue-800"
+                        >
+                          {area}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-gray-500">No learning areas specified</p>
+                    )}
                   </div>
                 </div>
 
                 {/* Work Experience */}
                 <div className="bg-white p-3 sm:p-6 rounded-lg shadow-sm">
-                  <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Work experience</h2>
+                  <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Work Experience</h2>
                   <WorkExperienceList />
                 </div>
 
