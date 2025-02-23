@@ -60,57 +60,62 @@ const ResourceCenter = () => {
   ];
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Resource Center</h1>
-      </div>
+    <div className="container mx-auto p-4 sm:p-6">
+      <div className="flex flex-col gap-4 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Resource Center</h1>
 
-      <div className="mb-6 space-y-4">
-        <div className="flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-foreground/70" />
-            <Input
-              placeholder="Search resources..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-foreground"
-            />
-          </div>
-          <Button variant="outline" className="gap-2 text-foreground">
-            <Filter className="h-4 w-4" />
-            Filter
-          </Button>
-        </div>
-
-        <div className="flex gap-2">
-          {categories.map((category) => (
-            <Button
-              key={category.id}
-              variant={selectedCategory === category.id ? "default" : "outline"}
-              onClick={() =>
-                setSelectedCategory(
-                  selectedCategory === category.id ? null : category.id
-                )
-              }
-              className="gap-2"
-            >
-              {category.label}
+        {/* Search and Filter Section */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-foreground/70" />
+              <Input
+                placeholder="Search resources..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 text-foreground w-full"
+              />
+            </div>
+            <Button variant="outline" className="gap-2 text-foreground w-full sm:w-auto">
+              <Filter className="h-4 w-4" />
+              Filter
             </Button>
-          ))}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                onClick={() =>
+                  setSelectedCategory(
+                    selectedCategory === category.id ? null : category.id
+                  )
+                }
+                className="gap-2 flex-1 sm:flex-none text-sm"
+                size="sm"
+              >
+                {category.label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Resources Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredResources.map((resource) => (
-          <Card key={resource.id} className="flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground">
-                <BookOpen className="h-5 w-5 text-primary" />
+          <Card key={resource.id} className="flex flex-col h-full">
+            <CardHeader className="flex-grow">
+              <CardTitle className="flex items-center gap-2 text-lg text-foreground">
+                <BookOpen className="h-5 w-5 text-primary flex-shrink-0" />
                 {resource.title}
               </CardTitle>
-              <CardDescription className="text-foreground/80">{resource.description}</CardDescription>
+              <CardDescription className="text-foreground/80">
+                {resource.description}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="mt-auto">
+            <CardContent className="pt-0">
               <Button
                 variant={resource.type === "download" ? "default" : "outline"}
                 className="w-full gap-2"
@@ -125,6 +130,12 @@ const ResourceCenter = () => {
             </CardContent>
           </Card>
         ))}
+
+        {filteredResources.length === 0 && (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            No resources found matching your criteria.
+          </div>
+        )}
       </div>
     </div>
   );
