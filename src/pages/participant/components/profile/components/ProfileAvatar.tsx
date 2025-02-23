@@ -53,10 +53,11 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       // Update local state immediately
       setCurrentAvatarUrl(publicUrl);
       
-      // Invalidate the query to force a refetch
-      await queryClient.invalidateQueries({
-        queryKey: ["participant-profile", user.id]
-      });
+      // Update the query data directly instead of invalidating
+      queryClient.setQueryData(["participant-profile", user.id], (oldData: any) => ({
+        ...oldData,
+        avatar_url: publicUrl
+      }));
 
       toast({
         title: "Success",
