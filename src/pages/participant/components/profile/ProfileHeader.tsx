@@ -56,12 +56,12 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
   };
 
   return (
-    <div className="w-full">
+    <div className="mb-8">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="w-full h-32 bg-gradient-to-r from-blue-900 to-blue-700" />
+        <div className="h-32 bg-gradient-to-r from-blue-900 to-white" />
         <div className="relative px-4 sm:px-6 pb-6">
-          <div className="flex justify-between items-start -mt-16 sm:-mt-20 relative z-10">
-            <Avatar className="h-24 w-24 sm:h-32 sm:w-32 ring-4 ring-white">
+          <div className="flex justify-between items-start">
+            <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
               {profile?.avatar_url ? (
                 <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
               ) : (
