@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { Icons } from "@/components/ui/icons";
+import { Eye, EyeOff } from "lucide-react";
 
 const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
@@ -46,6 +46,7 @@ interface PersonalInfoFormProps {
 export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFormProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [socialError, setSocialError] = React.useState<string>("");
+  const [showPassword, setShowPassword] = React.useState(false);
   
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
@@ -59,10 +60,8 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
     },
   });
 
-  // Watch all fields for changes
   React.useEffect(() => {
     const subscription = form.watch(() => {
-      // Check if all fields are filled and valid
       const values = form.getValues();
       const isComplete = Object.values(values).every(value => value !== "");
       const isValid = Object.keys(form.formState.errors).length === 0 && isComplete;
@@ -156,7 +155,26 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Choose a password" {...field} />
+                <div className="relative">
+                  <Input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Choose a password" 
+                    {...field} 
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
               <FormDescription>
                 Password must contain at least 8 characters, one uppercase letter,
