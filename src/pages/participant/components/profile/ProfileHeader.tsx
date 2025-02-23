@@ -10,6 +10,7 @@ import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileHeaderProps {
   profile: CombinedProfile | null;
@@ -20,6 +21,7 @@ interface ProfileHeaderProps {
 export const ProfileHeader = ({ profile, completionPercentage, userName }: ProfileHeaderProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({
     full_name: profile?.full_name || "",
@@ -54,6 +56,9 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
 
       if (updateError) throw updateError;
 
+      // Invalidate queries to refetch profile data
+      await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
+
       toast({
         title: "Avatar updated",
         description: "Your profile picture has been updated successfully.",
@@ -81,6 +86,9 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
         .eq('id', user.id);
 
       if (error) throw error;
+
+      // Invalidate queries to refetch profile data
+      await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
 
       toast({
         title: "Updated successfully",
