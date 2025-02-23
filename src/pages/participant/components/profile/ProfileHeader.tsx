@@ -33,6 +33,15 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
     if (!file || !user?.id) return;
 
     try {
+      // Create avatars bucket if it doesn't exist
+      const { data: bucketExists } = await supabase.storage.getBucket('avatars');
+      if (!bucketExists) {
+        await supabase.storage.createBucket('avatars', {
+          public: true,
+          fileSizeLimit: 1024 * 1024 * 2 // 2MB
+        });
+      }
+
       // Upload to storage
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
@@ -114,10 +123,14 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
             <div className="relative group">
               <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
                 {profile?.avatar_url ? (
-                  <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                  <AvatarImage 
+                    src={profile.avatar_url} 
+                    alt={profile.full_name || userName || "Profile"} 
+                    className="object-cover"
+                  />
                 ) : (
                   <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl sm:text-5xl">
-                    {profile?.full_name?.[0] || userName?.[0]}
+                    {(profile?.full_name?.[0] || userName?.[0] || "U").toUpperCase()}
                   </AvatarFallback>
                 )}
               </Avatar>
@@ -176,7 +189,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
             ) : (
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {profile?.full_name}
+                  {profile?.full_name || userName}
                 </h1>
                 <p className="mt-1 text-gray-500">
                   {profile?.bio || "No bio provided"}
