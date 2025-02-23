@@ -9,7 +9,7 @@ type Tables = Database['public']['Tables'];
 type Profile = Tables['profiles']['Row'];
 type ParticipantProfile = Tables['participant_profiles']['Row'];
 
-type CombinedProfile = {
+export type CombinedProfile = {
   full_name: string;
   bio: string | null;
 } & Omit<Profile, 'name'> & {
