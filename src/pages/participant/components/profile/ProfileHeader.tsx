@@ -33,15 +33,6 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
     if (!file || !user?.id) return;
 
     try {
-      // Create avatars bucket if it doesn't exist
-      const { data: bucketExists } = await supabase.storage.getBucket('avatars');
-      if (!bucketExists) {
-        await supabase.storage.createBucket('avatars', {
-          public: true,
-          fileSizeLimit: 1024 * 1024 * 2 // 2MB
-        });
-      }
-
       // Upload to storage
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
@@ -210,3 +201,4 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
     </div>
   );
 };
+
