@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfileCompletion } from './participant/useProfileCompletion';
 
 interface DashboardStats {
   activeExperiences: number;
@@ -32,11 +33,12 @@ type Task = {
 type Event = {
   id: string;
   title: string;
-  description: string | null;
-  start_time: string;
-  end_time: string;
+  description: string;
+  event_type: string;
   participant_id: string;
-  status: string;
+  start_time: string;
+  created_at: string;
+  updated_at: string;
 }
 
 type Recommendation = {
@@ -64,19 +66,12 @@ interface DashboardData {
 
 export const useParticipantDashboard = () => {
   const { user } = useAuth();
+  const { completionPercentage } = useProfileCompletion();
 
   return useQuery({
     queryKey: ["participant-dashboard", user?.id],
     queryFn: async (): Promise<DashboardData> => {
       if (!user?.id) throw new Error('No user found');
-
-      // Calculate profile completion from user data
-      const requiredFields = ['name', 'email', 'phone', 'bio', 'avatar_url'];
-      const completedFields = requiredFields.filter(field => {
-        const value = user[field as keyof typeof user];
-        return value !== null && value !== undefined && value !== '';
-      });
-      const profileCompletion = Math.round((completedFields.length / requiredFields.length) * 100);
 
       const [
         experiencesResult,
@@ -136,7 +131,7 @@ export const useParticipantDashboard = () => {
         upcomingEvents: events?.length || 0,
         unreadMessages: unreadCount || 0,
         pendingTasks: tasks?.filter(t => t.status !== "completed").length || 0,
-        profileCompletion
+        profileCompletion: completionPercentage
       };
 
       return {
