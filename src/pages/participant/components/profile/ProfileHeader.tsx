@@ -11,6 +11,8 @@ interface ProfileHeaderProps {
 }
 
 export const ProfileHeader = ({ profile, completionPercentage, userName }: ProfileHeaderProps) => {
+  console.log("Profile data in header:", { profile, avatarUrl: profile?.avatar_url }); // Debug log
+
   return (
     <div className="mb-8">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
