@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface ChatWindowProps {
-  onMobileBack?: () => void;
-}
-
-export const ChatWindow = ({ onMobileBack }: ChatWindowProps) => {
+export const ChatWindow = () => {
   const [message, setMessage] = useState("");
 
   return (
