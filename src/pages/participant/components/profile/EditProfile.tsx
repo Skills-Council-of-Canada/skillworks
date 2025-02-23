@@ -12,7 +12,6 @@ import {
   FormMessage 
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,9 +36,6 @@ export const EditProfile = () => {
       email: profile?.email || "",
       phone: profile?.phone || "",
       preferred_contact: profile?.preferred_contact || "",
-      skill_level: profile?.skill_level as "beginner" | "intermediate" | "advanced" | "expert" || "beginner",
-      availability: profile?.availability || "",
-      preferred_learning_areas: profile?.preferred_learning_areas || [],
     },
   });
 
@@ -60,16 +56,6 @@ export const EditProfile = () => {
         .eq('id', user.id);
 
       if (profileError) throw profileError;
-
-      const { error: participantError } = await supabase
-        .from('participant_profiles')
-        .update({
-          skill_level: values.skill_level,
-          availability: values.availability,
-        })
-        .eq('id', user.id);
-
-      if (participantError) throw participantError;
 
       toast({
         title: "Profile updated",

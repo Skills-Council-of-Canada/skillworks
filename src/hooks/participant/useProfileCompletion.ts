@@ -18,9 +18,6 @@ export interface CombinedProfile {
   bio?: string | null;
   phone?: string | null;
   preferred_contact?: string | null;
-  skill_level?: string;
-  availability?: string;
-  preferred_learning_areas?: string[];
   created_at?: string;
   updated_at?: string;
   status?: string;
@@ -39,7 +36,7 @@ export const useProfileCompletion = () => {
         // Query participant profile data
         const { data: participantProfile, error: participantError } = await supabase
           .from('participant_profiles')
-          .select('skill_level, availability, onboarding_completed, profile_completion_percentage')
+          .select('onboarding_completed, profile_completion_percentage')
           .eq('id', user.id)
           .maybeSingle();
 
@@ -51,9 +48,6 @@ export const useProfileCompletion = () => {
         // Return combined profile
         const combinedProfile: CombinedProfile = {
           ...user,
-          skill_level: participantProfile?.skill_level || undefined,
-          availability: participantProfile?.availability || undefined,
-          preferred_learning_areas: [],
         };
 
         return combinedProfile;
