@@ -57,8 +57,8 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
 
   return (
     <div className="mb-8">
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden w-full">
-        <div className="h-40 bg-gradient-to-r from-blue-900 to-white w-full" />
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="h-40 bg-gradient-to-r from-blue-900 to-white" />
         <div className="relative px-4 sm:px-6 pb-6">
           <div className="flex justify-between items-start">
             <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
