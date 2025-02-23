@@ -25,16 +25,16 @@ const fetchProfile = async (userId: string | undefined) => {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select()
+    .select('*')
     .eq('id', userId)
-    .maybeSingle();
+    .single();
 
   if (profileError) throw profileError;
   if (!profile) return null;
 
   const { data: details, error: detailsError } = await supabase
     .from('participant_profiles')
-    .select()
+    .select('*')
     .eq('id', userId)
     .maybeSingle();
 
@@ -46,12 +46,11 @@ const fetchProfile = async (userId: string | undefined) => {
     ...profile,
     full_name: profile.name,
     bio: profile.bio,
-    skill_level: 'beginner',
-    availability: 'flexible',
-    date_of_birth: null,
-    educational_background: null,
-    preferred_learning_areas: [],
-    ...details
+    skill_level: details?.skill_level || 'beginner',
+    availability: details?.availability || 'flexible',
+    date_of_birth: details?.date_of_birth || null,
+    educational_background: details?.educational_background || null,
+    preferred_learning_areas: details?.preferred_learning_areas || [],
   } as CombinedProfile;
 };
 
@@ -59,16 +58,16 @@ export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { data: profileData, isLoading } = useQuery({
+  return useQuery({
     queryKey: ["participant-profile", user?.id],
     queryFn: () => fetchProfile(user?.id),
     enabled: !!user?.id,
     staleTime: Infinity,
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: false,
+    retry: 0,
     meta: {
       onError: (error: any) => {
         console.error("Error fetching profile:", error);
@@ -80,33 +79,4 @@ export const useProfileCompletion = () => {
       }
     }
   });
-
-  const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
-    if (!profile) return 0;
-
-    const requiredFields = [
-      'full_name',
-      'email',
-      'phone',
-      'skill_level',
-      'availability',
-      'date_of_birth',
-      'preferred_learning_areas',
-      'educational_background'
-    ];
-
-    const completedFields = requiredFields.filter(field => {
-      const value = profile[field as keyof CombinedProfile];
-      return value !== null && value !== undefined && 
-             (Array.isArray(value) ? value.length > 0 : value !== '');
-    });
-
-    return Math.round((completedFields.length / requiredFields.length) * 100);
-  };
-
-  return {
-    profile: profileData,
-    isLoading,
-    completionPercentage: profileData ? calculateCompletionPercentage(profileData) : 0,
-  };
 };
