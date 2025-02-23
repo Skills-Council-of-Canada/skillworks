@@ -1,7 +1,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, Book, Clock, GraduationCap } from "lucide-react";
-import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
+import { User } from "@/types/auth";
 
 interface InfoItemProps {
   icon: any;
@@ -23,7 +23,7 @@ const InfoItem = ({ icon: Icon, label, value, className = "" }: InfoItemProps) =
 );
 
 interface ProfileInfoProps {
-  profile: CombinedProfile | null;
+  profile: User | null;
 }
 
 export const ProfileInfo = ({ profile }: ProfileInfoProps) => {

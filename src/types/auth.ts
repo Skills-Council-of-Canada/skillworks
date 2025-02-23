@@ -6,6 +6,8 @@ export interface User {
   email: string;
   role: UserRole;
   name: string;
+  avatar_url?: string;
+  bio?: string;
 }
 
 export interface AuthContextType {
@@ -15,4 +17,3 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
 }
-
