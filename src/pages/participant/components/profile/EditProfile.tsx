@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -80,14 +79,13 @@ export const EditProfile = () => {
 
       if (profileError) throw profileError;
 
-      // Update participant_profiles table
+      // Update participant_profiles table with the correct fields
       const { error: participantError } = await supabase
         .from('participant_profiles')
         .update({
-          skill_level: values.skill_level,
-          availability: values.availability,
+          skills: [values.skill_level], // Store skill_level as part of skills array
           educational_background: values.educational_background,
-          preferred_learning_areas: values.preferred_learning_areas,
+          interests: values.preferred_learning_areas, // Store preferred_learning_areas in interests field
         })
         .eq('id', user.id);
 
