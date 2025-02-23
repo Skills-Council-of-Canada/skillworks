@@ -1,13 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Database } from "@/types/supabase";
-import { useMemo } from "react";
-
-type Tables = Database['public']['Tables'];
-type Profile = Tables['profiles']['Row'];
-type ParticipantProfile = Tables['participant_profiles']['Row'];
 
 export interface CombinedProfile {
   id: string;
@@ -28,20 +21,9 @@ export const useProfileCompletion = () => {
 
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      return profile as CombinedProfile;
-    },
+    queryFn: () => user,
     enabled: Boolean(user?.id),
+    initialData: user,
     staleTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
