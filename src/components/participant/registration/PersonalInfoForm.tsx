@@ -49,15 +49,34 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
   
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
-    mode: "onChange",
+    mode: "all",
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      date_of_birth: "",
+    },
   });
 
+  // Watch all fields for changes
   React.useEffect(() => {
     const subscription = form.watch(() => {
-      const isValid = form.formState.isValid;
-      console.log("Form validity changed:", isValid); // Debug log
+      // Check if all fields are filled and valid
+      const values = form.getValues();
+      const isComplete = Object.values(values).every(value => value !== "");
+      const isValid = Object.keys(form.formState.errors).length === 0 && isComplete;
+      
+      console.log("Form state:", {
+        values,
+        errors: form.formState.errors,
+        isValid,
+        isComplete
+      });
+      
       onValidityChange(isValid);
     });
+    
     return () => subscription.unsubscribe();
   }, [form, onValidityChange]);
 
