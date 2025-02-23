@@ -1,9 +1,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Database } from "@/types/supabase";
+import { useMemo } from "react";
 
 type Tables = Database['public']['Tables'];
 type Profile = Tables['profiles']['Row'];
@@ -26,46 +26,42 @@ export interface CombinedProfile {
 export const useProfileCompletion = () => {
   const { user } = useAuth();
 
+  const fetchProfile = async () => {
+    if (!user?.id) return null;
+
+    const { data: participantProfile, error: participantError } = await supabase
+      .from('participant_profiles')
+      .select('onboarding_completed, profile_completion_percentage')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (participantError) {
+      console.error("Error fetching participant profile:", participantError);
+      return null;
+    }
+
+    const combinedProfile: CombinedProfile = {
+      ...user,
+    };
+
+    return combinedProfile;
+  };
+
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-
-      try {
-        // Query participant profile data
-        const { data: participantProfile, error: participantError } = await supabase
-          .from('participant_profiles')
-          .select('onboarding_completed, profile_completion_percentage')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (participantError) {
-          console.error("Error fetching participant profile:", participantError);
-          return null;
-        }
-
-        // Return combined profile
-        const combinedProfile: CombinedProfile = {
-          ...user,
-        };
-
-        return combinedProfile;
-      } catch (error) {
-        console.error("Unexpected error:", error);
-        return null;
-      }
-    },
-    enabled: !!user?.id,
-    staleTime: 300000, // 5 minutes
-    gcTime: 3600000,   // 1 hour
+    queryFn: fetchProfile,
+    enabled: Boolean(user?.id),
+    staleTime: 300000,
+    gcTime: 3600000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
-    retry: 1
+    retry: 1,
+    refetchInterval: false
   });
 
-  const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
-    if (!profile) return 0;
+  const calculateCompletionPercentage = useMemo(() => {
+    if (!profileData) return 0;
 
     const requiredFields = [
       'name',
@@ -74,16 +70,16 @@ export const useProfileCompletion = () => {
     ];
 
     const completedFields = requiredFields.filter(field => {
-      const value = profile[field as keyof CombinedProfile];
+      const value = profileData[field as keyof CombinedProfile];
       return value !== null && value !== undefined && value !== '';
     });
 
     return Math.round((completedFields.length / requiredFields.length) * 100);
-  };
+  }, [profileData]);
 
   return {
     profile: profileData,
     isLoading,
-    completionPercentage: profileData ? calculateCompletionPercentage(profileData) : 0,
+    completionPercentage: calculateCompletionPercentage,
   };
 };

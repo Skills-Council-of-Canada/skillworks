@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -24,7 +23,7 @@ import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 
 const ParticipantDashboard = () => {
   const { data, isLoading } = useParticipantDashboard();
-  const { profile, completionPercentage } = useProfileCompletion();
+  const { profile, completionPercentage, isLoading: profileLoading } = useProfileCompletion();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -52,7 +51,7 @@ const ParticipantDashboard = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || profileLoading) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
