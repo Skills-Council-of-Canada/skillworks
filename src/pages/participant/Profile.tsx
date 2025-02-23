@@ -56,7 +56,7 @@ export const Profile = () => {
                       {profile?.educational_background || "No educational background provided"}
                     </p>
                   </div>
-                  <Link to="/participant/settings" className="shrink-0">
+                  <Link to="/participant/profile/edit" className="shrink-0">
                     <Button size={isMobile ? "sm" : "default"} className="gap-2 whitespace-nowrap">
                       <Pencil className="h-4 w-4" />
                       Edit profile
