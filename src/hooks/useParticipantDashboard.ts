@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from "@/integrations/supabase/types";
@@ -55,7 +54,9 @@ export const useParticipantDashboard = () => {
     queryFn: async (): Promise<DashboardData> => {
       if (!user?.id) throw new Error('No user found');
 
-      // Calculate profile completion
+      console.log("Fetching dashboard data for user:", user.id); // Debug log
+
+      // Calculate profile completion from AuthContext user data
       const requiredFields = ['name', 'email', 'phone', 'bio', 'avatar_url'];
       const completedFields = requiredFields.filter(field => {
         const value = user[field as keyof typeof user];
@@ -63,51 +64,38 @@ export const useParticipantDashboard = () => {
       });
       const profileCompletion = Math.round((completedFields.length / requiredFields.length) * 100);
 
-      // Fetch experiences stats
-      const { data: experiences } = await supabase
-        .from("participant_experiences")
-        .select("status");
+      // Batch fetch all dashboard data in parallel for better performance
+      const [
+        experiencesResult,
+        tasksResult,
+        unreadCountResult,
+        recommendationsResult,
+        notificationsResult,
+        applicationsResult,
+        eventsResult
+      ] = await Promise.all([
+        supabase.from("participant_experiences").select("status"),
+        supabase.from("participant_tasks").select("*").eq("participant_id", user.id).order("due_date", { ascending: true }),
+        supabase.from("participant_messages").select("*", { count: 'exact', head: true }).eq("participant_id", user.id).eq("read", false),
+        supabase.from("participant_recommendations").select("*").eq("participant_id", user.id).eq("status", "active").limit(3),
+        supabase.from("notifications").select("id, title, message, type, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("applications").select("id, created_at, status, project_id").eq("applicant_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("participant_events").select("*").eq("participant_id", user.id).gte("start_time", new Date().toISOString()).order("start_time", { ascending: true }).limit(5)
+      ]);
 
-      // Fetch tasks
-      const { data: tasks } = await supabase
-        .from("participant_tasks")
-        .select("*")
-        .eq("participant_id", user.id)
-        .order("due_date", { ascending: true });
-
-      // Fetch unread messages count
-      const { count: unreadCount } = await supabase
-        .from("participant_messages")
-        .select("*", { count: 'exact', head: true })
-        .eq("participant_id", user.id)
-        .eq("read", false);
-
-      // Fetch recommendations
-      const { data: recommendations } = await supabase
-        .from("participant_recommendations")
-        .select("*")
-        .eq("participant_id", user.id)
-        .eq("status", "active")
-        .limit(3);
-
-      // Fetch notifications for activities
-      const { data: notificationsData } = await supabase
-        .from("notifications")
-        .select("id, title, message, type, created_at")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-
-      // Fetch applications
-      const { data: applications } = await supabase
-        .from("applications")
-        .select("id, created_at, status, project_id")
-        .eq("applicant_id", user.id)
-        .order("created_at", { ascending: false });
+      const [experiences, tasks, { count: unreadCount }, recommendations, notificationsData, applications, events] = [
+        experiencesResult.data,
+        tasksResult.data,
+        unreadCountResult,
+        recommendationsResult.data,
+        notificationsResult.data,
+        applicationsResult.data,
+        eventsResult.data
+      ];
 
       // Get project titles for applications
       let applicationData = [];
-      if (applications) {
+      if (applications?.length) {
         const projectIds = applications.map(app => app.project_id);
         const { data: projects } = await supabase
           .from("projects")
@@ -123,22 +111,13 @@ export const useParticipantDashboard = () => {
       }
 
       // Transform notifications into activities
-      const activities: Activity[] = (notificationsData || []).map(notification => ({
+      const activities = (notificationsData || []).map(notification => ({
         id: notification.id,
         title: notification.title,
         description: notification.message,
         activity_type: notification.type,
         created_at: notification.created_at
       }));
-
-      // Fetch upcoming events
-      const { data: events } = await supabase
-        .from("participant_events")
-        .select("*")
-        .eq("participant_id", user.id)
-        .gte("start_time", new Date().toISOString())
-        .order("start_time", { ascending: true })
-        .limit(5);
 
       const stats: DashboardStats = {
         activeExperiences: experiences?.filter(e => e.status === "in_progress").length || 0,
@@ -159,12 +138,12 @@ export const useParticipantDashboard = () => {
       };
     },
     enabled: Boolean(user?.id),
-    staleTime: 300000, // 5 minutes
-    gcTime: 3600000, // 1 hour
+    staleTime: 5 * 60 * 1000,  // Consider data fresh for 5 minutes
+    gcTime: 30 * 60 * 1000,    // Keep unused data for 30 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,       // Only fetch once on mount
     refetchOnReconnect: false,
-    retry: false,
-    refetchInterval: false
+    retry: 1,                   // Only retry once if failed
+    refetchInterval: false      // Disable automatic refetching
   });
 };
