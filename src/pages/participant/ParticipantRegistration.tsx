@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +7,8 @@ import { PersonalInfoForm } from "@/components/participant/registration/Personal
 import { ProfileSetupForm } from "@/components/participant/registration/ProfileSetupForm";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/landing/Header";
-import { CheckCircle2, Circle, CircleDot } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Circle, CircleDot, ChevronLeft, ChevronRight } from "lucide-react";
 
 const steps = [
   { label: "Personal Information" },
@@ -40,7 +40,6 @@ const ParticipantRegistration = () => {
       if (isSubmitting) return;
       setIsSubmitting(true);
       
-      // Combine both forms' data
       const finalData = {
         ...formData,
         ...data
@@ -48,7 +47,6 @@ const ParticipantRegistration = () => {
       
       console.log("Attempting registration with data:", finalData);
 
-      // Sign up the user
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -70,7 +68,6 @@ const ParticipantRegistration = () => {
 
       console.log("User created successfully:", authData.user);
 
-      // Create participant registration record
       const { error: registrationError } = await supabase
         .from('participant_registrations')
         .insert({
@@ -96,7 +93,6 @@ const ParticipantRegistration = () => {
         description: "You can now log in to access your dashboard.",
       });
 
-      // Use replace to prevent back navigation to registration page
       navigate("/login", { replace: true });
     } catch (error: any) {
       console.error("Registration error:", error);
@@ -160,23 +156,37 @@ const ParticipantRegistration = () => {
 
             <div className="flex justify-between mt-6">
               {currentStep > 1 && (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => handleStepChange(currentStep - 1)}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
                 >
+                  <ChevronLeft className="mr-2 h-4 w-4" />
                   Back
-                </button>
+                </Button>
               )}
-              {currentStep === 2 && (
-                <button
-                  type="button"
-                  onClick={() => handleProfileSetupSubmit(formData)}
-                  disabled={!isStepValid || isSubmitting}
-                  className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              {currentStep === 1 ? (
+                <Button
+                  type="submit"
+                  className="ml-auto"
+                  disabled={!isStepValid}
+                  onClick={() => document.querySelector('form')?.requestSubmit()}
                 >
-                  Complete Registration
-                </button>
+                  Next
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  disabled={!isStepValid || isSubmitting}
+                  onClick={() => handleProfileSetupSubmit(formData)}
+                >
+                  {isSubmitting ? (
+                    "Registering..."
+                  ) : (
+                    "Complete Registration"
+                  )}
+                </Button>
               )}
             </div>
           </CardContent>
