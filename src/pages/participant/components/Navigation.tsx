@@ -44,12 +44,13 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
     return (
       <div className={className}>
         <Icon className={cn(
+          "transition-all",
           isMobileView ? "h-5 w-5" : "h-4 w-4",
-          !isMobileView && state === "collapsed" && "mx-auto"
+          !isMobileView && state === "collapsed" && "w-5 h-5"
         )} />
         <span className={cn(
           isMobileView ? "text-xs mt-1 truncate max-w-[60px]" : "ml-2",
-          !isMobileView && state === "collapsed" && "hidden"
+          !isMobileView && state === "collapsed" && "sr-only"
         )}>
           {label}
         </span>
