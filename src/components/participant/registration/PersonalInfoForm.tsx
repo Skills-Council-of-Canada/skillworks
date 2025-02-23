@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,7 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/contexts/AuthContext";
 
 const personalInfoSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -35,23 +33,21 @@ interface PersonalInfoFormProps {
 }
 
 export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFormProps) => {
-  const { signup } = useAuth();
-  
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
     mode: "onChange",
   });
 
-  form.watch();
-  
   React.useEffect(() => {
-    const isValid = form.formState.isValid;
-    onValidityChange(isValid);
-  }, [form.formState.isValid, onValidityChange]);
+    const subscription = form.watch(() => {
+      onValidityChange(form.formState.isValid);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, onValidityChange]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="firstName"
@@ -59,7 +55,7 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter your first name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,7 +69,7 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter your last name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,7 +83,7 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" {...field} />
+                <Input type="email" placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -101,7 +97,7 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" placeholder="Choose a password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
