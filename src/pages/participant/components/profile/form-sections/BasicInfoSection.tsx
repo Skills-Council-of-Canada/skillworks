@@ -20,10 +20,10 @@ export const BasicInfoSection = ({ form }: BasicInfoSectionProps) => {
     <>
       <FormField
         control={form.control}
-        name="full_name"
+        name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Full Name</FormLabel>
+            <FormLabel>Name</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>

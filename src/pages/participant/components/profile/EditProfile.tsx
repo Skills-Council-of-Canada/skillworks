@@ -19,7 +19,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { profileFormSchema, type ProfileFormValues } from "./schema";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { ContactSection } from "./form-sections/ContactSection";
-import { SkillsSection } from "./form-sections/SkillsSection";
 
 export const EditProfile = () => {
   const { user } = useAuth();
@@ -88,7 +87,6 @@ export const EditProfile = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <BasicInfoSection form={form} />
             <ContactSection form={form} />
-            <SkillsSection form={form} />
 
             <div className="flex justify-end gap-4">
               <Button
