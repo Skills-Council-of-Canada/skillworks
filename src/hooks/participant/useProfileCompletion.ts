@@ -46,10 +46,10 @@ export const useProfileCompletion = () => {
       return profile as CombinedProfile;
     },
     enabled: Boolean(user?.id),
-    staleTime: Infinity, // Keep data fresh indefinitely since we're using websockets for updates
-    cacheTime: 30 * 60 * 1000, // Cache for 30 minutes
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    gcTime: 1000 * 60 * 30, // Cache for 30 minutes
+    refetchOnMount: 'always',
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
     refetchOnReconnect: false,
     retry: 1,
   });
