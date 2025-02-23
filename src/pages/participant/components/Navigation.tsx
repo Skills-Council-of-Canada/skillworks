@@ -59,7 +59,6 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
           <NavLink
             key={item.to}
             to={item.to}
-            replace={true}
             className={({ isActive }) => cn(
               "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
               isActive ? "text-white" : "hover:text-white"
@@ -92,7 +91,6 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
                 <SidebarMenuItem key={item.to}>
                   <NavLink
                     to={item.to}
-                    replace={true}
                     className={({ isActive }) => cn(
                       "flex items-center px-2 py-1.5 rounded-md transition-colors w-full",
                       isActive ? "bg-white/10 text-white" : "text-gray-300 hover:bg-white/10 hover:text-white"
