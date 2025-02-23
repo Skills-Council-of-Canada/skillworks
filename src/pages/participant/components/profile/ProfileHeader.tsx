@@ -19,7 +19,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
           <div className="flex justify-between items-start">
             <ProfileAvatar 
               avatarUrl={profile?.avatar_url}
-              fullName={profile?.full_name}
+              name={profile?.full_name}
               userName={userName}
             />
           </div>

@@ -8,11 +8,11 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileAvatarProps {
   avatarUrl?: string | null;
-  fullName?: string | null;
+  name?: string | null;  // Changed from fullName to name
   userName?: string | null;
 }
 
-export const ProfileAvatar = ({ avatarUrl, fullName, userName }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -64,12 +64,12 @@ export const ProfileAvatar = ({ avatarUrl, fullName, userName }: ProfileAvatarPr
         {avatarUrl ? (
           <AvatarImage 
             src={avatarUrl} 
-            alt={fullName || userName || "Profile"} 
+            alt={name || userName || "Profile"} 
             className="object-cover"
           />
         ) : (
           <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl sm:text-5xl">
-            {(fullName?.[0] || userName?.[0] || "U").toUpperCase()}
+            {(name?.[0] || userName?.[0] || "U").toUpperCase()}
           </AvatarFallback>
         )}
       </Avatar>
