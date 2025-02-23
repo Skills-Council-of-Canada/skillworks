@@ -27,31 +27,31 @@ export const useProfileCompletion = () => {
   const { user } = useAuth();
 
   const { data: profileData, isLoading } = useQuery({
-    queryKey: ["participant-profile", user?.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (!profile) return null;
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return null;
+      }
 
       return profile as CombinedProfile;
     },
     enabled: Boolean(user?.id),
     staleTime: Infinity,
-    gcTime: 3600000,
+    cacheTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
-    refetchInterval: false,
-    meta: {
-      errorMessage: "Failed to fetch profile"
-    }
+    refetchInterval: false
   });
 
   const calculateCompletionPercentage = useMemo(() => {
