@@ -62,9 +62,13 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
     return () => subscription.unsubscribe();
   }, [form, onValidityChange]);
 
+  const handleSubmit = (data: ProfileSetupFormValues) => {
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="skill_level"
@@ -169,6 +173,8 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
             </FormItem>
           )}
         />
+
+        <button type="submit" style={{ display: 'none' }} />
       </form>
     </Form>
   );

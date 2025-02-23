@@ -45,9 +45,13 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
     return () => subscription.unsubscribe();
   }, [form, onValidityChange]);
 
+  const handleSubmit = (data: PersonalInfoFormValues) => {
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="first_name"
@@ -117,6 +121,8 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             </FormItem>
           )}
         />
+
+        <button type="submit" style={{ display: 'none' }} />
       </form>
     </Form>
   );
