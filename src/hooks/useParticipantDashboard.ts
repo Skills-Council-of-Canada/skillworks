@@ -1,7 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Database } from "@/types/supabase";
 import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardStats {
@@ -30,8 +29,24 @@ type Task = {
   priority: string;
 }
 
-type Event = Database['public']['Tables']['participant_events']['Row'];
-type Recommendation = Database['public']['Tables']['participant_recommendations']['Row'];
+type Event = {
+  id: string;
+  title: string;
+  description: string | null;
+  start_time: string;
+  end_time: string;
+  participant_id: string;
+  status: string;
+}
+
+type Recommendation = {
+  id: string;
+  participant_id: string;
+  experience_id: string;
+  match_score: number;
+  status: string;
+  created_at: string;
+}
 
 interface DashboardData {
   stats: DashboardStats;
