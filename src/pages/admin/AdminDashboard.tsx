@@ -5,11 +5,22 @@ import { Users, BarChart, GraduationCap, UserCheck, ClipboardList, Clock, Briefc
 import { StatsCard } from "./components/StatsCard";
 import { QuickActionCard } from "./components/QuickActionCard";
 import { useAdminStats } from "./hooks/useAdminStats";
+import { Loader2 } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { data: stats, isLoading } = useAdminStats(user);
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const { data: stats, isLoading: isStatsLoading } = useAdminStats(user);
+
+  const isLoading = isAuthLoading || isStatsLoading;
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   const quickActions = [
     {
@@ -48,7 +59,7 @@ const AdminDashboard = () => {
           <StatsCard
             key={index}
             title={card.title}
-            value={isLoading ? "..." : card.value}
+            value={isStatsLoading ? "..." : card.value}
             icon={card.icon}
           />
         ))}
