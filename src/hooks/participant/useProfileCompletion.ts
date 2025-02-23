@@ -62,12 +62,13 @@ export const useProfileCompletion = () => {
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
     queryFn: () => fetchProfile(user?.id),
-    staleTime: Infinity, // Only refetch when explicitly invalidated
-    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: false,
+    refetchOnMount: false,
     enabled: !!user?.id,
+    retry: false,
     meta: {
       onError: (error: any) => {
         console.error("Error fetching profile:", error);
