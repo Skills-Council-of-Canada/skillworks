@@ -63,7 +63,7 @@ export const useProfileCompletion = () => {
     queryKey: ["participant-profile", user?.id],
     queryFn: () => fetchProfile(user?.id),
     staleTime: Infinity, // Only refetch when explicitly invalidated
-    cacheTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes (renamed from cacheTime)
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: false,
