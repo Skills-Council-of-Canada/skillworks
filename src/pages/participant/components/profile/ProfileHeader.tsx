@@ -1,10 +1,6 @@
 
-import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Pencil } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
 
 interface ProfileHeaderProps {
@@ -14,8 +10,6 @@ interface ProfileHeaderProps {
 }
 
 export const ProfileHeader = ({ profile, completionPercentage, userName }: ProfileHeaderProps) => {
-  const isMobile = useIsMobile();
-
   return (
     <div className="mb-8">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -32,21 +26,13 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
           </Avatar>
           
           <div className="ml-0 sm:ml-36 pt-14 sm:pt-2">
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {profile?.full_name}
-                </h1>
-                <p className="mt-1 text-gray-500">
-                  {profile?.bio || "No bio provided"}
-                </p>
-              </div>
-              <Link to="edit">
-                <Button size={isMobile ? "sm" : "default"} className="gap-2">
-                  <Pencil className="h-4 w-4" />
-                  Edit Profile
-                </Button>
-              </Link>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                {profile?.full_name}
+              </h1>
+              <p className="mt-1 text-gray-500">
+                {profile?.bio || "No bio provided"}
+              </p>
             </div>
 
             <div className="mt-6">
