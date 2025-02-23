@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { profileFormSchema, type ProfileFormValues } from "./schema";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { ContactSection } from "./form-sections/ContactSection";
@@ -24,17 +23,16 @@ export const EditProfile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { profile } = useProfileCompletion();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: profile?.name || "",
-      bio: profile?.bio || "",
-      email: profile?.email || "",
-      phone: profile?.phone || "",
-      preferred_contact: profile?.preferred_contact || "",
+      name: user?.name || "",
+      bio: user?.bio || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      preferred_contact: user?.preferred_contact || "",
     },
   });
 
@@ -74,7 +72,7 @@ export const EditProfile = () => {
     }
   };
 
-  if (!profile) {
+  if (!user) {
     return <div>Loading...</div>;
   }
 

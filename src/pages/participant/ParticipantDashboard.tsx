@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,15 +18,14 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
-import { useMemo } from "react";
 
 const ParticipantDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { data, isLoading: dashboardLoading } = useParticipantDashboard();
-  const { profile, completionPercentage, isLoading: profileLoading } = useProfileCompletion();
+  const { completionPercentage, isLoading: profileLoading } = useProfileCompletion();
 
-  const isLoading = useMemo(() => dashboardLoading || profileLoading, [dashboardLoading, profileLoading]);
+  const isLoading = dashboardLoading || profileLoading;
 
   const getActivityIcon = (type: string) => {
     switch (type) {

@@ -1,5 +1,4 @@
 
-import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMemo } from "react";
 
@@ -18,7 +17,7 @@ export interface CombinedProfile {
 }
 
 export const useProfileCompletion = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const completionPercentage = useMemo(() => {
     if (!user) return 0;
@@ -33,6 +32,8 @@ export const useProfileCompletion = () => {
   }, [user]);
 
   return {
+    profile: user,
+    isLoading,
     completionPercentage,
   };
 };
