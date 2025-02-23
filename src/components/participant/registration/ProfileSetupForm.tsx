@@ -38,6 +38,11 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
   const form = useForm<ProfileSetupFormValues>({
     resolver: zodResolver(profileSetupSchema),
     mode: "onChange",
+    defaultValues: {
+      preferredLearningAreas: [],
+      skillLevel: "beginner",
+      availability: "full-time",
+    },
   });
 
   form.watch();

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -67,7 +68,10 @@ const ParticipantRegistration = () => {
             registration_completed: true
           });
 
-        if (registrationError) throw registrationError;
+        if (registrationError) {
+          console.error("Registration error:", registrationError);
+          throw registrationError;
+        }
 
         toast({
           title: "Registration successful",
