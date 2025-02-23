@@ -19,12 +19,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const learningAreas = [
+  { id: "web_development", label: "Web Development" },
+  { id: "mobile_development", label: "Mobile Development" },
+  { id: "data_science", label: "Data Science" },
+  { id: "cloud_computing", label: "Cloud Computing" },
+  { id: "cybersecurity", label: "Cybersecurity" }
+] as const;
 
 const profileSetupSchema = z.object({
-  preferredLearningAreas: z.array(z.string()).min(1, "Select at least one learning area"),
-  educationalBackground: z.string().optional(),
   skillLevel: z.enum(["beginner", "intermediate", "advanced"]),
   availability: z.enum(["part-time", "full-time"]),
+  educationalBackground: z.string().min(1, "Educational background is required"),
+  preferredLearningAreas: z.array(z.string()).min(1, "Select at least one learning area"),
 });
 
 type ProfileSetupFormValues = z.infer<typeof profileSetupSchema>;
@@ -39,18 +48,19 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
     resolver: zodResolver(profileSetupSchema),
     mode: "onChange",
     defaultValues: {
-      preferredLearningAreas: [],
       skillLevel: "beginner",
       availability: "full-time",
+      educationalBackground: "",
+      preferredLearningAreas: [],
     },
   });
 
-  form.watch();
-
   React.useEffect(() => {
-    const isValid = form.formState.isValid;
-    onValidityChange(isValid);
-  }, [form.formState.isValid, onValidityChange]);
+    const subscription = form.watch(() => {
+      onValidityChange(form.formState.isValid);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, onValidityChange]);
 
   return (
     <Form {...form}>
@@ -95,6 +105,49 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
                   <SelectItem value="full-time">Full-time</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="preferredLearningAreas"
+          render={() => (
+            <FormItem>
+              <FormLabel>Preferred Learning Areas</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {learningAreas.map((area) => (
+                  <FormField
+                    key={area.id}
+                    control={form.control}
+                    name="preferredLearningAreas"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={area.id}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(area.id)}
+                              onCheckedChange={(checked) => {
+                                const updatedValue = checked
+                                  ? [...(field.value || []), area.id]
+                                  : field.value?.filter((value) => value !== area.id) || [];
+                                field.onChange(updatedValue);
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {area.label}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           )}
