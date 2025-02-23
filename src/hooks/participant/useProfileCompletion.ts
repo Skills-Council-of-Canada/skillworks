@@ -1,6 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMemo } from "react";
 
 export interface CombinedProfile {
   id: string;

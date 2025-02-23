@@ -1,6 +1,7 @@
+
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Database } from "@/integrations/supabase/types";
+import { Database } from "@/types/supabase";
 import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardStats {
@@ -54,9 +55,7 @@ export const useParticipantDashboard = () => {
     queryFn: async (): Promise<DashboardData> => {
       if (!user?.id) throw new Error('No user found');
 
-      console.log("Fetching dashboard data for user:", user.id); // Debug log
-
-      // Calculate profile completion from AuthContext user data
+      // Calculate profile completion from user data
       const requiredFields = ['name', 'email', 'phone', 'bio', 'avatar_url'];
       const completedFields = requiredFields.filter(field => {
         const value = user[field as keyof typeof user];
@@ -64,7 +63,6 @@ export const useParticipantDashboard = () => {
       });
       const profileCompletion = Math.round((completedFields.length / requiredFields.length) * 100);
 
-      // Batch fetch all dashboard data in parallel for better performance
       const [
         experiencesResult,
         tasksResult,
@@ -93,7 +91,6 @@ export const useParticipantDashboard = () => {
         eventsResult.data
       ];
 
-      // Get project titles for applications
       let applicationData = [];
       if (applications?.length) {
         const projectIds = applications.map(app => app.project_id);
@@ -110,7 +107,6 @@ export const useParticipantDashboard = () => {
         }));
       }
 
-      // Transform notifications into activities
       const activities = (notificationsData || []).map(notification => ({
         id: notification.id,
         title: notification.title,
@@ -141,9 +137,8 @@ export const useParticipantDashboard = () => {
     staleTime: 5 * 60 * 1000,  // Consider data fresh for 5 minutes
     gcTime: 30 * 60 * 1000,    // Keep unused data for 30 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: true,       // Only fetch once on mount
+    refetchOnMount: true,
     refetchOnReconnect: false,
-    retry: 1,                   // Only retry once if failed
-    refetchInterval: false      // Disable automatic refetching
+    retry: 1
   });
 };
