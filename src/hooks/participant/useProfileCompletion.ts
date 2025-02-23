@@ -25,7 +25,6 @@ export interface CombinedProfile {
 
 export const useProfileCompletion = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
@@ -57,12 +56,12 @@ export const useProfileCompletion = () => {
       }
     },
     enabled: !!user?.id,
-    staleTime: Infinity,
-    gcTime: 1000 * 60 * 30,
+    staleTime: 300000, // 5 minutes
+    gcTime: 3600000,   // 1 hour
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: false
+    retry: 1
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
