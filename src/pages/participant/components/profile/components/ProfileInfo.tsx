@@ -32,7 +32,7 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
       const { error } = await supabase
         .from('profiles')
         .update({
-          name: editValues.full_name,
+          full_name: editValues.full_name,  // Changed from name to full_name
           bio: editValues.bio,
         })
         .eq('id', user.id);

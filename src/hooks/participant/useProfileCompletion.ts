@@ -30,7 +30,6 @@ export const useProfileCompletion = () => {
       if (!user?.id) return null;
 
       try {
-        // First, get the base profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select()
@@ -60,7 +59,6 @@ export const useProfileCompletion = () => {
 
         if (detailsError) {
           console.error("Error fetching participant profile:", detailsError);
-          // Only show error if it's not a "does not exist" error
           if (detailsError.code !== 'PGRST116') {
             toast({
               title: "Error",
@@ -73,7 +71,7 @@ export const useProfileCompletion = () => {
         // Create combined profile with defaults if details are missing
         const combinedProfile: CombinedProfile = {
           ...profile,
-          full_name: profile.name,
+          full_name: profile.name, // Map name to full_name
           bio: profile.bio,
           skill_level: 'beginner',
           availability: 'flexible',
@@ -95,10 +93,10 @@ export const useProfileCompletion = () => {
       }
     },
     staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
-    gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes (formerly cacheTime)
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false
+    gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes
+    refetchOnWindowFocus: true, // Enable refetch on window focus
+    refetchOnMount: true, // Enable refetch on mount
+    refetchOnReconnect: true // Enable refetch on reconnect
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
