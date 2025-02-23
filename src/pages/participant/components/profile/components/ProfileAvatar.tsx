@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileAvatarProps {
   avatarUrl?: string | null;
-  name?: string | null;  // Changed from fullName to name
+  name?: string | null;
   userName?: string | null;
 }
 
@@ -22,12 +22,29 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
     if (!file || !user?.id) return;
 
     try {
+      // First, create the storage bucket if it doesn't exist
+      const { data: bucketExists } = await supabase
+        .storage
+        .getBucket('avatars');
+
+      if (!bucketExists) {
+        await supabase
+          .storage
+          .createBucket('avatars', {
+            public: true,
+            fileSizeLimit: 1024 * 1024 * 2 // 2MB limit
+          });
+      }
+
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 
@@ -45,9 +62,16 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
 
       toast({
-        title: "Avatar updated",
+        title: "Success",
         description: "Your profile picture has been updated successfully.",
       });
+
+      // Force reload the avatar image by clearing browser cache for the URL
+      const avatarImg = document.querySelector('img[alt="Profile"]') as HTMLImageElement;
+      if (avatarImg) {
+        avatarImg.src = publicUrl + '?t=' + new Date().getTime();
+      }
+
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast({
