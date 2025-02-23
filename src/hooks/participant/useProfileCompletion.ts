@@ -20,81 +20,62 @@ export type CombinedProfile = {
   preferred_learning_areas: string[];
 };
 
+const fetchProfile = async (userId: string | undefined) => {
+  if (!userId) return null;
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (profileError) throw profileError;
+  if (!profile) return null;
+
+  const { data: details, error: detailsError } = await supabase
+    .from('participant_profiles')
+    .select()
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (detailsError && detailsError.code !== 'PGRST116') {
+    throw detailsError;
+  }
+
+  return {
+    ...profile,
+    full_name: profile.name,
+    bio: profile.bio,
+    skill_level: 'beginner',
+    availability: 'flexible',
+    date_of_birth: null,
+    educational_background: null,
+    preferred_learning_areas: [],
+    ...details
+  } as CombinedProfile;
+};
+
 export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { data: profileData, isLoading } = useQuery<CombinedProfile | null>({
+  const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-
-      try {
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (profileError) {
-          console.error("Error fetching profile:", profileError);
-          toast({
-            title: "Error",
-            description: "Failed to fetch profile data",
-            variant: "destructive",
-          });
-          return null;
-        }
-
-        if (!profile) {
-          return null;
-        }
-
-        const { data: details, error: detailsError } = await supabase
-          .from('participant_profiles')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (detailsError) {
-          console.error("Error fetching participant profile:", detailsError);
-          if (detailsError.code !== 'PGRST116') {
-            toast({
-              title: "Error",
-              description: "Failed to fetch participant profile",
-              variant: "destructive",
-            });
-          }
-        }
-
-        const combinedProfile: CombinedProfile = {
-          ...profile,
-          full_name: profile.name,
-          bio: profile.bio,
-          skill_level: 'beginner',
-          availability: 'flexible',
-          date_of_birth: null,
-          educational_background: null,
-          preferred_learning_areas: [],
-          ...details
-        };
-
-        return combinedProfile;
-      } catch (error) {
-        console.error("Unexpected error:", error);
-        toast({
-          title: "Error",
-          description: "An unexpected error occurred",
-          variant: "destructive",
-        });
-        return null;
-      }
-    },
-    staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
-    gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes
-    refetchOnWindowFocus: false, // Disable automatic refetch on window focus
-    refetchOnMount: true, // Keep enabled for initial mount
-    refetchOnReconnect: false // Disable automatic refetch on reconnect
+    queryFn: () => fetchProfile(user?.id),
+    staleTime: Infinity, // Only refetch when explicitly invalidated
+    cacheTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+    enabled: !!user?.id,
+    onError: (error: any) => {
+      console.error("Error fetching profile:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch profile data",
+        variant: "destructive",
+      });
+    }
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
