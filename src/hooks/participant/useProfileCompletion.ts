@@ -63,18 +63,20 @@ export const useProfileCompletion = () => {
     queryKey: ["participant-profile", user?.id],
     queryFn: () => fetchProfile(user?.id),
     staleTime: Infinity, // Only refetch when explicitly invalidated
-    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes (renamed from cacheTime)
+    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: false,
     enabled: !!user?.id,
-    onError: (error: any) => {
-      console.error("Error fetching profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch profile data",
-        variant: "destructive",
-      });
+    meta: {
+      onError: (error: any) => {
+        console.error("Error fetching profile:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch profile data",
+          variant: "destructive",
+        });
+      }
     }
   });
 
