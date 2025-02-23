@@ -26,35 +26,31 @@ export interface CombinedProfile {
 export const useProfileCompletion = () => {
   const { user } = useAuth();
 
-  const fetchProfile = useMemo(() => async () => {
-    if (!user?.id) return null;
-
-    const { data: participantProfile, error: participantError } = await supabase
-      .from('participant_profiles')
-      .select('onboarding_completed, profile_completion_percentage')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    if (participantError) {
-      console.error("Error fetching participant profile:", participantError);
-      return null;
-    }
-
-    const combinedProfile: CombinedProfile = {
-      ...user,
-    };
-
-    return combinedProfile;
-  }, [user?.id]);
-
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
-    queryFn: fetchProfile,
+    queryFn: async () => {
+      if (!user?.id) return null;
+
+      const { data: participantProfile, error: participantError } = await supabase
+        .from('participant_profiles')
+        .select('onboarding_completed, profile_completion_percentage')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (participantError) {
+        console.error("Error fetching participant profile:", participantError);
+        return null;
+      }
+
+      return {
+        ...user,
+      } as CombinedProfile;
+    },
     enabled: Boolean(user?.id),
-    staleTime: Infinity, // Prevent automatic refetching
-    gcTime: 3600000, // Keep in cache for 1 hour
+    staleTime: Infinity,
+    gcTime: 3600000,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
     refetchInterval: false
