@@ -1,5 +1,5 @@
 
-import { BellDot, MoreVertical, ChevronLeft } from "lucide-react";
+import { BellDot, MoreVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
 import { Button } from "@/components/ui/button";
@@ -18,36 +18,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConversationList } from "@/components/employer/messages/ConversationList";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
 
 const MessagesPage = () => {
-  const [showConversationList, setShowConversationList] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  // This would normally be driven by real data
   const hasNewRequests = true;
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   return (
-    <div className="flex h-full gap-4 overflow-hidden relative">
+    <div className="flex h-[calc(100vh-4rem)] gap-4 overflow-hidden">
       {/* Left Panel - Chat List */}
-      <div
-        className={cn(
-          "w-full md:w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden",
-          "md:relative fixed inset-0 z-30",
-          "transition-transform duration-200 ease-in-out",
-          isMobile && !showConversationList && "-translate-x-full"
-        )}
-      >
+      <div className="w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold text-foreground">Conversations</h3>
           <div className="flex items-center gap-2">
@@ -118,28 +97,13 @@ const MessagesPage = () => {
             </Popover>
           </div>
         </div>
-        <ConversationList onSelectConversation={() => isMobile && setShowConversationList(false)} />
+        <ConversationList />
       </div>
 
+      <Separator orientation="vertical" className="bg-border" />
+
       {/* Right Panel - Chat Window */}
-      <div 
-        className={cn(
-          "flex-1 bg-background border rounded-lg overflow-hidden",
-          "md:relative fixed inset-0 z-20",
-          "transition-transform duration-200 ease-in-out",
-          isMobile && showConversationList && "translate-x-full"
-        )}
-      >
-        {isMobile && !showConversationList && (
-          <Button
-            variant="ghost"
-            className="absolute top-4 left-4 z-10"
-            onClick={() => setShowConversationList(true)}
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        )}
+      <div className="flex-1 bg-background border rounded-lg overflow-hidden">
         <ChatWindow />
       </div>
     </div>
