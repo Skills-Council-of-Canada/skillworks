@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { RegistrationStepper } from "@/components/participant/registration/RegistrationStepper";
 import { PersonalInfoForm } from "@/components/participant/registration/PersonalInfoForm";
 import { ProfileSetupForm } from "@/components/participant/registration/ProfileSetupForm";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,21 +30,28 @@ const ParticipantRegistration = () => {
   };
 
   const handlePersonalInfoSubmit = (data: any) => {
+    console.log("Personal info submitted:", data);
     setFormData({ ...formData, ...data });
     setCurrentStep(2);
   };
 
   const handleProfileSetupSubmit = async (data: any) => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    
-    const finalData = { ...formData, ...data };
-    
     try {
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      
+      // Combine both forms' data
+      const finalData = {
+        ...formData,
+        ...data
+      };
+      
+      console.log("Attempting registration with data:", finalData);
+
       // Sign up the user
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: finalData.email,
-        password: finalData.password,
+        email: formData.email,
+        password: formData.password,
         options: {
           data: {
             role: 'participant',
@@ -53,43 +59,50 @@ const ParticipantRegistration = () => {
         },
       });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        console.error("Sign up error:", signUpError);
+        throw signUpError;
+      }
 
-      if (authData.user) {
-        // Create participant registration record
-        const { error: registrationError } = await supabase
-          .from('participant_registrations')
-          .insert({
-            user_id: authData.user.id,
-            first_name: finalData.firstName,
-            last_name: finalData.lastName,
-            email: finalData.email,
-            date_of_birth: finalData.dateOfBirth,
-            skill_level: finalData.skillLevel,
-            preferred_learning_areas: finalData.preferredLearningAreas || [],
-            educational_background: finalData.educationalBackground,
-            availability: finalData.availability,
-            registration_completed: true
-          });
+      if (!authData.user) {
+        throw new Error("No user data returned from signup");
+      }
 
-        if (registrationError) {
-          console.error("Registration error:", registrationError);
-          throw registrationError;
-        }
+      console.log("User created successfully:", authData.user);
 
-        toast({
-          title: "Registration successful",
-          description: "You can now log in to access your dashboard.",
+      // Create participant registration record
+      const { error: registrationError } = await supabase
+        .from('participant_registrations')
+        .insert({
+          user_id: authData.user.id,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          date_of_birth: formData.dateOfBirth,
+          skill_level: data.skillLevel,
+          preferred_learning_areas: data.preferredLearningAreas,
+          educational_background: data.educationalBackground,
+          availability: data.availability,
+          registration_completed: true
         });
 
-        // Use replace to prevent back navigation to registration page
-        navigate("/login", { replace: true });
+      if (registrationError) {
+        console.error("Registration error:", registrationError);
+        throw registrationError;
       }
-    } catch (error) {
+
+      toast({
+        title: "Registration successful",
+        description: "You can now log in to access your dashboard.",
+      });
+
+      // Use replace to prevent back navigation to registration page
+      navigate("/login", { replace: true });
+    } catch (error: any) {
       console.error("Registration error:", error);
       toast({
         title: "Registration failed",
-        description: "An error occurred during registration. Please try again.",
+        description: error.message || "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -145,13 +158,27 @@ const ParticipantRegistration = () => {
               />
             )}
 
-            <RegistrationStepper
-              currentStep={currentStep}
-              onStepChange={handleStepChange}
-              isStepValid={isStepValid}
-              onSubmit={() => handleProfileSetupSubmit(formData)}
-              isLastStep={currentStep === 2}
-            />
+            <div className="flex justify-between mt-6">
+              {currentStep > 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleStepChange(currentStep - 1)}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+                >
+                  Back
+                </button>
+              )}
+              {currentStep === 2 && (
+                <button
+                  type="button"
+                  onClick={() => handleProfileSetupSubmit(formData)}
+                  disabled={!isStepValid || isSubmitting}
+                  className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Complete Registration
+                </button>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
