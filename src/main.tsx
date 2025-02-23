@@ -5,7 +5,10 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import App from './App.tsx'
 import './index.css'
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error('Root element not found');
+
+createRoot(root).render(
   <BrowserRouter>
     <AuthProvider>
       <App />
