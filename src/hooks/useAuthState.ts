@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { User } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +79,6 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      // Only redirect if user is on login page, root, or wrong role route
       if ((location.pathname === '/login' || 
           location.pathname === '/' || 
           (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) && 
@@ -110,16 +109,14 @@ export const useAuthState = () => {
 
     const setupAuth = async () => {
       try {
-        // Initialize session from localStorage first
         const { data: { session } } = await supabase.auth.getSession();
         if (mounted && session) {
           await handleSession(session);
         }
 
-        // Set up real-time auth state listener
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
-          console.log("Auth state change:", event, session); // Debug log
+          console.log("Auth state change:", event, session);
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
