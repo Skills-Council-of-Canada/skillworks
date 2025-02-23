@@ -3,14 +3,14 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/auth";
 import { Loader2 } from "lucide-react";
-import { memo } from "react";
+import { memo, FC } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles?: UserRole[];
 }
 
-const ProtectedRoute = memo(({ children, allowedRoles }: ProtectedRouteProps) => {
+const ProtectedRouteBase: FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
   const location = useLocation();
 
@@ -50,8 +50,9 @@ const ProtectedRoute = memo(({ children, allowedRoles }: ProtectedRouteProps) =>
   }
 
   return <>{children}</>;
-});
+};
 
+const ProtectedRoute = memo(ProtectedRouteBase);
 ProtectedRoute.displayName = 'ProtectedRoute';
 
 export default ProtectedRoute;
