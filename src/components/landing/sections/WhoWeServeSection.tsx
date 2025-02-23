@@ -11,21 +11,21 @@ export const WhoWeServeSection = () => {
       title: "For Employers",
       description: "Find top talent, assign projects, and hire skilled professionals.",
       icon: Building2,
-      cta: "Post a Project",
+      cta: "Learn More",
       path: "/employer-landing"
     },
     {
       title: "For Educators",
       description: "Integrate real-world projects into your curriculum.",
       icon: GraduationCap,
-      cta: "Join as an Educator",
+      cta: "Learn More",
       path: "/educator-landing"
     },
     {
       title: "For Participants",
       description: "Work on employer-backed projects and gain career experience.",
       icon: Users,
-      cta: "Find a Project",
+      cta: "Learn More",
       path: "/participant-landing"
     }
   ];
