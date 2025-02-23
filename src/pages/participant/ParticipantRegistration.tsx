@@ -79,9 +79,9 @@ const ParticipantRegistration = () => {
           email: formData.email,
           date_of_birth: formData.date_of_birth,
           skill_level: data.skill_level,
-          preferred_learning_areas: data.preferred_learning_areas,
-          educational_background: data.educational_background,
           availability: data.availability,
+          educational_background: data.educational_background,
+          preferred_learning_areas: data.preferred_learning_areas,
           registration_completed: true,
           email_verified: false // Will be updated when they verify their email
         });
