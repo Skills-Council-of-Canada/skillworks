@@ -17,26 +17,15 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [cacheBuster, setCacheBuster] = useState(Date.now());
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user?.id) return;
 
     try {
-      // First, create the storage bucket if it doesn't exist
-      const { data: bucketExists } = await supabase
-        .storage
-        .getBucket('avatars');
-
-      if (!bucketExists) {
-        await supabase
-          .storage
-          .createBucket('avatars', {
-            public: true,
-            fileSizeLimit: 1024 * 1024 * 2 // 2MB limit
-          });
-      }
+      setIsUploading(true);
 
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
@@ -61,8 +50,11 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
 
       if (updateError) throw updateError;
 
+      // Update local state immediately
+      setCurrentAvatarUrl(publicUrl);
+      
+      // Invalidate queries to refresh data
       await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
-      setCacheBuster(Date.now()); // Update cache buster to force re-render
 
       toast({
         title: "Success",
@@ -76,17 +68,20 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
         description: "Failed to update profile picture. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
-  const cachedAvatarUrl = avatarUrl ? `${avatarUrl}?t=${cacheBuster}` : null;
+  // Use the local state for rendering, falling back to prop
+  const displayAvatarUrl = currentAvatarUrl || avatarUrl;
 
   return (
     <div className="relative group">
       <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
-        {cachedAvatarUrl ? (
+        {displayAvatarUrl ? (
           <AvatarImage 
-            src={cachedAvatarUrl} 
+            src={`${displayAvatarUrl}?t=${Date.now()}`}
             alt={name || userName || "Profile"} 
             className="object-cover"
           />
@@ -97,7 +92,7 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
         )}
       </Avatar>
       <label 
-        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
+        className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity ${isUploading ? 'cursor-wait' : ''}`}
         htmlFor="avatar-upload"
       >
         <Camera className="h-8 w-8 text-white" />
@@ -108,6 +103,7 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
         className="hidden"
         accept="image/*"
         onChange={handleAvatarUpload}
+        disabled={isUploading}
       />
     </div>
   );
