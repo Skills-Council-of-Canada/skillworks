@@ -15,6 +15,7 @@ export const useAuthState = () => {
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
   const navigationRef = useRef(false);
+  const profileRequestInProgress = useRef(false);
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
@@ -54,7 +55,15 @@ export const useAuthState = () => {
         return;
       }
 
+      // Prevent multiple simultaneous profile requests
+      if (profileRequestInProgress.current) {
+        return;
+      }
+
+      profileRequestInProgress.current = true;
+
       const profile = await getUserProfile(session);
+      profileRequestInProgress.current = false;
       
       if (!profile) {
         setUser(null);
@@ -77,6 +86,7 @@ export const useAuthState = () => {
       }
     } catch (error) {
       console.error("Profile error:", error);
+      profileRequestInProgress.current = false;
       toast({
         title: "Error",
         description: "Failed to load user profile",
@@ -101,6 +111,8 @@ export const useAuthState = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (mounted && session) {
           await handleSession(session);
+        } else {
+          setIsLoading(false);
         }
 
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
