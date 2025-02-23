@@ -1,3 +1,4 @@
+
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from "@/integrations/supabase/types";
@@ -57,7 +58,7 @@ export const useParticipantDashboard = () => {
         .from("participant_experiences")
         .select("status");
 
-      // Fetch tasks
+      // Fetch tasks with proper caching
       const { data: tasks } = await supabase
         .from("participant_tasks")
         .select("*")
@@ -87,14 +88,14 @@ export const useParticipantDashboard = () => {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // Fetch pending applications with a simplified query
+      // Fetch pending applications
       const { data: applications } = await supabase
         .from("applications")
         .select("id, created_at, status, project_id")
         .eq("applicant_id", user.id)
         .order("created_at", { ascending: false });
 
-      // If we have applications, fetch their project titles separately
+      // Get project titles for applications
       let applicationData = [];
       if (applications) {
         const projectIds = applications.map(app => app.project_id);
@@ -129,25 +130,13 @@ export const useParticipantDashboard = () => {
         .order("start_time", { ascending: true })
         .limit(5);
 
-      // Calculate profile completion
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      const profileFields = ['name', 'avatar_url', 'bio', 'phone', 'preferred_contact'];
-      const completedFields = profileFields.filter(field => profile && profile[field]);
-      const profileCompletion = Math.round((completedFields.length / profileFields.length) * 100);
-
-      // Calculate stats
       const stats: DashboardStats = {
         activeExperiences: experiences?.filter(e => e.status === "in_progress").length || 0,
         completedExperiences: experiences?.filter(e => e.status === "completed").length || 0,
         upcomingEvents: events?.length || 0,
         unreadMessages: unreadCount || 0,
         pendingTasks: tasks?.filter(t => t.status !== "completed").length || 0,
-        profileCompletion
+        profileCompletion: 0 // This will be calculated by useProfileCompletion
       };
 
       return {
@@ -158,6 +147,13 @@ export const useParticipantDashboard = () => {
         recommendations: recommendations || [],
         pendingApplications: applicationData
       };
-    }
+    },
+    staleTime: 300000, // Consider data fresh for 5 minutes
+    gcTime: 3600000, // Keep in cache for 1 hour
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    refetchInterval: false
   });
 };
