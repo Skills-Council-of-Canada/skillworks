@@ -1,6 +1,5 @@
 
-import { BellDot, MoreVertical } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { BellDot, MoreVertical, ChevronLeft } from "lucide-react";
 import { ChatWindow } from "@/components/educator/messages/ChatWindow";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,99 +17,115 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConversationList } from "@/components/employer/messages/ConversationList";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 const MessagesPage = () => {
   const [isMobileListVisible, setIsMobileListVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const hasNewRequests = true;
 
-  // Helper function to determine if we're on mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  // Handle mobile detection with resize listener
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden">
       {/* Left Panel - Chat List */}
       <div
         className={cn(
           "w-full md:w-80 flex-shrink-0 bg-background border rounded-lg overflow-hidden",
           "transition-all duration-300 ease-in-out",
-          "absolute md:relative",
-          "h-full z-10",
+          "fixed md:relative",
+          "top-0 md:top-auto bottom-0 md:bottom-auto left-0 md:left-auto",
+          "h-full",
+          "z-30 md:z-auto",
           !isMobileListVisible && "translate-x-[-100%] md:translate-x-0"
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold text-foreground">Conversations</h3>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="hover:bg-accent/50"
+        <div className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="flex items-center justify-between p-4">
+            <h3 className="font-semibold text-foreground">Conversations</h3>
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="hover:bg-accent/50"
+                  >
+                    <MoreVertical className="h-4 w-4 text-foreground" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-50 bg-background">
+                  <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
+                    Pin Chat
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
+                    Mute Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive hover:bg-destructive/10">
+                    Delete Chat
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative hover:bg-accent/50"
+                  >
+                    <BellDot className="h-5 w-5 text-foreground" />
+                    {hasNewRequests && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
+                      >
+                        2
+                      </Badge>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-[280px] sm:w-80 p-0 bg-background border shadow-lg rounded-lg" 
+                  align="end"
+                  sideOffset={5}
                 >
-                  <MoreVertical className="h-4 w-4 text-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="z-50 bg-background">
-                <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
-                  Pin Chat
-                </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-accent/50 text-foreground">
-                  Mute Notifications
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive hover:bg-destructive/10">
-                  Delete Chat
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative hover:bg-accent/50"
-                >
-                  <BellDot className="h-5 w-5 text-foreground" />
-                  {hasNewRequests && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
-                    >
-                      2
-                    </Badge>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent 
-                className="w-80 p-0 bg-background border shadow-lg rounded-lg" 
-                align="end"
-                sideOffset={5}
-              >
-                <div className="p-4 border-b">
-                  <h4 className="font-semibold text-foreground">Chat Requests</h4>
-                </div>
-                <ScrollArea className="h-[300px]">
-                  <div className="p-4 space-y-4">
-                    <RequestItem
-                      name="Jane Smith"
-                      message="I would like to discuss the project requirements"
-                      timestamp="2 hours ago"
-                    />
-                    <RequestItem
-                      name="Mike Johnson"
-                      message="Can we schedule a meeting?"
-                      timestamp="3 hours ago"
-                    />
+                  <div className="p-4 border-b">
+                    <h4 className="font-semibold text-foreground">Chat Requests</h4>
                   </div>
-                </ScrollArea>
-              </PopoverContent>
-            </Popover>
+                  <ScrollArea className="h-[300px]">
+                    <div className="p-4 space-y-4">
+                      <RequestItem
+                        name="Jane Smith"
+                        message="I would like to discuss the project requirements"
+                        timestamp="2 hours ago"
+                      />
+                      <RequestItem
+                        name="Mike Johnson"
+                        message="Can we schedule a meeting?"
+                        timestamp="3 hours ago"
+                      />
+                    </div>
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
-        <ConversationList />
+        <div className="h-[calc(100%-4rem)] overflow-hidden">
+          <ConversationList />
+        </div>
       </div>
 
       {/* Right Panel - Chat Window */}
@@ -118,17 +133,21 @@ const MessagesPage = () => {
         className={cn(
           "flex-1 bg-background border rounded-lg overflow-hidden",
           "transition-all duration-300 ease-in-out",
-          isMobile && isMobileListVisible ? "hidden" : "block"
+          "fixed md:relative",
+          "inset-0 md:inset-auto",
+          "h-full",
+          "z-20",
+          isMobile && isMobileListVisible ? "translate-x-[100%] md:translate-x-0" : "translate-x-0"
         )}
       >
-        {/* Mobile back button */}
         {isMobile && !isMobileListVisible && (
           <Button
             variant="ghost"
-            className="md:hidden m-2"
+            className="absolute top-4 left-4 z-10 h-8"
             onClick={() => setIsMobileListVisible(true)}
           >
-            ← Back to conversations
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Back
           </Button>
         )}
         <ChatWindow onMobileBack={() => setIsMobileListVisible(true)} />
@@ -148,7 +167,7 @@ const RequestItem = ({ name, message, timestamp }: RequestItemProps) => {
     <div className="border rounded-lg p-3 space-y-2 bg-background hover:bg-accent/50">
       <div>
         <h4 className="font-semibold text-sm text-foreground">{name}</h4>
-        <p className="text-sm text-foreground/80">{message}</p>
+        <p className="text-sm text-foreground/80 line-clamp-2">{message}</p>
         <span className="text-xs text-foreground/70">{timestamp}</span>
       </div>
       <div className="flex gap-2">
