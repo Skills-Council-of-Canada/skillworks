@@ -21,7 +21,7 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({
-    full_name: fullName || "",
+    name: fullName || "",  // Changed back to 'name' to match the database column
     bio: bio || "",
   });
 
@@ -32,13 +32,14 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: editValues.full_name,  // Changed from name to full_name
+          name: editValues.name,  // Use 'name' instead of 'full_name'
           bio: editValues.bio,
         })
         .eq('id', user.id);
 
       if (error) throw error;
 
+      // Invalidate the query to refetch latest data
       await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
 
       toast({
@@ -74,8 +75,8 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
           <div>
             <label className="text-sm font-medium text-gray-700">Name</label>
             <Input
-              value={editValues.full_name}
-              onChange={(e) => setEditValues(prev => ({ ...prev, full_name: e.target.value }))}
+              value={editValues.name}
+              onChange={(e) => setEditValues(prev => ({ ...prev, name: e.target.value }))}
               className="mt-1"
             />
           </div>
