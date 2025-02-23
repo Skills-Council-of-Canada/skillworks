@@ -1,50 +1,59 @@
 
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckCircle2, Circle, CircleDot } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+
+interface Step {
+  label: string;
+}
 
 interface RegistrationStepperProps {
+  steps: Step[];
   currentStep: number;
   onStepChange: (step: number) => void;
-  isStepValid: boolean;
-  onSubmit: () => void;
-  isLastStep: boolean;
 }
 
 export const RegistrationStepper = ({
+  steps,
   currentStep,
   onStepChange,
-  isStepValid,
-  onSubmit,
-  isLastStep
 }: RegistrationStepperProps) => {
+  const progress = (currentStep / steps.length) * 100;
+
   return (
-    <div className="flex justify-between mt-6">
-      {currentStep > 1 && (
-        <Button
-          variant="outline"
-          onClick={() => onStepChange(currentStep - 1)}
-          className="flex items-center"
-        >
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
-      )}
-      <div className="flex-1" />
-      <Button
-        onClick={() => isLastStep ? onSubmit() : onStepChange(currentStep + 1)}
-        disabled={!isStepValid}
-        className="flex items-center"
-      >
-        {isLastStep ? (
-          "Complete Registration"
-        ) : (
-          <>
-            Next
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </>
-        )}
-      </Button>
+    <div className="space-y-4 mt-4">
+      <Progress value={progress} className="h-2" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {steps.map((step, index) => {
+          const stepNumber = index + 1;
+          const isCompleted = stepNumber < currentStep;
+          const isCurrent = stepNumber === currentStep;
+
+          return (
+            <button
+              key={index}
+              onClick={() => onStepChange(stepNumber)}
+              className={`flex items-center gap-3 ${
+                stepNumber <= currentStep ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+              }`}
+              disabled={stepNumber > currentStep}
+              type="button"
+            >
+              {isCompleted ? (
+                <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              ) : isCurrent ? (
+                <CircleDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              ) : (
+                <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+              )}
+              <span className={`text-sm sm:text-base ${
+                isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
+              }`}>
+                {step.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

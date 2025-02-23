@@ -3,13 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { PersonalInfoForm } from "@/components/participant/registration/PersonalInfoForm";
 import { ProfileSetupForm } from "@/components/participant/registration/ProfileSetupForm";
+import { RegistrationStepper } from "@/components/participant/registration/RegistrationStepper";
+import { RegistrationNavigation } from "@/components/participant/registration/RegistrationNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/landing/Header";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2, Circle, CircleDot, ChevronLeft, ChevronRight } from "lucide-react";
 
 const steps = [
   { label: "Personal Information" },
@@ -23,8 +22,6 @@ const ParticipantRegistration = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const progress = (currentStep / steps.length) * 100;
 
   const handleStepChange = (step: number) => {
     if (step < currentStep || isStepValid) {
@@ -112,48 +109,31 @@ const ParticipantRegistration = () => {
     }
   };
 
+  const handleFormSubmit = () => {
+    const form = document.querySelector('form');
+    if (form) {
+      const submitEvent = new Event('submit', {
+        cancelable: true,
+        bubbles: true
+      });
+      form.dispatchEvent(submitEvent);
+    }
+  };
+
   return (
     <>
       <Header />
       <div className="min-h-screen bg-background px-4 py-8 sm:py-12 mt-16">
         <Card className="w-full max-w-lg mx-auto">
           <CardHeader>
-            <CardTitle className="text-xl sm:text-2xl text-center">Participant Registration</CardTitle>
-            <div className="space-y-4 mt-4">
-              <Progress value={progress} className="h-2" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {steps.map((step, index) => {
-                  const stepNumber = index + 1;
-                  const isCompleted = stepNumber < currentStep;
-                  const isCurrent = stepNumber === currentStep;
-
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handleStepChange(stepNumber)}
-                      className={`flex items-center gap-3 ${
-                        stepNumber <= currentStep ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-                      }`}
-                      disabled={stepNumber > currentStep}
-                      type="button"
-                    >
-                      {isCompleted ? (
-                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                      ) : isCurrent ? (
-                        <CircleDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                      ) : (
-                        <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-                      )}
-                      <span className={`text-sm sm:text-base ${
-                        isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
-                      }`}>
-                        {step.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            <CardTitle className="text-xl sm:text-2xl text-center">
+              Participant Registration
+            </CardTitle>
+            <RegistrationStepper
+              steps={steps}
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+            />
           </CardHeader>
           <CardContent className="space-y-6 p-4 sm:p-6">
             {currentStep === 1 && (
@@ -170,42 +150,14 @@ const ParticipantRegistration = () => {
               />
             )}
 
-            <div className="flex justify-between mt-6">
-              {currentStep > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleStepChange(currentStep - 1)}
-                >
-                  <ChevronLeft className="mr-2 h-4 w-4" />
-                  Back
-                </Button>
-              )}
-              <Button
-                type="submit"
-                className="ml-auto"
-                disabled={!isStepValid || isSubmitting}
-                onClick={() => {
-                  const form = document.querySelector('form');
-                  if (form) {
-                    const submitEvent = new Event('submit', {
-                      cancelable: true,
-                      bubbles: true
-                    });
-                    form.dispatchEvent(submitEvent);
-                  }
-                }}
-              >
-                {currentStep === steps.length ? (
-                  isSubmitting ? "Registering..." : "Complete Registration"
-                ) : (
-                  <>
-                    Next
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
+            <RegistrationNavigation
+              currentStep={currentStep}
+              isLastStep={currentStep === steps.length}
+              isStepValid={isStepValid}
+              isSubmitting={isSubmitting}
+              onBack={() => handleStepChange(currentStep - 1)}
+              onSubmit={handleFormSubmit}
+            />
           </CardContent>
         </Card>
       </div>
