@@ -9,7 +9,6 @@ export const profileFormSchema = z.object({
   preferred_contact: z.string().optional(),
   skill_level: z.enum(["beginner", "intermediate", "advanced", "expert"]),
   availability: z.string(),
-  educational_background: z.string().optional(),
   preferred_learning_areas: z.array(z.string()),
 });
 

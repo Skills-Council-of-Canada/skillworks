@@ -20,7 +20,6 @@ export interface CombinedProfile {
   preferred_contact?: string | null;
   skill_level?: string;
   availability?: string;
-  educational_background?: string | null;
   preferred_learning_areas?: string[];
   created_at?: string;
   updated_at?: string;
@@ -40,7 +39,7 @@ export const useProfileCompletion = () => {
         // Query participant profile data
         const { data: participantProfile, error: participantError } = await supabase
           .from('participant_profiles')
-          .select('educational_background, onboarding_completed, profile_completion_percentage')
+          .select('skill_level, availability, onboarding_completed, profile_completion_percentage')
           .eq('id', user.id)
           .maybeSingle();
 
@@ -52,7 +51,8 @@ export const useProfileCompletion = () => {
         // Return combined profile
         const combinedProfile: CombinedProfile = {
           ...user,
-          educational_background: participantProfile?.educational_background || null,
+          skill_level: participantProfile?.skill_level || undefined,
+          availability: participantProfile?.availability || undefined,
           preferred_learning_areas: [],
         };
 
@@ -63,8 +63,8 @@ export const useProfileCompletion = () => {
       }
     },
     enabled: !!user?.id,
-    staleTime: Infinity, // Never goes stale automatically
-    cacheTime: 1000 * 60 * 30,
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -77,8 +77,7 @@ export const useProfileCompletion = () => {
     const requiredFields = [
       'name',
       'email',
-      'phone',
-      'educational_background'
+      'phone'
     ];
 
     const completedFields = requiredFields.filter(field => {

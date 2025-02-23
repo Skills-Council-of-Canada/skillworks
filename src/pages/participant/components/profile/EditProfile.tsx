@@ -37,10 +37,9 @@ export const EditProfile = () => {
       email: profile?.email || "",
       phone: profile?.phone || "",
       preferred_contact: profile?.preferred_contact || "",
-      educational_background: profile?.educational_background || "",
-      preferred_learning_areas: [],
-      skill_level: "beginner",
-      availability: "",
+      skill_level: profile?.skill_level as "beginner" | "intermediate" | "advanced" | "expert" || "beginner",
+      availability: profile?.availability || "",
+      preferred_learning_areas: profile?.preferred_learning_areas || [],
     },
   });
 
@@ -65,7 +64,8 @@ export const EditProfile = () => {
       const { error: participantError } = await supabase
         .from('participant_profiles')
         .update({
-          educational_background: values.educational_background,
+          skill_level: values.skill_level,
+          availability: values.availability,
         })
         .eq('id', user.id);
 
@@ -103,20 +103,6 @@ export const EditProfile = () => {
             <BasicInfoSection form={form} />
             <ContactSection form={form} />
             <SkillsSection form={form} />
-
-            <FormField
-              control={form.control}
-              name="educational_background"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Educational Background</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <div className="flex justify-end gap-4">
               <Button
