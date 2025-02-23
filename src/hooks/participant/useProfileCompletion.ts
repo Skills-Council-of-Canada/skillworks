@@ -26,7 +26,6 @@ export interface CombinedProfile {
 export const useProfileCompletion = () => {
   const { user } = useAuth();
 
-  // Use type-safe query with proper caching
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
@@ -38,33 +37,22 @@ export const useProfileCompletion = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching profile:", error);
-        return null;
-      }
+      if (error) throw error;
 
       return profile as CombinedProfile;
     },
     enabled: Boolean(user?.id),
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
-    gcTime: 1000 * 60 * 30, // Cache for 30 minutes
-    refetchOnMount: 'always',
+    staleTime: Infinity,
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: 1,
+    retry: false
   });
 
-  const calculateCompletionPercentage = useMemo(() => {
+  const completionPercentage = useMemo(() => {
     if (!profileData) return 0;
 
-    const requiredFields = [
-      'name',
-      'email',
-      'phone',
-      'bio',
-      'avatar_url'
-    ];
-
+    const requiredFields = ['name', 'email', 'phone', 'bio', 'avatar_url'];
     const completedFields = requiredFields.filter(field => {
       const value = profileData[field as keyof CombinedProfile];
       return value !== null && value !== undefined && value !== '';
@@ -76,6 +64,6 @@ export const useProfileCompletion = () => {
   return {
     profile: profileData,
     isLoading,
-    completionPercentage: calculateCompletionPercentage,
+    completionPercentage,
   };
 };
