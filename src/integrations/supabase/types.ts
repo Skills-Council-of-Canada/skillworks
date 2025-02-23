@@ -3187,9 +3187,12 @@ export type Database = {
           date_of_birth: string
           educational_background: string | null
           email: string
+          email_verified: boolean | null
           first_name: string
           id: string
           last_name: string
+          oauth_id: string | null
+          oauth_provider: string | null
           preferred_learning_areas: string[] | null
           registration_completed: boolean | null
           skill_level: string
@@ -3202,9 +3205,12 @@ export type Database = {
           date_of_birth: string
           educational_background?: string | null
           email: string
+          email_verified?: boolean | null
           first_name: string
           id?: string
           last_name: string
+          oauth_id?: string | null
+          oauth_provider?: string | null
           preferred_learning_areas?: string[] | null
           registration_completed?: boolean | null
           skill_level: string
@@ -3217,9 +3223,12 @@ export type Database = {
           date_of_birth?: string
           educational_background?: string | null
           email?: string
+          email_verified?: boolean | null
           first_name?: string
           id?: string
           last_name?: string
+          oauth_id?: string | null
+          oauth_provider?: string | null
           preferred_learning_areas?: string[] | null
           registration_completed?: boolean | null
           skill_level?: string
