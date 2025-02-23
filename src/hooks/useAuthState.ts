@@ -47,22 +47,17 @@ export const useAuthState = () => {
   }, []);
 
   const handleSession = useCallback(async (session: any | null) => {
-    if (authCheckCompleted.current) {
-      return;
-    }
-
-    if (!session?.user) {
-      setUser(null);
-      setIsLoading(false);
-      if (!isPublicRoute(location.pathname) && !navigationRef.current) {
-        navigationRef.current = true;
-        navigate('/login', { replace: true });
-      }
-      authCheckCompleted.current = true;
-      return;
-    }
-
     try {
+      if (!session?.user) {
+        setUser(null);
+        setIsLoading(false);
+        if (!isPublicRoute(location.pathname) && !navigationRef.current) {
+          navigationRef.current = true;
+          navigate('/login', { replace: true });
+        }
+        return;
+      }
+
       let profile = profileCache.get(session.user.id);
       
       if (!profile) {
@@ -79,15 +74,15 @@ export const useAuthState = () => {
           navigationRef.current = true;
           navigate('/login', { replace: true });
         }
-        authCheckCompleted.current = true;
         return;
       }
 
       setUser(profile);
       
-      // Only redirect if not already on a valid route for the user's role
-      if (!isPublicRoute(location.pathname) && 
-          !isCorrectRoleRoute(location.pathname, profile.role) && 
+      // Only redirect if user is on login page, root, or wrong role route
+      if ((location.pathname === '/login' || 
+          location.pathname === '/' || 
+          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) && 
           !navigationRef.current) {
         navigationRef.current = true;
         navigate(getRoleBasedRedirect(profile.role), { replace: true });
@@ -106,7 +101,6 @@ export const useAuthState = () => {
       }
     } finally {
       setIsLoading(false);
-      authCheckCompleted.current = true;
     }
   }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
 
@@ -115,36 +109,29 @@ export const useAuthState = () => {
     let authSubscription: { unsubscribe: () => void } | null = null;
 
     const setupAuth = async () => {
-      if (location.pathname.includes('/registration')) {
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        // Get the initial session
+        // Initialize session from localStorage first
         const { data: { session } } = await supabase.auth.getSession();
-        if (mounted) {
+        if (mounted && session) {
           await handleSession(session);
         }
 
-        // Set up the auth state listener
+        // Set up real-time auth state listener
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
+          console.log("Auth state change:", event, session); // Debug log
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
             profileCache.clear();
             setIsLoading(false);
-            if (!isPublicRoute(location.pathname) && !navigationRef.current) {
-              navigationRef.current = true;
+            if (!isPublicRoute(location.pathname)) {
               navigate('/login', { replace: true });
             }
             return;
           }
 
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            navigationRef.current = false;
-            authCheckCompleted.current = false;
             await handleSession(session);
           }
         }).data.subscription;
