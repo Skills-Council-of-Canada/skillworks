@@ -46,7 +46,7 @@ export const useProfileCompletion = () => {
     },
     enabled: Boolean(user?.id),
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
