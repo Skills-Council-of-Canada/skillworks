@@ -9,7 +9,23 @@ type Tables = Database['public']['Tables'];
 type Profile = Tables['profiles']['Row'];
 type ParticipantProfile = Tables['participant_profiles']['Row'];
 
-export type CombinedProfile = Profile & ParticipantProfile;
+export interface CombinedProfile {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  avatar_url?: string | null;
+  bio?: string | null;
+  phone?: string | null;
+  preferred_contact?: string | null;
+  skill_level?: string;
+  availability?: string;
+  educational_background?: string | null;
+  preferred_learning_areas?: string[];
+  created_at?: string;
+  updated_at?: string;
+  status?: string;
+}
 
 export const useProfileCompletion = () => {
   const { user } = useAuth();
@@ -23,40 +39,37 @@ export const useProfileCompletion = () => {
       try {
         const { data: participantDetails, error: detailsError } = await supabase
           .from('participant_profiles')
-          .select()
+          .select('skill_level, availability, educational_background, preferred_learning_areas')
           .eq('id', user.id)
           .maybeSingle();
 
         if (detailsError && detailsError.code !== 'PGRST116') {
           console.error("Error fetching participant profile:", detailsError);
-          toast({
-            title: "Error",
-            description: "Failed to fetch participant profile",
-            variant: "destructive",
-          });
+          return null;
         }
 
-        // Return the combined data using the user data we already have
-        return {
+        // Combine only the fields we need
+        const combinedProfile: CombinedProfile = {
           ...user,
-          ...participantDetails
-        } as CombinedProfile;
+          skill_level: participantDetails?.skill_level || undefined,
+          availability: participantDetails?.availability || undefined,
+          educational_background: participantDetails?.educational_background || null,
+          preferred_learning_areas: participantDetails?.preferred_learning_areas || []
+        };
+
+        return combinedProfile;
       } catch (error) {
         console.error("Unexpected error:", error);
-        toast({
-          title: "Error",
-          description: "An unexpected error occurred",
-          variant: "destructive",
-        });
         return null;
       }
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
-    gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes
+    staleTime: Infinity, // Never goes stale automatically
+    gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    refetchOnReconnect: false
+    refetchOnReconnect: false,
+    retry: false // Don't retry failed requests
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {

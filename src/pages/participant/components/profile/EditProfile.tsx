@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -26,18 +25,18 @@ export const EditProfile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { profile, isLoading } = useProfileCompletion();
+  const { profile } = useProfileCompletion();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      full_name: profile?.full_name || "",
+      name: profile?.name || "",
       bio: profile?.bio || "",
       email: profile?.email || "",
       phone: profile?.phone || "",
       preferred_contact: profile?.preferred_contact || "",
-      skill_level: profile?.skill_level || "beginner",
+      skill_level: (profile?.skill_level as "beginner" | "intermediate" | "advanced" | "expert") || "beginner",
       availability: profile?.availability || "",
       educational_background: profile?.educational_background || "",
       preferred_learning_areas: profile?.preferred_learning_areas || [],
@@ -52,7 +51,7 @@ export const EditProfile = () => {
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
-          name: values.full_name,
+          name: values.name,
           bio: values.bio,
           email: values.email,
           phone: values.phone,
@@ -65,9 +64,10 @@ export const EditProfile = () => {
       const { error: participantError } = await supabase
         .from('participant_profiles')
         .update({
-          skills: [values.skill_level],
+          skill_level: values.skill_level,
+          availability: values.availability,
           educational_background: values.educational_background,
-          interests: values.preferred_learning_areas,
+          preferred_learning_areas: values.preferred_learning_areas,
         })
         .eq('id', user.id);
 
@@ -91,7 +91,7 @@ export const EditProfile = () => {
     }
   };
 
-  if (isLoading) {
+  if (!profile) {
     return <div>Loading...</div>;
   }
 
