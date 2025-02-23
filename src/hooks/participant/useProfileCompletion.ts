@@ -26,7 +26,7 @@ export interface CombinedProfile {
 export const useProfileCompletion = () => {
   const { user } = useAuth();
 
-  const fetchProfile = async () => {
+  const fetchProfile = useMemo(() => async () => {
     if (!user?.id) return null;
 
     const { data: participantProfile, error: participantError } = await supabase
@@ -45,18 +45,18 @@ export const useProfileCompletion = () => {
     };
 
     return combinedProfile;
-  };
+  }, [user?.id]);
 
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
     queryFn: fetchProfile,
     enabled: Boolean(user?.id),
-    staleTime: 300000,
-    gcTime: 3600000,
+    staleTime: Infinity, // Prevent automatic refetching
+    gcTime: 3600000, // Keep in cache for 1 hour
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: false,
-    retry: 1,
+    retry: false,
     refetchInterval: false
   });
 
