@@ -1,58 +1,62 @@
 
-import { Outlet } from "react-router-dom";
-import { Navigation } from "./components/Navigation";
-import { UserMenu } from "./components/UserMenu";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Outlet, useNavigate, Link } from "react-router-dom";
+import { 
+  Home,
+  CheckSquare,
+  BookOpen, 
+  Users,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { Navigation } from "./components/Navigation";
+import { Header } from "./components/Header";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-export const ParticipantLayout = () => {
+const ParticipantLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { profile } = useProfileCompletion();
+  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
+  const navItems = [
+    { to: "/participant/dashboard", icon: Home, label: "Dashboard" },
+    { to: "/participant/tasks", icon: CheckSquare, label: "Tasks & Activity" },
+    { to: "/participant/experiences", icon: BookOpen, label: "My Experiences" },
+    { to: "/participant/mentors", icon: Users, label: "My Mentors" },
+  ];
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="hidden md:flex w-64 flex-col fixed inset-y-0">
-        <Navigation userName={user?.name} isMobile={false} />
-      </div>
+    <SidebarProvider defaultOpen>
+      <div className="flex min-h-screen w-full bg-background">
+        {/* Desktop Sidebar */}
+        <Sidebar className="hidden md:block border-r bg-[#1A1F2C]" collapsible="icon">
+          <Navigation userName={user?.name} navItems={navItems} isMobile={false} />
+        </Sidebar>
 
-      <div className="flex-1 flex flex-col md:pl-64">
-        <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-4 bg-white border-b">
-          <div className="md:hidden">
-            <Navigation userName={user?.name} isMobile={true} />
-          </div>
+        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+          <Header userName={user?.name} onLogout={handleLogout} />
+          <main className="flex-1 overflow-auto p-4 sm:p-6">
+            <Outlet />
+          </main>
 
-          <div className="flex items-center gap-4 ml-auto">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              onClick={() => navigate("/participant/notifications")}
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
-            <UserMenu 
-              onLogout={handleLogout} 
-              userName={user?.name} 
-              showNotifications={true}
-              avatarUrl={profile?.avatar_url}
-            />
-          </div>
+          {/* Mobile Navigation */}
+          {isMobile && (
+            <div className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] border-t border-white/10 z-50">
+              <Navigation userName={user?.name} navItems={navItems} isMobile={true} />
+            </div>
+          )}
         </div>
-
-        <ScrollArea className="flex-1 p-4 md:p-8">
-          <Outlet />
-        </ScrollArea>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
+
+export default ParticipantLayout;

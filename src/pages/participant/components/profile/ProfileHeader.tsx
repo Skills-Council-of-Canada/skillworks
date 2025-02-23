@@ -37,7 +37,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file);
 
@@ -114,10 +114,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
             <div className="relative group">
               <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
                 {profile?.avatar_url ? (
-                  <AvatarImage 
-                    src={profile.avatar_url} 
-                    alt={profile.full_name || userName || "Profile"} 
-                  />
+                  <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
                 ) : (
                   <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl sm:text-5xl">
                     {profile?.full_name?.[0] || userName?.[0]}

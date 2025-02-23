@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ChevronDown,
   UserCircle,
@@ -22,10 +22,9 @@ interface UserMenuProps {
   onLogout: () => void;
   userName?: string;
   showNotifications?: boolean;
-  avatarUrl?: string;
 }
 
-export const UserMenu = ({ onLogout, userName, showNotifications = false, avatarUrl }: UserMenuProps) => {
+export const UserMenu = ({ onLogout, userName, showNotifications = false }: UserMenuProps) => {
   const getInitials = (name: string) => {
     return name
       ?.split(" ")
@@ -42,13 +41,9 @@ export const UserMenu = ({ onLogout, userName, showNotifications = false, avatar
           className="flex items-center gap-2 hover:bg-transparent text-foreground hover:text-foreground"
         >
           <Avatar className="h-8 w-8">
-            {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt={userName} />
-            ) : (
-              <AvatarFallback className="bg-[#1A1F2C] text-white">
-                {getInitials(userName || "U")}
-              </AvatarFallback>
-            )}
+            <AvatarFallback className="bg-[#1A1F2C] text-white">
+              {getInitials(userName || "U")}
+            </AvatarFallback>
           </Avatar>
           <span className="text-sm hidden md:inline-block">
             {userName}
