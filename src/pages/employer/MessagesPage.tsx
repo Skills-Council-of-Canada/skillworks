@@ -38,7 +38,7 @@ const MessagesPage = () => {
   }, []);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex h-full w-full overflow-hidden relative">
       {/* Left Panel - Chat List */}
       <div
         className={cn(
