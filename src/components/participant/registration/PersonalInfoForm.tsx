@@ -54,7 +54,9 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
 
   React.useEffect(() => {
     const subscription = form.watch(() => {
-      onValidityChange(form.formState.isValid);
+      const isValid = form.formState.isValid;
+      console.log("Form validity changed:", isValid); // Debug log
+      onValidityChange(isValid);
     });
     return () => subscription.unsubscribe();
   }, [form, onValidityChange]);
