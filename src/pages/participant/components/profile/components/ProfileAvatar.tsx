@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 interface ProfileAvatarProps {
   avatarUrl?: string | null;
@@ -16,6 +17,7 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -42,7 +44,7 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, {
-          cacheControl: '3600',
+          cacheControl: 'no-cache',
           upsert: true
         });
 
@@ -60,17 +62,12 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
       if (updateError) throw updateError;
 
       await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
+      setCacheBuster(Date.now()); // Update cache buster to force re-render
 
       toast({
         title: "Success",
         description: "Your profile picture has been updated successfully.",
       });
-
-      // Force reload the avatar image by clearing browser cache for the URL
-      const avatarImg = document.querySelector('img[alt="Profile"]') as HTMLImageElement;
-      if (avatarImg) {
-        avatarImg.src = publicUrl + '?t=' + new Date().getTime();
-      }
 
     } catch (error) {
       console.error('Error uploading avatar:', error);
@@ -82,12 +79,14 @@ export const ProfileAvatar = ({ avatarUrl, name, userName }: ProfileAvatarProps)
     }
   };
 
+  const cachedAvatarUrl = avatarUrl ? `${avatarUrl}?t=${cacheBuster}` : null;
+
   return (
     <div className="relative group">
       <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
-        {avatarUrl ? (
+        {cachedAvatarUrl ? (
           <AvatarImage 
-            src={avatarUrl} 
+            src={cachedAvatarUrl} 
             alt={name || userName || "Profile"} 
             className="object-cover"
           />
