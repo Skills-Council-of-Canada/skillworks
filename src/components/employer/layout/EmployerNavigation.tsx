@@ -7,7 +7,6 @@ import {
   BookOpen,
   PanelLeft,
   PanelRight,
-  MessageSquare,
 } from "lucide-react";
 import {
   SidebarContent,
@@ -36,7 +35,6 @@ export const EmployerNavigation = ({ userName, isMobile }: EmployerNavigationPro
     { title: "Dashboard", url: "/employer/dashboard", icon: LayoutDashboard },
     { title: "Projects", url: "/employer/projects", icon: Briefcase },
     { title: "Applications", url: "/employer/applications", icon: ClipboardList },
-    { title: "Messages", url: "/employer/messages", icon: MessageSquare },
     { title: "Resources", url: "/employer/resources", icon: BookOpen },
   ];
 
