@@ -20,6 +20,7 @@ const ParticipantRegistration = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isStepValid, setIsStepValid] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -29,12 +30,15 @@ const ParticipantRegistration = () => {
     setCurrentStep(step);
   };
 
-  const handlePersonalInfoSubmit = async (data: any) => {
+  const handlePersonalInfoSubmit = (data: any) => {
     setFormData({ ...formData, ...data });
     setCurrentStep(2);
   };
 
   const handleProfileSetupSubmit = async (data: any) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    
     const finalData = { ...formData, ...data };
     
     try {
@@ -78,7 +82,8 @@ const ParticipantRegistration = () => {
           description: "You can now log in to access your dashboard.",
         });
 
-        navigate("/login");
+        // Use replace to prevent back navigation to registration page
+        navigate("/login", { replace: true });
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -87,6 +92,8 @@ const ParticipantRegistration = () => {
         description: "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
