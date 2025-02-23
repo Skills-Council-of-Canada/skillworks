@@ -37,24 +37,23 @@ export const useProfileCompletion = () => {
       if (!user?.id) return null;
 
       try {
-        const { data: participantDetails, error: detailsError } = await supabase
+        // Query participant profile data
+        const { data: participantProfile, error: participantError } = await supabase
           .from('participant_profiles')
-          .select('skill_level, availability, educational_background, preferred_learning_areas')
+          .select('educational_background, onboarding_completed, profile_completion_percentage')
           .eq('id', user.id)
           .maybeSingle();
 
-        if (detailsError && detailsError.code !== 'PGRST116') {
-          console.error("Error fetching participant profile:", detailsError);
+        if (participantError) {
+          console.error("Error fetching participant profile:", participantError);
           return null;
         }
 
-        // Combine only the fields we need
+        // Return combined profile
         const combinedProfile: CombinedProfile = {
           ...user,
-          skill_level: participantDetails?.skill_level || undefined,
-          availability: participantDetails?.availability || undefined,
-          educational_background: participantDetails?.educational_background || null,
-          preferred_learning_areas: participantDetails?.preferred_learning_areas || []
+          educational_background: participantProfile?.educational_background || null,
+          preferred_learning_areas: [],
         };
 
         return combinedProfile;
@@ -65,11 +64,11 @@ export const useProfileCompletion = () => {
     },
     enabled: !!user?.id,
     staleTime: Infinity, // Never goes stale automatically
-    gcTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: false // Don't retry failed requests
+    retry: false
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
@@ -79,16 +78,12 @@ export const useProfileCompletion = () => {
       'name',
       'email',
       'phone',
-      'skill_level',
-      'availability',
-      'preferred_learning_areas',
       'educational_background'
     ];
 
     const completedFields = requiredFields.filter(field => {
       const value = profile[field as keyof CombinedProfile];
-      return value !== null && value !== undefined && 
-             (Array.isArray(value) ? value.length > 0 : value !== '');
+      return value !== null && value !== undefined && value !== '';
     });
 
     return Math.round((completedFields.length / requiredFields.length) * 100);

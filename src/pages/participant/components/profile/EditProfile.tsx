@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -36,10 +37,10 @@ export const EditProfile = () => {
       email: profile?.email || "",
       phone: profile?.phone || "",
       preferred_contact: profile?.preferred_contact || "",
-      skill_level: (profile?.skill_level as "beginner" | "intermediate" | "advanced" | "expert") || "beginner",
-      availability: profile?.availability || "",
       educational_background: profile?.educational_background || "",
-      preferred_learning_areas: profile?.preferred_learning_areas || [],
+      preferred_learning_areas: [],
+      skill_level: "beginner",
+      availability: "",
     },
   });
 
@@ -64,10 +65,7 @@ export const EditProfile = () => {
       const { error: participantError } = await supabase
         .from('participant_profiles')
         .update({
-          skill_level: values.skill_level,
-          availability: values.availability,
           educational_background: values.educational_background,
-          preferred_learning_areas: values.preferred_learning_areas,
         })
         .eq('id', user.id);
 
