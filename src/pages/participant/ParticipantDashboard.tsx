@@ -18,14 +18,16 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ParticipantDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { data, isLoading: dashboardLoading } = useParticipantDashboard();
-  const { completionPercentage, isLoading: profileLoading } = useProfileCompletion();
+  const { completionPercentage } = useProfileCompletion();
+  const { isLoading: authLoading } = useAuth();
 
-  const isLoading = dashboardLoading || profileLoading;
+  const isLoading = dashboardLoading || authLoading;
 
   const getActivityIcon = (type: string) => {
     switch (type) {

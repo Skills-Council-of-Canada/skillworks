@@ -31,9 +31,5 @@ export const useProfileCompletion = () => {
     return Math.round((completedFields.length / requiredFields.length) * 100);
   }, [user]);
 
-  return {
-    profile: user,
-    isLoading,
-    completionPercentage,
-  };
+  return { completionPercentage };
 };
