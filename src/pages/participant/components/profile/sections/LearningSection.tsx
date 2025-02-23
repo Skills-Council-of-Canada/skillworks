@@ -6,18 +6,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { InfoItem } from "../components/InfoItem";
 import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
 
+interface EditValues {
+  skill_level: string;
+  availability: string;
+  educational_background: string;
+}
+
 interface LearningDetailsProps {
   profile: CombinedProfile | null;
   isEditing: boolean;
-  editValues: {
-    skill_level: string;
-    availability: string;
-    educational_background: string;
-  };
+  editValues: EditValues;
   onEdit: () => void;
   onCancel: () => void;
   onSave: () => void;
-  onChange: (values: Partial<typeof editValues>) => void;
+  onChange: (values: Partial<EditValues>) => void;
 }
 
 export const LearningSection = ({
