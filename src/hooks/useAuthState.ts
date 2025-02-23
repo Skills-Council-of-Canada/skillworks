@@ -85,10 +85,9 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      // Only redirect if user is on login page, root, or wrong role route
-      if ((location.pathname === '/login' || 
-          location.pathname === '/' || 
-          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) && 
+      // Only redirect if not already on a valid route for the user's role
+      if (!isPublicRoute(location.pathname) && 
+          !isCorrectRoleRoute(location.pathname, profile.role) && 
           !navigationRef.current) {
         navigationRef.current = true;
         navigate(getRoleBasedRedirect(profile.role), { replace: true });
@@ -114,8 +113,6 @@ export const useAuthState = () => {
   useEffect(() => {
     let mounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
-    navigationRef.current = false;
-    authCheckCompleted.current = false;
 
     const setupAuth = async () => {
       if (location.pathname.includes('/registration')) {
@@ -124,11 +121,13 @@ export const useAuthState = () => {
       }
 
       try {
+        // Get the initial session
         const { data: { session } } = await supabase.auth.getSession();
         if (mounted) {
           await handleSession(session);
         }
 
+        // Set up the auth state listener
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
 
@@ -143,7 +142,9 @@ export const useAuthState = () => {
             return;
           }
 
-          if (event === 'SIGNED_IN') {
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            navigationRef.current = false;
+            authCheckCompleted.current = false;
             await handleSession(session);
           }
         }).data.subscription;
