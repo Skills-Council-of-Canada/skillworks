@@ -29,7 +29,7 @@ const ParticipantRegistration = () => {
   const handleStepChange = (step: number) => {
     if (step < currentStep || isStepValid) {
       setCurrentStep(step);
-      setIsStepValid(false); // Reset validity when changing steps
+      setIsStepValid(false);
     }
   };
 
@@ -37,7 +37,7 @@ const ParticipantRegistration = () => {
     console.log("Personal info submitted:", data);
     setFormData({ ...formData, ...data });
     setCurrentStep(2);
-    setIsStepValid(false); // Reset validity for next step
+    setIsStepValid(false);
   };
 
   const handleProfileSetupSubmit = async (data: any) => {
@@ -125,14 +125,15 @@ const ParticipantRegistration = () => {
                   const stepNumber = index + 1;
                   const isCompleted = stepNumber < currentStep;
                   const isCurrent = stepNumber === currentStep;
-                  const isClickable = stepNumber <= currentStep || isStepValid;
 
                   return (
                     <button
                       key={index}
-                      onClick={() => isClickable && handleStepChange(stepNumber)}
-                      className={`flex items-center gap-3 ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
-                      disabled={!isClickable}
+                      onClick={() => handleStepChange(stepNumber)}
+                      className={`flex items-center gap-3 ${
+                        stepNumber <= currentStep ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+                      }`}
+                      disabled={stepNumber > currentStep}
                       type="button"
                     >
                       {isCompleted ? (
@@ -142,7 +143,9 @@ const ParticipantRegistration = () => {
                       ) : (
                         <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                       )}
-                      <span className={`text-sm sm:text-base ${isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
+                      <span className={`text-sm sm:text-base ${
+                        isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
+                      }`}>
                         {step.label}
                       </span>
                     </button>
@@ -177,26 +180,30 @@ const ParticipantRegistration = () => {
                   Back
                 </Button>
               )}
-              {currentStep === 1 ? (
-                <Button
-                  type="submit"
-                  className="ml-auto"
-                  disabled={!isStepValid}
-                  onClick={() => document.querySelector('form')?.requestSubmit()}
-                >
-                  Next
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  className="ml-auto"
-                  disabled={!isStepValid || isSubmitting}
-                  onClick={() => document.querySelector('form')?.requestSubmit()}
-                >
-                  {isSubmitting ? "Registering..." : "Complete Registration"}
-                </Button>
-              )}
+              <Button
+                type="submit"
+                className="ml-auto"
+                disabled={!isStepValid}
+                onClick={() => {
+                  const form = document.querySelector('form');
+                  if (form) {
+                    const submitEvent = new Event('submit', {
+                      cancelable: true,
+                      bubbles: true
+                    });
+                    form.dispatchEvent(submitEvent);
+                  }
+                }}
+              >
+                {currentStep === steps.length ? (
+                  isSubmitting ? "Registering..." : "Complete Registration"
+                ) : (
+                  <>
+                    Next
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
             </div>
           </CardContent>
         </Card>
