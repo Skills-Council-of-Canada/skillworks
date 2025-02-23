@@ -1,12 +1,14 @@
 
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfileCompletion } from "@/hooks/participant/useProfileCompletion";
 import { ProfileHeader } from "./components/profile/ProfileHeader";
 import { ProfileInfo } from "./components/profile/ProfileInfo";
 import { TabContent } from "./components/profile/TabContent";
+import { EditProfile } from "./components/profile/EditProfile";
 
-export const Profile = () => {
+const ViewProfile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const { profile, isLoading, completionPercentage } = useProfileCompletion();
@@ -34,6 +36,15 @@ export const Profile = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+export const Profile = () => {
+  return (
+    <Routes>
+      <Route index element={<ViewProfile />} />
+      <Route path="edit" element={<EditProfile />} />
+    </Routes>
   );
 };
 
