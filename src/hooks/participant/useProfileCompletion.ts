@@ -22,6 +22,7 @@ export type CombinedProfile = {
 
 const fetchProfile = async (userId: string | undefined) => {
   if (!userId) return null;
+  console.log('Fetching profile for ID:', userId);
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -41,6 +42,8 @@ const fetchProfile = async (userId: string | undefined) => {
   if (detailsError && detailsError.code !== 'PGRST116') {
     throw detailsError;
   }
+
+  console.log('Profile data retrieved:', profile);
 
   return {
     ...profile,
@@ -62,12 +65,14 @@ export const useProfileCompletion = () => {
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["participant-profile", user?.id],
     queryFn: () => fetchProfile(user?.id),
-    staleTime: Infinity,
-    gcTime: 1000 * 60 * 30,
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Cache for 30 minutes
+    refetchInterval: false, // Disable periodic refetching
+    refetchIntervalInBackground: false,
+    refetchOnMount: true, // Only fetch once on mount
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!user?.id,
     retry: false,
     meta: {
       onError: (error: any) => {
