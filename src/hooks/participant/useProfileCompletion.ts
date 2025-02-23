@@ -11,6 +11,7 @@ type ParticipantProfile = Tables['participant_profiles']['Row'];
 
 type CombinedProfile = {
   full_name: string;
+  bio: string | null;
 } & Omit<Profile, 'name'> & {
   skill_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   availability: string;
@@ -73,6 +74,7 @@ export const useProfileCompletion = () => {
         const combinedProfile: CombinedProfile = {
           ...profile,
           full_name: profile.name,
+          bio: profile.bio,
           skill_level: 'beginner',
           availability: 'flexible',
           date_of_birth: null,
