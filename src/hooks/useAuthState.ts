@@ -16,6 +16,8 @@ export const useAuthState = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
   const navigationRef = useRef(false);
   const profileRequestInProgress = useRef(false);
+  const lastProfileFetch = useRef<number>(0);
+  const FETCH_COOLDOWN = 2000; // 2 seconds cooldown between profile fetches
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
@@ -55,12 +57,19 @@ export const useAuthState = () => {
         return;
       }
 
+      // Check if we should skip profile fetch due to cooldown
+      const now = Date.now();
+      if (now - lastProfileFetch.current < FETCH_COOLDOWN) {
+        return;
+      }
+
       // Prevent multiple simultaneous profile requests
       if (profileRequestInProgress.current) {
         return;
       }
 
       profileRequestInProgress.current = true;
+      lastProfileFetch.current = now;
 
       const profile = await getUserProfile(session);
       profileRequestInProgress.current = false;
@@ -77,10 +86,11 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      if ((location.pathname === '/login' || 
+      if (!navigationRef.current && (
+          location.pathname === '/login' || 
           location.pathname === '/' || 
-          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))) && 
-          !navigationRef.current) {
+          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
+      )) {
         navigationRef.current = true;
         navigate(getRoleBasedRedirect(profile.role), { replace: true });
       }
@@ -127,7 +137,7 @@ export const useAuthState = () => {
             return;
           }
 
-          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
             await handleSession(session);
           }
         }).data.subscription;
