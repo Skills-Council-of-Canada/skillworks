@@ -30,10 +30,10 @@ const learningAreas = [
 ] as const;
 
 const profileSetupSchema = z.object({
-  skillLevel: z.enum(["beginner", "intermediate", "advanced"]),
+  skill_level: z.enum(["beginner", "intermediate", "advanced"]),
   availability: z.enum(["part-time", "full-time"]),
-  educationalBackground: z.string().min(1, "Educational background is required"),
-  preferredLearningAreas: z.array(z.string()).min(1, "Select at least one learning area"),
+  educational_background: z.string().min(1, "Educational background is required"),
+  preferred_learning_areas: z.array(z.string()).min(1, "Select at least one learning area"),
 });
 
 type ProfileSetupFormValues = z.infer<typeof profileSetupSchema>;
@@ -48,10 +48,10 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
     resolver: zodResolver(profileSetupSchema),
     mode: "onChange",
     defaultValues: {
-      skillLevel: "beginner",
+      skill_level: "beginner",
       availability: "full-time",
-      educationalBackground: "",
-      preferredLearningAreas: [],
+      educational_background: "",
+      preferred_learning_areas: [],
     },
   });
 
@@ -67,7 +67,7 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="skillLevel"
+          name="skill_level"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Skill Level</FormLabel>
@@ -112,7 +112,7 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
 
         <FormField
           control={form.control}
-          name="preferredLearningAreas"
+          name="preferred_learning_areas"
           render={() => (
             <FormItem>
               <FormLabel>Preferred Learning Areas</FormLabel>
@@ -121,7 +121,7 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
                   <FormField
                     key={area.id}
                     control={form.control}
-                    name="preferredLearningAreas"
+                    name="preferred_learning_areas"
                     render={({ field }) => {
                       return (
                         <FormItem
@@ -155,7 +155,7 @@ export const ProfileSetupForm = ({ onSubmit, onValidityChange }: ProfileSetupFor
 
         <FormField
           control={form.control}
-          name="educationalBackground"
+          name="educational_background"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Educational Background</FormLabel>
