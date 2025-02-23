@@ -52,6 +52,7 @@ const ParticipantRegistration = () => {
       
       console.log("Attempting registration with data:", finalData);
 
+      // First create the auth user
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -71,8 +72,7 @@ const ParticipantRegistration = () => {
         throw new Error("No user data returned from signup");
       }
 
-      console.log("User created successfully:", authData.user);
-
+      // Then create the participant registration record
       const { error: registrationError } = await supabase
         .from('participant_registrations')
         .insert({
@@ -85,7 +85,8 @@ const ParticipantRegistration = () => {
           preferred_learning_areas: data.preferred_learning_areas,
           educational_background: data.educational_background,
           availability: data.availability,
-          registration_completed: true
+          registration_completed: true,
+          email_verified: false // Will be updated when they verify their email
         });
 
       if (registrationError) {
@@ -95,7 +96,7 @@ const ParticipantRegistration = () => {
 
       toast({
         title: "Registration successful",
-        description: "You can now log in to access your dashboard.",
+        description: "Please check your email to verify your account. You can then log in to access your dashboard.",
       });
 
       navigate("/login", { replace: true });
@@ -183,7 +184,7 @@ const ParticipantRegistration = () => {
               <Button
                 type="submit"
                 className="ml-auto"
-                disabled={!isStepValid}
+                disabled={!isStepValid || isSubmitting}
                 onClick={() => {
                   const form = document.querySelector('form');
                   if (form) {
