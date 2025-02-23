@@ -50,7 +50,6 @@ export const useProfileCompletion = () => {
           return null;
         }
 
-        // Then get participant profile
         const { data: details, error: detailsError } = await supabase
           .from('participant_profiles')
           .select()
@@ -68,10 +67,9 @@ export const useProfileCompletion = () => {
           }
         }
 
-        // Create combined profile with defaults if details are missing
         const combinedProfile: CombinedProfile = {
           ...profile,
-          full_name: profile.name, // Map name to full_name
+          full_name: profile.name,
           bio: profile.bio,
           skill_level: 'beginner',
           availability: 'flexible',
@@ -94,9 +92,9 @@ export const useProfileCompletion = () => {
     },
     staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
     gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes
-    refetchOnWindowFocus: true, // Enable refetch on window focus
-    refetchOnMount: true, // Enable refetch on mount
-    refetchOnReconnect: true // Enable refetch on reconnect
+    refetchOnWindowFocus: false, // Disable automatic refetch on window focus
+    refetchOnMount: true, // Keep enabled for initial mount
+    refetchOnReconnect: false // Disable automatic refetch on reconnect
   });
 
   const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
