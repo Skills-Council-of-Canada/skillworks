@@ -26,12 +26,11 @@ export interface CombinedProfile {
 export const useProfileCompletion = () => {
   const { user } = useAuth();
 
-  // Use type-safe query
+  // Use type-safe query with proper caching
   const { data: profileData, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      console.log("Fetching profile for user:", user.id); // Debug log
 
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -47,13 +46,12 @@ export const useProfileCompletion = () => {
       return profile as CombinedProfile;
     },
     enabled: Boolean(user?.id),
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    gcTime: 30 * 60 * 1000,   // Keep unused data for 30 minutes
+    staleTime: Infinity, // Keep data fresh indefinitely since we're using websockets for updates
+    cacheTime: 30 * 60 * 1000, // Cache for 30 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: true,      // Only fetch once on mount
+    refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: 1,                  // Only retry once if failed
-    refetchInterval: false     // Disable automatic refetching
+    retry: 1,
   });
 
   const calculateCompletionPercentage = useMemo(() => {
