@@ -11,7 +11,6 @@ import { EditProfile } from "./components/profile/EditProfile";
 const ViewProfile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
-  // Use suspense to prevent multiple re-renders during data fetching
   const { profile, isLoading, completionPercentage } = useProfileCompletion();
 
   if (isLoading) {
@@ -25,21 +24,16 @@ const ViewProfile = () => {
   return (
     <div className="w-full max-w-full bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Only render components once data is available */}
-        {profile && (
-          <>
-            <ProfileHeader 
-              profile={profile} 
-              completionPercentage={completionPercentage} 
-              userName={user?.name}
-            />
+        <ProfileHeader 
+          profile={profile} 
+          completionPercentage={completionPercentage} 
+          userName={user?.name}
+        />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <ProfileInfo profile={profile} />
-              <TabContent activeTab={activeTab} setActiveTab={setActiveTab} />
-            </div>
-          </>
-        )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <ProfileInfo profile={profile} />
+          <TabContent activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
       </div>
     </div>
   );

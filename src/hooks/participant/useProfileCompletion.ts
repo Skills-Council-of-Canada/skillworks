@@ -7,117 +7,126 @@ import { Database } from "@/types/supabase";
 
 type Tables = Database['public']['Tables'];
 type Profile = Tables['profiles']['Row'];
-type ParticipantProfile = {
-  id: string;
+type ParticipantProfile = Tables['participant_profiles']['Row'];
+
+export type CombinedProfile = {
+  full_name: string;
+  bio: string | null;
+} & Omit<Profile, 'name'> & {
   skill_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   availability: string;
   date_of_birth: string | null;
   educational_background: string | null;
   preferred_learning_areas: string[];
-  // Include other fields from participant_profiles but we only need these for now
-  onboarding_completed: boolean;
-  email_verified: boolean;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type CombinedProfile = {
-  full_name: string;
-  bio: string | null;
-} & Omit<Profile, 'name'> & 
-  Pick<ParticipantProfile, 'skill_level' | 'availability' | 'date_of_birth' | 'educational_background' | 'preferred_learning_areas'>;
-
-const fetchProfile = async (userId: string | undefined) => {
-  if (!userId) return null;
-
-  // Use Promise.all to fetch both profiles concurrently
-  const [profileResponse, detailsResponse] = await Promise.all([
-    supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single(),
-    supabase
-      .from('participant_profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle()
-  ]);
-
-  if (profileResponse.error) throw profileResponse.error;
-  if (!profileResponse.data) return null;
-
-  if (detailsResponse.error && detailsResponse.error.code !== 'PGRST116') {
-    throw detailsResponse.error;
-  }
-
-  const combinedProfile: CombinedProfile = {
-    ...profileResponse.data,
-    full_name: profileResponse.data.name,
-    bio: profileResponse.data.bio,
-    skill_level: detailsResponse.data?.skill_level || 'beginner',
-    availability: detailsResponse.data?.availability || 'flexible',
-    date_of_birth: detailsResponse.data?.date_of_birth || null,
-    educational_background: detailsResponse.data?.educational_background || null,
-    preferred_learning_areas: detailsResponse.data?.preferred_learning_areas || [],
-  };
-
-  return combinedProfile;
-};
-
-const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
-  if (!profile) return 0;
-
-  const requiredFields = [
-    'full_name',
-    'email',
-    'phone',
-    'skill_level',
-    'availability',
-    'date_of_birth',
-    'preferred_learning_areas',
-    'educational_background'
-  ];
-
-  const completedFields = requiredFields.filter(field => {
-    const value = profile[field as keyof CombinedProfile];
-    return value !== null && value !== undefined && 
-           (Array.isArray(value) ? value.length > 0 : value !== '');
-  });
-
-  return Math.round((completedFields.length / requiredFields.length) * 100);
 };
 
 export const useProfileCompletion = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const query = useQuery({
+  const { data: profileData, isLoading } = useQuery<CombinedProfile | null>({
     queryKey: ["participant-profile", user?.id],
-    queryFn: () => fetchProfile(user?.id),
-    enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
-    meta: {
-      onError: (error: any) => {
-        console.error("Error fetching profile:", error);
+    queryFn: async () => {
+      if (!user?.id) return null;
+
+      try {
+        // First, get the base profile
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          toast({
+            title: "Error",
+            description: "Failed to fetch profile data",
+            variant: "destructive",
+          });
+          return null;
+        }
+
+        if (!profile) {
+          return null;
+        }
+
+        // Then get participant profile
+        const { data: details, error: detailsError } = await supabase
+          .from('participant_profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (detailsError) {
+          console.error("Error fetching participant profile:", detailsError);
+          // Only show error if it's not a "does not exist" error
+          if (detailsError.code !== 'PGRST116') {
+            toast({
+              title: "Error",
+              description: "Failed to fetch participant profile",
+              variant: "destructive",
+            });
+          }
+        }
+
+        // Create combined profile with defaults if details are missing
+        const combinedProfile: CombinedProfile = {
+          ...profile,
+          full_name: profile.name,
+          bio: profile.bio,
+          skill_level: 'beginner',
+          availability: 'flexible',
+          date_of_birth: null,
+          educational_background: null,
+          preferred_learning_areas: [],
+          ...details
+        };
+
+        return combinedProfile;
+      } catch (error) {
+        console.error("Unexpected error:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch profile data",
+          description: "An unexpected error occurred",
           variant: "destructive",
         });
+        return null;
       }
-    }
+    },
+    staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
+    gcTime: 1000 * 60 * 30, // Cache is kept for 30 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false
   });
 
+  const calculateCompletionPercentage = (profile: CombinedProfile | null) => {
+    if (!profile) return 0;
+
+    const requiredFields = [
+      'full_name',
+      'email',
+      'phone',
+      'skill_level',
+      'availability',
+      'date_of_birth',
+      'preferred_learning_areas',
+      'educational_background'
+    ];
+
+    const completedFields = requiredFields.filter(field => {
+      const value = profile[field as keyof CombinedProfile];
+      return value !== null && value !== undefined && 
+             (Array.isArray(value) ? value.length > 0 : value !== '');
+    });
+
+    return Math.round((completedFields.length / requiredFields.length) * 100);
+  };
+
   return {
-    profile: query.data,
-    isLoading: query.isLoading,
-    completionPercentage: query.data ? calculateCompletionPercentage(query.data) : 0
+    profile: profileData,
+    isLoading,
+    completionPercentage: profileData ? calculateCompletionPercentage(profileData) : 0,
   };
 };
