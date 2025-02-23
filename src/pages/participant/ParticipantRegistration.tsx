@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -26,7 +27,9 @@ const ParticipantRegistration = () => {
   const progress = (currentStep / steps.length) * 100;
 
   const handleStepChange = (step: number) => {
-    setCurrentStep(step);
+    if (step < currentStep || isStepValid) {
+      setCurrentStep(step);
+    }
   };
 
   const handlePersonalInfoSubmit = (data: any) => {
@@ -72,13 +75,13 @@ const ParticipantRegistration = () => {
         .from('participant_registrations')
         .insert({
           user_id: authData.user.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
           email: formData.email,
-          date_of_birth: formData.dateOfBirth,
-          skill_level: data.skillLevel,
-          preferred_learning_areas: data.preferredLearningAreas,
-          educational_background: data.educationalBackground,
+          date_of_birth: formData.date_of_birth,
+          skill_level: data.skill_level,
+          preferred_learning_areas: data.preferred_learning_areas,
+          educational_background: data.educational_background,
           availability: data.availability,
           registration_completed: true
         });
@@ -120,9 +123,15 @@ const ParticipantRegistration = () => {
                   const stepNumber = index + 1;
                   const isCompleted = stepNumber < currentStep;
                   const isCurrent = stepNumber === currentStep;
+                  const isClickable = stepNumber <= currentStep || isStepValid;
 
                   return (
-                    <div key={index} className="flex items-center gap-3">
+                    <button
+                      key={index}
+                      onClick={() => isClickable && handleStepChange(stepNumber)}
+                      className={`flex items-center gap-3 ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                      disabled={!isClickable}
+                    >
                       {isCompleted ? (
                         <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       ) : isCurrent ? (
@@ -133,7 +142,7 @@ const ParticipantRegistration = () => {
                       <span className={`text-sm sm:text-base ${isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                         {step.label}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -178,14 +187,11 @@ const ParticipantRegistration = () => {
               ) : (
                 <Button
                   type="button"
+                  className="ml-auto"
                   disabled={!isStepValid || isSubmitting}
-                  onClick={() => handleProfileSetupSubmit(formData)}
+                  onClick={() => document.querySelector('form')?.requestSubmit()}
                 >
-                  {isSubmitting ? (
-                    "Registering..."
-                  ) : (
-                    "Complete Registration"
-                  )}
+                  {isSubmitting ? "Registering..." : "Complete Registration"}
                 </Button>
               )}
             </div>
