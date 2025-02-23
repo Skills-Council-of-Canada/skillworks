@@ -15,10 +15,6 @@ export const useAuthState = () => {
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
   const navigationRef = useRef(false);
-  const authCheckCompleted = useRef(false);
-
-  // Cache profile data in memory
-  const profileCache = new Map<string, User>();
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
@@ -58,15 +54,8 @@ export const useAuthState = () => {
         return;
       }
 
-      let profile = profileCache.get(session.user.id);
+      const profile = await getUserProfile(session);
       
-      if (!profile) {
-        profile = await getUserProfile(session);
-        if (profile) {
-          profileCache.set(session.user.id, profile);
-        }
-      }
-
       if (!profile) {
         setUser(null);
         setIsLoading(false);
@@ -116,11 +105,9 @@ export const useAuthState = () => {
 
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted) return;
-          console.log("Auth state change:", event, session);
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
-            profileCache.clear();
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
               navigate('/login', { replace: true });
