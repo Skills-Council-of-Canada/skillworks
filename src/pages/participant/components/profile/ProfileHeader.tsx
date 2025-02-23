@@ -25,7 +25,7 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
           </div>
           
           <ProfileInfo 
-            name={profile?.full_name}  {/* Changed from fullName to name */}
+            name={profile?.full_name}
             bio={profile?.bio}
             userName={userName}
           />
