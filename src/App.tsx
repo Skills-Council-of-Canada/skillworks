@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,10 +45,10 @@ import ProjectSearch from "./pages/educator/ProjectSearch";
 import StudentManagement from "./pages/educator/StudentManagement";
 import MatchRequests from "./pages/educator/MatchRequests";
 import TasksActivities from "./pages/educator/TasksActivities";
-import EducatorCalendar from "./pages/educator/EducatorCalendar";
+import EducatorCalendar from "./pages/educator/EducatorSettings";
 import EducatorSettings from "./pages/educator/EducatorSettings";
 import CreateExperience from "./pages/educator/CreateExperience";
-import ParticipantLayout from "./pages/participant/ParticipantLayout";
+import { ParticipantLayout } from "./pages/participant/ParticipantLayout";
 import ParticipantDashboard from "./pages/participant/ParticipantDashboard";
 import ParticipantRegistration from "./pages/participant/ParticipantRegistration";
 import ParticipantExperiences from "./pages/participant/experiences/ParticipantExperiences";
