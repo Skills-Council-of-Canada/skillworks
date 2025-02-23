@@ -29,13 +29,15 @@ const ParticipantRegistration = () => {
   const handleStepChange = (step: number) => {
     if (step < currentStep || isStepValid) {
       setCurrentStep(step);
+      setIsStepValid(false); // Reset validity when changing steps
     }
   };
 
-  const handlePersonalInfoSubmit = (data: any) => {
+  const handlePersonalInfoSubmit = async (data: any) => {
     console.log("Personal info submitted:", data);
     setFormData({ ...formData, ...data });
     setCurrentStep(2);
+    setIsStepValid(false); // Reset validity for next step
   };
 
   const handleProfileSetupSubmit = async (data: any) => {
@@ -131,6 +133,7 @@ const ParticipantRegistration = () => {
                       onClick={() => isClickable && handleStepChange(stepNumber)}
                       className={`flex items-center gap-3 ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                       disabled={!isClickable}
+                      type="button"
                     >
                       {isCompleted ? (
                         <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
