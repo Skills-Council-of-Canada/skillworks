@@ -1,109 +1,70 @@
 
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Mail, Phone, Book, Clock, GraduationCap } from "lucide-react";
 import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { ContactSection } from "./sections/ContactSection";
-import { LearningSection } from "./sections/LearningSection";
-import { LearningAreasSection } from "./sections/LearningAreasSection";
+
+interface InfoItemProps {
+  icon: any;
+  label: string;
+  value: string;
+  className?: string;
+}
+
+const InfoItem = ({ icon: Icon, label, value, className = "" }: InfoItemProps) => (
+  <div className={`flex items-center gap-3 ${className}`}>
+    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50">
+      <Icon className="w-5 h-5 text-blue-600" />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-sm font-medium">{value}</p>
+    </div>
+  </div>
+);
 
 interface ProfileInfoProps {
   profile: CombinedProfile | null;
 }
 
 export const ProfileInfo = ({ profile }: ProfileInfoProps) => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [editingSection, setEditingSection] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState({
-    email: profile?.email || "",
-    phone: profile?.phone || "",
-    skill_level: profile?.skill_level || "",
-    availability: profile?.availability || "",
-    educational_background: profile?.educational_background || "",
-  });
-
-  const handleSave = async (section: string) => {
-    if (!user?.id) return;
-
-    try {
-      let updates = {};
-      switch (section) {
-        case 'contact':
-          updates = {
-            email: editValues.email,
-            phone: editValues.phone,
-          };
-          break;
-        case 'learning':
-          updates = {
-            skill_level: editValues.skill_level,
-            availability: editValues.availability,
-            educational_background: editValues.educational_background,
-          };
-          break;
-      }
-
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Updated successfully",
-        description: "Your profile has been updated.",
-      });
-      setEditingSection(null);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleChange = (section: string, values: any) => {
-    setEditValues(prev => ({ ...prev, ...values }));
-  };
-
   return (
     <div className="lg:col-span-1 space-y-6">
-      <ContactSection
-        profile={profile}
-        isEditing={editingSection === 'contact'}
-        editValues={{
-          email: editValues.email,
-          phone: editValues.phone,
-        }}
-        onEdit={() => setEditingSection(editingSection === 'contact' ? null : 'contact')}
-        onCancel={() => setEditingSection(null)}
-        onSave={() => handleSave('contact')}
-        onChange={(values) => handleChange('contact', values)}
-      />
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h2>
+        <div className="space-y-4">
+          <InfoItem icon={Mail} label="Email" value={profile?.email || "Not provided"} />
+          <InfoItem icon={Phone} label="Phone" value={profile?.phone || "Not provided"} />
+          <InfoItem icon={Phone} label="Preferred Contact" value={profile?.preferred_contact || "Not specified"} />
+        </div>
+      </div>
 
-      <LearningSection
-        profile={profile}
-        isEditing={editingSection === 'learning'}
-        editValues={{
-          skill_level: editValues.skill_level,
-          availability: editValues.availability,
-          educational_background: editValues.educational_background,
-        }}
-        onEdit={() => setEditingSection(editingSection === 'learning' ? null : 'learning')}
-        onCancel={() => setEditingSection(null)}
-        onSave={() => handleSave('learning')}
-        onChange={(values) => handleChange('learning', values)}
-      />
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Learning Details</h2>
+        <div className="space-y-4">
+          <InfoItem icon={GraduationCap} label="Skill Level" value={profile?.skill_level || "Not specified"} />
+          <InfoItem icon={Clock} label="Availability" value={profile?.availability || "Not specified"} />
+          <InfoItem icon={Book} label="Educational Background" value={profile?.educational_background || "Not provided"} />
+        </div>
+      </div>
 
-      <LearningAreasSection
-        profile={profile}
-        onEdit={() => setEditingSection(editingSection === 'learning_areas' ? null : 'learning_areas')}
-      />
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Preferred Learning Areas</h2>
+        <div className="flex flex-wrap gap-2">
+          {profile?.preferred_learning_areas?.length ? (
+            profile.preferred_learning_areas.map((area, index) => (
+              <Badge 
+                key={index}
+                variant="secondary"
+                className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+              >
+                {area}
+              </Badge>
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm">No learning areas specified</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
