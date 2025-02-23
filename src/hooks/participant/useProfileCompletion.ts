@@ -31,20 +31,15 @@ export const useProfileCompletion = () => {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data: participantProfile, error: participantError } = await supabase
-        .from('participant_profiles')
-        .select('onboarding_completed, profile_completion_percentage')
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
         .eq('id', user.id)
-        .maybeSingle();
+        .single();
 
-      if (participantError) {
-        console.error("Error fetching participant profile:", participantError);
-        return null;
-      }
+      if (!profile) return null;
 
-      return {
-        ...user,
-      } as CombinedProfile;
+      return profile as CombinedProfile;
     },
     enabled: Boolean(user?.id),
     staleTime: Infinity,
@@ -53,7 +48,10 @@ export const useProfileCompletion = () => {
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
-    refetchInterval: false
+    refetchInterval: false,
+    meta: {
+      errorMessage: "Failed to fetch profile"
+    }
   });
 
   const calculateCompletionPercentage = useMemo(() => {
@@ -62,7 +60,9 @@ export const useProfileCompletion = () => {
     const requiredFields = [
       'name',
       'email',
-      'phone'
+      'phone',
+      'bio',
+      'avatar_url'
     ];
 
     const completedFields = requiredFields.filter(field => {

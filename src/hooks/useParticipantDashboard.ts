@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from "@/integrations/supabase/types";
+import { useProfileCompletion } from './participant/useProfileCompletion';
 
 interface DashboardStats {
   activeExperiences: number;
@@ -47,6 +48,8 @@ interface DashboardData {
 }
 
 export const useParticipantDashboard = () => {
+  const { completionPercentage } = useProfileCompletion();
+
   return useQuery({
     queryKey: ["participant-dashboard"],
     queryFn: async (): Promise<DashboardData> => {
@@ -136,7 +139,7 @@ export const useParticipantDashboard = () => {
         upcomingEvents: events?.length || 0,
         unreadMessages: unreadCount || 0,
         pendingTasks: tasks?.filter(t => t.status !== "completed").length || 0,
-        profileCompletion: 0 // This will be calculated by useProfileCompletion
+        profileCompletion: completionPercentage
       };
 
       return {
