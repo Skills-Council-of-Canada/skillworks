@@ -10,18 +10,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileInfoProps {
-  fullName?: string | null;
+  name?: string | null;  // Changed from fullName to name to match the data structure
   bio?: string | null;
   userName?: string | null;
 }
 
-export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
+export const ProfileInfo = ({ name, bio, userName }: ProfileInfoProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({
-    name: fullName || "",  // Changed back to 'name' to match the database column
+    name: name || "",
     bio: bio || "",
   });
 
@@ -32,14 +32,13 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
       const { error } = await supabase
         .from('profiles')
         .update({
-          name: editValues.name,  // Use 'name' instead of 'full_name'
+          name: editValues.name,
           bio: editValues.bio,
         })
         .eq('id', user.id);
 
       if (error) throw error;
 
-      // Invalidate the query to refetch latest data
       await queryClient.invalidateQueries({ queryKey: ['participant-profile'] });
 
       toast({
@@ -100,7 +99,7 @@ export const ProfileInfo = ({ fullName, bio, userName }: ProfileInfoProps) => {
       ) : (
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            {fullName || userName}
+            {name || userName}
           </h1>
           <p className="mt-1 text-gray-500">
             {bio || "No bio provided"}
