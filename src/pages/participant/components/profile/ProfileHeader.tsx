@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Pencil } from "lucide-react";
+import { Pencil, Camera } from "lucide-react";
 import { CombinedProfile } from "@/hooks/participant/useProfileCompletion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +25,48 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
     full_name: profile?.full_name || "",
     bio: profile?.bio || "",
   });
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user?.id) return;
+
+    try {
+      // Upload to storage
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Avatar updated",
+        description: "Your profile picture has been updated successfully.",
+      });
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile picture. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSave = async () => {
     if (!user?.id) return;
@@ -61,15 +103,30 @@ export const ProfileHeader = ({ profile, completionPercentage, userName }: Profi
         <div className="h-40 bg-gradient-to-r from-blue-900 to-white" />
         <div className="relative px-4 sm:px-6 pb-6">
           <div className="flex justify-between items-start">
-            <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
-              {profile?.avatar_url ? (
-                <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
-              ) : (
-                <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl sm:text-5xl">
-                  {profile?.full_name?.[0] || userName?.[0]}
-                </AvatarFallback>
-              )}
-            </Avatar>
+            <div className="relative group">
+              <Avatar className="h-24 w-24 sm:h-32 sm:w-32 -mt-12 ring-4 ring-white">
+                {profile?.avatar_url ? (
+                  <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                ) : (
+                  <AvatarFallback className="bg-blue-100 text-blue-600 text-3xl sm:text-5xl">
+                    {profile?.full_name?.[0] || userName?.[0]}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <label 
+                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
+                htmlFor="avatar-upload"
+              >
+                <Camera className="h-8 w-8 text-white" />
+              </label>
+              <input
+                type="file"
+                id="avatar-upload"
+                className="hidden"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+              />
+            </div>
             <Button
               variant="ghost"
               size="sm"
