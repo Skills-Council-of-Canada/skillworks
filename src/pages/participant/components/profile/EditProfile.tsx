@@ -3,7 +3,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -42,7 +50,6 @@ export const EditProfile = () => {
     
     setIsSubmitting(true);
     try {
-      // Update profiles table
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -56,7 +63,6 @@ export const EditProfile = () => {
 
       if (profileError) throw profileError;
 
-      // Update participant_profiles table with the correct fields
       const { error: participantError } = await supabase
         .from('participant_profiles')
         .update({
