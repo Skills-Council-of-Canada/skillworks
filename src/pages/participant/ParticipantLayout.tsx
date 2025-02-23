@@ -35,23 +35,21 @@ const ParticipantLayout = () => {
 
   return (
     <SidebarProvider defaultOpen>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="flex min-h-screen w-full bg-background">
         {/* Desktop Sidebar */}
-        <Sidebar collapsible="icon" className="hidden md:flex border-r">
+        <Sidebar className="hidden md:block border-r bg-[#1A1F2C]" collapsible="icon">
           <Navigation userName={user?.name} navItems={navItems} isMobile={false} />
         </Sidebar>
 
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
           <Header userName={user?.name} onLogout={handleLogout} />
-          <div className="flex-1 overflow-auto pb-16 md:pb-0">
-            <main className="p-4 sm:p-6">
-              <Outlet />
-            </main>
-          </div>
+          <main className="flex-1 overflow-auto p-4 sm:p-6">
+            <Outlet />
+          </main>
 
           {/* Mobile Navigation */}
           {isMobile && (
-            <div className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] border-t border-white/10">
+            <div className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] border-t border-white/10 z-50">
               <Navigation userName={user?.name} navItems={navItems} isMobile={true} />
             </div>
           )}

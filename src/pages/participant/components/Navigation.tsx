@@ -30,30 +30,24 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
   };
 
   const renderNavLink = (to: string, Icon: typeof Home, label: string, isActive: boolean, isMobileView: boolean) => {
-    const className = isMobileView
-      ? cn(
-          "flex flex-col items-center p-2 text-gray-300 rounded-md transition-colors",
-          isActive ? "text-white" : "hover:text-white"
-        )
-      : cn(
-          "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
-          state === "collapsed" && "justify-center",
-          isActive ? "bg-white/10" : "hover:bg-white/10"
-        );
+    if (isMobileView) {
+      return (
+        <div className="flex flex-col items-center p-2 text-gray-300">
+          <Icon className="h-5 w-5" />
+          <span className="text-xs mt-1 truncate max-w-[60px]">{label}</span>
+        </div>
+      );
+    }
 
     return (
-      <div className={className}>
+      <div className="flex items-center w-full">
         <Icon className={cn(
-          "transition-all",
-          isMobileView ? "h-5 w-5" : "h-4 w-4",
-          !isMobileView && state === "collapsed" && "w-5 h-5"
+          "h-5 w-5 transition-all",
+          state === "collapsed" ? "mx-auto" : "mr-3"
         )} />
-        <span className={cn(
-          isMobileView ? "text-xs mt-1 truncate max-w-[60px]" : "ml-2",
-          !isMobileView && state === "collapsed" && "sr-only"
-        )}>
-          {label}
-        </span>
+        {state !== "collapsed" && (
+          <span className="text-sm">{label}</span>
+        )}
       </div>
     );
   };
@@ -79,7 +73,7 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
   }
 
   return (
-    <div className="flex h-full flex-col gap-2 bg-[#1A1F2C]">
+    <div className="flex h-full flex-col">
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className={state === "collapsed" ? "hidden" : "block"}>
           <h2 className="text-xl font-bold text-white">Participant Portal</h2>
@@ -100,9 +94,8 @@ export const Navigation = ({ userName, navItems, isMobile }: NavigationProps) =>
                     to={item.to}
                     replace={true}
                     className={({ isActive }) => cn(
-                      "flex items-center text-gray-300 px-2 py-1.5 rounded-md transition-colors w-full",
-                      state === "collapsed" && "justify-center",
-                      isActive ? "bg-white/10" : "hover:bg-white/10"
+                      "flex items-center px-2 py-1.5 rounded-md transition-colors w-full",
+                      isActive ? "bg-white/10 text-white" : "text-gray-300 hover:bg-white/10 hover:text-white"
                     )}
                   >
                     {({ isActive }) => renderNavLink(item.to, item.icon, item.label, isActive, false)}
