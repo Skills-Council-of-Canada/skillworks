@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from "@/integrations/supabase/types";
-import { useProfileCompletion } from './participant/useProfileCompletion';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardStats {
   activeExperiences: number;
@@ -48,13 +48,20 @@ interface DashboardData {
 }
 
 export const useParticipantDashboard = () => {
-  const { completionPercentage } = useProfileCompletion();
+  const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["participant-dashboard"],
+    queryKey: ["participant-dashboard", user?.id],
     queryFn: async (): Promise<DashboardData> => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) throw new Error('No user found');
+      if (!user?.id) throw new Error('No user found');
+
+      // Calculate profile completion
+      const requiredFields = ['name', 'email', 'phone', 'bio', 'avatar_url'];
+      const completedFields = requiredFields.filter(field => {
+        const value = user[field as keyof typeof user];
+        return value !== null && value !== undefined && value !== '';
+      });
+      const profileCompletion = Math.round((completedFields.length / requiredFields.length) * 100);
 
       // Fetch experiences stats
       const { data: experiences } = await supabase
@@ -139,7 +146,7 @@ export const useParticipantDashboard = () => {
         upcomingEvents: events?.length || 0,
         unreadMessages: unreadCount || 0,
         pendingTasks: tasks?.filter(t => t.status !== "completed").length || 0,
-        profileCompletion: completionPercentage
+        profileCompletion
       };
 
       return {
@@ -151,6 +158,7 @@ export const useParticipantDashboard = () => {
         pendingApplications: applicationData
       };
     },
+    enabled: Boolean(user?.id),
     staleTime: 300000, // 5 minutes
     gcTime: 3600000, // 1 hour
     refetchOnWindowFocus: false,
