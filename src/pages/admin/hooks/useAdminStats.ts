@@ -13,6 +13,9 @@ export interface DashboardStats {
   matchedProjects: number;
 }
 
+// Define the tables we'll be querying
+type QueryableTables = "profiles" | "educator_experiences" | "experience_matches";
+
 export const useAdminStats = (user: User | null) => {
   const { toast } = useToast();
 
@@ -22,7 +25,7 @@ export const useAdminStats = (user: User | null) => {
       if (!user?.id) throw new Error('Not authenticated');
 
       const fetchCount = async (
-        table: string,
+        table: QueryableTables,
         condition: Record<string, any> = {}
       ): Promise<number> => {
         try {
