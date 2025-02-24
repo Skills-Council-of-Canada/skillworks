@@ -4,6 +4,7 @@ import { AuthContextType } from "@/types/auth";
 import { useAuthState } from "@/hooks/useAuthState";
 import { useAuthOperations } from "@/hooks/useAuthOperations";
 import { Toaster } from "@/components/ui/toaster";
+import { BrowserRouter } from "react-router-dom";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -20,6 +21,15 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+  // Wrap the hook usage with BrowserRouter since useAuthState uses routing hooks
+  return (
+    <BrowserRouter>
+      <AuthProviderContent>{children}</AuthProviderContent>
+    </BrowserRouter>
+  );
+};
+
+const AuthProviderContent: FC<AuthProviderProps> = ({ children }) => {
   const { user, isLoading, setIsLoading } = useAuthState();
   const { login, logout, signup } = useAuthOperations(setIsLoading);
 
