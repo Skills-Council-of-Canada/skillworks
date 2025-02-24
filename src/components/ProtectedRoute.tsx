@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/auth";
 import { Loader2 } from "lucide-react";
-import { memo, FC } from "react";
+import { memo, FC, useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,6 +13,16 @@ interface ProtectedRouteProps {
 const ProtectedRouteBase: FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    console.log("Protected route render:", {
+      path: location.pathname,
+      isLoading,
+      hasUser: !!user,
+      userRole: user?.role,
+      allowedRoles
+    });
+  }, [location.pathname, isLoading, user, allowedRoles]);
 
   // Show loading state while checking authentication
   if (isLoading) {

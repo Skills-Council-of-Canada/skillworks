@@ -34,4 +34,3 @@ export const useAuthRedirect = () => {
 
   return { getRoleBasedRedirect };
 };
-
