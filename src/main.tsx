@@ -18,3 +18,4 @@ createRoot(root).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
