@@ -1,12 +1,12 @@
 
 export interface ExperienceTemplate {
   id: string;
-  experience_id: string;
   title: string;
   description: string;
   trade_type: string;
   skill_level: string;
-  created_at: string;
+  created_at?: string;
+  updated_at?: string;
   metadata: {
     expected_outcomes: string[];
     subcategories: string[];
@@ -18,4 +18,5 @@ export interface ExperienceTemplate {
   status: 'active' | 'inactive';
   is_public: boolean;
   educator_id: string;
+  experience_id?: string;
 }

@@ -1,4 +1,3 @@
-
 export type TradeType = 'Electrical' | 'Plumbing' | 'Carpentry' | 'HVAC' | 'Welding' | 'Automotive' | 'Other';
 export type SkillLevel = 'Pre-Apprentice' | 'Apprentice' | 'Journeyman';
 export type LocationType = 'On-site' | 'Remote' | 'Hybrid';
@@ -41,6 +40,9 @@ export interface ProjectFormData {
   // Step 5: Media
   images: File[];
   documents: File[];
+
+  // Template
+  templateId?: string;
 }
 
 export const PROJECT_TEMPLATES: ProjectTemplate[] = [
