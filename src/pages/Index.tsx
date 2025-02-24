@@ -74,9 +74,11 @@ const Index = () => {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/career-pathways" className="text-gray-600 hover:text-gray-900">
-            Career Pathways
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link to="/career-pathways">
+              Career Pathways
+            </Link>
+          </Button>
           <Link to="/login" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <LogIn className="h-4 w-4" />
             Login
