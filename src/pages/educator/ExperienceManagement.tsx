@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users, Briefcase, InboxIcon, Users2, MessageSquare, Settings } from "lucide-react";
+import { ArrowLeft, Users, Briefcase, InboxIcon, Users2, MessageSquare, Settings, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { EducatorExperience } from "@/types/educator";
@@ -13,11 +13,14 @@ import { RequestsTab } from "./components/requests/RequestsTab";
 import { MembersTab } from "./components/members/MembersTab";
 import { UpdatesTab } from "./components/updates/UpdatesTab";
 import { SettingsTab } from "./components/settings/SettingsTab";
+import { CreateExperienceSteps } from "@/components/educator/experience/CreateExperienceSteps";
+import { useState } from "react";
 
 const ExperienceManagement = () => {
   const { experienceId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isCreating, setIsCreating] = useState(false);
 
   const { data: experience, isLoading } = useQuery({
     queryKey: ["experience", experienceId],
@@ -62,8 +65,31 @@ const ExperienceManagement = () => {
     enabled: !!experienceId,
   });
 
+  if (isCreating) {
+    return (
+      <div className="space-y-4 md:space-y-6 p-2 md:p-0">
+        <CreateExperienceSteps mode="scratch" onCancel={() => setIsCreating(false)} />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <div className="p-4 md:p-8">Loading experience details...</div>;
+  }
+
+  if (!experience && !experienceId) {
+    return (
+      <div className="space-y-4 p-4 md:p-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">My Experiences</h1>
+          <Button onClick={() => setIsCreating(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Create New Experience
+          </Button>
+        </div>
+        <p className="text-muted-foreground">No experiences created yet. Click the button above to create your first experience.</p>
+      </div>
+    );
   }
 
   if (!experience) {
