@@ -24,14 +24,6 @@ const ProtectedRouteBase: FC<ProtectedRouteProps> = ({ children, allowedRoles })
     });
   }, [location.pathname, isLoading, user, allowedRoles]);
 
-  // Define public routes that should never be protected
-  const publicRoutes = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/career-pathways'];
-  
-  // If the current path is a public route, render normally
-  if (publicRoutes.includes(location.pathname)) {
-    return <>{children}</>;
-  }
-
   // Show loading state while checking authentication
   if (isLoading) {
     return (
@@ -78,3 +70,4 @@ const ProtectedRoute = memo(ProtectedRouteBase);
 ProtectedRoute.displayName = 'ProtectedRoute';
 
 export default ProtectedRoute;
+

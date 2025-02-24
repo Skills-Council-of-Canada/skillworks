@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut, Home, GraduationCap } from "lucide-react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { LogIn, Home, GraduationCap } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 
 const Header = () => {
