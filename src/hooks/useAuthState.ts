@@ -14,10 +14,10 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
-  const navigationRef = useRef<string | null>(null);
+  const navigationInProgress = useRef(false);
   const profileRequestInProgress = useRef(false);
   const lastProfileFetch = useRef<number>(0);
-  const FETCH_COOLDOWN = 2000; // 2 seconds cooldown between profile fetches
+  const FETCH_COOLDOWN = 2000;
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
@@ -45,28 +45,30 @@ export const useAuthState = () => {
     return path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
   }, []);
 
+  const handleNavigation = useCallback((targetPath: string) => {
+    if (navigationInProgress.current || location.pathname === targetPath) {
+      return;
+    }
+    navigationInProgress.current = true;
+    navigate(targetPath, { replace: true });
+    setTimeout(() => {
+      navigationInProgress.current = false;
+    }, 1000);
+  }, [navigate, location.pathname]);
+
   const handleSession = useCallback(async (session: any | null) => {
     try {
       if (!session?.user) {
         setUser(null);
         setIsLoading(false);
         if (!isPublicRoute(location.pathname)) {
-          if (navigationRef.current !== 'login') {
-            navigationRef.current = 'login';
-            navigate('/login', { replace: true });
-          }
+          handleNavigation('/login');
         }
         return;
       }
 
-      // Check if we should skip profile fetch due to cooldown
       const now = Date.now();
-      if (now - lastProfileFetch.current < FETCH_COOLDOWN) {
-        return;
-      }
-
-      // Prevent multiple simultaneous profile requests
-      if (profileRequestInProgress.current) {
+      if (now - lastProfileFetch.current < FETCH_COOLDOWN || profileRequestInProgress.current) {
         return;
       }
 
@@ -80,33 +82,29 @@ export const useAuthState = () => {
         setUser(null);
         setIsLoading(false);
         if (!isPublicRoute(location.pathname)) {
-          if (navigationRef.current !== 'login') {
-            navigationRef.current = 'login';
-            navigate('/login', { replace: true });
-          }
+          handleNavigation('/login');
         }
         return;
       }
 
+      const previousUser = user;
       setUser(profile);
       
-      // Only handle navigation if the current path requires it
-      const targetPath = getRoleBasedRedirect(profile.role);
-      
+      // Only handle navigation if user role has changed or we're on an incorrect route
       if (
+        !previousUser || 
+        previousUser.role !== profile.role ||
         location.pathname === '/login' || 
         location.pathname === '/' || 
         (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
       ) {
-        // Only navigate if we haven't already navigated to this path
-        if (navigationRef.current !== targetPath) {
-          console.log('Redirecting to:', targetPath);
-          navigationRef.current = targetPath;
-          navigate(targetPath, { replace: true });
-        }
-      } else {
-        // Update navigationRef to current path to prevent unnecessary redirects
-        navigationRef.current = location.pathname;
+        const targetPath = getRoleBasedRedirect(profile.role);
+        console.log('Navigation check:', { 
+          from: location.pathname, 
+          to: targetPath, 
+          role: profile.role 
+        });
+        handleNavigation(targetPath);
       }
 
     } catch (error) {
@@ -119,15 +117,12 @@ export const useAuthState = () => {
       });
       setUser(null);
       if (!isPublicRoute(location.pathname)) {
-        if (navigationRef.current !== 'login') {
-          navigationRef.current = 'login';
-          navigate('/login', { replace: true });
-        }
+        handleNavigation('/login');
       }
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
+  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast, handleNavigation, user]);
 
   useEffect(() => {
     let mounted = true;
@@ -149,8 +144,7 @@ export const useAuthState = () => {
             setUser(null);
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
-              navigationRef.current = 'login';
-              navigate('/login', { replace: true });
+              handleNavigation('/login');
             }
             return;
           }
@@ -182,7 +176,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [handleSession]);
+  }, [handleSession, isPublicRoute, location.pathname, handleNavigation, toast]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
