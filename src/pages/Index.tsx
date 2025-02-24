@@ -29,6 +29,11 @@ const Index = () => {
     }
   };
 
+  const handleCareerPathways = () => {
+    console.log("Navigating to career pathways");
+    navigate("/career-pathways");
+  };
+
   const handleAuthSubmit = async (email: string, password: string) => {
     if (isSubmitting) return;
     
@@ -74,10 +79,8 @@ const Index = () => {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <Link to="/career-pathways">
-              Career Pathways
-            </Link>
+          <Button variant="ghost" onClick={handleCareerPathways}>
+            Career Pathways
           </Button>
           <Link to="/login" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <LogIn className="h-4 w-4" />
