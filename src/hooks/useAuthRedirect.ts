@@ -8,6 +8,14 @@ export const useAuthRedirect = () => {
   const getRoleBasedRedirect = (role: UserRole): string => {
     console.log("Getting redirect path for role:", role);
     
+    // If user is already on their dashboard, don't redirect
+    const currentPath = location.pathname;
+    const expectedDashboardPath = `/${role}/dashboard`;
+    if (currentPath === expectedDashboardPath) {
+      console.log("User already on correct dashboard:", currentPath);
+      return currentPath;
+    }
+    
     // If we have a 'from' location state, verify it matches the user's role
     const state = location.state as { from?: Location };
     if (state?.from && state.from.pathname) {
@@ -18,17 +26,12 @@ export const useAuthRedirect = () => {
       }
     }
 
-    // Always redirect to the role-specific dashboard
-    const dashboardPaths: Record<UserRole, string> = {
-      admin: "/admin/dashboard",
-      educator: "/educator/dashboard",
-      employer: "/employer/dashboard",
-      participant: "/participant/dashboard"
-    };
-
-    console.log(`Redirecting ${role} to default dashboard:`, dashboardPaths[role]);
-    return dashboardPaths[role];
+    // Default to the role-specific dashboard
+    const dashboardPath = `/${role}/dashboard`;
+    console.log("Redirecting to default dashboard:", dashboardPath);
+    return dashboardPath;
   };
 
   return { getRoleBasedRedirect };
 };
+

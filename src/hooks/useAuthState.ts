@@ -36,6 +36,7 @@ export const useAuthState = () => {
   const isCorrectRoleRoute = useCallback((path: string, userRole: string) => {
     // Check if the user is already on their dashboard
     if (path === `/${userRole}/dashboard`) {
+      console.log("User is on correct dashboard path:", path);
       return true;
     }
 
@@ -46,7 +47,9 @@ export const useAuthState = () => {
       educator: '/educator'
     };
 
-    return path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
+    const isCorrectPath = path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
+    console.log("Path check result:", { path, userRole, isCorrectPath });
+    return isCorrectPath;
   }, []);
 
   const handleSession = useCallback(async (session: any | null) => {
@@ -93,18 +96,26 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      // Don't redirect if we're already on a correct route or public route
-      if (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role)) {
+      // Only redirect if we're not on a public route and not on the correct role route
+      const shouldRedirect = !isPublicRoute(location.pathname) && 
+                           !isCorrectRoleRoute(location.pathname, profile.role);
+      
+      console.log("Redirect check:", {
+        pathname: location.pathname,
+        isPublic: isPublicRoute(location.pathname),
+        isCorrectRole: isCorrectRoleRoute(location.pathname, profile.role),
+        shouldRedirect
+      });
+
+      if (shouldRedirect) {
         const targetPath = getRoleBasedRedirect(profile.role);
         if (lastNavigation.current !== targetPath) {
-          console.log('Navigation check:', { 
-            from: location.pathname, 
-            to: targetPath, 
-            role: profile.role 
-          });
+          console.log('Navigating to:', targetPath);
           lastNavigation.current = targetPath;
           navigate(targetPath, { replace: true });
         }
+      } else {
+        console.log('No redirect needed, user is in correct location');
       }
 
     } catch (error) {
