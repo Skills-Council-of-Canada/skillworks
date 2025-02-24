@@ -14,7 +14,7 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
-  const navigationRef = useRef(false);
+  const navigationRef = useRef<string | null>(null);
   const profileRequestInProgress = useRef(false);
   const lastProfileFetch = useRef<number>(0);
   const FETCH_COOLDOWN = 2000; // 2 seconds cooldown between profile fetches
@@ -50,8 +50,8 @@ export const useAuthState = () => {
       if (!session?.user) {
         setUser(null);
         setIsLoading(false);
-        if (!isPublicRoute(location.pathname) && !navigationRef.current) {
-          navigationRef.current = true;
+        if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
+          navigationRef.current = 'login';
           navigate('/login', { replace: true });
         }
         return;
@@ -77,8 +77,8 @@ export const useAuthState = () => {
       if (!profile) {
         setUser(null);
         setIsLoading(false);
-        if (!isPublicRoute(location.pathname) && !navigationRef.current) {
-          navigationRef.current = true;
+        if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
+          navigationRef.current = 'login';
           navigate('/login', { replace: true });
         }
         return;
@@ -86,13 +86,16 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      if (!navigationRef.current && (
+      // Only redirect if we haven't already redirected to this path
+      const targetPath = getRoleBasedRedirect(profile.role);
+      if (navigationRef.current !== targetPath && (
           location.pathname === '/login' || 
           location.pathname === '/' || 
           (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
       )) {
-        navigationRef.current = true;
-        navigate(getRoleBasedRedirect(profile.role), { replace: true });
+        console.log('Redirecting to:', targetPath);
+        navigationRef.current = targetPath;
+        navigate(targetPath, { replace: true });
       }
     } catch (error) {
       console.error("Profile error:", error);
@@ -103,8 +106,8 @@ export const useAuthState = () => {
         variant: "destructive",
       });
       setUser(null);
-      if (!isPublicRoute(location.pathname) && !navigationRef.current) {
-        navigationRef.current = true;
+      if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
+        navigationRef.current = 'login';
         navigate('/login', { replace: true });
       }
     } finally {
@@ -131,6 +134,7 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
+            navigationRef.current = 'login';
             if (!isPublicRoute(location.pathname)) {
               navigate('/login', { replace: true });
             }
@@ -168,3 +172,4 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
+
