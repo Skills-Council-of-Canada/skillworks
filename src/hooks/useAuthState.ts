@@ -17,6 +17,7 @@ export const useAuthState = () => {
   const authCheckComplete = useRef(false);
   const mounted = useRef(true);
   const processingAuth = useRef(false);
+  const lastKnownRole = useRef<UserRole | null>(null);
 
   const isPublicRoute = useCallback((path: string) => {
     const publicPaths = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/registration'];
@@ -25,9 +26,15 @@ export const useAuthState = () => {
 
   const enforceRoleAccess = useCallback((currentPath: string, userRole: UserRole) => {
     const pathRole = currentPath.split('/')[1] as UserRole;
+    
+    // Store the last known valid role
+    if (userRole) {
+      lastKnownRole.current = userRole;
+    }
+    
     if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
       if (pathRole !== userRole) {
-        console.log("Role mismatch, redirecting to appropriate dashboard");
+        console.log(`Role mismatch - Path role: ${pathRole}, User role: ${userRole}`);
         const redirectPath = getRoleBasedRedirect(userRole);
         navigate(redirectPath, { replace: true });
         return false;
@@ -45,39 +52,37 @@ export const useAuthState = () => {
       // If no session, clear user state and redirect if needed
       if (!session?.user) {
         setUser(null);
+        lastKnownRole.current = null; // Clear the last known role
         setIsLoading(false);
         authCheckComplete.current = true;
         
-        // Only redirect to login if we're on a protected route and not already on login page
+        // Only redirect to login if we're on a protected route
         if (!isPublicRoute(location.pathname) && location.pathname !== '/login') {
           navigate('/login', { replace: true });
         }
-        processingAuth.current = false;
         return;
       }
 
       // Get user profile
       const profile = await getUserProfile(session);
       
-      if (!mounted.current) {
-        processingAuth.current = false;
-        return;
-      }
+      if (!mounted.current) return;
 
       if (!profile) {
         setUser(null);
+        lastKnownRole.current = null;
         setIsLoading(false);
         authCheckComplete.current = true;
         
         if (!isPublicRoute(location.pathname)) {
           navigate('/login', { replace: true });
         }
-        processingAuth.current = false;
         return;
       }
 
       // Set user profile
       setUser(profile);
+      lastKnownRole.current = profile.role;
       setIsLoading(false);
       authCheckComplete.current = true;
 
@@ -95,6 +100,7 @@ export const useAuthState = () => {
           variant: "destructive",
         });
         setUser(null);
+        lastKnownRole.current = null;
         setIsLoading(false);
         authCheckComplete.current = true;
       }
@@ -105,8 +111,7 @@ export const useAuthState = () => {
 
   useEffect(() => {
     mounted.current = true;
-    let authSubscription: { unsubscribe: () => void } | null = null;
-
+    
     const setupAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -115,13 +120,15 @@ export const useAuthState = () => {
           await handleSession(session);
         }
 
-        authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+        // Subscribe to auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted.current) return;
 
           console.log("Auth state change:", event);
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
+            lastKnownRole.current = null;
             setIsLoading(false);
             navigate('/', { replace: true });
             return;
@@ -130,12 +137,17 @@ export const useAuthState = () => {
           if (session && ['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
             await handleSession(session);
           }
-        }).data.subscription;
+        });
+
+        return () => {
+          subscription.unsubscribe();
+        };
 
       } catch (error) {
         console.error("Auth setup error:", error);
         if (mounted.current) {
           setUser(null);
+          lastKnownRole.current = null;
           setIsLoading(false);
           toast({
             title: "Authentication Error",
@@ -150,9 +162,6 @@ export const useAuthState = () => {
 
     return () => {
       mounted.current = false;
-      if (authSubscription) {
-        authSubscription.unsubscribe();
-      }
     };
   }, [handleSession, navigate, toast]);
 
