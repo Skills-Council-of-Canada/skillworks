@@ -22,7 +22,10 @@ export const useProjectSubmission = () => {
       positions: formData.positions!,
       flexibility: formData.flexibility,
       safety_requirements: formData.safetyRequirements,
-      status
+      status: status === 'published' ? 'pending' : 'draft',
+      visibility: status === 'published' ? 'public' : 'draft',
+      max_participants: formData.positions,
+      review_status: status === 'published' ? 'pending_review' : null
     };
   };
 
@@ -76,7 +79,7 @@ export const useProjectSubmission = () => {
         await Promise.all(uploadPromises);
       }
 
-      toast.success("Project published successfully!");
+      toast.success("Project submitted for review!");
       navigate("/employer");
     } catch (error) {
       console.error('Error publishing project:', error);
@@ -96,9 +99,11 @@ export const useProjectSubmission = () => {
 
       const projectData = createProjectData(formData, 'draft', employerData.id);
 
-      await supabase
+      const { error: projectError } = await supabase
         .from('projects')
         .insert([projectData]);
+
+      if (projectError) throw projectError;
 
       toast.success("Project saved as draft!");
       navigate("/employer");
