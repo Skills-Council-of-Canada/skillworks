@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -67,11 +66,6 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <TooltipProvider>
-        {/* Career Pathways route outside AuthProvider */}
-        <Routes>
-          <Route path="/career-pathways" element={<CareerPathways />} />
-        </Routes>
-
         <AuthProvider>
           <ScrollToTop />
           <Toaster />
@@ -81,6 +75,7 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/index" element={<Navigate to="/" replace />} />
             <Route path="/home" element={<Index />} />
+            <Route path="/career-pathways" element={<CareerPathways />} />
             <Route path="/educator-landing" element={<EducatorLanding />} />
             <Route path="/employer-landing" element={<EmployerLanding />} />
             <Route path="/participant-landing" element={<ParticipantLanding />} />
