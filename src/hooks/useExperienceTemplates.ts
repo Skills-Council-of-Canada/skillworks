@@ -4,6 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { ExperienceTemplate } from "@/types/templates";
 import { useToast } from "@/hooks/use-toast";
 
+type RawTemplate = Omit<ExperienceTemplate, 'metadata'> & {
+  metadata: Record<string, any>;
+};
+
 export const useExperienceTemplates = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -20,15 +24,27 @@ export const useExperienceTemplates = () => {
       if (error) throw error;
       
       // Transform the metadata to ensure it matches our expected type
-      return (data || []).map(template => ({
+      return (data || []).map((template: RawTemplate) => ({
         ...template,
         metadata: {
-          expected_outcomes: template.metadata?.expected_outcomes || [],
-          subcategories: template.metadata?.subcategories || [],
-          skill_tags: template.metadata?.skill_tags || [],
-          duration_weeks: template.metadata?.duration_weeks || 0,
-          team_size: template.metadata?.team_size || 1,
-          milestones: template.metadata?.milestones || []
+          expected_outcomes: Array.isArray(template.metadata?.expected_outcomes) 
+            ? template.metadata.expected_outcomes 
+            : [],
+          subcategories: Array.isArray(template.metadata?.subcategories) 
+            ? template.metadata.subcategories 
+            : [],
+          skill_tags: Array.isArray(template.metadata?.skill_tags) 
+            ? template.metadata.skill_tags 
+            : [],
+          duration_weeks: typeof template.metadata?.duration_weeks === 'number' 
+            ? template.metadata.duration_weeks 
+            : 0,
+          team_size: typeof template.metadata?.team_size === 'number' 
+            ? template.metadata.team_size 
+            : 1,
+          milestones: Array.isArray(template.metadata?.milestones) 
+            ? template.metadata.milestones 
+            : []
         }
       })) as ExperienceTemplate[];
     }
@@ -57,10 +73,10 @@ export const useExperienceTemplates = () => {
           template_id: template.id,
           status: "draft",
           review_status: "pending_review",
-          start_date: new Date().toISOString().split('T')[0], // Required field
-          end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Required field
-          location_type: "On-site", // Required field
-          positions: 1 // Required field
+          start_date: new Date().toISOString().split('T')[0],
+          end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          location_type: "On-site",
+          positions: 1
         }])
         .select()
         .single();
