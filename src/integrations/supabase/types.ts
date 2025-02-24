@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_approvals: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          registration_type: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["registration_status"] | null
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          registration_type: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["registration_status"] | null
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          registration_type?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["registration_status"] | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       admin_audit_logs: {
         Row: {
           action_type: string
@@ -4634,6 +4670,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "needs_modification"
+      registration_status: "pending" | "approved" | "rejected"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
       task_status:
         | "pending"
