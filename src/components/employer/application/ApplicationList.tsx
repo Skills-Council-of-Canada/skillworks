@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import { User, MessageCircle, CheckCircle, XCircle, Eye } from "lucide-react";
+import { MessageCircle, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Application, ApplicationStatus } from "@/types/application";
 import { TradeType, SkillLevel } from "@/types/project";
 import { Card } from "@/components/ui/card";
@@ -55,11 +55,15 @@ export const ApplicationList = ({ projectId, status }: ApplicationListProps) => 
   );
 
   const handleViewProfile = (applicantId: string) => {
-    navigate(`/employer/applicants/${applicantId}`);
+    console.log("Navigating to profile:", `/employer/applications/${applicantId}`);
+    navigate(`/employer/applications/${applicantId}`);
   };
 
   const handleMessage = (applicantId: string) => {
-    navigate(`/employer/messages/${applicantId}`);
+    console.log("Navigating to messages:", `/employer/messages`);
+    navigate(`/employer/messages`, { 
+      state: { applicantId: applicantId }
+    });
   };
 
   const handleUpdateStatus = (applicationId: string, newStatus: ApplicationStatus) => {
