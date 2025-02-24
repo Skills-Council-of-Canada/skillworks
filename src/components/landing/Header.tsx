@@ -1,12 +1,26 @@
 
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Home } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const location = useLocation();
+  
+  // If we're on the index page and logged in, perform logout
+  useEffect(() => {
+    const handleIndexPageLogout = async () => {
+      if (location.pathname === "/" && user) {
+        console.log("Auto-logging out on index page");
+        await logout();
+      }
+    };
+    
+    handleIndexPageLogout();
+  }, [location.pathname, user, logout]);
   
   const handleAuthAction = async () => {
     if (user) {
