@@ -3653,6 +3653,7 @@ export type Database = {
         Row: {
           admin_feedback: string | null
           approval_notes: string | null
+          auto_assign_enabled: boolean | null
           certifications_required: string[] | null
           created_at: string
           description: string
@@ -3663,6 +3664,7 @@ export type Database = {
           industry: string | null
           location_type: string
           match_history: Json | null
+          max_participants: number | null
           modification_requested: string | null
           positions: number
           project_type: string | null
@@ -3680,10 +3682,12 @@ export type Database = {
           title: string
           trade_type: string
           updated_at: string
+          visibility: Database["public"]["Enums"]["project_visibility"] | null
         }
         Insert: {
           admin_feedback?: string | null
           approval_notes?: string | null
+          auto_assign_enabled?: boolean | null
           certifications_required?: string[] | null
           created_at?: string
           description: string
@@ -3694,6 +3698,7 @@ export type Database = {
           industry?: string | null
           location_type: string
           match_history?: Json | null
+          max_participants?: number | null
           modification_requested?: string | null
           positions: number
           project_type?: string | null
@@ -3711,10 +3716,12 @@ export type Database = {
           title: string
           trade_type: string
           updated_at?: string
+          visibility?: Database["public"]["Enums"]["project_visibility"] | null
         }
         Update: {
           admin_feedback?: string | null
           approval_notes?: string | null
+          auto_assign_enabled?: boolean | null
           certifications_required?: string[] | null
           created_at?: string
           description?: string
@@ -3725,6 +3732,7 @@ export type Database = {
           industry?: string | null
           location_type?: string
           match_history?: Json | null
+          max_participants?: number | null
           modification_requested?: string | null
           positions?: number
           project_type?: string | null
@@ -3742,6 +3750,7 @@ export type Database = {
           title?: string
           trade_type?: string
           updated_at?: string
+          visibility?: Database["public"]["Enums"]["project_visibility"] | null
         }
         Relationships: [
           {
@@ -4670,6 +4679,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "needs_modification"
+      project_visibility: "draft" | "private" | "public"
       registration_status: "pending" | "approved" | "rejected"
       skill_level_enum: "beginner" | "intermediate" | "advanced"
       task_status:
