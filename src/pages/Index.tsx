@@ -87,9 +87,14 @@ const Index = () => {
       <main className="flex-1 flex">
         <div className="container mx-auto grid md:grid-cols-2 gap-8 px-4 py-12">
           <div className="flex flex-col justify-center text-white space-y-6">
-            <h1 className="text-5xl font-bold leading-tight">
-              Real-World Experience. Real Opportunities. Real Impact.
-            </h1>
+            <div>
+              <h1 className="text-5xl font-bold leading-tight mb-2">
+                Work Integrated Learning (WIL)
+              </h1>
+              <p className="text-3xl font-semibold">
+                Real-World Experience. Real Opportunities. Real Impact.
+              </p>
+            </div>
             <p className="text-xl text-gray-300">
               Connect with top companies, gain hands-on experience, and build your career—all in one platform.
             </p>
