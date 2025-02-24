@@ -1,20 +1,20 @@
 
-import * as React from "react";
+import { createContext, useContext, FC, ReactNode } from "react";
 import { AuthContextType } from "@/types/auth";
 import { useAuthState } from "@/hooks/useAuthState";
 import { useAuthOperations } from "@/hooks/useAuthOperations";
 
-const AuthContext = React.createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
-  const context = React.useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { user, isLoading, setIsLoading } = useAuthState();
   const { login, logout, signup } = useAuthOperations(setIsLoading);
 
