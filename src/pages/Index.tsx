@@ -63,7 +63,26 @@ const Index = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-auto">
-      <header className="flex-none h-16 bg-white border-b shadow-sm" />
+      <header className="flex-none h-16 bg-white border-b shadow-sm flex items-center justify-between px-4">
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <img
+              src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png"
+              alt="Skill Works Logo"
+              className="h-8"
+            />
+          </Link>
+        </div>
+        <div className="flex items-center gap-4">
+          <Link to="/career-pathways" className="text-gray-600 hover:text-gray-900">
+            Career Pathways
+          </Link>
+          <Link to="/login" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
+            <LogIn className="h-4 w-4" />
+            Login
+          </Link>
+        </div>
+      </header>
       
       <main className="flex-1 flex items-center">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
