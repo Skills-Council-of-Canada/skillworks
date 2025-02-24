@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Home } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 
@@ -35,11 +35,13 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50 h-16">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png" 
-            alt="Skill Works Logo" 
-            className="h-8"
-          />
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png" 
+              alt="Skill Works Logo" 
+              className="h-8"
+            />
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <Button
