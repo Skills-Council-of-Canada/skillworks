@@ -34,6 +34,11 @@ export const useAuthState = () => {
   }, []);
 
   const isCorrectRoleRoute = useCallback((path: string, userRole: string) => {
+    // Check if the user is already on their dashboard
+    if (path === `/${userRole}/dashboard`) {
+      return true;
+    }
+
     const rolePaths = {
       admin: '/admin',
       participant: '/participant',
@@ -179,4 +184,3 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
-
