@@ -57,7 +57,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-muted/50">
+      <Card className="p-6 bg-[#F1F1F1]">
         <h3 className="font-semibold mb-2">Example Projects</h3>
         <ul className="space-y-2 text-muted-foreground">
           {EXAMPLE_PROJECTS.map((example, index) => (
