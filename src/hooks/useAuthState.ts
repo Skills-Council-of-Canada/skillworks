@@ -49,13 +49,12 @@ export const useAuthState = () => {
     if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
       if (pathRole !== userRole) {
         console.log(`Role mismatch - Path role: ${pathRole}, User role: ${userRole}`);
-        const redirectPath = getRoleBasedRedirect(userRole);
-        navigate(redirectPath, { replace: true });
+        navigate(`/${userRole}/dashboard`, { replace: true });
         return false;
       }
     }
     return true;
-  }, [navigate, getRoleBasedRedirect, isPublicRoute]);
+  }, [navigate, isPublicRoute]);
 
   const handleSession = useCallback(async (session: any | null) => {
     if (!mounted.current || processingAuth.current) return;
@@ -78,7 +77,7 @@ export const useAuthState = () => {
         lastKnownRole.current = null;
         setIsLoading(false);
         authCheckComplete.current = true;
-        navigate('/login', { replace: true });
+        navigate('/login');
         return;
       }
 
@@ -95,7 +94,7 @@ export const useAuthState = () => {
           authCheckComplete.current = true;
           
           if (!isPublicRoute(location.pathname)) {
-            navigate('/login', { replace: true });
+            navigate('/login');
           }
           return;
         }
