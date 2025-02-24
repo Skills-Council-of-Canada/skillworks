@@ -32,7 +32,6 @@ const CareerPathways = () => {
       careers: ["Auto Service Technician", "Heavy Equipment Mechanic", "Truck & Coach Technician"],
       icon: BriefcaseIcon
     },
-    // ... Add more sectors as needed
   ];
 
   const steps = [
