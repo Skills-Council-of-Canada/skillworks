@@ -4,8 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { ExperienceTemplate } from "@/types/templates";
 import { useToast } from "@/hooks/use-toast";
 
-type RawTemplate = Omit<ExperienceTemplate, 'metadata'> & {
+// Define the shape of data as it comes from Supabase
+type SupabaseTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  trade_type: string;
+  skill_level: string;
+  created_at: string;
+  updated_at: string;
   metadata: Record<string, any>;
+  status: string;
+  is_public: boolean;
+  educator_id: string;
+  experience_id?: string;
 };
 
 export const useExperienceTemplates = () => {
@@ -24,8 +36,9 @@ export const useExperienceTemplates = () => {
       if (error) throw error;
       
       // Transform the metadata to ensure it matches our expected type
-      return (data || []).map((template: RawTemplate) => ({
+      return (data || []).map((template: SupabaseTemplate) => ({
         ...template,
+        status: template.status as "active" | "inactive",
         metadata: {
           expected_outcomes: Array.isArray(template.metadata?.expected_outcomes) 
             ? template.metadata.expected_outcomes 
