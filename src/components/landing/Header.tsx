@@ -2,19 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Home, GraduationCap } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { Separator } from "@/components/ui/separator";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
   
-  const handleAuthAction = async () => {
-    if (user) {
-      await logout();
-    } else {
-      navigate("/login");
-    }
+  const handleAuthAction = () => {
+    navigate("/login");
   };
   
   return (
@@ -54,17 +48,8 @@ const Header = () => {
             className="gap-2"
             onClick={handleAuthAction}
           >
-            {user ? (
-              <>
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Logout</span>
-              </>
-            ) : (
-              <>
-                <LogIn className="h-4 w-4" />
-                <span className="hidden sm:inline">Login</span>
-              </>
-            )}
+            <LogIn className="h-4 w-4" />
+            <span className="hidden sm:inline">Login</span>
           </Button>
         </div>
       </div>
