@@ -50,9 +50,11 @@ export const useAuthState = () => {
       if (!session?.user) {
         setUser(null);
         setIsLoading(false);
-        if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
-          navigationRef.current = 'login';
-          navigate('/login', { replace: true });
+        if (!isPublicRoute(location.pathname)) {
+          if (navigationRef.current !== 'login') {
+            navigationRef.current = 'login';
+            navigate('/login', { replace: true });
+          }
         }
         return;
       }
@@ -77,26 +79,36 @@ export const useAuthState = () => {
       if (!profile) {
         setUser(null);
         setIsLoading(false);
-        if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
-          navigationRef.current = 'login';
-          navigate('/login', { replace: true });
+        if (!isPublicRoute(location.pathname)) {
+          if (navigationRef.current !== 'login') {
+            navigationRef.current = 'login';
+            navigate('/login', { replace: true });
+          }
         }
         return;
       }
 
       setUser(profile);
       
-      // Only redirect if we haven't already redirected to this path
+      // Only handle navigation if the current path requires it
       const targetPath = getRoleBasedRedirect(profile.role);
-      if (navigationRef.current !== targetPath && (
-          location.pathname === '/login' || 
-          location.pathname === '/' || 
-          (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
-      )) {
-        console.log('Redirecting to:', targetPath);
-        navigationRef.current = targetPath;
-        navigate(targetPath, { replace: true });
+      
+      if (
+        location.pathname === '/login' || 
+        location.pathname === '/' || 
+        (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
+      ) {
+        // Only navigate if we haven't already navigated to this path
+        if (navigationRef.current !== targetPath) {
+          console.log('Redirecting to:', targetPath);
+          navigationRef.current = targetPath;
+          navigate(targetPath, { replace: true });
+        }
+      } else {
+        // Update navigationRef to current path to prevent unnecessary redirects
+        navigationRef.current = location.pathname;
       }
+
     } catch (error) {
       console.error("Profile error:", error);
       profileRequestInProgress.current = false;
@@ -106,9 +118,11 @@ export const useAuthState = () => {
         variant: "destructive",
       });
       setUser(null);
-      if (!isPublicRoute(location.pathname) && navigationRef.current !== 'login') {
-        navigationRef.current = 'login';
-        navigate('/login', { replace: true });
+      if (!isPublicRoute(location.pathname)) {
+        if (navigationRef.current !== 'login') {
+          navigationRef.current = 'login';
+          navigate('/login', { replace: true });
+        }
       }
     } finally {
       setIsLoading(false);
@@ -134,8 +148,8 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            navigationRef.current = 'login';
             if (!isPublicRoute(location.pathname)) {
+              navigationRef.current = 'login';
               navigate('/login', { replace: true });
             }
             return;
@@ -172,4 +186,3 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
-
