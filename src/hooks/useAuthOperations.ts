@@ -31,13 +31,13 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         if (error.message.includes('Email not confirmed')) {
           toast({
             title: "Email Not Confirmed",
-            description: "Please check your email for a confirmation link. A new confirmation email has been sent.",
+            description: "Please check your email for a confirmation link.",
             variant: "destructive",
           });
         } else if (error.message.includes('Invalid login credentials')) {
           toast({
             title: "Login Failed",
-            description: "Invalid email or password. Please check your credentials and try again.",
+            description: "Invalid email or password. Please check your credentials.",
             variant: "destructive",
           });
         } else {
@@ -120,33 +120,33 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
 
   const logout = async () => {
     try {
-      console.log("Attempting logout...");
+      console.log("Starting logout process...");
       setIsLoading(true);
+      
       const { error } = await signOutUser();
       
       if (error) {
         console.error("Logout error:", error);
         toast({
           title: "Error",
-          description: "There was an issue during logout. Please try again.",
+          description: "Failed to log out. Please try again.",
           variant: "destructive",
         });
         return;
       }
+
+      // Force navigation to home page after successful logout
+      navigate('/', { replace: true });
       
-      console.log("Logout successful");
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
-      
-      // Let the auth state change handle the navigation
-      setIsLoading(false);
     } catch (error) {
       console.error("Logout error:", error);
       toast({
         title: "Error",
-        description: "There was an issue during logout. Please try refreshing the page.",
+        description: "An unexpected error occurred during logout.",
         variant: "destructive",
       });
     } finally {
