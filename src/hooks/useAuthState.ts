@@ -32,7 +32,8 @@ export const useAuthState = () => {
         setIsLoading(false);
         authCheckComplete.current = true;
         
-        if (!isPublicRoute(location.pathname)) {
+        // Only redirect to login if we're on a protected route
+        if (!isPublicRoute(location.pathname) && location.pathname !== '/') {
           navigate('/login', { replace: true });
         }
         return;
@@ -103,10 +104,7 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            if (!isPublicRoute(location.pathname)) {
-              navigate('/login', { replace: true });
-            }
-            return;
+            return; // Remove the redirect on sign out
           }
 
           if (session && ['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
