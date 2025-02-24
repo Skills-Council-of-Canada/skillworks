@@ -1905,6 +1905,73 @@ export type Database = {
           },
         ]
       }
+      experience_templates: {
+        Row: {
+          created_at: string | null
+          description: string
+          educator_id: string | null
+          experience_id: string | null
+          id: string
+          is_public: boolean | null
+          metadata: Json | null
+          skill_level: string
+          status: string | null
+          title: string
+          trade_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          educator_id?: string | null
+          experience_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          skill_level: string
+          status?: string | null
+          title: string
+          trade_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          educator_id?: string | null
+          experience_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          skill_level?: string
+          status?: string | null
+          title?: string
+          trade_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_educator"
+            columns: ["educator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_experience"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_experiences"
+            referencedColumns: ["experience_id"]
+          },
+          {
+            foreignKeyName: "fk_experience"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "educator_experiences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       experience_updates: {
         Row: {
           author_id: string
@@ -3679,6 +3746,7 @@ export type Database = {
           skill_level: string
           start_date: string
           status: string
+          template_id: string | null
           title: string
           trade_type: string
           updated_at: string
@@ -3713,6 +3781,7 @@ export type Database = {
           skill_level: string
           start_date: string
           status?: string
+          template_id?: string | null
           title: string
           trade_type: string
           updated_at?: string
@@ -3747,12 +3816,20 @@ export type Database = {
           skill_level?: string
           start_date?: string
           status?: string
+          template_id?: string | null
           title?: string
           trade_type?: string
           updated_at?: string
           visibility?: Database["public"]["Enums"]["project_visibility"] | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_template"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "experience_templates"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "projects_employer_id_fkey"
             columns: ["employer_id"]
