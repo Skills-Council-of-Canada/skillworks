@@ -33,8 +33,8 @@ export const useAuthState = () => {
         authCheckComplete.current = true;
         
         // Only redirect to login if we're on a protected route
-        if (!isPublicRoute(location.pathname) && location.pathname !== '/') {
-          navigate('/login', { replace: true });
+        if (!isPublicRoute(location.pathname)) {
+          navigate('/login');
         }
         return;
       }
@@ -50,7 +50,7 @@ export const useAuthState = () => {
         authCheckComplete.current = true;
         
         if (!isPublicRoute(location.pathname)) {
-          navigate('/login', { replace: true });
+          navigate('/login');
         }
         return;
       }
@@ -65,7 +65,7 @@ export const useAuthState = () => {
         const currentRole = location.pathname.split('/')[1];
         if (currentRole !== profile.role) {
           const redirectPath = getRoleBasedRedirect(profile.role);
-          navigate(redirectPath, { replace: true });
+          navigate(redirectPath);
         }
       }
 
@@ -104,7 +104,10 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            return; // Remove the redirect on sign out
+            if (!isPublicRoute(location.pathname)) {
+              navigate('/login');
+            }
+            return;
           }
 
           if (session && ['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
