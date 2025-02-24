@@ -67,16 +67,15 @@ export const useAuthState = () => {
 
       profileRequestInProgress.current = true;
       const profile = await getUserProfile(session);
+      profileRequestInProgress.current = false;
       
       if (!mounted.current) {
-        profileRequestInProgress.current = false;
         return;
       }
 
       if (!profile) {
         setUser(null);
         setIsLoading(false);
-        profileRequestInProgress.current = false;
         if (!isPublicRoute(location.pathname)) {
           const targetPath = '/login';
           if (lastNavigation.current !== targetPath) {
@@ -89,7 +88,7 @@ export const useAuthState = () => {
 
       setUser(profile);
       
-      // Only navigate if we're not on the correct route
+      // Don't redirect if we're already on a correct route or public route
       if (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role)) {
         const targetPath = getRoleBasedRedirect(profile.role);
         if (lastNavigation.current !== targetPath) {
@@ -112,16 +111,8 @@ export const useAuthState = () => {
           variant: "destructive",
         });
         setUser(null);
-        if (!isPublicRoute(location.pathname)) {
-          const targetPath = '/login';
-          if (lastNavigation.current !== targetPath) {
-            lastNavigation.current = targetPath;
-            navigate(targetPath, { replace: true });
-          }
-        }
       }
     } finally {
-      profileRequestInProgress.current = false;
       if (mounted.current) {
         setIsLoading(false);
       }
@@ -188,3 +179,4 @@ export const useAuthState = () => {
 
   return { user, setUser, isLoading, setIsLoading };
 };
+

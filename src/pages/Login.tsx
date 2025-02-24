@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthForm from "@/components/auth/AuthForm";
 import Header from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
@@ -7,12 +7,22 @@ import { signInUser } from "@/services/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserRole } from "@/types/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // If user is already logged in, redirect them to their appropriate dashboard
+    if (user) {
+      const dashboardPath = `/${user.role}/dashboard`;
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (email: string, password: string) => {
     setIsLoading(true);
@@ -56,6 +66,11 @@ const Login = () => {
     }
   };
 
+  // If we're already loading the auth state, don't show the form yet
+  if (user) {
+    return null; // Or a loading spinner if you prefer
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -75,3 +90,4 @@ const Login = () => {
 };
 
 export default Login;
+
