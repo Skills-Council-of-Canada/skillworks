@@ -2604,6 +2604,44 @@ export type Database = {
           },
         ]
       }
+      participant_approvals: {
+        Row: {
+          created_at: string | null
+          educator_id: string
+          feedback: string | null
+          id: string
+          participant_id: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          educator_id: string
+          feedback?: string | null
+          id?: string
+          participant_id?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          educator_id?: string
+          feedback?: string | null
+          id?: string
+          participant_id?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_participant_id"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participant_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       participant_education: {
         Row: {
           created_at: string | null
@@ -2987,6 +3025,9 @@ export type Database = {
       }
       participant_profiles: {
         Row: {
+          approval_status: string | null
+          approved_at: string | null
+          approved_by: string | null
           avatar_url: string | null
           bio: string | null
           certifications: Json[] | null
@@ -3002,6 +3043,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           bio?: string | null
           certifications?: Json[] | null
@@ -3017,6 +3061,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           bio?: string | null
           certifications?: Json[] | null
