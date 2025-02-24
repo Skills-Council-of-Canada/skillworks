@@ -86,7 +86,7 @@ const Index = () => {
       
       <main className="flex-1 flex items-center">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
-          <h1 className="text-4xl font-bold text-center mb-6">Work Integrated Learning (WIL)<br />Real-World Experience. Real Opportunities. Real Impact.</h1>
+          <h1 className="text-4xl font-bold text-center mb-6">Work Integrated Learning (WIL) Real-World Experience. Real Opportunities. Real Impact.</h1>
           
           <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
             <div className="flex flex-col justify-center order-2 md:order-1">
