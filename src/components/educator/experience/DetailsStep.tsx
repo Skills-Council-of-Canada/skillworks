@@ -58,6 +58,7 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
   const loadDraft = async () => {
     try {
+      console.log("Loading draft for user:", user?.id);
       const { data, error } = await supabase
         .from('experience_drafts')
         .select('*')
@@ -65,22 +66,39 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
         .eq('status', 'in_progress')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading draft:', error);
+        if (error.code === 'PGRST116') {
+          // No data found - this is okay for new experiences
+          console.log('No existing draft found - starting fresh');
+          return;
+        }
+        toast({
+          title: "Error",
+          description: "Failed to load draft: " + error.message,
+          variant: "destructive",
+        });
+        return;
+      }
 
+      console.log('Loaded draft data:', data);
       if (data) {
         // First set the ID since it's safe
         setDraftId(data.id);
         
         // Handle title and description
         if (typeof data.title === 'string') {
+          console.log('Setting title:', data.title);
           form.setValue('title', data.title);
         }
         if (typeof data.description === 'string') {
+          console.log('Setting description:', data.description);
           form.setValue('description', data.description);
         }
 
         // Handle expected outcomes
         if (Array.isArray(data.expected_outcomes)) {
+          console.log('Setting expected outcomes:', data.expected_outcomes);
           const validOutcomes = data.expected_outcomes.filter((outcome): outcome is string => 
             typeof outcome === 'string'
           );
@@ -89,6 +107,7 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
         // Handle example projects with type validation
         if (Array.isArray(data.example_projects)) {
+          console.log('Setting example projects:', data.example_projects);
           const validProjects = data.example_projects.filter((project): project is { title: string; description: string } => {
             if (!project || typeof project !== 'object') return false;
             const p = project as Record<string, unknown>;
@@ -104,6 +123,7 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
 
         // Handle media files
         if (Array.isArray(data.media_files)) {
+          console.log('Setting media files:', data.media_files);
           const validMediaFiles = data.media_files.filter((file): file is { name: string; type: string; size: number } => {
             if (!file || typeof file !== 'object') return false;
             const f = file as Record<string, unknown>;
@@ -121,6 +141,7 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
           }
         }
       } else {
+        console.log('No existing draft found - creating new draft');
         // Create new draft
         const { data: newDraft, error: createError } = await supabase
           .from('experience_drafts')
@@ -130,11 +151,15 @@ const DetailsStep = ({ form, onNext }: DetailsStepProps) => {
           .select()
           .single();
 
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Error creating new draft:', createError);
+          throw createError;
+        }
+        console.log('Created new draft:', newDraft);
         setDraftId(newDraft.id);
       }
     } catch (error) {
-      console.error('Error loading draft:', error);
+      console.error('Error in loadDraft:', error);
       toast({
         title: "Error",
         description: "Failed to load draft",
