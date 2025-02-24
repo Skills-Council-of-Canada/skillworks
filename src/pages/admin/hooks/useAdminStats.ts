@@ -29,33 +29,43 @@ export const useAdminStats = (user: User | null) => {
         condition: Record<string, any> = {}
       ): Promise<number> => {
         try {
-          const { count, error } = await supabase
+          const query = supabase
             .from(table)
             .select('*', { count: 'exact', head: true })
             .match(condition);
             
+          const { count, error } = await query;
+          
           if (error) {
             console.error(`Error fetching count for ${table}:`, error);
-            return 0;
+            throw error;
           }
           
           return count || 0;
         } catch (error) {
           console.error(`Failed to fetch count for ${table}:`, error);
-          return 0;
+          throw error;
         }
       };
 
-      const stats: DashboardStats = {
-        educators: await fetchCount('profiles', { role: 'educator' }),
-        employers: await fetchCount('profiles', { role: 'employer' }),
-        participants: await fetchCount('profiles', { role: 'participant' }),
-        pendingApprovals: await fetchCount('profiles', { status: 'pending' }),
-        activeExperiences: await fetchCount('educator_experiences', { status: 'published' }),
-        matchedProjects: await fetchCount('experience_matches', { status: 'matched' })
-      };
-
-      return stats;
+      try {
+        const stats: DashboardStats = {
+          educators: await fetchCount('profiles', { role: 'educator' }),
+          employers: await fetchCount('profiles', { role: 'employer' }),
+          participants: await fetchCount('profiles', { role: 'participant' }),
+          pendingApprovals: await fetchCount('profiles', { status: 'pending' }),
+          activeExperiences: await fetchCount('educator_experiences', { status: 'published' }),
+          matchedProjects: await fetchCount('experience_matches', { status: 'matched' })
+        };
+        return stats;
+      } catch (error: any) {
+        toast({
+          title: "Error loading statistics",
+          description: error.message || "Failed to load dashboard statistics",
+          variant: "destructive",
+        });
+        throw error;
+      }
     },
     enabled: !!user?.id,
     staleTime: 30000,
@@ -63,11 +73,6 @@ export const useAdminStats = (user: User | null) => {
     meta: {
       onError: (error: any) => {
         console.error('Error loading stats:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard statistics",
-          variant: "destructive",
-        });
       }
     }
   });
