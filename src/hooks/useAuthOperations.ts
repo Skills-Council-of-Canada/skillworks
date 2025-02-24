@@ -140,8 +140,8 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: "You have been successfully logged out.",
       });
       
-      // Clear auth state and navigate
-      navigate("/", { replace: true });
+      // Let the auth state change handle the navigation
+      setIsLoading(false);
     } catch (error) {
       console.error("Logout error:", error);
       toast({
