@@ -14,108 +14,58 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
-  const lastNavigation = useRef<string | null>(null);
-  const profileRequestInProgress = useRef(false);
+  const authCheckComplete = useRef(false);
   const mounted = useRef(true);
 
   const isPublicRoute = useCallback((path: string) => {
-    if (path.includes('/registration')) {
-      return true;
-    }
-    
-    const publicPaths = [
-      '/login',
-      '/employer-landing',
-      '/educator-landing',
-      '/participant-landing',
-      '/'
-    ];
-    return publicPaths.includes(path) || publicPaths.some(prefix => path.startsWith(prefix + '?'));
-  }, []);
-
-  const isCorrectRoleRoute = useCallback((path: string, userRole: string) => {
-    // Check if the user is already on their dashboard
-    if (path === `/${userRole}/dashboard`) {
-      console.log("User is on correct dashboard path:", path);
-      return true;
-    }
-
-    const rolePaths = {
-      admin: '/admin',
-      participant: '/participant',
-      employer: '/employer',
-      educator: '/educator'
-    };
-
-    const isCorrectPath = path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
-    console.log("Path check result:", { path, userRole, isCorrectPath });
-    return isCorrectPath;
+    const publicPaths = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/registration'];
+    return publicPaths.includes(path) || path.startsWith('/registration/');
   }, []);
 
   const handleSession = useCallback(async (session: any | null) => {
     if (!mounted.current) return;
     
     try {
+      // If no session, clear user state and redirect if needed
       if (!session?.user) {
         setUser(null);
         setIsLoading(false);
+        authCheckComplete.current = true;
+        
         if (!isPublicRoute(location.pathname)) {
-          const targetPath = '/login';
-          if (lastNavigation.current !== targetPath) {
-            lastNavigation.current = targetPath;
-            navigate(targetPath, { replace: true });
-          }
+          navigate('/login', { replace: true });
         }
         return;
       }
 
-      if (profileRequestInProgress.current) {
-        return;
-      }
-
-      profileRequestInProgress.current = true;
+      // Get user profile
       const profile = await getUserProfile(session);
-      profileRequestInProgress.current = false;
       
-      if (!mounted.current) {
-        return;
-      }
+      if (!mounted.current) return;
 
       if (!profile) {
         setUser(null);
         setIsLoading(false);
+        authCheckComplete.current = true;
+        
         if (!isPublicRoute(location.pathname)) {
-          const targetPath = '/login';
-          if (lastNavigation.current !== targetPath) {
-            lastNavigation.current = targetPath;
-            navigate(targetPath, { replace: true });
-          }
+          navigate('/login', { replace: true });
         }
         return;
       }
 
+      // Set user profile
       setUser(profile);
-      
-      // Only redirect if we're not on a public route and not on the correct role route
-      const shouldRedirect = !isPublicRoute(location.pathname) && 
-                           !isCorrectRoleRoute(location.pathname, profile.role);
-      
-      console.log("Redirect check:", {
-        pathname: location.pathname,
-        isPublic: isPublicRoute(location.pathname),
-        isCorrectRole: isCorrectRoleRoute(location.pathname, profile.role),
-        shouldRedirect
-      });
+      setIsLoading(false);
+      authCheckComplete.current = true;
 
-      if (shouldRedirect) {
-        const targetPath = getRoleBasedRedirect(profile.role);
-        if (lastNavigation.current !== targetPath) {
-          console.log('Navigating to:', targetPath);
-          lastNavigation.current = targetPath;
-          navigate(targetPath, { replace: true });
+      // Handle initial redirect if needed
+      if (!isPublicRoute(location.pathname)) {
+        const currentRole = location.pathname.split('/')[1];
+        if (currentRole !== profile.role) {
+          const redirectPath = getRoleBasedRedirect(profile.role);
+          navigate(redirectPath, { replace: true });
         }
-      } else {
-        console.log('No redirect needed, user is in correct location');
       }
 
     } catch (error) {
@@ -127,13 +77,11 @@ export const useAuthState = () => {
           variant: "destructive",
         });
         setUser(null);
-      }
-    } finally {
-      if (mounted.current) {
         setIsLoading(false);
+        authCheckComplete.current = true;
       }
     }
-  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
+  }, [navigate, location.pathname, isPublicRoute, getRoleBasedRedirect, toast]);
 
   useEffect(() => {
     mounted.current = true;
@@ -141,13 +89,14 @@ export const useAuthState = () => {
 
     const setupAuth = async () => {
       try {
+        // Get initial session
         const { data: { session } } = await supabase.auth.getSession();
-        if (mounted.current && session) {
+        
+        if (mounted.current) {
           await handleSession(session);
-        } else if (mounted.current) {
-          setIsLoading(false);
         }
 
+        // Subscribe to auth changes
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted.current) return;
 
@@ -155,30 +104,26 @@ export const useAuthState = () => {
             setUser(null);
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
-              const targetPath = '/login';
-              if (lastNavigation.current !== targetPath) {
-                lastNavigation.current = targetPath;
-                navigate(targetPath, { replace: true });
-              }
+              navigate('/login', { replace: true });
             }
             return;
           }
 
-          if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+          if (session && ['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
             await handleSession(session);
           }
         }).data.subscription;
 
       } catch (error) {
-        console.error("Error in setupAuth:", error);
+        console.error("Auth setup error:", error);
         if (mounted.current) {
+          setUser(null);
+          setIsLoading(false);
           toast({
             title: "Authentication Error",
             description: "There was a problem with the authentication service",
             variant: "destructive",
           });
-          setUser(null);
-          setIsLoading(false);
         }
       }
     };
