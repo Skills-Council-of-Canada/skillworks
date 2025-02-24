@@ -85,11 +85,9 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
       console.log("Attempting signup with email:", email, "and role:", role);
       setIsLoading(true);
       
-      // First attempt to sign up
       const { error: signUpError } = await signUpUser(email, password, role);
       
       if (signUpError) {
-        // If user already exists, show appropriate message
         if (signUpError.message.includes("User already registered")) {
           toast({
             title: "Account Exists",
@@ -124,7 +122,17 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
     try {
       console.log("Attempting logout...");
       setIsLoading(true);
-      await signOutUser();
+      const { error } = await signOutUser();
+      
+      if (error) {
+        console.error("Logout error:", error);
+        toast({
+          title: "Error",
+          description: "There was an issue during logout. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       console.log("Logout successful");
       toast({
@@ -132,7 +140,8 @@ export const useAuthOperations = (setIsLoading: (loading: boolean) => void) => {
         description: "You have been successfully logged out.",
       });
       
-      navigate("/");
+      // Clear auth state and navigate
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Logout error:", error);
       toast({
