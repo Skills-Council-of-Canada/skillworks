@@ -20,41 +20,28 @@ export const useAuthState = () => {
   const lastKnownRole = useRef<UserRole | null>(null);
 
   const isPublicRoute = useCallback((path: string) => {
-    const publicPaths = [
-      '/login', 
-      '/employer-landing', 
-      '/educator-landing', 
-      '/participant-landing', 
-      '/', 
-      '/home',
-      '/career-pathways',
-      '/registration',
-      '/index'
-    ];
-    return publicPaths.includes(path) || path.startsWith('/registration/') || path.includes('career-pathways');
+    const publicPaths = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/registration'];
+    return publicPaths.includes(path) || path.startsWith('/registration/');
   }, []);
 
   const enforceRoleAccess = useCallback((currentPath: string, userRole: UserRole) => {
     const pathRole = currentPath.split('/')[1] as UserRole;
     
+    // Store the last known valid role
     if (userRole) {
       lastKnownRole.current = userRole;
-    }
-    
-    // Don't enforce role access on public routes
-    if (isPublicRoute(currentPath)) {
-      return true;
     }
     
     if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
       if (pathRole !== userRole) {
         console.log(`Role mismatch - Path role: ${pathRole}, User role: ${userRole}`);
-        navigate(`/${userRole}/dashboard`, { replace: true });
+        const redirectPath = getRoleBasedRedirect(userRole);
+        navigate(redirectPath, { replace: true });
         return false;
       }
     }
     return true;
-  }, [navigate, isPublicRoute]);
+  }, [navigate, getRoleBasedRedirect]);
 
   const handleSession = useCallback(async (session: any | null) => {
     if (!mounted.current || processingAuth.current) return;
@@ -62,53 +49,46 @@ export const useAuthState = () => {
     try {
       processingAuth.current = true;
       
-      // If no session and on public route, just clear user state
-      if (!session?.user && isPublicRoute(location.pathname)) {
+      // If no session, clear user state and redirect if needed
+      if (!session?.user) {
         setUser(null);
-        lastKnownRole.current = null;
+        lastKnownRole.current = null; // Clear the last known role
         setIsLoading(false);
         authCheckComplete.current = true;
-        return;
-      }
-
-      // If no session and on protected route, redirect to login
-      if (!session?.user && !isPublicRoute(location.pathname)) {
-        setUser(null);
-        lastKnownRole.current = null;
-        setIsLoading(false);
-        authCheckComplete.current = true;
-        navigate('/login');
-        return;
-      }
-
-      // Get user profile if we have a session
-      if (session?.user) {
-        const profile = await getUserProfile(session);
         
-        if (!mounted.current) return;
-
-        if (!profile) {
-          setUser(null);
-          lastKnownRole.current = null;
-          setIsLoading(false);
-          authCheckComplete.current = true;
-          
-          if (!isPublicRoute(location.pathname)) {
-            navigate('/login');
-          }
-          return;
+        // Only redirect to login if we're on a protected route
+        if (!isPublicRoute(location.pathname) && location.pathname !== '/login') {
+          navigate('/login', { replace: true });
         }
+        return;
+      }
 
-        // Set user profile
-        setUser(profile);
-        lastKnownRole.current = profile.role;
+      // Get user profile
+      const profile = await getUserProfile(session);
+      
+      if (!mounted.current) return;
+
+      if (!profile) {
+        setUser(null);
+        lastKnownRole.current = null;
         setIsLoading(false);
         authCheckComplete.current = true;
-
-        // Only enforce role access for non-public routes
+        
         if (!isPublicRoute(location.pathname)) {
-          enforceRoleAccess(location.pathname, profile.role);
+          navigate('/login', { replace: true });
         }
+        return;
+      }
+
+      // Set user profile
+      setUser(profile);
+      lastKnownRole.current = profile.role;
+      setIsLoading(false);
+      authCheckComplete.current = true;
+
+      // Enforce role-based access
+      if (!isPublicRoute(location.pathname)) {
+        enforceRoleAccess(location.pathname, profile.role);
       }
 
     } catch (error) {
@@ -140,6 +120,7 @@ export const useAuthState = () => {
           await handleSession(session);
         }
 
+        // Subscribe to auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted.current) return;
 
