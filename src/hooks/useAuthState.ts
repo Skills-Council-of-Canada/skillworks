@@ -14,10 +14,9 @@ export const useAuthState = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getRoleBasedRedirect } = useAuthRedirect();
-  const navigationInProgress = useRef(false);
+  const lastNavigation = useRef<string | null>(null);
   const profileRequestInProgress = useRef(false);
-  const lastProfileFetch = useRef<number>(0);
-  const FETCH_COOLDOWN = 2000; // 2 seconds cooldown between profile fetches
+  const mounted = useRef(true);
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
@@ -45,106 +44,115 @@ export const useAuthState = () => {
     return path.startsWith(rolePaths[userRole as keyof typeof rolePaths]);
   }, []);
 
-  const handleNavigation = useCallback((targetPath: string) => {
-    if (navigationInProgress.current || location.pathname === targetPath) {
-      return;
-    }
-    navigationInProgress.current = true;
-    navigate(targetPath, { replace: true });
-    setTimeout(() => {
-      navigationInProgress.current = false;
-    }, 1000);
-  }, [navigate, location.pathname]);
-
   const handleSession = useCallback(async (session: any | null) => {
+    if (!mounted.current) return;
+    
     try {
       if (!session?.user) {
         setUser(null);
         setIsLoading(false);
         if (!isPublicRoute(location.pathname)) {
-          handleNavigation('/login');
+          const targetPath = '/login';
+          if (lastNavigation.current !== targetPath) {
+            lastNavigation.current = targetPath;
+            navigate(targetPath, { replace: true });
+          }
         }
         return;
       }
 
-      const now = Date.now();
-      if (now - lastProfileFetch.current < FETCH_COOLDOWN || profileRequestInProgress.current) {
+      if (profileRequestInProgress.current) {
         return;
       }
 
       profileRequestInProgress.current = true;
-      lastProfileFetch.current = now;
-
       const profile = await getUserProfile(session);
-      profileRequestInProgress.current = false;
       
+      if (!mounted.current) {
+        profileRequestInProgress.current = false;
+        return;
+      }
+
       if (!profile) {
         setUser(null);
         setIsLoading(false);
+        profileRequestInProgress.current = false;
         if (!isPublicRoute(location.pathname)) {
-          handleNavigation('/login');
+          const targetPath = '/login';
+          if (lastNavigation.current !== targetPath) {
+            lastNavigation.current = targetPath;
+            navigate(targetPath, { replace: true });
+          }
         }
         return;
       }
 
-      const previousUser = user;
       setUser(profile);
       
-      // Only handle navigation if user role has changed or we're on an incorrect route
-      if (
-        !previousUser || 
-        previousUser.role !== profile.role ||
-        location.pathname === '/login' || 
-        location.pathname === '/' || 
-        (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role))
-      ) {
+      // Only navigate if we're not on the correct route
+      if (!isPublicRoute(location.pathname) && !isCorrectRoleRoute(location.pathname, profile.role)) {
         const targetPath = getRoleBasedRedirect(profile.role);
-        console.log('Navigation check:', { 
-          from: location.pathname, 
-          to: targetPath, 
-          role: profile.role 
-        });
-        handleNavigation(targetPath);
+        if (lastNavigation.current !== targetPath) {
+          console.log('Navigation check:', { 
+            from: location.pathname, 
+            to: targetPath, 
+            role: profile.role 
+          });
+          lastNavigation.current = targetPath;
+          navigate(targetPath, { replace: true });
+        }
       }
 
     } catch (error) {
       console.error("Profile error:", error);
-      profileRequestInProgress.current = false;
-      toast({
-        title: "Error",
-        description: "Failed to load user profile",
-        variant: "destructive",
-      });
-      setUser(null);
-      if (!isPublicRoute(location.pathname)) {
-        handleNavigation('/login');
+      if (mounted.current) {
+        toast({
+          title: "Error",
+          description: "Failed to load user profile",
+          variant: "destructive",
+        });
+        setUser(null);
+        if (!isPublicRoute(location.pathname)) {
+          const targetPath = '/login';
+          if (lastNavigation.current !== targetPath) {
+            lastNavigation.current = targetPath;
+            navigate(targetPath, { replace: true });
+          }
+        }
       }
     } finally {
-      setIsLoading(false);
+      profileRequestInProgress.current = false;
+      if (mounted.current) {
+        setIsLoading(false);
+      }
     }
-  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast, handleNavigation, user]);
+  }, [navigate, location.pathname, isPublicRoute, isCorrectRoleRoute, getRoleBasedRedirect, toast]);
 
   useEffect(() => {
-    let mounted = true;
+    mounted.current = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
 
     const setupAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (mounted && session) {
+        if (mounted.current && session) {
           await handleSession(session);
-        } else {
+        } else if (mounted.current) {
           setIsLoading(false);
         }
 
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
-          if (!mounted) return;
+          if (!mounted.current) return;
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
             if (!isPublicRoute(location.pathname)) {
-              handleNavigation('/login');
+              const targetPath = '/login';
+              if (lastNavigation.current !== targetPath) {
+                lastNavigation.current = targetPath;
+                navigate(targetPath, { replace: true });
+              }
             }
             return;
           }
@@ -156,7 +164,7 @@ export const useAuthState = () => {
 
       } catch (error) {
         console.error("Error in setupAuth:", error);
-        if (mounted) {
+        if (mounted.current) {
           toast({
             title: "Authentication Error",
             description: "There was a problem with the authentication service",
@@ -171,12 +179,12 @@ export const useAuthState = () => {
     setupAuth();
 
     return () => {
-      mounted = false;
+      mounted.current = false;
       if (authSubscription) {
         authSubscription.unsubscribe();
       }
     };
-  }, [handleSession, isPublicRoute, location.pathname, handleNavigation, toast]);
+  }, [handleSession, isPublicRoute, location.pathname, navigate, toast]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
