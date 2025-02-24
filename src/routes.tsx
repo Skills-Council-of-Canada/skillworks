@@ -13,8 +13,10 @@ export const routes = createBrowserRouter([
     element: (
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <Index />
-          <Toaster />
+          <div className="min-h-screen bg-background">
+            <Index />
+            <Toaster />
+          </div>
         </ThemeProvider>
       </AuthProvider>
     ),
@@ -24,8 +26,10 @@ export const routes = createBrowserRouter([
     element: (
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <Login />
-          <Toaster />
+          <div className="min-h-screen bg-background">
+            <Login />
+            <Toaster />
+          </div>
         </ThemeProvider>
       </AuthProvider>
     ),
@@ -35,8 +39,10 @@ export const routes = createBrowserRouter([
     element: (
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <CareerPathways />
-          <Toaster />
+          <div className="min-h-screen bg-background">
+            <CareerPathways />
+            <Toaster />
+          </div>
         </ThemeProvider>
       </AuthProvider>
     ),
