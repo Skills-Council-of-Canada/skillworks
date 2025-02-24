@@ -76,10 +76,10 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/index" element={<Navigate to="/" replace />} />
             <Route path="/home" element={<Index />} />
-            <Route path="/career-pathways" element={<CareerPathways />} />
             <Route path="/educator-landing" element={<EducatorLanding />} />
             <Route path="/employer-landing" element={<EmployerLanding />} />
             <Route path="/participant-landing" element={<ParticipantLanding />} />
+            <Route path="/career-pathways" element={<CareerPathways />} />
             <Route path="/login" element={<Login />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             
