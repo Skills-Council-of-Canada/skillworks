@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ExperienceTemplate } from "@/types/templates";
 import { useToast } from "@/hooks/use-toast";
+import { Json } from "@/types/supabase";
 
-// Define the shape of data as it comes from Supabase
+// Update the SupabaseTemplate type to use the Json type from our types
 type SupabaseTemplate = {
   id: string;
   title: string;
@@ -13,7 +14,7 @@ type SupabaseTemplate = {
   skill_level: string;
   created_at: string;
   updated_at: string;
-  metadata: Record<string, any>;
+  metadata: Json;
   status: string;
   is_public: boolean;
   educator_id: string;
@@ -35,31 +36,38 @@ export const useExperienceTemplates = () => {
 
       if (error) throw error;
       
-      // Transform the metadata to ensure it matches our expected type
-      return (data || []).map((template: SupabaseTemplate) => ({
-        ...template,
-        status: template.status as "active" | "inactive",
-        metadata: {
-          expected_outcomes: Array.isArray(template.metadata?.expected_outcomes) 
-            ? template.metadata.expected_outcomes 
-            : [],
-          subcategories: Array.isArray(template.metadata?.subcategories) 
-            ? template.metadata.subcategories 
-            : [],
-          skill_tags: Array.isArray(template.metadata?.skill_tags) 
-            ? template.metadata.skill_tags 
-            : [],
-          duration_weeks: typeof template.metadata?.duration_weeks === 'number' 
-            ? template.metadata.duration_weeks 
-            : 0,
-          team_size: typeof template.metadata?.team_size === 'number' 
-            ? template.metadata.team_size 
-            : 1,
-          milestones: Array.isArray(template.metadata?.milestones) 
-            ? template.metadata.milestones 
-            : []
-        }
-      })) as ExperienceTemplate[];
+      // Transform the data with proper type handling
+      return (data || []).map((template: SupabaseTemplate) => {
+        // Parse the metadata JSON if it's a string
+        const parsedMetadata = typeof template.metadata === 'string' 
+          ? JSON.parse(template.metadata)
+          : template.metadata;
+
+        return {
+          ...template,
+          status: template.status as "active" | "inactive",
+          metadata: {
+            expected_outcomes: Array.isArray(parsedMetadata?.expected_outcomes) 
+              ? parsedMetadata.expected_outcomes 
+              : [],
+            subcategories: Array.isArray(parsedMetadata?.subcategories) 
+              ? parsedMetadata.subcategories 
+              : [],
+            skill_tags: Array.isArray(parsedMetadata?.skill_tags) 
+              ? parsedMetadata.skill_tags 
+              : [],
+            duration_weeks: typeof parsedMetadata?.duration_weeks === 'number' 
+              ? parsedMetadata.duration_weeks 
+              : 0,
+            team_size: typeof parsedMetadata?.team_size === 'number' 
+              ? parsedMetadata.team_size 
+              : 1,
+            milestones: Array.isArray(parsedMetadata?.milestones) 
+              ? parsedMetadata.milestones 
+              : []
+          }
+        } as ExperienceTemplate;
+      });
     }
   });
 
