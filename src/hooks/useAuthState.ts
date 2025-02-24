@@ -16,6 +16,7 @@ export const useAuthState = () => {
   const { getRoleBasedRedirect } = useAuthRedirect();
   const authCheckComplete = useRef(false);
   const mounted = useRef(true);
+  const processingAuth = useRef(false);
 
   const isPublicRoute = useCallback((path: string) => {
     const publicPaths = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/registration'];
@@ -23,9 +24,11 @@ export const useAuthState = () => {
   }, []);
 
   const handleSession = useCallback(async (session: any | null) => {
-    if (!mounted.current) return;
+    if (!mounted.current || processingAuth.current) return;
     
     try {
+      processingAuth.current = true;
+      
       // If no session, clear user state and redirect if needed
       if (!session?.user) {
         setUser(null);
@@ -36,13 +39,17 @@ export const useAuthState = () => {
         if (!isPublicRoute(location.pathname) && location.pathname !== '/login') {
           navigate('/login', { replace: true });
         }
+        processingAuth.current = false;
         return;
       }
 
       // Get user profile
       const profile = await getUserProfile(session);
       
-      if (!mounted.current) return;
+      if (!mounted.current) {
+        processingAuth.current = false;
+        return;
+      }
 
       if (!profile) {
         setUser(null);
@@ -52,6 +59,7 @@ export const useAuthState = () => {
         if (!isPublicRoute(location.pathname)) {
           navigate('/login', { replace: true });
         }
+        processingAuth.current = false;
         return;
       }
 
@@ -81,6 +89,8 @@ export const useAuthState = () => {
         setIsLoading(false);
         authCheckComplete.current = true;
       }
+    } finally {
+      processingAuth.current = false;
     }
   }, [navigate, location.pathname, isPublicRoute, getRoleBasedRedirect, toast]);
 
