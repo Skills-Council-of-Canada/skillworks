@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -59,6 +58,7 @@ import CreateParticipantExperience from "./pages/participant/experiences/CreateP
 import ParticipantSettings from "./pages/participant/settings/ParticipantSettings";
 import Messages from "./pages/participant/Messages";
 import EducatorMessages from "./pages/educator/EducatorMessages";
+import CareerPathways from "./pages/CareerPathways";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +74,7 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/index" element={<Navigate to="/" replace />} />
           <Route path="/home" element={<Index />} />
+          <Route path="/career-pathways" element={<CareerPathways />} />
           <Route path="/educator-landing" element={<EducatorLanding />} />
           <Route path="/employer-landing" element={<EmployerLanding />} />
           <Route path="/participant-landing" element={<ParticipantLanding />} />

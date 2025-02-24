@@ -19,13 +19,19 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50 h-16">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
           <Link to="/">
             <img 
               src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png" 
               alt="Skill Works Logo" 
               className="h-8"
             />
+          </Link>
+          <Link 
+            to="/career-pathways"
+            className="text-gray-600 hover:text-gray-900 transition-colors hidden sm:block"
+          >
+            Career Pathways
           </Link>
         </div>
         <div className="flex items-center gap-2">
