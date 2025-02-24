@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut, Home } from "lucide-react";
+import { LogIn, LogOut, Home, GraduationCap } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -27,14 +27,15 @@ const Header = () => {
               className="h-8"
             />
           </Link>
-          <Link 
-            to="/career-pathways"
-            className="text-gray-600 hover:text-gray-900 transition-colors hidden sm:block"
-          >
-            Career Pathways
-          </Link>
         </div>
         <div className="flex items-center gap-2">
+          <Link 
+            to="/career-pathways"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <GraduationCap className="h-4 w-4" />
+            <span className="hidden sm:inline">Career Pathways</span>
+          </Link>
           <Button
             variant="ghost"
             size="sm"
