@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Home } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const location = useLocation();
+  const logoutInProgress = useRef(false);
   
   // If we're on the index page and logged in, perform logout
   useEffect(() => {
     const handleIndexPageLogout = async () => {
-      if (location.pathname === "/" && user) {
+      if (location.pathname === "/" && user && !logoutInProgress.current) {
         console.log("Auto-logging out on index page");
+        logoutInProgress.current = true;
         await logout();
+        logoutInProgress.current = false;
       }
     };
     
@@ -24,8 +27,12 @@ const Header = () => {
   
   const handleAuthAction = async () => {
     if (user) {
-      await logout();
-      navigate("/");
+      if (!logoutInProgress.current) {
+        logoutInProgress.current = true;
+        await logout();
+        logoutInProgress.current = false;
+        navigate("/", { replace: true });
+      }
     } else {
       navigate("/login");
     }
