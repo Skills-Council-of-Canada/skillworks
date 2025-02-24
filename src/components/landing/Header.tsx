@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Home, GraduationCap } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Separator } from "@/components/ui/separator";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -27,15 +28,7 @@ const Header = () => {
               className="h-8"
             />
           </Link>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link 
-            to="/career-pathways"
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <GraduationCap className="h-4 w-4" />
-            <span className="hidden sm:inline">Career Pathways</span>
-          </Link>
+          <Separator orientation="vertical" className="h-6" />
           <Button
             variant="ghost"
             size="sm"
@@ -45,6 +38,15 @@ const Header = () => {
             <Home className="h-4 w-4" />
             <span className="hidden sm:inline">Home</span>
           </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link 
+            to="/career-pathways"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <GraduationCap className="h-4 w-4" />
+            <span className="hidden sm:inline">Career Pathways</span>
+          </Link>
           <Button
             variant="ghost"
             size="sm"
