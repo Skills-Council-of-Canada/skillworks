@@ -1,8 +1,9 @@
 
-import { createContext, useContext, FC, ReactNode } from "react";
+import { createContext, useContext, FC, ReactNode, useEffect } from "react";
 import { AuthContextType } from "@/types/auth";
 import { useAuthState } from "@/hooks/useAuthState";
 import { useAuthOperations } from "@/hooks/useAuthOperations";
+import { Toaster } from "@/components/ui/toaster";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -18,6 +19,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { user, isLoading, setIsLoading } = useAuthState();
   const { login, logout, signup } = useAuthOperations(setIsLoading);
 
+  useEffect(() => {
+    console.log("AuthProvider mounted, user:", user);
+  }, [user]);
+
   const value: AuthContextType = {
     user,
     login,
@@ -29,6 +34,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <AuthContext.Provider value={value}>
       {children}
+      <Toaster />
     </AuthContext.Provider>
   );
 };

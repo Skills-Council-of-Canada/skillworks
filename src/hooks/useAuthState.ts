@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { User } from "@/types/auth";
+import { User, UserRole } from "@/types/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -23,8 +23,8 @@ export const useAuthState = () => {
     return publicPaths.includes(path) || path.startsWith('/registration/');
   }, []);
 
-  const enforceRoleAccess = useCallback((currentPath: string, userRole: string) => {
-    const pathRole = currentPath.split('/')[1];
+  const enforceRoleAccess = useCallback((currentPath: string, userRole: UserRole) => {
+    const pathRole = currentPath.split('/')[1] as UserRole;
     if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
       if (pathRole !== userRole) {
         console.log("Role mismatch, redirecting to appropriate dashboard");
@@ -109,16 +109,16 @@ export const useAuthState = () => {
 
     const setupAuth = async () => {
       try {
-        // Get initial session
         const { data: { session } } = await supabase.auth.getSession();
         
         if (mounted.current) {
           await handleSession(session);
         }
 
-        // Subscribe to auth changes
         authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (!mounted.current) return;
+
+          console.log("Auth state change:", event);
 
           if (event === 'SIGNED_OUT') {
             setUser(null);
