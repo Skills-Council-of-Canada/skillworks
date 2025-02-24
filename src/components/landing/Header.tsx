@@ -29,15 +29,16 @@ const Header = () => {
             />
           </Link>
           <Separator orientation="vertical" className="h-6" />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2"
-            onClick={() => navigate("/")}
-          >
-            <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Home</span>
-          </Button>
+          <Link to="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+            >
+              <Home className="h-4 w-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Button>
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <Link 
