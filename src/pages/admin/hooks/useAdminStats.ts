@@ -22,8 +22,8 @@ export const useAdminStats = (user: User | null) => {
       if (!user?.id) throw new Error('Not authenticated');
 
       const fetchCount = async (
-        table: "profiles" | "educator_experiences" | "experience_matches",
-        condition = {}
+        table: string,
+        condition: Record<string, any> = {}
       ): Promise<number> => {
         try {
           const { count, error } = await supabase
@@ -31,11 +31,15 @@ export const useAdminStats = (user: User | null) => {
             .select('*', { count: 'exact', head: true })
             .match(condition);
             
-          if (error) throw error;
+          if (error) {
+            console.error(`Error fetching count for ${table}:`, error);
+            return 0;
+          }
+          
           return count || 0;
         } catch (error) {
           console.error(`Failed to fetch count for ${table}:`, error);
-          return 0; // Return 0 instead of throwing to prevent query failures
+          return 0;
         }
       };
 
@@ -51,18 +55,16 @@ export const useAdminStats = (user: User | null) => {
       return stats;
     },
     enabled: !!user?.id,
-    staleTime: 30000, // Cache for 30 seconds
-    retry: false, // Don't retry on failure
+    staleTime: 30000,
+    retry: 1,
     meta: {
-      onSettled: (_, error) => {
-        if (error) {
-          console.error('Error loading stats:', error);
-          toast({
-            title: "Error",
-            description: "Failed to load dashboard statistics",
-            variant: "destructive",
-          });
-        }
+      onError: (error: any) => {
+        console.error('Error loading stats:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard statistics",
+          variant: "destructive",
+        });
       }
     }
   });
