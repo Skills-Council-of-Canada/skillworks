@@ -74,7 +74,7 @@ const Index = () => {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/career-pathways" replace className="text-white hover:text-gray-200">
+          <Link to="/career-pathways" className="text-white hover:text-gray-200">
             Career Pathways
           </Link>
           <Link to="/login" className="inline-flex items-center gap-2 text-white hover:text-gray-200">
