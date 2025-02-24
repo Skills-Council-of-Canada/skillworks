@@ -17,7 +17,7 @@ export const useAuthState = () => {
   const navigationInProgress = useRef(false);
   const profileRequestInProgress = useRef(false);
   const lastProfileFetch = useRef<number>(0);
-  const FETCH_COOLDOWN = 2000;
+  const FETCH_COOLDOWN = 2000; // 2 seconds cooldown between profile fetches
 
   const isPublicRoute = useCallback((path: string) => {
     if (path.includes('/registration')) {
