@@ -25,7 +25,8 @@ export const useProjectSubmission = () => {
       status: status === 'published' ? 'pending' : 'draft',
       visibility: status === 'published' ? 'public' : 'draft',
       max_participants: formData.positions,
-      review_status: status === 'published' ? 'pending_review' : null
+      review_status: status === 'published' ? 'pending_review' : null,
+      template_id: formData.templateId // Add support for template_id
     };
   };
 
