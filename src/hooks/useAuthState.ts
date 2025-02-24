@@ -23,6 +23,19 @@ export const useAuthState = () => {
     return publicPaths.includes(path) || path.startsWith('/registration/');
   }, []);
 
+  const enforceRoleAccess = useCallback((currentPath: string, userRole: string) => {
+    const pathRole = currentPath.split('/')[1];
+    if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
+      if (pathRole !== userRole) {
+        console.log("Role mismatch, redirecting to appropriate dashboard");
+        const redirectPath = getRoleBasedRedirect(userRole);
+        navigate(redirectPath, { replace: true });
+        return false;
+      }
+    }
+    return true;
+  }, [navigate, getRoleBasedRedirect]);
+
   const handleSession = useCallback(async (session: any | null) => {
     if (!mounted.current || processingAuth.current) return;
     
@@ -68,13 +81,9 @@ export const useAuthState = () => {
       setIsLoading(false);
       authCheckComplete.current = true;
 
-      // Handle initial redirect if needed
+      // Enforce role-based access
       if (!isPublicRoute(location.pathname)) {
-        const currentRole = location.pathname.split('/')[1];
-        if (currentRole !== profile.role) {
-          const redirectPath = getRoleBasedRedirect(profile.role);
-          navigate(redirectPath, { replace: true });
-        }
+        enforceRoleAccess(location.pathname, profile.role);
       }
 
     } catch (error) {
@@ -92,7 +101,7 @@ export const useAuthState = () => {
     } finally {
       processingAuth.current = false;
     }
-  }, [navigate, location.pathname, isPublicRoute, getRoleBasedRedirect, toast]);
+  }, [navigate, location.pathname, isPublicRoute, enforceRoleAccess, toast]);
 
   useEffect(() => {
     mounted.current = true;
@@ -114,9 +123,7 @@ export const useAuthState = () => {
           if (event === 'SIGNED_OUT') {
             setUser(null);
             setIsLoading(false);
-            if (!isPublicRoute(location.pathname) && location.pathname !== '/login') {
-              navigate('/', { replace: true });
-            }
+            navigate('/', { replace: true });
             return;
           }
 
@@ -147,7 +154,7 @@ export const useAuthState = () => {
         authSubscription.unsubscribe();
       }
     };
-  }, [handleSession, isPublicRoute, location.pathname, navigate, toast]);
+  }, [handleSession, navigate, toast]);
 
   return { user, setUser, isLoading, setIsLoading };
 };
