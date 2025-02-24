@@ -62,8 +62,8 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-auto">
-      <header className="flex-none h-16 bg-white border-b shadow-sm flex items-center justify-between px-4">
+    <div className="min-h-screen flex flex-col bg-[#1c1f2e]">
+      <header className="flex-none h-16 bg-transparent flex items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Link to="/">
             <img
@@ -74,45 +74,44 @@ const Index = () => {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/career-pathways" className="text-gray-600 hover:text-gray-900">
+          <Link to="/career-pathways" className="text-white hover:text-gray-200">
             Career Pathways
           </Link>
-          <Link to="/login" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <Link to="/login" className="inline-flex items-center gap-2 text-white hover:text-gray-200">
             <LogIn className="h-4 w-4" />
             Login
           </Link>
         </div>
       </header>
       
-      <main className="flex-1 flex items-center">
-        <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8">
-          <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold mb-2">Work Integrated Learning (WIL)</h1>
-            <p className="text-2xl font-semibold text-gray-800">Real-World Experience. Real Opportunities. Real Impact.</p>
+      <main className="flex-1 flex">
+        <div className="container mx-auto grid md:grid-cols-2 gap-8 px-4 py-12">
+          <div className="flex flex-col justify-center text-white space-y-6">
+            <h1 className="text-5xl font-bold leading-tight">
+              Real-World Experience. Real Opportunities. Real Impact.
+            </h1>
+            <p className="text-xl text-gray-300">
+              Connect with top companies, gain hands-on experience, and build your career—all in one platform.
+            </p>
+            <PortalSelection onPortalSelect={handlePortalSelect} />
           </div>
           
-          <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8">
-            <div className="flex flex-col justify-center order-2 md:order-1">
-              <PortalSelection onPortalSelect={handlePortalSelect} />
-            </div>
-            
-            <div className="flex flex-col justify-center space-y-4 order-1 md:order-2">
-              <AuthForm
-                icon={User}
-                title="Sign In"
-                gradient="bg-white"
-                isLoading={isSubmitting}
-                onSubmit={handleAuthSubmit}
-                onBack={handleBack}
-              />
-              <Link 
-                to="/login" 
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Login Page
-              </Link>
-            </div>
+          <div className="flex flex-col justify-center space-y-4">
+            <AuthForm
+              icon={User}
+              title="Sign In"
+              gradient="bg-white"
+              isLoading={isSubmitting}
+              onSubmit={handleAuthSubmit}
+              onBack={handleBack}
+            />
+            <Link 
+              to="/login" 
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Login Page
+            </Link>
           </div>
         </div>
       </main>
