@@ -69,6 +69,9 @@ const App = () => (
         <Routes>
           {/* Public routes outside AuthProvider */}
           <Route path="/career-pathways" element={<CareerPathways />} />
+          <Route path="/employer/registration" element={<EmployerRegistration />} />
+          <Route path="/educator/registration" element={<EducatorRegistration />} />
+          <Route path="/participant/registration" element={<ParticipantRegistration />} />
           
           {/* Routes that need auth context */}
           <Route
@@ -88,11 +91,6 @@ const App = () => (
                   <Route path="/participant-landing" element={<ParticipantLanding />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/unauthorized" element={<Unauthorized />} />
-                  
-                  {/* Registration routes */}
-                  <Route path="/participant/registration" element={<ParticipantRegistration />} />
-                  <Route path="/employer/registration" element={<EmployerRegistration />} />
-                  <Route path="/educator/registration" element={<EducatorRegistration />} />
 
                   {/* Protected routes */}
                   <Route
