@@ -1,3 +1,4 @@
+
 import {
   Briefcase,
   Globe2,
@@ -72,7 +73,7 @@ const ParticipantLanding = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <LandingHeader signUpPath="/participant/registration" buttonText="Sign Up Now" />
+      <LandingHeader signUpPath="/participant/registration" buttonText="Sign Up" />
       <HeroSection imagePath="/lovable-uploads/d1c9ee85-c87d-4832-8d5d-1044f3b08ac1.png" />
       <BenefitsSection benefits={benefits} />
       <HowItWorksSection steps={steps} signUpPath="/participant/registration" />

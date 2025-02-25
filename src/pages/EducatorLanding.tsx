@@ -67,7 +67,7 @@ const EducatorLanding = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <LandingHeader signUpPath="/educator/registration" />
+      <LandingHeader signUpPath="/educator/registration" buttonText="Sign Up" />
       <HeroSection imagePath="/lovable-uploads/638ea052-fa93-4bd7-ba45-e71de765b2be.png" />
       <BenefitsSection benefits={benefits} />
       <HowItWorksSection steps={steps} signUpPath="/educator/registration" />
