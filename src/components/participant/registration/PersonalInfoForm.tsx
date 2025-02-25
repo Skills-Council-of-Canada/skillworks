@@ -1,9 +1,9 @@
+
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,9 +13,8 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import { supabase } from "@/integrations/supabase/client";
-import { Icons } from "@/components/ui/icons";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
@@ -44,8 +43,6 @@ interface PersonalInfoFormProps {
 }
 
 export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFormProps) => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [socialError, setSocialError] = React.useState<string>("");
   const [showPassword, setShowPassword] = React.useState(false);
   
   const form = useForm<PersonalInfoFormValues>({
@@ -78,25 +75,6 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
     
     return () => subscription.unsubscribe();
   }, [form, onValidityChange]);
-
-  const handleSocialLogin = async (provider: 'google' | 'linkedin_oidc') => {
-    try {
-      setIsLoading(true);
-      setSocialError("");
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error) {
-      setSocialError("Failed to connect with social provider");
-      console.error("Social login error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Form {...form}>
@@ -198,50 +176,6 @@ export const PersonalInfoForm = ({ onSubmit, onValidityChange }: PersonalInfoFor
             </FormItem>
           )}
         />
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isLoading}
-            onClick={() => handleSocialLogin('google')}
-          >
-            {isLoading ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Icons.google className="mr-2 h-4 w-4" />
-            )}
-            Google
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isLoading}
-            onClick={() => handleSocialLogin('linkedin_oidc')}
-          >
-            {isLoading ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Icons.linkedin className="mr-2 h-4 w-4" />
-            )}
-            LinkedIn
-          </Button>
-        </div>
-
-        {socialError && (
-          <p className="text-sm text-destructive text-center">{socialError}</p>
-        )}
 
         <button type="submit" style={{ display: 'none' }} />
       </form>
