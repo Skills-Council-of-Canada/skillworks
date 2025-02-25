@@ -11,6 +11,11 @@ interface LandingHeaderProps {
 export const LandingHeader = ({ signUpPath, buttonText = "Sign Up" }: LandingHeaderProps) => {
   const navigate = useNavigate();
 
+  const handleSignUp = () => {
+    console.log("Navigating to:", signUpPath);
+    navigate(signUpPath, { replace: true });
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -33,7 +38,7 @@ export const LandingHeader = ({ signUpPath, buttonText = "Sign Up" }: LandingHea
         </div>
         <div className="flex gap-4">
           <Button
-            onClick={() => navigate(signUpPath)}
+            onClick={handleSignUp}
             className="bg-[#8B0000] hover:bg-[#8B0000]/90"
           >
             {buttonText}
