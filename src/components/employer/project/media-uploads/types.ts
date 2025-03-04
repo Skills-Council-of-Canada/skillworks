@@ -1,5 +1,6 @@
 
 import { ProjectFormData } from "@/types/project";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 export interface MediaUploadProps {
   initialData: Partial<ProjectFormData>;
@@ -7,7 +8,7 @@ export interface MediaUploadProps {
 }
 
 export interface UploadFieldProps {
-  field: any;
+  field: UseFormRegisterReturn;
   uploadProgress: { [key: string]: number };
   type: 'image' | 'document';
 }

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Upload } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useFileUpload } from "@/hooks/employer/useFileUpload";
+import { useEffect } from "react";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -39,8 +40,16 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
       documents: [],
     },
   });
+  
+  // Log form state for debugging
+  useEffect(() => {
+    console.log("MediaUploadsForm mounted with initialData:", initialData);
+    console.log("Form values:", form.getValues());
+  }, [initialData]);
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log("Submitting media form with data:", data);
+    
     // Create an object that matches what useFileUpload expects
     const filesData = {
       images: data.images || [],
@@ -82,12 +91,13 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
           aria-labelledby="upload-section-title"
         >
           <UploadField
-            field={form.getValues("images")}
+            field={form.register('images')}
             uploadProgress={uploadProgress}
             type="image"
           />
+          
           <UploadField
-            field={form.getValues("documents")}
+            field={form.register('documents')}
             uploadProgress={uploadProgress}
             type="document"
           />
