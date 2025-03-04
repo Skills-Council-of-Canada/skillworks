@@ -3,14 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
-import { useState } from "react";
 import UploadField from "./media-uploads/UploadField";
-import { uploadFile } from "./media-uploads/uploadUtils";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Upload } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useFileUpload } from "@/hooks/employer/useFileUpload";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -31,9 +29,8 @@ interface Props {
 }
 
 const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
-  const { toast } = useToast();
-  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
-  const [isUploading, setIsUploading] = useState(false);
+  const projectId = initialData.id;
+  const { uploadProgress, isUploading, handleFileUpload } = useFileUpload(projectId);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,69 +41,7 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    const projectId = initialData.id;
-    if (!projectId) {
-      toast({
-        title: "Error",
-        description: "Project ID is required for file uploads",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsUploading(true);
-
-    try {
-      // Upload images
-      for (let i = 0; i < data.images.length; i++) {
-        const file = data.images[i];
-        setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 0 }));
-        
-        try {
-          await uploadFile(file, 'image', projectId);
-          setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 100 }));
-        } catch (error) {
-          toast({
-            title: "Upload Error",
-            description: `Failed to upload image ${file.name}`,
-            variant: "destructive",
-          });
-        }
-      }
-
-      // Upload documents
-      for (let i = 0; i < data.documents.length; i++) {
-        const file = data.documents[i];
-        setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 0 }));
-        
-        try {
-          await uploadFile(file, 'document', projectId);
-          setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 100 }));
-        } catch (error) {
-          toast({
-            title: "Upload Error",
-            description: `Failed to upload document ${file.name}`,
-            variant: "destructive",
-          });
-        }
-      }
-
-      toast({
-        title: "Success",
-        description: "All files uploaded successfully",
-      });
-
-      onSubmit(data);
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to upload files",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-    }
+    await handleFileUpload(data, onSubmit);
   };
 
   return (

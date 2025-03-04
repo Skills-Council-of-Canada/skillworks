@@ -24,7 +24,7 @@ export const useProjectNavigation = ({
   const handleStepSubmit = (stepData: Partial<ProjectFormData>) => {
     setFormData(prev => ({ ...prev, ...stepData }));
     if (currentStep < totalSteps) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep(currentStep + 1);
       toast({
         title: "Progress Saved",
         description: "Your changes have been saved successfully.",
@@ -34,7 +34,7 @@ export const useProjectNavigation = ({
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep(currentStep - 1);
     } else {
       navigate("/employer");
     }
