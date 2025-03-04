@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -9,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, Bold, Italic, List, ListOrdered, Underline } from "lucide-react";
@@ -50,9 +50,8 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   
   const isMobile = useIsMobile();
   const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  const [previewHtml, setPreviewHtml] = useState<string>('');
-  const [previewMode, setPreviewMode] = useState(false);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [editorContent, setEditorContent] = useState(initialData.description || "");
 
   const handleGenerateProject = () => {
     console.log("Generate project clicked");
@@ -63,81 +62,127 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   };
 
   const formatText = (format: string) => {
-    const textarea = document.getElementById("project-description") as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
+    const selection = window.getSelection();
+    const editorDiv = descriptionRef.current;
+    if (!selection || !editorDiv) return;
     
-    let formattedText = "";
-    let cursorPosition = 0;
-
+    const range = selection.getRangeAt(0);
+    
+    // Check if the selection is within our editor
+    if (!editorDiv.contains(range.commonAncestorContainer)) return;
+    
+    // Apply the formatting
+    const selectedText = range.toString();
+    let formattedElement: HTMLElement | null = null;
+    
     switch (format) {
       case 'bold':
-        formattedText = `**${selectedText}**`;
-        cursorPosition = 2;
+        formattedElement = document.createElement('strong');
         break;
       case 'italic':
-        formattedText = `*${selectedText}*`;
-        cursorPosition = 1;
+        formattedElement = document.createElement('em');
         break;
       case 'underline':
-        formattedText = `_${selectedText}_`;
-        cursorPosition = 1;
+        formattedElement = document.createElement('u');
         break;
       case 'bullet':
-        if (selectedText) {
-          const lines = selectedText.split('\n');
-          formattedText = lines.map(line => `• ${line}`).join('\n');
+        // If nothing is selected or selection is at the end, create a new bullet point
+        if (selectedText.trim() === '') {
+          const bulletItem = document.createElement('div');
+          bulletItem.className = 'bullet-item';
+          bulletItem.textContent = '• ';
+          
+          // Find the insertion point - if at the end of a line or in an empty editor
+          if (editorDiv.textContent === '') {
+            editorDiv.appendChild(bulletItem);
+          } else {
+            const insertionPoint = range.startContainer;
+            const insertionOffset = range.startOffset;
+            
+            // If we're in a text node, split it and insert the bullet point
+            if (insertionPoint.nodeType === Node.TEXT_NODE) {
+              const textNode = insertionPoint as Text;
+              const textBeforeCursor = textNode.textContent?.substring(0, insertionOffset) || '';
+              const textAfterCursor = textNode.textContent?.substring(insertionOffset) || '';
+              
+              // Check if we're at the end of a line
+              if (textAfterCursor.trim() === '' && textBeforeCursor.endsWith('\n')) {
+                const newTextNode = document.createTextNode(textBeforeCursor);
+                textNode.parentNode?.replaceChild(newTextNode, textNode);
+                newTextNode.parentNode?.insertBefore(bulletItem, newTextNode.nextSibling);
+                
+                // Create a text node for text after cursor if needed
+                if (textAfterCursor) {
+                  const afterTextNode = document.createTextNode(textAfterCursor);
+                  bulletItem.parentNode?.insertBefore(afterTextNode, bulletItem.nextSibling);
+                }
+                
+                // Position cursor inside the bullet point
+                const newRange = document.createRange();
+                newRange.setStart(bulletItem, 1);
+                newRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+              } else {
+                // If not at end of line, just insert a bullet character
+                document.execCommand('insertText', false, '• ');
+              }
+            } else {
+              // Not in a text node, just append the bullet point
+              editorDiv.appendChild(bulletItem);
+            }
+          }
         } else {
-          formattedText = `• `;
+          // Format existing content as bullet points
+          const lines = selectedText.split('\n');
+          const formattedText = lines.map(line => `• ${line}`).join('\n');
+          document.execCommand('insertText', false, formattedText);
         }
-        cursorPosition = 2;
         break;
       case 'number':
-        if (selectedText) {
-          const lines = selectedText.split('\n');
-          formattedText = lines.map((line, i) => `${i + 1}. ${line}`).join('\n');
+        // Similar logic as bullet points but with numbers
+        if (selectedText.trim() === '') {
+          document.execCommand('insertText', false, '1. ');
         } else {
-          formattedText = `1. `;
+          const lines = selectedText.split('\n');
+          const formattedText = lines.map((line, i) => `${i + 1}. ${line}`).join('\n');
+          document.execCommand('insertText', false, formattedText);
         }
-        cursorPosition = 3; // Assuming single digit numbers
         break;
       default:
         return;
     }
-
-    const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
-    form.setValue('description', newText, { shouldValidate: true });
-    updatePreview(newText);
     
-    setTimeout(() => {
-      textarea.focus();
-      if (selectedText.length === 0) {
-        textarea.setSelectionRange(start + cursorPosition, start + cursorPosition);
-      } else {
-        textarea.setSelectionRange(start, start + formattedText.length);
-      }
-    }, 0);
+    // For bold, italic, underline, wrap the selection
+    if (formattedElement) {
+      range.surroundContents(formattedElement);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
+      // Update the internal state based on editor content
+      syncEditorContent();
+    }
   };
 
-  const formatDisplayText = (text: string) => {
-    if (!text) return "";
-    
-    let formattedText = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/_(.*?)_/g, '<u>$1</u>')
-      .replace(/^• (.*)$/gm, '<div class="bullet-item">• $1</div>')
-      .replace(/^(\d+)\. (.*)$/gm, '<div class="number-item">$1. $2</div>');
-    
-    return formattedText;
+  const syncEditorContent = () => {
+    if (descriptionRef.current) {
+      const content = descriptionRef.current.innerHTML;
+      setEditorContent(content);
+      form.setValue('description', content, { shouldValidate: true });
+    }
   };
 
-  const updatePreview = (text: string) => {
-    const formatted = formatDisplayText(text);
-    setPreviewHtml(formatted);
+  const handleEditorInput = () => {
+    syncEditorContent();
+  };
+
+  const handleEditorPaste = (e: React.ClipboardEvent) => {
+    // Prevent the default paste which would include formatting
+    e.preventDefault();
+    // Get text only from clipboard
+    const text = e.clipboardData.getData('text/plain');
+    // Insert as plain text
+    document.execCommand('insertText', false, text);
   };
 
   const resizeTextarea = () => {
@@ -155,35 +200,11 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   }, []);
 
   useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .bullet-item, .number-item {
-        display: flex;
-        padding-left: 1.5em;
-        text-indent: -1.5em;
-        margin-bottom: 0.25em;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log("BasicInformationForm rendered, using form ID: step-1-form");
-    updatePreview(form.getValues().description || '');
-  }, []);
-
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === 'description') {
-        updatePreview(value.description || '');
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch]);
+    // Initialize the editor with any existing content
+    if (descriptionRef.current && initialData.description) {
+      descriptionRef.current.innerHTML = initialData.description;
+    }
+  }, [initialData.description]);
 
   return (
     <div className="space-y-6">
@@ -233,135 +254,119 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
           <FormField
             control={form.control}
             name="description"
-            render={({ field }) => (
+            render={({ field: { onChange, ...restField } }) => (
               <FormItem>
                 <FormLabel>Project Details</FormLabel>
                 <div className="space-y-2">
-                  <div className="bg-white p-1 rounded-md flex flex-wrap gap-1 items-center border border-input justify-between">
-                    <div className="flex flex-wrap gap-1 items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0" 
-                              type="button"
-                              onClick={() => formatText('bold')}
-                            >
-                              <Bold className="h-4 w-4" />
-                              <span className="sr-only">Bold</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Bold</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0" 
-                              type="button"
-                              onClick={() => formatText('italic')}
-                            >
-                              <Italic className="h-4 w-4" />
-                              <span className="sr-only">Italic</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Italic</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0" 
-                              type="button"
-                              onClick={() => formatText('underline')}
-                            >
-                              <Underline className="h-4 w-4" />
-                              <span className="sr-only">Underline</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Underline</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      
-                      <div className="w-px h-6 bg-border mx-1" />
-                      
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0" 
-                              type="button"
-                              onClick={() => formatText('bullet')}
-                            >
-                              <List className="h-4 w-4" />
-                              <span className="sr-only">Bullet List</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Bullet List</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0" 
-                              type="button"
-                              onClick={() => formatText('number')}
-                            >
-                              <ListOrdered className="h-4 w-4" />
-                              <span className="sr-only">Numbered List</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Numbered List</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+                  <div className="bg-white p-1 rounded-md flex flex-wrap gap-1 items-center border border-input">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('bold')}
+                          >
+                            <Bold className="h-4 w-4" />
+                            <span className="sr-only">Bold</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Bold</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs"
-                      type="button"
-                      onClick={() => setPreviewMode(!previewMode)}
-                    >
-                      {previewMode ? "Edit" : "Preview"}
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('italic')}
+                          >
+                            <Italic className="h-4 w-4" />
+                            <span className="sr-only">Italic</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Italic</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('underline')}
+                          >
+                            <Underline className="h-4 w-4" />
+                            <span className="sr-only">Underline</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Underline</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <div className="w-px h-6 bg-border mx-1" />
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('bullet')}
+                          >
+                            <List className="h-4 w-4" />
+                            <span className="sr-only">Bullet List</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Bullet List</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('number')}
+                          >
+                            <ListOrdered className="h-4 w-4" />
+                            <span className="sr-only">Numbered List</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Numbered List</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   
-                  {previewMode ? (
-                    <div 
+                  <FormControl>
+                    <div
+                      ref={descriptionRef}
+                      contentEditable
                       className="min-h-[150px] w-full border rounded-md p-3 bg-white overflow-auto"
-                      dangerouslySetInnerHTML={{ __html: previewHtml }}
+                      placeholder="Describe your project in detail..."
+                      onInput={handleEditorInput}
+                      onPaste={handleEditorPaste}
+                      dangerouslySetInnerHTML={{ __html: initialData.description || '' }}
+                      {...restField}
                     />
-                  ) : (
-                    <FormControl>
-                      <Textarea
-                        id="project-description"
-                        className="min-h-[150px] w-full"
-                        placeholder="Describe your project in detail..."
-                        {...field}
-                        ref={descriptionRef}
-                      />
-                    </FormControl>
-                  )}
+                  </FormControl>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Formatting: Use <span className="font-bold">**text**</span> for bold, <span className="italic">*text*</span> for italic, <span className="underline">_text_</span> for underline
+                  Use the formatting toolbar above to style your text
                 </p>
                 <FormMessage />
               </FormItem>
