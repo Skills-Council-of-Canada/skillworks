@@ -163,7 +163,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
               <FormItem>
                 <FormLabel>Project Details</FormLabel>
                 <div className="space-y-2">
-                  <div className="bg-muted p-1 rounded-md flex flex-wrap gap-1 items-center border border-input">
+                  <div className="bg-white p-1 rounded-md flex flex-wrap gap-1 items-center border border-input">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
