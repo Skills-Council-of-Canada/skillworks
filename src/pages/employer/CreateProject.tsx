@@ -32,6 +32,7 @@ const CreateProject = () => {
   const {
     handleStepSubmit,
     handleBack,
+    handleNext,
     logCurrentStep
   } = useProjectNavigation({
     currentStep,
@@ -97,6 +98,7 @@ const CreateProject = () => {
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
           onBack={handleBack}
+          onNext={handleNext}
         />
       </div>
     </div>

@@ -36,7 +36,7 @@ export function useProjectFormPersistence() {
   const [currentStep, setCurrentStep] = useState(() => getSavedData().step);
   const [formData, setFormData] = useState<Partial<ProjectFormData>>(() => getSavedData().data);
 
-  // Save to localStorage with debounce to avoid excessive writes
+  // Save to localStorage with minimal delay
   const saveToStorage = useCallback(() => {
     // Clear any existing timeout
     if (saveTimeoutRef.current) {
@@ -67,7 +67,7 @@ export function useProjectFormPersistence() {
       } catch (error) {
         console.error("Error saving form data:", error);
       }
-    }, 100); // Reduced timeout for quicker saving
+    }, 50); // Very quick timeout for immediate feedback
   }, [formData, currentStep]);
 
   // Save data when form data or step changes

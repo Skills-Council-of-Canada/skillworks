@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import type { ProjectFormData, TradeType, SkillLevel, ProjectTemplate } from "@/types/project";
 import { PROJECT_TEMPLATES } from "@/types/project";
 import ProjectTemplatesSection from "./trade-details/ProjectTemplatesSection";
@@ -70,6 +71,11 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
         <Separator className="my-6" />
 
         <TradeDetailsFields form={form} />
+        
+        {/* Hidden submit button that will be triggered by the Next button */}
+        <Button type="submit" className="hidden" id="submit-form-step-2">
+          Submit
+        </Button>
       </form>
     </Form>
   );

@@ -1,39 +1,65 @@
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { 
+  ChevronLeft, 
+  ChevronRight
+} from "lucide-react";
 
 interface StepNavigationProps {
   currentStep: number;
   totalSteps: number;
   onBack: () => void;
+  onNext?: () => void; // Add onNext prop
 }
 
-const StepNavigation = ({ currentStep, totalSteps, onBack }: StepNavigationProps) => {
-  const isMobile = useIsMobile();
-  
+const StepNavigation = ({ 
+  currentStep, 
+  totalSteps, 
+  onBack,
+  onNext 
+}: StepNavigationProps) => {
+  const isLastStep = currentStep === totalSteps;
+
+  const handleNextClick = () => {
+    console.log("Next button clicked");
+    if (onNext) {
+      onNext();
+    } else {
+      // Fall back to submitting the form directly
+      const formId = `step-${currentStep}-form`;
+      const form = document.getElementById(formId) as HTMLFormElement;
+      if (form) {
+        console.log(`Submitting form ${formId}`);
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      } else {
+        console.error(`Could not find form with id ${formId}`);
+      }
+    }
+  };
+
   return (
-    <div className="flex justify-between w-full mt-4 max-w-full overflow-hidden">
+    <div className="flex justify-between mt-6">
       <Button
-        variant="outline"
-        onClick={onBack}
-        className="flex items-center"
-        size={isMobile ? "sm" : "default"}
         type="button"
+        variant="outline"
+        size="sm"
+        onClick={onBack}
+        className="gap-1"
       >
-        <ChevronLeft className={isMobile ? "mr-0.5 h-4 w-4" : "mr-2"} />
-        <span className="whitespace-nowrap text-xs sm:text-sm">{currentStep === 1 ? "Cancel" : "Back"}</span>
+        <ChevronLeft className="h-4 w-4" />
+        Back
       </Button>
-      
-      {currentStep < totalSteps && (
+
+      {!isLastStep && (
         <Button
-          type="submit"
-          form={`step-${currentStep}-form`}
-          className="flex items-center"
-          size={isMobile ? "sm" : "default"}
+          type="button"
+          size="sm"
+          className="gap-1"
+          onClick={handleNextClick}
+          id={`next-button-step-${currentStep}`}
         >
-          <span className="whitespace-nowrap text-xs sm:text-sm">Next</span>
-          <ChevronRight className={isMobile ? "ml-0.5 h-4 w-4" : "ml-2"} />
+          Next
+          <ChevronRight className="h-4 w-4" />
         </Button>
       )}
     </div>

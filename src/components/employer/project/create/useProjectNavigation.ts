@@ -32,7 +32,7 @@ export const useProjectNavigation = ({
       return updated;
     });
     
-    // Force step change to happen synchronously
+    // Move to next step immediately
     if (currentStep < totalSteps) {
       console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
       setCurrentStep(currentStep + 1);
@@ -55,6 +55,22 @@ export const useProjectNavigation = ({
     }
   }, [currentStep, navigate, setCurrentStep]);
 
+  // This function is called when the Next button is clicked
+  const handleNext = useCallback(() => {
+    console.log(`Attempting to move from step ${currentStep} to next step`);
+    
+    // Find the form for the current step and submit it
+    const formId = `step-${currentStep}-form`;
+    const form = document.getElementById(formId) as HTMLFormElement;
+    
+    if (form) {
+      console.log(`Found form with id ${formId}, submitting it`);
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    } else {
+      console.error(`Could not find form with id ${formId}`);
+    }
+  }, [currentStep]);
+  
   // This function logs the current step for debugging
   const logCurrentStep = useCallback(() => {
     console.log(`Current step: ${currentStep}`, formData);
@@ -63,6 +79,7 @@ export const useProjectNavigation = ({
   return {
     handleStepSubmit,
     handleBack,
+    handleNext, // Add this to the return values
     logCurrentStep
   };
 };
