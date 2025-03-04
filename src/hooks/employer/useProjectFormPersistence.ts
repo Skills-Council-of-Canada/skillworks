@@ -35,8 +35,8 @@ export function useProjectFormPersistence() {
   // Save to localStorage whenever form data or step changes
   useEffect(() => {
     try {
-      // Create a copy of the data for serialization
-      const dataToSave = { ...formData };
+      // Create a deep copy of the data to avoid modifying the original
+      const dataToSave = JSON.parse(JSON.stringify(formData));
       
       // Convert Date objects to ISO strings for proper serialization
       if (dataToSave.startDate instanceof Date) {
