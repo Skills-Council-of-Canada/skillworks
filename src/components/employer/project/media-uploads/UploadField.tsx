@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import { useState, useEffect } from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn, useFormContext } from "react-hook-form";
 
 interface UploadFieldProps {
   field: UseFormRegisterReturn;
@@ -18,6 +18,7 @@ const ACCEPTED_DOCUMENT_TYPES = ["application/pdf", "application/msword", "appli
 
 const UploadField = ({ field, uploadProgress, type }: UploadFieldProps) => {
   const [files, setFiles] = useState<File[]>([]);
+  const form = useFormContext();
   const acceptedTypes = type === 'image' ? ACCEPTED_IMAGE_TYPES : ACCEPTED_DOCUMENT_TYPES;
   const label = type === 'image' ? 'Project Images' : 'Project Documents';
   const helperText = type === 'image' 
@@ -35,14 +36,12 @@ const UploadField = ({ field, uploadProgress, type }: UploadFieldProps) => {
       console.log(`${type} files selected:`, newFiles);
       setFiles(newFiles);
       
-      // This is important - we need to update the field value in the form
-      const event = {
-        target: {
-          name: field.name,
-          value: newFiles
-        }
-      };
-      field.onChange(event);
+      // Directly update the form value for this field
+      form.setValue(field.name, newFiles, { 
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
     }
   };
 
@@ -74,28 +73,34 @@ const UploadField = ({ field, uploadProgress, type }: UploadFieldProps) => {
                   accept={acceptedTypes.join(",")}
                   multiple
                   onChange={handleFileChange}
-                  {...field}
                   aria-label={`Upload ${type === 'image' ? 'images' : 'documents'}`}
                 />
               </label>
             </div>
-            {files.map((file, index) => (
-              <div key={`${type}-${index}`} className="space-y-2">
-                <p className="text-sm truncate">{file.name}</p>
-                {uploadProgress[`${type}-${index}`] !== undefined && (
-                  <div className="space-y-1">
-                    <Progress 
-                      value={uploadProgress[`${type}-${index}`]} 
-                      className="h-2"
-                      aria-label={`Upload progress for ${file.name}`}
-                    />
-                    <p className="text-xs text-muted-foreground text-right">
-                      {uploadProgress[`${type}-${index}`]}%
-                    </p>
-                  </div>
-                )}
+            {files.length > 0 && (
+              <div className="mt-2">
+                <p className="text-sm font-medium mb-1">Selected files:</p>
+                <div className="space-y-2">
+                  {files.map((file, index) => (
+                    <div key={`${type}-${index}`} className="space-y-2">
+                      <p className="text-sm truncate">{file.name}</p>
+                      {uploadProgress[`${type}-${index}`] !== undefined && (
+                        <div className="space-y-1">
+                          <Progress 
+                            value={uploadProgress[`${type}-${index}`]} 
+                            className="h-2"
+                            aria-label={`Upload progress for ${file.name}`}
+                          />
+                          <p className="text-xs text-muted-foreground text-right">
+                            {uploadProgress[`${type}-${index}`]}%
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            )}
           </div>
         </FormControl>
       </Card>
