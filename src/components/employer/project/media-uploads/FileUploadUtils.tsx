@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadFile } from "./uploadUtils";
 
 export interface UploadProgressMap {
   [key: string]: number;
@@ -13,13 +14,23 @@ export const useFileUploader = (projectId?: string) => {
 
   const uploadFile = useCallback(
     async (file: File, type: 'image' | 'document', index: number) => {
-      if (!projectId) {
-        throw new Error("Project ID is required for file uploads");
-      }
-      
       try {
         // Update progress to show upload started
         setUploadProgress(prev => ({ ...prev, [`${type}-${index}`]: 10 }));
+        
+        // If we don't have a project ID yet, we'll use the direct upload method
+        // instead of the edge function
+        if (!projectId) {
+          const folder = 'temp-uploads';
+          const result = await import('./uploadUtils').then(mod => 
+            mod.uploadFile(file, type, folder)
+          );
+          
+          // Update progress to show upload completed
+          setUploadProgress(prev => ({ ...prev, [`${type}-${index}`]: 100 }));
+          
+          return result;
+        }
         
         // Prepare form data for the upload
         const formData = new FormData();
@@ -62,11 +73,6 @@ export const useFileUploader = (projectId?: string) => {
 
   const handleFilesUpload = useCallback(
     async (data: { images?: File[], documents?: File[] }) => {
-      if (!projectId) {
-        toast.error("Project ID is required for file uploads");
-        return { success: false };
-      }
-      
       setIsUploading(true);
       setUploadProgress({});
       
@@ -93,7 +99,7 @@ export const useFileUploader = (projectId?: string) => {
         setIsUploading(false);
       }
     },
-    [projectId, uploadFiles]
+    [uploadFiles]
   );
 
   return {

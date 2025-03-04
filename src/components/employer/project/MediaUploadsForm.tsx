@@ -30,6 +30,7 @@ interface Props {
 }
 
 const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
+  // It's okay if projectId is undefined - we handle that case in useFileUploader
   const projectId = initialData.id;
   const { uploadProgress, isUploading, handleFilesUpload } = useFileUploader(projectId);
 
