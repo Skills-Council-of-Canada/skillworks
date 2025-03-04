@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 
 interface UseProjectNavigationProps {
   currentStep: number;
@@ -21,27 +21,44 @@ export const useProjectNavigation = ({
 }: UseProjectNavigationProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  // Use a ref to track if a step change is in progress
+  const stepChangeInProgress = useRef(false);
 
   const handleStepSubmit = useCallback((stepData: Partial<ProjectFormData>) => {
     console.log("Step submission received:", stepData, "Current step:", currentStep);
     
-    // Update the form data with the new step data
-    setFormData(prev => {
-      const updated = { ...prev, ...stepData };
-      console.log("Updated form data:", updated);
-      return updated;
-    });
+    // Prevent multiple step changes from happening at once
+    if (stepChangeInProgress.current) {
+      console.log("Step change already in progress, ignoring");
+      return;
+    }
     
-    // Move to next step immediately
-    if (currentStep < totalSteps) {
-      console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
-      setCurrentStep(currentStep + 1);
-      toast({
-        title: "Progress Saved",
-        description: "Your changes have been saved successfully.",
+    stepChangeInProgress.current = true;
+    
+    try {
+      // Update the form data with the new step data
+      setFormData(prev => {
+        const updated = { ...prev, ...stepData };
+        console.log("Updated form data:", updated);
+        return updated;
       });
-    } else {
-      console.log("Already at last step, not advancing");
+      
+      // Move to next step
+      if (currentStep < totalSteps) {
+        console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
+        setCurrentStep(currentStep + 1);
+        toast({
+          title: "Progress Saved",
+          description: "Your changes have been saved successfully.",
+        });
+      } else {
+        console.log("Already at last step, not advancing");
+      }
+    } finally {
+      // Reset the lock after a short delay to ensure the state updates have time to process
+      setTimeout(() => {
+        stepChangeInProgress.current = false;
+      }, 100);
     }
   }, [currentStep, setCurrentStep, setFormData, toast, totalSteps]);
 
@@ -65,7 +82,22 @@ export const useProjectNavigation = ({
     
     if (form) {
       console.log(`Found form with id ${formId}, submitting it`);
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      
+      // Create the submit event explicitly
+      const submitEvent = new Event('submit', { 
+        bubbles: true, 
+        cancelable: true 
+      });
+      
+      // Dispatch the event directly
+      form.dispatchEvent(submitEvent);
+      
+      // Also try clicking the submit button as a fallback
+      const submitButton = document.getElementById(`submit-form-step-${currentStep}`);
+      if (submitButton) {
+        console.log("Also clicking submit button as fallback");
+        (submitButton as HTMLButtonElement).click();
+      }
     } else {
       console.error(`Could not find form with id ${formId}`);
     }
@@ -79,7 +111,7 @@ export const useProjectNavigation = ({
   return {
     handleStepSubmit,
     handleBack,
-    handleNext, // Add this to the return values
+    handleNext,
     logCurrentStep
   };
 };

@@ -9,6 +9,7 @@ import type { ProjectFormData, TradeType, SkillLevel, ProjectTemplate } from "@/
 import { PROJECT_TEMPLATES } from "@/types/project";
 import ProjectTemplatesSection from "./trade-details/ProjectTemplatesSection";
 import TradeDetailsFields from "./trade-details/TradeDetailsFields";
+import { useEffect } from "react";
 
 // Create a type that matches exactly what we need for this form
 type TradeDetailsFormData = {
@@ -47,14 +48,45 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
     }
   });
 
+  // Log when the form is mounted to help with debugging
+  useEffect(() => {
+    console.log("TradeDetailsForm mounted with initialData:", initialData);
+    // Pre-populate subcategories with at least one empty string to satisfy validation
+    if (!initialData.subcategories || initialData.subcategories.length === 0) {
+      form.setValue('subcategories', ['General']);
+    }
+  }, []);
+
   const applyTemplate = (template: ProjectTemplate) => {
+    console.log("Applying template:", template);
     form.setValue('tradeType', template.tradeType);
+    // Also apply any other template values
+    if (template.subcategories) {
+      form.setValue('subcategories', template.subcategories);
+    }
+    if (template.skillLevel) {
+      form.setValue('skillLevel', template.skillLevel);
+    }
   };
 
   const handleSubmit = (data: TradeDetailsFormData) => {
-    console.log("TradeDetailsForm submitted:", data);
+    console.log("TradeDetailsForm submitted successfully:", data);
+    // Call the onSubmit prop to pass the data up
     onSubmit(data);
   };
+
+  // Log form state for debugging
+  const formState = form.formState;
+  console.log("Form state:", { 
+    isDirty: formState.isDirty,
+    isValid: formState.isValid, 
+    errors: formState.errors
+  });
+
+  // Force form validation on mount
+  useEffect(() => {
+    form.trigger();
+  }, [form]);
 
   return (
     <Form {...form}>
@@ -72,6 +104,17 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
 
         <TradeDetailsFields form={form} />
         
+        {/* Add a visible submit button for testing/debugging */}
+        <div className="flex justify-end">
+          <Button 
+            type="submit" 
+            className="hidden md:inline-flex" 
+            id="debug-submit-btn-step-2"
+          >
+            Submit Form
+          </Button>
+        </div>
+
         {/* Hidden submit button that will be triggered by the Next button */}
         <Button type="submit" className="hidden" id="submit-form-step-2">
           Submit
