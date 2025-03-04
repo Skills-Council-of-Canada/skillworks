@@ -17,11 +17,21 @@ const BasicInfoSection = ({ data, onEdit }: Props) => {
       onEdit={onEdit}
       isComplete={isComplete}
     >
-      <h3 className="font-semibold">{data.title}</h3>
-      <div 
-        className="text-sm text-muted-foreground mt-2"
-        dangerouslySetInnerHTML={{ __html: data.description || '' }}
-      />
+      <div className="space-y-3">
+        {data.title ? (
+          <h3 className="font-semibold text-lg">{data.title}</h3>
+        ) : (
+          <p className="text-destructive">Title required</p>
+        )}
+        {data.description ? (
+          <div 
+            className="text-sm text-muted-foreground prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: data.description }}
+          />
+        ) : (
+          <p className="text-destructive">Description required</p>
+        )}
+      </div>
     </ReviewSectionCard>
   );
 };

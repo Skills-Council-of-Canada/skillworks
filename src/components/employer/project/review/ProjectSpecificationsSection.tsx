@@ -16,6 +16,12 @@ const ProjectSpecificationsSection = ({ data, onEdit }: Props) => {
     (data.locationType !== 'On-site' || data.address)
   );
 
+  // Format dates nicely if they exist
+  const formatDate = (date?: Date) => {
+    if (!date) return 'Not specified';
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   return (
     <ReviewSectionCard
       title="Project Specifications"
@@ -23,10 +29,12 @@ const ProjectSpecificationsSection = ({ data, onEdit }: Props) => {
       onEdit={onEdit}
       isComplete={isComplete}
     >
-      <p><span className="font-medium">Duration:</span> {data.startDate?.toLocaleDateString()} - {data.endDate?.toLocaleDateString()}</p>
-      <p><span className="font-medium">Location Type:</span> {data.locationType}</p>
-      {data.address && <p><span className="font-medium">Address:</span> {data.address}</p>}
-      <p><span className="font-medium">Positions Available:</span> {data.positions}</p>
+      <div className="space-y-2">
+        <p><span className="font-medium">Duration:</span> {formatDate(data.startDate)} - {formatDate(data.endDate)}</p>
+        <p><span className="font-medium">Location Type:</span> {data.locationType || 'Not specified'}</p>
+        {data.address && <p><span className="font-medium">Address:</span> {data.address}</p>}
+        <p><span className="font-medium">Positions Available:</span> {data.positions || 'Not specified'}</p>
+      </div>
     </ReviewSectionCard>
   );
 };

@@ -17,11 +17,19 @@ const TradeDetailsSection = ({ data, onEdit }: Props) => {
       onEdit={onEdit}
       isComplete={isComplete}
     >
-      <p><span className="font-medium">Trade Type:</span> {data.tradeType}</p>
-      <p><span className="font-medium">Skill Level:</span> {data.skillLevel}</p>
-      {data.subcategories && data.subcategories.length > 0 && (
-        <p><span className="font-medium">Subcategories:</span> {data.subcategories.join(", ")}</p>
-      )}
+      <div className="space-y-2">
+        <p>
+          <span className="font-medium">Trade Type:</span> 
+          {data.tradeType || <span className="text-destructive text-sm">Required</span>}
+        </p>
+        <p>
+          <span className="font-medium">Skill Level:</span> 
+          {data.skillLevel || <span className="text-destructive text-sm">Required</span>}
+        </p>
+        {data.subcategories && data.subcategories.length > 0 && (
+          <p><span className="font-medium">Subcategories:</span> {data.subcategories.join(", ")}</p>
+        )}
+      </div>
     </ReviewSectionCard>
   );
 };
