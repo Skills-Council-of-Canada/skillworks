@@ -6,9 +6,10 @@ const STORAGE_KEY = "project_form_data";
 
 export function useProjectFormPersistence() {
   const initialLoadDone = useRef(false);
+  const shouldSave = useRef(false);
   
-  // Load saved data from localStorage on initial render
-  const loadSavedData = useCallback((): { step: number; data: Partial<ProjectFormData> } => {
+  // Function to load saved data - extracted for cleaner code
+  const getSavedData = useCallback(() => {
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
@@ -30,9 +31,9 @@ export function useProjectFormPersistence() {
     return { step: 1, data: {} };
   }, []);
   
-  const [currentStep, setCurrentStep] = useState(() => loadSavedData().step);
-  const [formData, setFormData] = useState<Partial<ProjectFormData>>(() => loadSavedData().data);
-  const shouldSave = useRef(false);
+  // Use state initializers to avoid unnecessary renders
+  const [currentStep, setCurrentStep] = useState(() => getSavedData().step);
+  const [formData, setFormData] = useState<Partial<ProjectFormData>>(() => getSavedData().data);
 
   // Save to localStorage whenever form data or step changes
   useEffect(() => {
@@ -41,48 +42,44 @@ export function useProjectFormPersistence() {
       return;
     }
     
+    if (!shouldSave.current) {
+      return;
+    }
+    shouldSave.current = false;
+    
     try {
-      // Only save if explicitly requested (via setFormData or setCurrentStep)
-      if (!shouldSave.current) {
-        return;
-      }
-      shouldSave.current = false;
-      
       // Create a deep copy of the data to avoid modifying the original
-      const dataToSave = JSON.parse(JSON.stringify(formData));
-      
-      // Convert Date objects to ISO strings for proper serialization
-      if (dataToSave.startDate instanceof Date) {
-        dataToSave.startDate = dataToSave.startDate.toISOString();
-      }
-      if (dataToSave.endDate instanceof Date) {
-        dataToSave.endDate = dataToSave.endDate.toISOString();
-      }
-      
-      // Don't save File objects as they can't be serialized
-      if (dataToSave.images) {
-        delete dataToSave.images;
-      }
-      if (dataToSave.documents) {
-        delete dataToSave.documents;
-      }
+      const dataToSave = JSON.stringify(formData, (key, value) => {
+        // Handle Date objects
+        if (key === 'startDate' || key === 'endDate') {
+          return value instanceof Date ? value.toISOString() : value;
+        }
+        // Skip file objects
+        if (key === 'images' || key === 'documents') {
+          return undefined;
+        }
+        return value;
+      });
       
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         step: currentStep,
-        data: dataToSave
+        data: JSON.parse(dataToSave)
       }));
+      
+      console.log("Form data saved to localStorage", currentStep);
     } catch (error) {
       console.error("Error saving form data:", error);
     }
   }, [formData, currentStep]);
 
-  // Wrap the state setters to trigger saves when called
+  // Explicit wrapped setters to trigger saving
   const wrappedSetFormData = useCallback((value: React.SetStateAction<Partial<ProjectFormData>>) => {
     shouldSave.current = true;
     setFormData(value);
   }, []);
 
   const wrappedSetCurrentStep = useCallback((step: number) => {
+    console.log("Setting current step to:", step);
     shouldSave.current = true;
     setCurrentStep(step);
   }, []);

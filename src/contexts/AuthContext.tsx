@@ -19,11 +19,13 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { user, isLoading, setIsLoading } = useAuthState();
   const { login, logout, signup } = useAuthOperations(setIsLoading);
   const mounted = useRef(true);
+  const loggedOnce = useRef(false);
 
   // Only log once when mounted or when user changes
   useEffect(() => {
-    if (mounted.current) {
+    if (mounted.current && !loggedOnce.current && user !== undefined) {
       console.log("AuthProvider mounted, user:", user);
+      loggedOnce.current = true;
       mounted.current = false;
     }
   }, [user]);

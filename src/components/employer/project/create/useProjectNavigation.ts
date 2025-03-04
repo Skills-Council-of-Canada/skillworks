@@ -31,17 +31,14 @@ export const useProjectNavigation = ({
       return updated;
     });
     
+    // Move to next step immediately - no setTimeout to avoid potential issues
     if (currentStep < totalSteps) {
       console.log("Moving to next step:", currentStep + 1);
-      
-      // Use setTimeout to ensure state updates have processed before changing step
-      setTimeout(() => {
-        setCurrentStep(currentStep + 1);
-        toast({
-          title: "Progress Saved",
-          description: "Your changes have been saved successfully.",
-        });
-      }, 0);
+      setCurrentStep(currentStep + 1);
+      toast({
+        title: "Progress Saved",
+        description: "Your changes have been saved successfully.",
+      });
     }
   }, [currentStep, setCurrentStep, setFormData, toast, totalSteps]);
 

@@ -10,6 +10,7 @@ import { StepRenderer } from "@/components/employer/project/create/StepRenderer"
 import StepProgress from "@/components/employer/project/create/StepProgress";
 import StepNavigation from "@/components/employer/project/create/StepNavigation";
 import { Card } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const TOTAL_STEPS = 6;
 
@@ -39,6 +40,11 @@ const CreateProject = () => {
     setFormData,
     totalSteps: TOTAL_STEPS
   });
+
+  // Log step changes for debugging
+  useEffect(() => {
+    console.log("Current step in CreateProject:", currentStep);
+  }, [currentStep]);
 
   const handlePublishWithCleanup = () => {
     handlePublish(formData, user?.id!);
