@@ -12,11 +12,11 @@ const StepProgress = ({ currentStep, totalSteps }: StepProgressProps) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="space-y-2 w-full">
+    <div className="space-y-2 w-full max-w-full overflow-hidden">
       {!isMobile && (
         <h1 className="text-2xl font-bold">Create New Project</h1>
       )}
-      <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
+      <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'} break-words`}>
         {isMobile ? (
           <span>Step {currentStep} of {totalSteps}</span>
         ) : (

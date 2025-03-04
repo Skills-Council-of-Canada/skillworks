@@ -16,6 +16,8 @@ import { Card } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProjectFormData } from "@/types/project";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   title: z.string()
@@ -44,6 +46,8 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
       description: initialData.description || "",
     },
   });
+  
+  const isMobile = useIsMobile();
 
   const handleGenerateProject = () => {
     // TODO: Implement AI project generation
@@ -57,13 +61,13 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-[#F1F1F1]">
+      <Card className="p-4 sm:p-6 bg-[#F1F1F1]">
         <h3 className="font-semibold mb-2">Example Projects</h3>
-        <ul className="space-y-2 text-muted-foreground">
+        <ul className="space-y-2 text-muted-foreground max-w-full">
           {EXAMPLE_PROJECTS.map((example, index) => (
-            <li key={index} className="flex items-start">
-              <AlertCircle className="h-5 w-5 mr-2 text-primary" />
-              {example}
+            <li key={index} className="flex items-start break-words">
+              <AlertCircle className="h-5 w-5 mr-2 shrink-0 text-primary" />
+              <span className="inline-block">{example}</span>
             </li>
           ))}
         </ul>
@@ -100,8 +104,8 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
               <FormItem>
                 <FormLabel>Project Details</FormLabel>
                 <FormControl>
-                  <textarea
-                    className="min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  <Textarea
+                    className="min-h-[150px] w-full"
                     placeholder="Describe your project in detail..."
                     {...field}
                   />
@@ -111,17 +115,20 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
             )}
           />
 
-          <div className="flex gap-4">
+          <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-2`}>
             <Button
               type="button"
               onClick={handleGenerateProject}
               className="bg-orange-500 hover:bg-orange-600"
+              size={isMobile ? "sm" : "default"}
             >
               Generate Project
             </Button>
             <Button
               type="submit"
               variant="secondary"
+              size={isMobile ? "sm" : "default"}
+              className="whitespace-normal text-left h-auto py-2"
             >
               Create Project from Scratch
             </Button>
@@ -129,6 +136,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
               type="button"
               variant="secondary"
               onClick={handleUseTemplate}
+              size={isMobile ? "sm" : "default"}
             >
               Use Template
             </Button>

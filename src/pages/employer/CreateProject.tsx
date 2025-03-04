@@ -99,13 +99,13 @@ const CreateProject = () => {
 
   return (
     <div className="min-h-screen bg-background w-full overflow-x-hidden">
-      <div className="w-full mx-auto px-4 py-4 space-y-4 max-w-3xl">
-        <div className="space-y-2">
+      <div className="w-full mx-auto px-2 sm:px-4 py-4 space-y-4 max-w-3xl">
+        <div className="space-y-2 max-w-full">
           <h1 className={`font-bold tracking-tight ${isMobile ? 'text-xl' : 'text-2xl'}`}>
             Create New Project
           </h1>
-          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
-            Fill out the details below to create your new project. Your progress is automatically saved.
+          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'} break-words`}>
+            Fill out the details below to create your new project.
           </p>
         </div>
 
@@ -114,9 +114,9 @@ const CreateProject = () => {
           totalSteps={TOTAL_STEPS}
         />
         
-        <Card className={`${isMobile ? 'p-4' : 'p-6'} w-full overflow-hidden`}>
+        <Card className={`${isMobile ? 'p-3' : 'p-6'} w-full overflow-hidden`}>
           <div 
-            className={`space-y-6 ${isMobile ? 'text-sm' : ''}`} 
+            className={`space-y-6 ${isMobile ? 'text-sm' : ''} max-w-full overflow-x-hidden`} 
             role="form" 
             aria-label={`Project creation step ${currentStep} of ${TOTAL_STEPS}`}
           >
