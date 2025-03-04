@@ -1,12 +1,12 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { uploadFile } from "@/components/employer/project/media-uploads/uploadUtils";
 import type { ProjectFormData } from "@/types/project";
+import { supabase } from "@/integrations/supabase/client";
 
 type FileData = {
-  images: File[];
-  documents: File[];
+  images?: File[];
+  documents?: File[];
 };
 
 export function useFileUpload(projectId?: string) {
@@ -14,7 +14,44 @@ export function useFileUpload(projectId?: string) {
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = async (
+  const uploadFile = useCallback(async (file: File, type: 'image' | 'document', index: number) => {
+    if (!projectId) {
+      throw new Error("Project ID is required for file uploads");
+    }
+    
+    try {
+      // Update progress to show upload started
+      setUploadProgress(prev => ({ ...prev, [`${type}-${index}`]: 10 }));
+      
+      // Prepare form data for the upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', type);
+      formData.append('projectId', projectId);
+      
+      // Call the Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('upload-project-files', {
+        body: formData,
+      });
+      
+      if (error) throw error;
+      
+      // Update progress to show upload completed
+      setUploadProgress(prev => ({ ...prev, [`${type}-${index}`]: 100 }));
+      
+      return data?.filePath;
+    } catch (error) {
+      console.error(`Error uploading ${file.name}:`, error);
+      toast({
+        title: "Upload Error",
+        description: `Failed to upload ${type} ${file.name}`,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  }, [projectId, toast]);
+
+  const handleFileUpload = useCallback(async (
     data: FileData, 
     onSuccess: (data: Partial<ProjectFormData>) => void
   ) => {
@@ -28,51 +65,35 @@ export function useFileUpload(projectId?: string) {
     }
 
     setIsUploading(true);
+    setUploadProgress({});
 
     try {
       // Upload images
-      for (let i = 0; i < data.images.length; i++) {
-        const file = data.images[i];
-        setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 0 }));
-        
-        try {
-          await uploadFile(file, 'image', projectId);
-          setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 100 }));
-        } catch (error) {
-          toast({
-            title: "Upload Error",
-            description: `Failed to upload image ${file.name}`,
-            variant: "destructive",
-          });
-        }
-      }
+      const imagePromises = data.images?.map((file, i) => 
+        uploadFile(file, 'image', i)
+          .then(() => setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 100 })))
+          .catch(() => setUploadProgress(prev => ({ ...prev, [`image-${i}`]: 0 })))
+      ) || [];
 
       // Upload documents
-      for (let i = 0; i < data.documents.length; i++) {
-        const file = data.documents[i];
-        setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 0 }));
-        
-        try {
-          await uploadFile(file, 'document', projectId);
-          setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 100 }));
-        } catch (error) {
-          toast({
-            title: "Upload Error",
-            description: `Failed to upload document ${file.name}`,
-            variant: "destructive",
-          });
-        }
-      }
+      const documentPromises = data.documents?.map((file, i) => 
+        uploadFile(file, 'document', i)
+          .then(() => setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 100 })))
+          .catch(() => setUploadProgress(prev => ({ ...prev, [`document-${i}`]: 0 })))
+      ) || [];
+
+      // Wait for all uploads to complete
+      await Promise.all([...imagePromises, ...documentPromises]);
 
       toast({
         title: "Success",
-        description: "All files uploaded successfully",
+        description: "Files uploaded successfully",
       });
 
       // Call onSuccess with the uploaded files data
       onSuccess({
-        images: data.images,
-        documents: data.documents
+        images: data.images || [],
+        documents: data.documents || []
       });
     } catch (error) {
       console.error('Upload error:', error);
@@ -84,7 +105,7 @@ export function useFileUpload(projectId?: string) {
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [projectId, toast, uploadFile]);
 
   return {
     uploadProgress,
