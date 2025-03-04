@@ -100,14 +100,16 @@ const CreateProject = () => {
   return (
     <div className="min-h-screen bg-background w-full overflow-x-hidden">
       <div className="w-full mx-auto px-2 sm:px-4 py-4 space-y-4 max-w-3xl">
-        <div className="space-y-2 max-w-full">
-          <h1 className={`font-bold tracking-tight ${isMobile ? 'text-xl' : 'text-2xl'}`}>
-            Create New Project
-          </h1>
-          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'} break-words`}>
-            Fill out the details below to create your new project.
-          </p>
-        </div>
+        {isMobile && (
+          <div className="space-y-2 max-w-full">
+            <h1 className="text-xl font-bold tracking-tight">
+              Create New Project
+            </h1>
+            <p className="text-sm text-muted-foreground break-words">
+              Fill out the details below to create your new project.
+            </p>
+          </div>
+        )}
 
         <StepProgress 
           currentStep={currentStep} 

@@ -14,15 +14,18 @@ const StepProgress = ({ currentStep, totalSteps }: StepProgressProps) => {
   return (
     <div className="space-y-2 w-full max-w-full overflow-hidden">
       {!isMobile && (
-        <h1 className="text-2xl font-bold">Create New Project</h1>
+        <>
+          <h1 className="text-2xl font-bold">Create New Project</h1>
+          <p className="text-base text-muted-foreground break-words">
+            Tell us about your project. Be as detailed as possible to attract the right candidates.
+          </p>
+        </>
       )}
-      <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'} break-words`}>
-        {isMobile ? (
+      {isMobile && (
+        <p className="text-sm text-muted-foreground break-words">
           <span>Step {currentStep} of {totalSteps}</span>
-        ) : (
-          "Tell us about your project. Be as detailed as possible to attract the right candidates."
-        )}
-      </p>
+        </p>
+      )}
       <Progress value={progress} className="h-2 w-full" />
     </div>
   );
