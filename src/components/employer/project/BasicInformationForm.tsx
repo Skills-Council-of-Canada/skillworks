@@ -13,12 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Bold, Italic, List, ListOrdered, Underline } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProjectFormData } from "@/types/project";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const formSchema = z.object({
   title: z.string()
@@ -58,6 +59,56 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   const handleUseTemplate = () => {
     // TODO: Implement template selection
     console.log("Use template clicked");
+  };
+
+  const formatText = (format: string) => {
+    const textarea = document.getElementById("project-description") as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    
+    let formattedText = "";
+    let cursorPosition = 0;
+
+    switch (format) {
+      case 'bold':
+        formattedText = `**${selectedText}**`;
+        cursorPosition = 2;
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*`;
+        cursorPosition = 1;
+        break;
+      case 'underline':
+        formattedText = `_${selectedText}_`;
+        cursorPosition = 1;
+        break;
+      case 'bullet':
+        formattedText = selectedText.split('\n').map(line => `• ${line}`).join('\n');
+        cursorPosition = 2;
+        break;
+      case 'number':
+        formattedText = selectedText.split('\n').map((line, i) => `${i + 1}. ${line}`).join('\n');
+        cursorPosition = 3; // Assuming single digit numbers
+        break;
+      default:
+        return;
+    }
+
+    const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+    form.setValue('description', newText, { shouldValidate: true });
+    
+    // Set focus back to textarea and position cursor after formatting
+    setTimeout(() => {
+      textarea.focus();
+      if (selectedText.length === 0) {
+        textarea.setSelectionRange(start + cursorPosition, start + cursorPosition);
+      } else {
+        textarea.setSelectionRange(start, start + formattedText.length);
+      }
+    }, 0);
   };
 
   useEffect(() => {
@@ -111,13 +162,113 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Project Details</FormLabel>
-                <FormControl>
-                  <Textarea
-                    className="min-h-[150px] w-full"
-                    placeholder="Describe your project in detail..."
-                    {...field}
-                  />
-                </FormControl>
+                <div className="space-y-2">
+                  <div className="bg-muted p-1 rounded-md flex flex-wrap gap-1 items-center border border-input">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('bold')}
+                          >
+                            <Bold className="h-4 w-4" />
+                            <span className="sr-only">Bold</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Bold</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('italic')}
+                          >
+                            <Italic className="h-4 w-4" />
+                            <span className="sr-only">Italic</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Italic</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('underline')}
+                          >
+                            <Underline className="h-4 w-4" />
+                            <span className="sr-only">Underline</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Underline</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <div className="w-px h-6 bg-border mx-1" />
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('bullet')}
+                          >
+                            <List className="h-4 w-4" />
+                            <span className="sr-only">Bullet List</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Bullet List</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0" 
+                            type="button"
+                            onClick={() => formatText('number')}
+                          >
+                            <ListOrdered className="h-4 w-4" />
+                            <span className="sr-only">Numbered List</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Numbered List</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  
+                  <FormControl>
+                    <Textarea
+                      id="project-description"
+                      className="min-h-[150px] w-full"
+                      placeholder="Describe your project in detail..."
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Formatting: Use <span className="font-medium">**text**</span> for bold, <span className="font-medium">*text*</span> for italic, <span className="font-medium">_text_</span> for underline
+                </p>
                 <FormMessage />
               </FormItem>
             )}
