@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -52,6 +51,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [editorContent, setEditorContent] = useState(initialData.description || "");
+  const [isDescriptionEmpty, setIsDescriptionEmpty] = useState(!initialData.description);
 
   const handleGenerateProject = () => {
     console.log("Generate project clicked");
@@ -169,6 +169,12 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
       const content = descriptionRef.current.innerHTML;
       setEditorContent(content);
       form.setValue('description', content, { shouldValidate: true });
+      
+      // Check if the description is empty (considering HTML tags)
+      const div = document.createElement('div');
+      div.innerHTML = content;
+      const textContent = div.textContent || div.innerText || '';
+      setIsDescriptionEmpty(textContent.trim() === '');
     }
   };
 
@@ -183,6 +189,14 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     const text = e.clipboardData.getData('text/plain');
     // Insert as plain text
     document.execCommand('insertText', false, text);
+  };
+
+  const handleEditorFocus = () => {
+    setIsDescriptionEmpty(false);
+  };
+
+  const handleEditorBlur = () => {
+    syncEditorContent();
   };
 
   const resizeTextarea = () => {
@@ -203,6 +217,9 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     // Initialize the editor with any existing content
     if (descriptionRef.current && initialData.description) {
       descriptionRef.current.innerHTML = initialData.description;
+      setIsDescriptionEmpty(false);
+    } else {
+      setIsDescriptionEmpty(true);
     }
   }, [initialData.description]);
 
@@ -353,16 +370,24 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
                   </div>
                   
                   <FormControl>
-                    <div
-                      ref={descriptionRef}
-                      contentEditable
-                      className="min-h-[150px] w-full border rounded-md p-3 bg-white overflow-auto"
-                      placeholder="Describe your project in detail..."
-                      onInput={handleEditorInput}
-                      onPaste={handleEditorPaste}
-                      dangerouslySetInnerHTML={{ __html: initialData.description || '' }}
-                      {...restField}
-                    />
+                    <div className="relative">
+                      <div
+                        ref={descriptionRef}
+                        contentEditable
+                        className="min-h-[150px] w-full border rounded-md p-3 bg-white overflow-auto"
+                        onInput={handleEditorInput}
+                        onPaste={handleEditorPaste}
+                        onFocus={handleEditorFocus}
+                        onBlur={handleEditorBlur}
+                        dangerouslySetInnerHTML={{ __html: initialData.description || '' }}
+                        {...restField}
+                      />
+                      {isDescriptionEmpty && (
+                        <div className="absolute top-3 left-3 text-muted-foreground pointer-events-none">
+                          Describe your project in detail...
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
