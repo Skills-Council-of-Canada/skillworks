@@ -38,11 +38,15 @@ interface Props {
 }
 
 const ProjectSpecificationsForm = ({ initialData, onSubmit }: Props) => {
+  // Ensure startDate and endDate are proper Date objects
+  const startDate = initialData.startDate instanceof Date ? initialData.startDate : new Date();
+  const endDate = initialData.endDate instanceof Date ? initialData.endDate : new Date();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      startDate: initialData.startDate || new Date(),
-      endDate: initialData.endDate || new Date(),
+      startDate,
+      endDate,
       locationType: initialData.locationType || 'On-site',
       address: initialData.address || "",
       positions: initialData.positions || 1,
@@ -51,11 +55,15 @@ const ProjectSpecificationsForm = ({ initialData, onSubmit }: Props) => {
 
   const watchLocationType = form.watch("locationType");
 
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
       <form
         id="step-3-form"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6"
       >
         <div className="grid grid-cols-2 gap-4">

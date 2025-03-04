@@ -22,8 +22,15 @@ export const useProjectNavigation = ({
   const { toast } = useToast();
 
   const handleStepSubmit = (stepData: Partial<ProjectFormData>) => {
-    setFormData(prev => ({ ...prev, ...stepData }));
+    console.log("Step submission received:", stepData, "Current step:", currentStep);
+    setFormData(prev => {
+      const updated = { ...prev, ...stepData };
+      console.log("Updated form data:", updated);
+      return updated;
+    });
+    
     if (currentStep < totalSteps) {
+      console.log("Moving to next step:", currentStep + 1);
       setCurrentStep(currentStep + 1);
       toast({
         title: "Progress Saved",

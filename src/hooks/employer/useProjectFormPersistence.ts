@@ -1,12 +1,12 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { ProjectFormData } from "@/types/project";
 
 const STORAGE_KEY = "project_form_data";
 
 export function useProjectFormPersistence() {
   // Load saved data from localStorage on initial render
-  const loadSavedData = (): { step: number; data: Partial<ProjectFormData> } => {
+  const loadSavedData = useCallback((): { step: number; data: Partial<ProjectFormData> } => {
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
@@ -26,9 +26,9 @@ export function useProjectFormPersistence() {
       console.error("Error loading saved form data:", error);
     }
     return { step: 1, data: {} };
-  };
+  }, []);
   
-  const savedState = loadSavedData();
+  const [savedState] = useState(loadSavedData);
   const [currentStep, setCurrentStep] = useState(savedState.step);
   const [formData, setFormData] = useState<Partial<ProjectFormData>>(savedState.data);
 
@@ -63,9 +63,9 @@ export function useProjectFormPersistence() {
     }
   }, [formData, currentStep]);
 
-  const clearSavedData = () => {
+  const clearSavedData = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
-  };
+  }, []);
 
   return {
     currentStep,

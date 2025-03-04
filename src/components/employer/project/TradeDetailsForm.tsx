@@ -50,11 +50,15 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
     form.setValue('tradeType', template.tradeType);
   };
 
+  const handleSubmit = (data: TradeDetailsFormData) => {
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
       <form
         id="step-2-form"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6"
       >
         <ProjectTemplatesSection 
