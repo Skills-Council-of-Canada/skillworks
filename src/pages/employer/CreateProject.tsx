@@ -99,10 +99,10 @@ const CreateProject = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className={`max-w-3xl mx-auto ${isMobile ? 'px-4' : 'px-6'} py-8 space-y-8`}>
-        <div className="space-y-4">
-          <h1 className="text-2xl font-bold tracking-tight">Create New Project</h1>
-          <p className="text-muted-foreground">
+      <div className={`w-full mx-auto ${isMobile ? 'px-3 max-w-full' : 'px-6 max-w-3xl'} py-6 space-y-6`}>
+        <div className="space-y-3">
+          <h1 className={`font-bold tracking-tight ${isMobile ? 'text-xl' : 'text-2xl'}`}>Create New Project</h1>
+          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
             Fill out the details below to create your new project. Your progress is automatically saved.
           </p>
         </div>
@@ -112,8 +112,8 @@ const CreateProject = () => {
           totalSteps={TOTAL_STEPS}
         />
         
-        <Card className="p-6">
-          <div className="space-y-8" role="form" aria-label={`Project creation step ${currentStep} of ${TOTAL_STEPS}`}>
+        <Card className={`${isMobile ? 'p-3' : 'p-6'}`}>
+          <div className={`space-y-6 ${isMobile ? 'text-sm' : ''}`} role="form" aria-label={`Project creation step ${currentStep} of ${TOTAL_STEPS}`}>
             {renderStep()}
           </div>
         </Card>
@@ -129,4 +129,3 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
-
