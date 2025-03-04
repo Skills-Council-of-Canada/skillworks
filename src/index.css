@@ -92,3 +92,25 @@ body::-webkit-scrollbar {
 #root::-webkit-scrollbar {
   display: none;
 }
+
+/* Formatting styles for text editor */
+strong {
+  font-weight: 600;
+}
+
+em {
+  font-style: italic;
+}
+
+u {
+  text-decoration: underline;
+}
+
+/* Proper indentation for bullet points and numbered lists */
+.bullet-item, .number-item {
+  display: block;
+  padding-left: 1.5em;
+  text-indent: -1.5em;
+  margin-bottom: 0.25em;
+  line-height: 1.5;
+}

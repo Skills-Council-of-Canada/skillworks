@@ -50,6 +50,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   
   const isMobile = useIsMobile();
   const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const handleGenerateProject = () => {
     console.log("Generate project clicked");
@@ -84,11 +85,21 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
         cursorPosition = 1;
         break;
       case 'bullet':
-        formattedText = selectedText.split('\n').map(line => `• ${line}`).join('\n');
+        if (selectedText) {
+          const lines = selectedText.split('\n');
+          formattedText = lines.map(line => `• ${line}`).join('\n');
+        } else {
+          formattedText = `• `;
+        }
         cursorPosition = 2;
         break;
       case 'number':
-        formattedText = selectedText.split('\n').map((line, i) => `${i + 1}. ${line}`).join('\n');
+        if (selectedText) {
+          const lines = selectedText.split('\n');
+          formattedText = lines.map((line, i) => `${i + 1}. ${line}`).join('\n');
+        } else {
+          formattedText = `1. `;
+        }
         cursorPosition = 3; // Assuming single digit numbers
         break;
       default:
@@ -98,7 +109,6 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
     form.setValue('description', newText, { shouldValidate: true });
     
-    // Set focus back to textarea and position cursor after formatting
     setTimeout(() => {
       textarea.focus();
       if (selectedText.length === 0) {
@@ -107,6 +117,19 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
         textarea.setSelectionRange(start, start + formattedText.length);
       }
     }, 0);
+  };
+
+  const formatDisplayText = (text: string) => {
+    if (!text) return "";
+    
+    let formattedText = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/_(.*?)_/g, '<u>$1</u>')
+      .replace(/^• (.*)$/gm, '<div class="bullet-item">• $1</div>')
+      .replace(/^(\d+)\. (.*)$/gm, '<div class="number-item">$1. $2</div>');
+    
+    return formattedText;
   };
 
   const resizeTextarea = () => {
@@ -121,6 +144,23 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     resizeTextarea();
     window.addEventListener('resize', resizeTextarea);
     return () => window.removeEventListener('resize', resizeTextarea);
+  }, []);
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .bullet-item, .number-item {
+        display: flex;
+        padding-left: 1.5em;
+        text-indent: -1.5em;
+        margin-bottom: 0.25em;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   useEffect(() => {
@@ -279,11 +319,12 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
                       className="min-h-[150px] w-full"
                       placeholder="Describe your project in detail..."
                       {...field}
+                      ref={descriptionRef}
                     />
                   </FormControl>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Formatting: Use <span className="font-medium">**text**</span> for bold, <span className="font-medium">*text*</span> for italic, <span className="font-medium">_text_</span> for underline
+                  Formatting: Use <span className="font-bold">**text**</span> for bold, <span className="italic">*text*</span> for italic, <span className="underline">_text_</span> for underline
                 </p>
                 <FormMessage />
               </FormItem>
