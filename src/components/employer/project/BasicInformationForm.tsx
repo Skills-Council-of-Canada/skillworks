@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -18,7 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProjectFormData } from "@/types/project";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const formSchema = z.object({
@@ -50,14 +49,13 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   });
   
   const isMobile = useIsMobile();
+  const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleGenerateProject = () => {
-    // TODO: Implement AI project generation
     console.log("Generate project clicked");
   };
 
   const handleUseTemplate = () => {
-    // TODO: Implement template selection
     console.log("Use template clicked");
   };
 
@@ -111,6 +109,20 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     }, 0);
   };
 
+  const resizeTextarea = () => {
+    const textarea = titleTextareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  };
+
+  useEffect(() => {
+    resizeTextarea();
+    window.addEventListener('resize', resizeTextarea);
+    return () => window.removeEventListener('resize', resizeTextarea);
+  }, []);
+
   useEffect(() => {
     console.log("BasicInformationForm rendered, using form ID: step-1-form");
   }, []);
@@ -145,9 +157,13 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
               <FormItem>
                 <FormLabel>Project Objective</FormLabel>
                 <FormControl>
-                  <Input 
+                  <Textarea 
+                    ref={titleTextareaRef}
                     placeholder="Write a short, clear objective for your project"
                     maxLength={200}
+                    className="min-h-[40px] overflow-hidden resize-none"
+                    onInput={resizeTextarea}
+                    rows={1}
                     {...field} 
                   />
                 </FormControl>
