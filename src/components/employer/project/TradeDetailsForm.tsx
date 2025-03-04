@@ -51,6 +51,7 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
   };
 
   const handleSubmit = (data: TradeDetailsFormData) => {
+    console.log("TradeDetailsForm submitted:", data);
     onSubmit(data);
   };
 

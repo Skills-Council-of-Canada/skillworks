@@ -67,7 +67,7 @@ export function useProjectFormPersistence() {
       } catch (error) {
         console.error("Error saving form data:", error);
       }
-    }, 300);
+    }, 100); // Reduced timeout for quicker saving
   }, [formData, currentStep]);
 
   // Save data when form data or step changes
@@ -87,7 +87,7 @@ export function useProjectFormPersistence() {
     };
   }, [formData, currentStep, saveToStorage]);
 
-  // Explicit wrapped setters that log changes
+  // Direct setters with console logging to track state changes
   const wrappedSetFormData = useCallback((value: React.SetStateAction<Partial<ProjectFormData>>) => {
     console.log("Setting form data:", typeof value === 'function' ? 'function' : value);
     setFormData(value);

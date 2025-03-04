@@ -32,7 +32,7 @@ export const useProjectNavigation = ({
       return updated;
     });
     
-    // Move to next step - removed setTimeout which was causing issues
+    // Force step change to happen synchronously
     if (currentStep < totalSteps) {
       console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
       setCurrentStep(currentStep + 1);
