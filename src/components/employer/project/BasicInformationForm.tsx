@@ -51,6 +51,8 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
   const isMobile = useIsMobile();
   const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const [previewHtml, setPreviewHtml] = useState<string>('');
+  const [previewMode, setPreviewMode] = useState(false);
 
   const handleGenerateProject = () => {
     console.log("Generate project clicked");
@@ -108,6 +110,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
 
     const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
     form.setValue('description', newText, { shouldValidate: true });
+    updatePreview(newText);
     
     setTimeout(() => {
       textarea.focus();
@@ -130,6 +133,11 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
       .replace(/^(\d+)\. (.*)$/gm, '<div class="number-item">$1. $2</div>');
     
     return formattedText;
+  };
+
+  const updatePreview = (text: string) => {
+    const formatted = formatDisplayText(text);
+    setPreviewHtml(formatted);
   };
 
   const resizeTextarea = () => {
@@ -165,7 +173,17 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
 
   useEffect(() => {
     console.log("BasicInformationForm rendered, using form ID: step-1-form");
+    updatePreview(form.getValues().description || '');
   }, []);
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'description') {
+        updatePreview(value.description || '');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   return (
     <div className="space-y-6">
@@ -219,109 +237,128 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
               <FormItem>
                 <FormLabel>Project Details</FormLabel>
                 <div className="space-y-2">
-                  <div className="bg-white p-1 rounded-md flex flex-wrap gap-1 items-center border border-input">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0" 
-                            type="button"
-                            onClick={() => formatText('bold')}
-                          >
-                            <Bold className="h-4 w-4" />
-                            <span className="sr-only">Bold</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Bold</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                  <div className="bg-white p-1 rounded-md flex flex-wrap gap-1 items-center border border-input justify-between">
+                    <div className="flex flex-wrap gap-1 items-center">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0" 
+                              type="button"
+                              onClick={() => formatText('bold')}
+                            >
+                              <Bold className="h-4 w-4" />
+                              <span className="sr-only">Bold</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Bold</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0" 
+                              type="button"
+                              onClick={() => formatText('italic')}
+                            >
+                              <Italic className="h-4 w-4" />
+                              <span className="sr-only">Italic</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Italic</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0" 
+                              type="button"
+                              onClick={() => formatText('underline')}
+                            >
+                              <Underline className="h-4 w-4" />
+                              <span className="sr-only">Underline</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Underline</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      
+                      <div className="w-px h-6 bg-border mx-1" />
+                      
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0" 
+                              type="button"
+                              onClick={() => formatText('bullet')}
+                            >
+                              <List className="h-4 w-4" />
+                              <span className="sr-only">Bullet List</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Bullet List</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0" 
+                              type="button"
+                              onClick={() => formatText('number')}
+                            >
+                              <ListOrdered className="h-4 w-4" />
+                              <span className="sr-only">Numbered List</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Numbered List</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0" 
-                            type="button"
-                            onClick={() => formatText('italic')}
-                          >
-                            <Italic className="h-4 w-4" />
-                            <span className="sr-only">Italic</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Italic</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0" 
-                            type="button"
-                            onClick={() => formatText('underline')}
-                          >
-                            <Underline className="h-4 w-4" />
-                            <span className="sr-only">Underline</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Underline</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    
-                    <div className="w-px h-6 bg-border mx-1" />
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0" 
-                            type="button"
-                            onClick={() => formatText('bullet')}
-                          >
-                            <List className="h-4 w-4" />
-                            <span className="sr-only">Bullet List</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Bullet List</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0" 
-                            type="button"
-                            onClick={() => formatText('number')}
-                          >
-                            <ListOrdered className="h-4 w-4" />
-                            <span className="sr-only">Numbered List</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Numbered List</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs"
+                      type="button"
+                      onClick={() => setPreviewMode(!previewMode)}
+                    >
+                      {previewMode ? "Edit" : "Preview"}
+                    </Button>
                   </div>
                   
-                  <FormControl>
-                    <Textarea
-                      id="project-description"
-                      className="min-h-[150px] w-full"
-                      placeholder="Describe your project in detail..."
-                      {...field}
-                      ref={descriptionRef}
+                  {previewMode ? (
+                    <div 
+                      className="min-h-[150px] w-full border rounded-md p-3 bg-white overflow-auto"
+                      dangerouslySetInnerHTML={{ __html: previewHtml }}
                     />
-                  </FormControl>
+                  ) : (
+                    <FormControl>
+                      <Textarea
+                        id="project-description"
+                        className="min-h-[150px] w-full"
+                        placeholder="Describe your project in detail..."
+                        {...field}
+                        ref={descriptionRef}
+                      />
+                    </FormControl>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Formatting: Use <span className="font-bold">**text**</span> for bold, <span className="italic">*text*</span> for italic, <span className="underline">_text_</span> for underline
