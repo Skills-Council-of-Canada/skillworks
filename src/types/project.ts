@@ -1,3 +1,4 @@
+
 export type TradeType = 'Electrical' | 'Plumbing' | 'Carpentry' | 'HVAC' | 'Welding' | 'Automotive' | 'Other';
 export type SkillLevel = 'Pre-Apprentice' | 'Apprentice' | 'Journeyman';
 export type LocationType = 'On-site' | 'Remote' | 'Hybrid';
@@ -8,6 +9,8 @@ export interface ProjectTemplate {
   description: string;
   tradeType: TradeType;
   requirements: string[];
+  subcategories?: string[];
+  skillLevel?: SkillLevel;
 }
 
 export interface ProjectFormData {
@@ -51,20 +54,26 @@ export const PROJECT_TEMPLATES: ProjectTemplate[] = [
     title: 'Commercial Plumbing Maintenance',
     description: 'Maintenance and repair of plumbing systems in commercial spaces',
     tradeType: 'Plumbing',
-    requirements: ['Basic plumbing knowledge', 'Safety awareness', 'Physical stamina']
+    requirements: ['Basic plumbing knowledge', 'Safety awareness', 'Physical stamina'],
+    subcategories: ['Commercial', 'Maintenance', 'Repair'],
+    skillLevel: 'Apprentice'
   },
   {
     id: 'electrical-residential',
     title: 'Residential Electrical Installation',
     description: 'Installation and maintenance of electrical systems in residential buildings',
     tradeType: 'Electrical',
-    requirements: ['Basic electrical knowledge', 'Safety certification', 'Hand tools experience']
+    requirements: ['Basic electrical knowledge', 'Safety certification', 'Hand tools experience'],
+    subcategories: ['Residential', 'Installation', 'Wiring'],
+    skillLevel: 'Pre-Apprentice'
   },
   {
     id: 'hvac-maintenance',
     title: 'HVAC System Maintenance',
     description: 'Regular maintenance and repair of heating, ventilation, and air conditioning systems',
     tradeType: 'HVAC',
-    requirements: ['HVAC basics', 'Diagnostic skills', 'Preventive maintenance']
+    requirements: ['HVAC basics', 'Diagnostic skills', 'Preventive maintenance'],
+    subcategories: ['Maintenance', 'Repair', 'Installation'],
+    skillLevel: 'Journeyman'
   }
 ];

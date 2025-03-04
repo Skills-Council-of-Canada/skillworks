@@ -60,10 +60,12 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
   const applyTemplate = (template: ProjectTemplate) => {
     console.log("Applying template:", template);
     form.setValue('tradeType', template.tradeType);
-    // Also apply any other template values
-    if (template.subcategories) {
+    
+    // Safely access optional properties using optional chaining
+    if (template.subcategories && template.subcategories.length > 0) {
       form.setValue('subcategories', template.subcategories);
     }
+    
     if (template.skillLevel) {
       form.setValue('skillLevel', template.skillLevel);
     }
