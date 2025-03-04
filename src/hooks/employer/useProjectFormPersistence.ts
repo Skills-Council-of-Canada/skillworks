@@ -1,10 +1,12 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { ProjectFormData } from "@/types/project";
 
 const STORAGE_KEY = "project_form_data";
 
 export function useProjectFormPersistence() {
+  const initialLoadDone = useRef(false);
+  
   // Load saved data from localStorage on initial render
   const loadSavedData = useCallback((): { step: number; data: Partial<ProjectFormData> } => {
     try {
@@ -28,13 +30,24 @@ export function useProjectFormPersistence() {
     return { step: 1, data: {} };
   }, []);
   
-  const [savedState] = useState(loadSavedData);
-  const [currentStep, setCurrentStep] = useState(savedState.step);
-  const [formData, setFormData] = useState<Partial<ProjectFormData>>(savedState.data);
+  const [currentStep, setCurrentStep] = useState(() => loadSavedData().step);
+  const [formData, setFormData] = useState<Partial<ProjectFormData>>(() => loadSavedData().data);
+  const shouldSave = useRef(false);
 
   // Save to localStorage whenever form data or step changes
   useEffect(() => {
+    if (!initialLoadDone.current) {
+      initialLoadDone.current = true;
+      return;
+    }
+    
     try {
+      // Only save if explicitly requested (via setFormData or setCurrentStep)
+      if (!shouldSave.current) {
+        return;
+      }
+      shouldSave.current = false;
+      
       // Create a deep copy of the data to avoid modifying the original
       const dataToSave = JSON.parse(JSON.stringify(formData));
       
@@ -63,15 +76,26 @@ export function useProjectFormPersistence() {
     }
   }, [formData, currentStep]);
 
+  // Wrap the state setters to trigger saves when called
+  const wrappedSetFormData = useCallback((value: React.SetStateAction<Partial<ProjectFormData>>) => {
+    shouldSave.current = true;
+    setFormData(value);
+  }, []);
+
+  const wrappedSetCurrentStep = useCallback((step: number) => {
+    shouldSave.current = true;
+    setCurrentStep(step);
+  }, []);
+
   const clearSavedData = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
   }, []);
 
   return {
     currentStep,
-    setCurrentStep,
+    setCurrentStep: wrappedSetCurrentStep,
     formData,
-    setFormData,
+    setFormData: wrappedSetFormData,
     clearSavedData
   };
 }

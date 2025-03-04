@@ -1,5 +1,5 @@
 
-import { createContext, useContext, FC, ReactNode, useEffect } from "react";
+import { createContext, useContext, FC, ReactNode, useEffect, useRef } from "react";
 import { AuthContextType } from "@/types/auth";
 import { useAuthState } from "@/hooks/useAuthState";
 import { useAuthOperations } from "@/hooks/useAuthOperations";
@@ -18,9 +18,14 @@ export const useAuth = () => {
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { user, isLoading, setIsLoading } = useAuthState();
   const { login, logout, signup } = useAuthOperations(setIsLoading);
+  const mounted = useRef(true);
 
+  // Only log once when mounted or when user changes
   useEffect(() => {
-    console.log("AuthProvider mounted, user:", user);
+    if (mounted.current) {
+      console.log("AuthProvider mounted, user:", user);
+      mounted.current = false;
+    }
   }, [user]);
 
   const value: AuthContextType = {

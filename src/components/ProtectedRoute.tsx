@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/auth";
 import { Loader2 } from "lucide-react";
-import { memo, FC, useEffect } from "react";
+import { memo, FC, useEffect, useRef } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,15 +13,20 @@ interface ProtectedRouteProps {
 const ProtectedRouteBase: FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
   const location = useLocation();
+  const loggedRef = useRef(false);
 
+  // Only log once per render to avoid excessive logging
   useEffect(() => {
-    console.log("Protected route render:", {
-      path: location.pathname,
-      isLoading,
-      hasUser: !!user,
-      userRole: user?.role,
-      allowedRoles
-    });
+    if (!loggedRef.current) {
+      console.log("Protected route render:", {
+        path: location.pathname,
+        isLoading,
+        hasUser: !!user,
+        userRole: user?.role,
+        allowedRoles
+      });
+      loggedRef.current = true;
+    }
   }, [location.pathname, isLoading, user, allowedRoles]);
 
   // Show loading state while checking authentication
@@ -57,12 +62,6 @@ const ProtectedRouteBase: FC<ProtectedRouteProps> = ({ children, allowedRoles })
     }
   }
 
-  console.log("Access granted to protected route:", {
-    path: location.pathname,
-    userRole: user.role,
-    allowedRoles
-  });
-
   return <>{children}</>;
 };
 
@@ -70,4 +69,3 @@ const ProtectedRoute = memo(ProtectedRouteBase);
 ProtectedRoute.displayName = 'ProtectedRoute';
 
 export default ProtectedRoute;
-

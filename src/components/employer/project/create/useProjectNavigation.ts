@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
+import { useCallback } from "react";
 
 interface UseProjectNavigationProps {
   currentStep: number;
@@ -21,8 +22,9 @@ export const useProjectNavigation = ({
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleStepSubmit = (stepData: Partial<ProjectFormData>) => {
+  const handleStepSubmit = useCallback((stepData: Partial<ProjectFormData>) => {
     console.log("Step submission received:", stepData, "Current step:", currentStep);
+    
     setFormData(prev => {
       const updated = { ...prev, ...stepData };
       console.log("Updated form data:", updated);
@@ -31,26 +33,30 @@ export const useProjectNavigation = ({
     
     if (currentStep < totalSteps) {
       console.log("Moving to next step:", currentStep + 1);
-      setCurrentStep(currentStep + 1);
-      toast({
-        title: "Progress Saved",
-        description: "Your changes have been saved successfully.",
-      });
+      
+      // Use setTimeout to ensure state updates have processed before changing step
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1);
+        toast({
+          title: "Progress Saved",
+          description: "Your changes have been saved successfully.",
+        });
+      }, 0);
     }
-  };
+  }, [currentStep, setCurrentStep, setFormData, toast, totalSteps]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
       navigate("/employer");
     }
-  };
+  }, [currentStep, navigate, setCurrentStep]);
 
   // This function logs the current step for debugging
-  const logCurrentStep = () => {
+  const logCurrentStep = useCallback(() => {
     console.log(`Current step: ${currentStep}`, formData);
-  };
+  }, [currentStep, formData]);
 
   return {
     handleStepSubmit,

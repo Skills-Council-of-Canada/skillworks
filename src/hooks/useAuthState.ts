@@ -18,6 +18,7 @@ export const useAuthState = () => {
   const mounted = useRef(true);
   const processingAuth = useRef(false);
   const lastKnownRole = useRef<UserRole | null>(null);
+  const profileCheckedRef = useRef<{[key: string]: boolean}>({});
 
   const isPublicRoute = useCallback((path: string) => {
     const publicPaths = ['/login', '/employer-landing', '/educator-landing', '/participant-landing', '/', '/registration'];
@@ -27,14 +28,12 @@ export const useAuthState = () => {
   const enforceRoleAccess = useCallback((currentPath: string, userRole: UserRole) => {
     const pathRole = currentPath.split('/')[1] as UserRole;
     
-    // Store the last known valid role
     if (userRole) {
       lastKnownRole.current = userRole;
     }
     
     if (pathRole && ['admin', 'educator', 'employer', 'participant'].includes(pathRole)) {
       if (pathRole !== userRole) {
-        console.log(`Role mismatch - Path role: ${pathRole}, User role: ${userRole}`);
         const redirectPath = getRoleBasedRedirect(userRole);
         navigate(redirectPath, { replace: true });
         return false;
@@ -52,21 +51,30 @@ export const useAuthState = () => {
       // If no session, clear user state and redirect if needed
       if (!session?.user) {
         setUser(null);
-        lastKnownRole.current = null; // Clear the last known role
+        lastKnownRole.current = null;
         setIsLoading(false);
         authCheckComplete.current = true;
         
-        // Only redirect to login if we're on a protected route
         if (!isPublicRoute(location.pathname) && location.pathname !== '/login') {
           navigate('/login', { replace: true });
         }
         return;
       }
 
+      // Prevent redundant profile checks for the same user
+      const userId = session.user.id;
+      if (profileCheckedRef.current[userId]) {
+        processingAuth.current = false;
+        return;
+      }
+
       // Get user profile
       const profile = await getUserProfile(session);
       
-      if (!mounted.current) return;
+      if (!mounted.current) {
+        processingAuth.current = false;
+        return;
+      }
 
       if (!profile) {
         setUser(null);
@@ -77,8 +85,12 @@ export const useAuthState = () => {
         if (!isPublicRoute(location.pathname)) {
           navigate('/login', { replace: true });
         }
+        processingAuth.current = false;
         return;
       }
+
+      // Mark this user's profile as already checked
+      profileCheckedRef.current[userId] = true;
 
       // Set user profile
       setUser(profile);
@@ -130,6 +142,7 @@ export const useAuthState = () => {
             setUser(null);
             lastKnownRole.current = null;
             setIsLoading(false);
+            profileCheckedRef.current = {};
             navigate('/', { replace: true });
             return;
           }
