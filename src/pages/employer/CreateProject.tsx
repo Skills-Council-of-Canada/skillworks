@@ -46,6 +46,11 @@ const CreateProject = () => {
     }
   };
 
+  // This function logs the current step for debugging
+  const logCurrentStep = () => {
+    console.log(`Current step: ${currentStep}`, formData);
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:

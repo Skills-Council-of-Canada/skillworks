@@ -19,6 +19,7 @@ const StepNavigation = ({ currentStep, totalSteps, onBack }: StepNavigationProps
         onClick={onBack}
         className="flex items-center"
         size={isMobile ? "sm" : "default"}
+        type="button"
       >
         <ChevronLeft className={isMobile ? "mr-0.5 h-4 w-4" : "mr-2"} />
         <span className="whitespace-nowrap text-xs sm:text-sm">{currentStep === 1 ? "Cancel" : "Back"}</span>

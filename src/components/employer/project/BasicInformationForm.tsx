@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ProjectFormData } from "@/types/project";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   title: z.string()
@@ -59,6 +60,10 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     console.log("Use template clicked");
   };
 
+  useEffect(() => {
+    console.log("BasicInformationForm rendered, using form ID: step-1-form");
+  }, []);
+
   return (
     <div className="space-y-6">
       <Card className="p-4 sm:p-6 bg-[#F1F1F1]">
@@ -76,7 +81,10 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
       <Form {...form}>
         <form
           id="step-1-form"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => {
+            console.log("Form submitted", data);
+            onSubmit(data);
+          })}
           className="space-y-6"
         >
           <FormField
