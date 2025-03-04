@@ -41,7 +41,19 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    await handleFileUpload(data, onSubmit);
+    // Create an object that matches what useFileUpload expects
+    const filesData = {
+      images: data.images || [],
+      documents: data.documents || [],
+    };
+    
+    await handleFileUpload(filesData, (uploadedData) => {
+      // Pass the form data to the parent component's onSubmit
+      onSubmit({
+        ...uploadedData,
+        // Include any other form data if needed
+      });
+    });
   };
 
   return (

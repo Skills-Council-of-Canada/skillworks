@@ -4,15 +4,20 @@ import { useToast } from "@/hooks/use-toast";
 import { uploadFile } from "@/components/employer/project/media-uploads/uploadUtils";
 import type { ProjectFormData } from "@/types/project";
 
+type FileData = {
+  images: File[];
+  documents: File[];
+};
+
 export function useFileUpload(projectId?: string) {
   const { toast } = useToast();
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = async (data: {
-    images: File[];
-    documents: File[];
-  }, onSuccess: (data: Partial<ProjectFormData>) => void) => {
+  const handleFileUpload = async (
+    data: FileData, 
+    onSuccess: (data: Partial<ProjectFormData>) => void
+  ) => {
     if (!projectId) {
       toast({
         title: "Error",
@@ -64,7 +69,11 @@ export function useFileUpload(projectId?: string) {
         description: "All files uploaded successfully",
       });
 
-      onSuccess(data);
+      // Call onSuccess with the uploaded files data
+      onSuccess({
+        images: data.images,
+        documents: data.documents
+      });
     } catch (error) {
       console.error('Upload error:', error);
       toast({
