@@ -87,7 +87,7 @@ export function useProjectFormPersistence() {
     };
   }, [formData, currentStep, saveToStorage]);
 
-  // Explicit wrapped setters
+  // Explicit wrapped setters that log changes
   const wrappedSetFormData = useCallback((value: React.SetStateAction<Partial<ProjectFormData>>) => {
     console.log("Setting form data:", typeof value === 'function' ? 'function' : value);
     setFormData(value);

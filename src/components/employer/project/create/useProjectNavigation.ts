@@ -32,18 +32,14 @@ export const useProjectNavigation = ({
       return updated;
     });
     
-    // Move to next step immediately after form data is updated
+    // Move to next step - removed setTimeout which was causing issues
     if (currentStep < totalSteps) {
       console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
-      
-      // Force step change to happen after state updates
-      setTimeout(() => {
-        setCurrentStep(currentStep + 1);
-        toast({
-          title: "Progress Saved",
-          description: "Your changes have been saved successfully.",
-        });
-      }, 0);
+      setCurrentStep(currentStep + 1);
+      toast({
+        title: "Progress Saved",
+        description: "Your changes have been saved successfully.",
+      });
     } else {
       console.log("Already at last step, not advancing");
     }
