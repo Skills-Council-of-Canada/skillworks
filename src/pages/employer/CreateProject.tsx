@@ -44,7 +44,8 @@ const CreateProject = () => {
   // Log step changes for debugging
   useEffect(() => {
     console.log("Current step in CreateProject:", currentStep);
-  }, [currentStep]);
+    logCurrentStep();
+  }, [currentStep, logCurrentStep]);
 
   const handlePublishWithCleanup = () => {
     handlePublish(formData, user?.id!);

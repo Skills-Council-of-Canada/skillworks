@@ -25,27 +25,36 @@ export const useProjectNavigation = ({
   const handleStepSubmit = useCallback((stepData: Partial<ProjectFormData>) => {
     console.log("Step submission received:", stepData, "Current step:", currentStep);
     
+    // Update the form data with the new step data
     setFormData(prev => {
       const updated = { ...prev, ...stepData };
       console.log("Updated form data:", updated);
       return updated;
     });
     
-    // Move to next step immediately - no setTimeout to avoid potential issues
+    // Move to next step immediately after form data is updated
     if (currentStep < totalSteps) {
-      console.log("Moving to next step:", currentStep + 1);
-      setCurrentStep(currentStep + 1);
-      toast({
-        title: "Progress Saved",
-        description: "Your changes have been saved successfully.",
-      });
+      console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
+      
+      // Force step change to happen after state updates
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1);
+        toast({
+          title: "Progress Saved",
+          description: "Your changes have been saved successfully.",
+        });
+      }, 0);
+    } else {
+      console.log("Already at last step, not advancing");
     }
   }, [currentStep, setCurrentStep, setFormData, toast, totalSteps]);
 
   const handleBack = useCallback(() => {
     if (currentStep > 1) {
+      console.log(`Moving back from step ${currentStep} to step ${currentStep - 1}`);
       setCurrentStep(currentStep - 1);
     } else {
+      console.log("At first step, navigating to /employer");
       navigate("/employer");
     }
   }, [currentStep, navigate, setCurrentStep]);
