@@ -38,7 +38,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
     try {
       console.log(`Updating project status from ${status} to ${newStatus}`);
       
-      // DB status is the same as interface status in this case
+      // Use the status directly without mapping
       await updateProjectStatusInDb(projectId, newStatus);
 
       // Refresh the projects list

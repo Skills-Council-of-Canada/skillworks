@@ -96,17 +96,24 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
   try {
     console.log(`Updating project ${projectId} to status ${dbStatus}`);
     
-    // Ensuring we only use exactly these string values for status that match the database constraint
-    const validStatuses = ["draft", "active", "completed"];
-    
-    // Check if the status is valid
-    if (!validStatuses.includes(dbStatus)) {
-      const errorMsg = `Status '${dbStatus}' is not valid for projects. Valid statuses are: ${validStatuses.join(', ')}`;
-      console.error(errorMsg);
-      toast.error(errorMsg);
-      throw new Error(errorMsg);
+    // Get the current project status to verify we're actually changing it
+    const currentStatus = await fetchProjectStatus(projectId);
+    if (currentStatus === dbStatus) {
+      console.log(`Project status is already set to ${dbStatus}. No update needed.`);
+      return true;
     }
     
+    // Try to fetch a sample project to see what statuses are currently in use
+    const { data: sampleProject, error: sampleError } = await supabase
+      .from('projects')
+      .select('status')
+      .limit(1);
+    
+    if (!sampleError && sampleProject) {
+      console.log('Sample project status:', sampleProject);
+    }
+    
+    // Make the update with proper error handling
     const { error } = await supabase
       .from('projects')
       .update({ status: dbStatus })
@@ -117,7 +124,7 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
       
       // Handle specific error cases
       if (error.message.includes('check constraint')) {
-        toast.error("Unable to update to this status. The status might be restricted. Please use one of: draft, active, or completed");
+        toast.error("Unable to update status. Please contact support for assistance.");
       } else {
         toast.error("Failed to update project status. Please try again.");
       }
