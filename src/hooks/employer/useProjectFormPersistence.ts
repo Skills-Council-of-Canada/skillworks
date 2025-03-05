@@ -3,13 +3,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { ProjectFormData, TradeType, SkillLevel, LocationType } from '@/types/project';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { 
-  saveProjectFormData,
-  saveProjectFormStep,
-  loadProjectFormData,
-  loadProjectFormStep,
-  clearProjectFormData
-} from './utils/localStorageUtils';
+
+const STORAGE_KEY = 'project_form_data';
 
 export const useProjectFormPersistence = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -17,26 +12,37 @@ export const useProjectFormPersistence = () => {
 
   // Load saved data on initial mount
   useEffect(() => {
-    const savedData = loadProjectFormData();
-    const savedStep = loadProjectFormStep();
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedStep = localStorage.getItem('project_form_step');
     
     if (savedData) {
-      setFormData(savedData);
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(parsedData);
+        console.log('Loaded saved project data', parsedData);
+      } catch (e) {
+        console.error('Error parsing saved project data', e);
+      }
     }
     
     if (savedStep) {
-      setCurrentStep(savedStep);
+      setCurrentStep(parseInt(savedStep, 10));
     }
   }, []);
 
   // Save data on change
   useEffect(() => {
-    saveProjectFormData(formData);
-    saveProjectFormStep(currentStep);
+    if (Object.keys(formData).length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      console.log('Saved project form data', formData);
+    }
+    
+    localStorage.setItem('project_form_step', currentStep.toString());
   }, [formData, currentStep]);
 
   const clearSavedData = useCallback(() => {
-    clearProjectFormData();
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('project_form_step');
     setFormData({});
     setCurrentStep(1);
   }, []);
