@@ -157,9 +157,10 @@ export async function fetchProjectStatus(projectId: string) {
 /**
  * Fetches valid status values for projects
  */
-export async function fetchValidProjectStatuses() {
+export async function fetchValidProjectStatuses(): Promise<string[]> {
   try {
-    // Try to get valid project statuses via RPC function
+    // Try to get valid project statuses from a custom function
+    // This requires creating an RPC function in Supabase
     const { data, error } = await supabase.rpc('get_valid_project_statuses');
     
     if (error) {
@@ -182,7 +183,8 @@ export async function fetchValidProjectStatuses() {
       return ['draft', 'active', 'completed'];
     }
     
-    return data || ['draft', 'active', 'completed'];
+    // If the RPC function returns data, use it, otherwise fallback to known values
+    return data as string[] || ['draft', 'active', 'completed'];
   } catch (err) {
     console.error('Error in fetchValidProjectStatuses:', err);
     // Fallback to a hard-coded list of known statuses
