@@ -80,14 +80,13 @@ export function useProjects(status: "active" | "draft" | "completed") {
           return;
         }
         
-        // Get application counts for each project
+        // Fix: Get application counts with proper GROUP BY
         const { data: applicationCountsData, error: applicationCountsError } = await supabase
           .from('applications')
-          .select('project_id, count')
+          .select('project_id, count(*)', { count: 'exact' })
           .in('project_id', projectIds)
-          .eq('status', 'pending')
-          .or('status.eq.approved')
-          .throwOnError();
+          .or('status.eq.pending,status.eq.approved')
+          .groupBy('project_id');
         
         if (applicationCountsError) {
           console.error('Error fetching application counts:', applicationCountsError);
@@ -99,7 +98,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
         if (applicationCountsData) {
           applicationCountsData.forEach((row: any) => {
             if (row.project_id) {
-              applicationCountsMap[row.project_id] = row.count || 0;
+              applicationCountsMap[row.project_id] = parseInt(row.count) || 0;
             }
           });
         }
