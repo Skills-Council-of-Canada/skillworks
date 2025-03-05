@@ -64,7 +64,7 @@ export const ProjectTable = ({
             projects.map((project) => (
               <TableRow 
                 key={project.id}
-                className={status === "draft" ? "hover:bg-transparent" : ""}
+                className={status === "draft" ? "hover:bg-transparent" : "hover:bg-transparent"}
               >
                 <TableCell className="font-medium">{project.title}</TableCell>
                 <TableCell>{project.trade_type}</TableCell>

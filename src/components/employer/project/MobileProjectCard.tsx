@@ -24,7 +24,7 @@ export const MobileProjectCard = ({
   onApprove,
   getStatusColor,
 }: MobileProjectCardProps) => (
-  <Card className={`p-3 sm:p-4 mb-4 ${project.status === "draft" ? "hover:bg-transparent" : ""}`}>
+  <Card className={`p-3 sm:p-4 mb-4 hover:bg-transparent`}>
     <div className="space-y-2 sm:space-y-3">
       <div className="flex justify-between items-start">
         <h3 className="font-medium text-sm sm:text-base line-clamp-1">{project.title}</h3>
