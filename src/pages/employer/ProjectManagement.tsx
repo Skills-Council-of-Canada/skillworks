@@ -21,6 +21,14 @@ const ProjectManagement = () => {
     navigate("/employer/projects/create");
   };
 
+  // Handle tab change with proper type
+  const handleTabChange = (value: string) => {
+    // Only set if the value is one of our valid tabs
+    if (value === "active" || value === "drafts" || value === "completed") {
+      setActiveTab(value);
+    }
+  };
+
   return (
     <div className="container mx-auto p-2 sm:p-6 space-y-4 sm:space-y-6 max-w-full">
       <div className="flex justify-between items-center">
@@ -31,7 +39,7 @@ const ProjectManagement = () => {
         </Button>
       </div>
 
-      <Tabs value={activeTab} className="w-full" onValueChange={setActiveTab}>
+      <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
         <TabsList className="w-full flex justify-start mb-4 overflow-x-auto no-scrollbar">
           <TabsTrigger 
             value="active" 

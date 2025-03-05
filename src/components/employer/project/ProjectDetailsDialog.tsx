@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,7 +6,7 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Project } from "@/hooks/employer/useProjects";
+import { Project } from "@/hooks/employer/projectTypes";
 import { format } from "date-fns";
 import { X } from "lucide-react";
 

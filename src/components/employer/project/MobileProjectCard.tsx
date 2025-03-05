@@ -1,9 +1,8 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Edit2, Eye, CheckCircle } from "lucide-react";
-import { Project } from "@/hooks/employer/useProjects";
+import { Project } from "@/hooks/employer/projectTypes";
 
 interface MobileProjectCardProps {
   project: Project;

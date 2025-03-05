@@ -1,4 +1,3 @@
-
 import {
   Table,
   TableBody,
@@ -10,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Eye, Edit2, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Project } from "@/hooks/employer/useProjects";
+import { Project } from "@/hooks/employer/projectTypes";
 
 interface ProjectTableProps {
   projects: Project[];
