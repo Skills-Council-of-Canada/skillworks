@@ -151,30 +151,42 @@ export function useProjects(status: "active" | "draft" | "completed") {
 
   const updateProjectStatus = async (projectId: string, newStatus: "active" | "draft" | "completed") => {
     try {
-      // Map our interface status to database status
-      let dbStatus: string;
-      if (newStatus === 'active') {
-        dbStatus = 'pending'; // or 'approved' based on your business logic
-      } else if (newStatus === 'draft') {
-        dbStatus = 'draft';
-      } else if (newStatus === 'completed') {
-        dbStatus = 'completed';
-      } else {
-        throw new Error("Invalid status");
-      }
-
-      // Check if the status is a valid value in the database's status enum
-      const { error: checkError } = await supabase
+      // First, get the current status of the project to understand what we're changing from
+      const { data: currentProject, error: fetchError } = await supabase
         .from('projects')
         .select('status')
         .eq('id', projectId)
-        .limit(1);
-        
-      if (checkError) {
-        console.error('Error checking project status:', checkError);
+        .single();
+      
+      if (fetchError) {
+        console.error('Error fetching current project status:', fetchError);
         toast.error("Failed to update project status. Please try again.");
         return;
       }
+      
+      // Map our interface status to database status
+      // In the database, the project status is likely an enum with values like:
+      // 'draft', 'pending', 'approved', 'completed', etc.
+      let dbStatus: string;
+      
+      // If moving from draft to active, we need to use 'pending' or maybe 'approved'
+      // depending on your workflow
+      if (newStatus === 'active' && currentProject.status === 'draft') {
+        // When activating a draft project, set it to 'pending' first
+        dbStatus = 'pending';
+      } else if (newStatus === 'draft') {
+        dbStatus = 'draft';
+      } else if (newStatus === 'completed') {
+        dbStatus = 'completed'; 
+      } else if (newStatus === 'active' && currentProject.status === 'pending') {
+        // If it's already pending and we're trying to make it active, use 'approved'
+        dbStatus = 'approved';
+      } else {
+        // For other cases, use the newStatus (might need adjustments)
+        dbStatus = newStatus;
+      }
+
+      console.log(`Attempting to update project ${projectId} from ${currentProject.status} to ${dbStatus}`);
         
       const { error } = await supabase
         .from('projects')
@@ -185,7 +197,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
         console.error('Error updating project status:', error);
         // If there's an error with the status value, maybe there's a constraint
         if (error.message.includes('check constraint')) {
-          toast.error("Unable to update to this status. The status might be restricted.");
+          toast.error("Unable to update to this status. The status might be restricted. Please contact support for assistance.");
         } else {
           toast.error("Failed to update project status. Please try again.");
         }
