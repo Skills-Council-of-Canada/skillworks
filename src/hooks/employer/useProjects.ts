@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
-import { fetchEmployerProjects, updateProjectStatusInDb } from "./projectApi";
+import { 
+  fetchEmployerProjects, 
+  updateProjectStatusInDb, 
+  fetchValidProjectStatuses 
+} from "./projectApi";
 import { filterAndMapProjects } from "./projectStatusUtils";
 
 export type { Project } from "./projectTypes";
@@ -11,10 +15,22 @@ export function useProjects(status: "active" | "draft" | "completed") {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [validStatuses, setValidStatuses] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProjects();
+    loadValidStatuses();
   }, [status]);
+
+  const loadValidStatuses = async () => {
+    try {
+      const statuses = await fetchValidProjectStatuses();
+      setValidStatuses(statuses);
+      console.log('Valid project statuses:', statuses);
+    } catch (err) {
+      console.error('Error loading valid statuses:', err);
+    }
+  };
 
   const fetchProjects = async () => {
     setIsLoading(true);
@@ -38,8 +54,18 @@ export function useProjects(status: "active" | "draft" | "completed") {
     try {
       console.log(`Updating project status from ${status} to ${newStatus}`);
       
-      // Pass the status directly to the database update function
-      await updateProjectStatusInDb(projectId, newStatus);
+      // Check if the status is valid based on database constraints
+      if (validStatuses.length > 0 && !validStatuses.includes(newStatus)) {
+        toast.error(`Cannot update to status "${newStatus}". Valid statuses are: ${validStatuses.join(', ')}`);
+        return false;
+      }
+      
+      // Use "published" instead of "active" if that's what the database expects
+      const dbStatus = newStatus === "active" && validStatuses.includes("published") 
+        ? "published" 
+        : newStatus;
+      
+      await updateProjectStatusInDb(projectId, dbStatus);
 
       // Refresh the projects list
       await fetchProjects();
