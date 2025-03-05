@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
@@ -96,8 +95,8 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
   try {
     console.log(`Updating project ${projectId} to status ${dbStatus}`);
     
-    // Get valid project statuses first
-    const validStatuses = await fetchValidProjectStatuses();
+    // We know that only these statuses are valid based on the database constraint
+    const validStatuses = ["draft", "active", "completed"];
     
     // Check if the status is valid
     if (!validStatuses.includes(dbStatus)) {
@@ -155,39 +154,10 @@ export async function fetchProjectStatus(projectId: string) {
 }
 
 /**
- * Fetches valid status values for projects
+ * Fetches valid status values for projects - this uses hardcoded values
+ * since we know the database constraints
  */
 export async function fetchValidProjectStatuses(): Promise<string[]> {
-  try {
-    // Try to get valid project statuses from a custom function
-    // This requires creating an RPC function in Supabase
-    const { data, error } = await supabase.rpc('get_valid_project_statuses');
-    
-    if (error) {
-      console.error('Error fetching valid project statuses via RPC:', error);
-      
-      // Fallback: query the enum values directly with proper SQL
-      const { data: enumData, error: enumError } = await supabase
-        .from('projects')
-        .select('status')
-        .limit(1);
-        
-      if (enumError) {
-        console.error('Error fetching enum sample:', enumError);
-        // Final fallback: hardcoded values
-        return ['draft', 'active', 'completed'];
-      }
-      
-      // If we got a sample, it means these status values are valid
-      console.log('Sample project status:', enumData);
-      return ['draft', 'active', 'completed'];
-    }
-    
-    // If the RPC function returns data, use it, otherwise fallback to known values
-    return data as string[] || ['draft', 'active', 'completed'];
-  } catch (err) {
-    console.error('Error in fetchValidProjectStatuses:', err);
-    // Fallback to a hard-coded list of known statuses
-    return ['draft', 'active', 'completed'];
-  }
+  // Return the valid statuses directly since we know what they are
+  return ["draft", "active", "completed"];
 }

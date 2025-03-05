@@ -7,7 +7,7 @@ import { Project } from "./projectTypes";
 export function mapDatabaseStatusToInterfaceStatus(dbStatus: string): "active" | "draft" | "completed" {
   if (dbStatus === 'draft') {
     return 'draft';
-  } else if (dbStatus === 'active' || dbStatus === 'pending' || dbStatus === 'approved') {
+  } else if (dbStatus === 'active') {
     return 'active';
   } else if (dbStatus === 'completed') {
     return 'completed';
@@ -22,20 +22,10 @@ export function mapDatabaseStatusToInterfaceStatus(dbStatus: string): "active" |
  * Maps interface status to database status
  */
 export function mapInterfaceStatusToDatabaseStatus(
-  newStatus: "active" | "draft" | "completed", 
-  currentStatus: string
+  newStatus: "active" | "draft" | "completed"
 ): string {
-  // If moving from draft to active, use 'active' status directly
-  if (newStatus === 'active') {
-    return 'active';
-  } else if (newStatus === 'draft') {
-    return 'draft';
-  } else if (newStatus === 'completed') {
-    return 'completed'; 
-  } else {
-    // For other cases, use the newStatus directly
-    return newStatus;
-  }
+  // Direct mapping since both use the same values
+  return newStatus;
 }
 
 /**

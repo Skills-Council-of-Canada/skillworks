@@ -36,14 +36,11 @@ export function useProjects(status: "active" | "draft" | "completed") {
 
   const updateProjectStatus = async (projectId: string, newStatus: "active" | "draft" | "completed") => {
     try {
-      // First, get the current status of the project
-      const currentStatus = await fetchProjectStatus(projectId);
+      console.log(`Updating project status from ${status} to ${newStatus}`);
       
-      // Map our interface status to database status
-      const dbStatus = mapInterfaceStatusToDatabaseStatus(newStatus, currentStatus);
+      // Map our interface status to database status (they're the same in this case)
+      const dbStatus = mapInterfaceStatusToDatabaseStatus(newStatus);
       
-      console.log(`Updating project status from ${currentStatus} to ${dbStatus}`);
-
       // Update the project status in the database
       await updateProjectStatusInDb(projectId, dbStatus);
 
