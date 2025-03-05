@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -98,7 +99,7 @@ export const ProjectTable = ({
                         variant="ghost"
                         size="icon"
                         onClick={() => onApprove(project.id)}
-                        title="Approve Project"
+                        title="Activate Project"
                       >
                         <CheckCircle className="h-4 w-4 text-green-500" />
                       </Button>

@@ -48,8 +48,10 @@ export function useProjects(status: "active" | "draft" | "completed") {
       // Refresh the projects list
       await fetchProjects();
       toast.success(`Project status updated to ${newStatus}`);
+      return true;
     } catch (err: any) {
       console.error('Error updating project status:', err);
+      throw err;
     }
   };
 

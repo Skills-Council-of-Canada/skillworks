@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useProjects } from "@/hooks/employer/useProjects";
@@ -39,7 +40,13 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   };
 
   const handleApprove = async (projectId: string) => {
-    await updateProjectStatus(projectId, "active");
+    try {
+      await updateProjectStatus(projectId, "active");
+      toast.success("Project activated successfully!");
+    } catch (error) {
+      console.error("Error activating project:", error);
+      toast.error("Failed to activate project. Please try again.");
+    }
   };
 
   // Mobile card view

@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -63,7 +64,7 @@ export const MobileProjectCard = ({
             variant="ghost"
             size="sm"
             onClick={() => onApprove(project.id)}
-            title="Approve Project"
+            title="Activate Project"
             className="h-8 w-8 p-0"
           >
             <CheckCircle className="h-4 w-4 text-green-500" />
