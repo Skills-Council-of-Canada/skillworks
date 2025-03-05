@@ -80,37 +80,29 @@ export function useProjects(status: "active" | "draft" | "completed") {
       // If there are no projects, just return an empty array
       if (projectIds.length === 0) {
         setProjects([]);
+        setIsLoading(false);
         return;
       }
       
-      // Fix: Get application counts without using groupBy, which isn't available
-      const { data: applicationCountsData, error: applicationCountsError } = await supabase
+      // Fix: Use a different approach to get application counts
+      const { data: applicationsData, error: applicationsError } = await supabase
         .from('applications')
-        .select('project_id, count', { count: 'exact', head: false })
+        .select('project_id')
         .in('project_id', projectIds)
         .or('status.eq.pending,status.eq.approved');
       
-      if (applicationCountsError) {
-        console.error('Error fetching application counts:', applicationCountsError);
+      if (applicationsError) {
+        console.error('Error fetching applications:', applicationsError);
       }
       
-      // Create a map of project_id to application count
-      const applicationCountsMap: Record<string, number> = {};
+      // Manually count applications per project
+      const applicationCounts: { [key: string]: number } = {};
       
-      if (applicationCountsData) {
-        // Process the raw count data
-        const counts: { [key: string]: number } = {};
-        
-        // Count occurrences of each project_id manually
-        applicationCountsData.forEach((row: any) => {
-          if (row.project_id) {
-            counts[row.project_id] = (counts[row.project_id] || 0) + 1;
+      if (applicationsData) {
+        applicationsData.forEach((app: any) => {
+          if (app.project_id) {
+            applicationCounts[app.project_id] = (applicationCounts[app.project_id] || 0) + 1;
           }
-        });
-        
-        // Convert to the map format
-        Object.keys(counts).forEach(projectId => {
-          applicationCountsMap[projectId] = counts[projectId];
         });
       }
       
@@ -143,7 +135,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
           return {
             ...project,
             status: mappedStatus,
-            applications_count: applicationCountsMap[project.id] || 0
+            applications_count: applicationCounts[project.id] || 0
           } as Project;
         });
       
@@ -171,19 +163,40 @@ export function useProjects(status: "active" | "draft" | "completed") {
         throw new Error("Invalid status");
       }
 
+      // Check if the status is a valid value in the database's status enum
+      const { error: checkError } = await supabase
+        .from('projects')
+        .select('status')
+        .eq('id', projectId)
+        .limit(1);
+        
+      if (checkError) {
+        console.error('Error checking project status:', checkError);
+        toast.error("Failed to update project status. Please try again.");
+        return;
+      }
+        
       const { error } = await supabase
         .from('projects')
         .update({ status: dbStatus })
         .eq('id', projectId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating project status:', error);
+        // If there's an error with the status value, maybe there's a constraint
+        if (error.message.includes('check constraint')) {
+          toast.error("Unable to update to this status. The status might be restricted.");
+        } else {
+          toast.error("Failed to update project status. Please try again.");
+        }
+        throw error;
+      }
 
       // Refresh the projects list
       await fetchProjects();
       toast.success(`Project status updated to ${newStatus}`);
     } catch (err: any) {
       console.error('Error updating project status:', err);
-      toast.error("Failed to update project status. Please try again.");
     }
   };
 
