@@ -7,7 +7,7 @@ import { Project } from "./projectTypes";
 export function mapDatabaseStatusToInterfaceStatus(dbStatus: string): "active" | "draft" | "completed" {
   if (dbStatus === 'draft') {
     return 'draft';
-  } else if (dbStatus === 'active') {
+  } else if (dbStatus === 'active' || dbStatus === 'published') {
     return 'active';
   } else if (dbStatus === 'completed') {
     return 'completed';
