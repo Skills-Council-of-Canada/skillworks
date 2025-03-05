@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
-import { fetchEmployerProjects, updateProjectStatusInDb, fetchProjectStatus } from "./projectApi";
+import { fetchEmployerProjects, updateProjectStatusInDb } from "./projectApi";
 import { filterAndMapProjects, mapInterfaceStatusToDatabaseStatus } from "./projectStatusUtils";
 
 export type { Project } from "./projectTypes";
@@ -38,11 +38,8 @@ export function useProjects(status: "active" | "draft" | "completed") {
     try {
       console.log(`Updating project status from ${status} to ${newStatus}`);
       
-      // Map our interface status to database status (they're the same in this case)
-      const dbStatus = mapInterfaceStatusToDatabaseStatus(newStatus);
-      
-      // Update the project status in the database
-      await updateProjectStatusInDb(projectId, dbStatus);
+      // DB status is the same as interface status in this case
+      await updateProjectStatusInDb(projectId, newStatus);
 
       // Refresh the projects list
       await fetchProjects();
@@ -50,6 +47,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
       return true;
     } catch (err: any) {
       console.error('Error updating project status:', err);
+      toast.error("Failed to update project status. Please try again.");
       throw err;
     }
   };

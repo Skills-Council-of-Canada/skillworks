@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
@@ -95,7 +96,7 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
   try {
     console.log(`Updating project ${projectId} to status ${dbStatus}`);
     
-    // We know that only these statuses are valid based on the database constraint
+    // Ensuring we only use exactly these string values for status that match the database constraint
     const validStatuses = ["draft", "active", "completed"];
     
     // Check if the status is valid
