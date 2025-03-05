@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ProjectTable } from "./ProjectTable";
 import { MobileProjectCard } from "./MobileProjectCard";
 import { getStatusColor } from "./projectUtils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProjectListProps {
   status: "active" | "draft" | "completed";
@@ -17,6 +18,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   const { projects, isLoading, updateProjectStatus } = useProjects(status);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleView = (project: any) => {
     setSelectedProject(project);
@@ -24,18 +26,15 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   };
 
   const handleEdit = (projectId: string) => {
-    // Navigate to the edit project page
     navigate(`/employer/projects/edit/${projectId}`);
   };
 
   const handleClose = (projectId: string) => {
-    // Handle close action
     toast.info("This feature is coming soon!");
     console.log("Close project:", projectId);
   };
 
   const handleDelete = (projectId: string) => {
-    // Handle delete action
     toast.info("This feature is coming soon!");
     console.log("Delete project:", projectId);
   };
@@ -45,7 +44,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   };
 
   // Mobile card view
-  if (typeof window !== 'undefined' && window.innerWidth < 640) {
+  if (isMobile) {
     return (
       <div className="space-y-4">
         {isLoading ? (
