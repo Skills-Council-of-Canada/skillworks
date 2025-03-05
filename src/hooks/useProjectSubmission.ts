@@ -1,121 +1,114 @@
 
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import type { ProjectFormData } from "@/types/project";
-import type { Database } from "@/integrations/supabase/types";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { ProjectFormData } from '@/types/project';
 
 export const useProjectSubmission = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const createProjectData = (formData: Partial<ProjectFormData>, status: 'published' | 'draft', employerId: string): Database['public']['Tables']['projects']['Insert'] => {
+  const transformFormToDbModel = (formData: Partial<ProjectFormData>, employerId: string, status: string) => {
     return {
       employer_id: employerId,
-      title: formData.title!,
-      description: formData.description!,
-      trade_type: formData.tradeType!,
-      skill_level: formData.skillLevel!,
-      start_date: formData.startDate!.toISOString().split('T')[0],
-      end_date: formData.endDate!.toISOString().split('T')[0],
-      location_type: formData.locationType!,
-      site_address: formData.address,
-      positions: formData.positions!,
-      flexibility: formData.flexibility,
-      safety_requirements: formData.safetyRequirements,
-      status: status === 'published' ? 'pending' : 'draft',
-      visibility: status === 'published' ? 'public' : 'draft',
-      max_participants: formData.positions,
-      review_status: status === 'published' ? 'pending_review' : null,
-      template_id: formData.templateId // Add support for template_id
+      title: formData.title || '',
+      description: formData.description || '',
+      trade_type: formData.tradeType || '',
+      skill_level: formData.skillLevel || '',
+      start_date: formData.startDate || null,
+      end_date: formData.endDate || null,
+      location_type: formData.locationType || '',
+      address: formData.address || '',
+      positions: formData.positions || 1,
+      learner_type: formData.learnerType || [],
+      education_level: formData.educationLevel || [],
+      required_skills: formData.requiredSkills || [],
+      preferred_skills: formData.preferredSkills || [],
+      media_files: formData.mediaFiles || [],
+      additional_info: formData.additionalInfo || '',
+      expectations: formData.expectations || '',
+      status: status,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
   };
 
-  const uploadFiles = async (files: File[], type: 'image' | 'document', projectId: string) => {
-    const uploadPromises = files.map(file => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', type);
-      formData.append('projectId', projectId);
-
-      return supabase.functions.invoke('upload-project-files', {
-        body: formData,
-      });
-    });
-
-    return Promise.all(uploadPromises);
-  };
-
-  const handlePublish = async (formData: Partial<ProjectFormData>, userId: string) => {
+  const handlePublish = async (formData: Partial<ProjectFormData>, employerId: string, projectId?: string) => {
+    setIsSubmitting(true);
     try {
-      const { data: employerData, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('user_id', userId)
-        .single();
-
-      if (employerError) throw employerError;
-
-      const projectData = createProjectData(formData, 'published', employerData.id);
-
-      const { data: project, error: projectError } = await supabase
-        .from('projects')
-        .insert([projectData])
-        .select()
-        .single();
-
-      if (projectError) throw projectError;
-
-      // Handle media uploads if any
-      if (formData.images?.length || formData.documents?.length) {
-        const uploadPromises = [];
-
-        if (formData.images?.length) {
-          uploadPromises.push(uploadFiles(formData.images, 'image', project.id));
-        }
-
-        if (formData.documents?.length) {
-          uploadPromises.push(uploadFiles(formData.documents, 'document', project.id));
-        }
-
-        await Promise.all(uploadPromises);
+      const projectData = transformFormToDbModel(formData, employerId, 'active');
+      
+      let result;
+      
+      if (projectId) {
+        // Update existing project
+        result = await supabase
+          .from('projects')
+          .update(projectData)
+          .eq('id', projectId);
+          
+        if (result.error) throw result.error;
+        toast.success('Project updated successfully!');
+      } else {
+        // Create new project
+        result = await supabase
+          .from('projects')
+          .insert(projectData)
+          .select();
+          
+        if (result.error) throw result.error;
+        toast.success('Project published successfully!');
       }
-
-      toast.success("Project submitted for review!");
-      navigate("/employer");
+      
+      navigate('/employer/projects');
     } catch (error) {
-      console.error('Error publishing project:', error);
-      toast.error("Failed to publish project. Please try again.");
+      console.error('Error submitting project:', error);
+      toast.error('Failed to submit project. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleSaveDraft = async (formData: Partial<ProjectFormData>, userId: string) => {
+  const handleSaveDraft = async (formData: Partial<ProjectFormData>, employerId: string, projectId?: string) => {
+    setIsSubmitting(true);
     try {
-      const { data: employerData, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('user_id', userId)
-        .single();
-
-      if (employerError) throw employerError;
-
-      const projectData = createProjectData(formData, 'draft', employerData.id);
-
-      const { error: projectError } = await supabase
-        .from('projects')
-        .insert([projectData]);
-
-      if (projectError) throw projectError;
-
-      toast.success("Project saved as draft!");
-      navigate("/employer");
+      const projectData = transformFormToDbModel(formData, employerId, 'draft');
+      
+      let result;
+      
+      if (projectId) {
+        // Update existing draft
+        result = await supabase
+          .from('projects')
+          .update(projectData)
+          .eq('id', projectId);
+          
+        if (result.error) throw result.error;
+        toast.success('Draft updated successfully!');
+      } else {
+        // Create new draft
+        result = await supabase
+          .from('projects')
+          .insert(projectData)
+          .select();
+          
+        if (result.error) throw result.error;
+        toast.success('Draft saved successfully!');
+      }
+      
+      navigate('/employer/projects');
     } catch (error) {
       console.error('Error saving draft:', error);
-      toast.error("Failed to save draft. Please try again.");
+      toast.error('Failed to save draft. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return {
     handlePublish,
-    handleSaveDraft
+    handleSaveDraft,
+    isSubmitting
   };
 };

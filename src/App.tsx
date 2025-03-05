@@ -153,6 +153,7 @@ const App = () => (
                     <Route path="resources" element={<ResourceCenter />} />
                     <Route path="settings" element={<ProfileSettings />} />
                     <Route path="create-project" element={<CreateProject />} />
+                    <Route path="projects/edit/:projectId" element={<CreateProject />} />
                     <Route path="projects/:projectId" element={<ProjectDetails />} />
                     <Route path="notifications" element={<NotificationsPage />} />
                   </Route>

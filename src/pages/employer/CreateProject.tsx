@@ -1,5 +1,5 @@
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +19,8 @@ const CreateProject = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { projectId } = useParams(); // Get projectId from URL params
+  const isEditMode = Boolean(projectId); // Check if we're in edit mode
   const { handlePublish, handleSaveDraft } = useProjectSubmission();
   
   const {
@@ -26,7 +28,8 @@ const CreateProject = () => {
     setCurrentStep,
     formData,
     setFormData,
-    clearSavedData
+    clearSavedData,
+    loadProjectData
   } = useProjectFormPersistence();
 
   const {
@@ -42,6 +45,13 @@ const CreateProject = () => {
     totalSteps: TOTAL_STEPS
   });
 
+  // Load project data if in edit mode
+  useEffect(() => {
+    if (isEditMode && projectId) {
+      loadProjectData(projectId);
+    }
+  }, [isEditMode, projectId, loadProjectData]);
+
   // Log step changes for debugging
   useEffect(() => {
     console.log("Current step in CreateProject:", currentStep);
@@ -49,12 +59,12 @@ const CreateProject = () => {
   }, [currentStep, logCurrentStep]);
 
   const handlePublishWithCleanup = () => {
-    handlePublish(formData, user?.id!);
+    handlePublish(formData, user?.id!, projectId);
     clearSavedData();
   };
 
   const handleSaveDraftWithCleanup = () => {
-    handleSaveDraft(formData, user?.id!);
+    handleSaveDraft(formData, user?.id!, projectId);
     clearSavedData();
   };
 
@@ -64,10 +74,12 @@ const CreateProject = () => {
         {isMobile && (
           <div className="space-y-2 max-w-full">
             <h1 className="text-xl font-bold tracking-tight">
-              Create New Project
+              {isEditMode ? "Edit Project" : "Create New Project"}
             </h1>
             <p className="text-sm text-muted-foreground break-words">
-              Fill out the details below to create your new project.
+              {isEditMode 
+                ? "Update your project details below." 
+                : "Fill out the details below to create your new project."}
             </p>
           </div>
         )}
@@ -81,7 +93,7 @@ const CreateProject = () => {
           <div 
             className={`space-y-6 ${isMobile ? 'text-sm' : ''} max-w-full overflow-x-hidden`} 
             role="form" 
-            aria-label={`Project creation step ${currentStep} of ${TOTAL_STEPS}`}
+            aria-label={`Project ${isEditMode ? "editing" : "creation"} step ${currentStep} of ${TOTAL_STEPS}`}
           >
             <StepRenderer
               currentStep={currentStep}
@@ -90,6 +102,7 @@ const CreateProject = () => {
               onPublish={handlePublishWithCleanup}
               onSaveDraft={handleSaveDraftWithCleanup}
               onEdit={setCurrentStep}
+              isEditMode={isEditMode}
             />
           </div>
         </Card>

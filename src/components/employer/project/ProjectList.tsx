@@ -24,6 +24,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   };
 
   const handleEdit = (projectId: string) => {
+    // Navigate to the edit project page
     navigate(`/employer/projects/edit/${projectId}`);
   };
 

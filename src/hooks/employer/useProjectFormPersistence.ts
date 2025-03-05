@@ -1,113 +1,102 @@
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import type { ProjectFormData } from "@/types/project";
+import { useState, useEffect, useCallback } from 'react';
+import { ProjectFormData } from '@/types/project';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
-const STORAGE_KEY = "project_form_data";
+const STORAGE_KEY = 'project_form_data';
 
-export function useProjectFormPersistence() {
-  const initialLoadDone = useRef(false);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Function to load saved data - extracted for cleaner code
-  const getSavedData = useCallback(() => {
-    try {
-      const savedData = localStorage.getItem(STORAGE_KEY);
-      if (savedData) {
-        console.log("Loading saved form data from localStorage");
-        const parsed = JSON.parse(savedData);
-        
-        // Convert date strings back to Date objects
-        if (parsed.data.startDate) {
-          parsed.data.startDate = new Date(parsed.data.startDate);
-        }
-        if (parsed.data.endDate) {
-          parsed.data.endDate = new Date(parsed.data.endDate);
-        }
-        
-        return parsed;
+export const useProjectFormPersistence = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<ProjectFormData>>({});
+
+  // Load saved data on initial mount
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedStep = localStorage.getItem('project_form_step');
+    
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(parsedData);
+        console.log('Loaded saved project data', parsedData);
+      } catch (e) {
+        console.error('Error parsing saved project data', e);
       }
-    } catch (error) {
-      console.error("Error loading saved form data:", error);
-    }
-    return { step: 1, data: {} };
-  }, []);
-  
-  // Use state initializers to avoid unnecessary renders
-  const [currentStep, setCurrentStep] = useState(() => getSavedData().step);
-  const [formData, setFormData] = useState<Partial<ProjectFormData>>(() => getSavedData().data);
-
-  // Save to localStorage with minimal delay
-  const saveToStorage = useCallback(() => {
-    // Clear any existing timeout
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
     }
     
-    // Set a new timeout to save data
-    saveTimeoutRef.current = setTimeout(() => {
-      try {
-        console.log("Saving form data to localStorage", currentStep);
-        // Create a deep copy of the data to avoid modifying the original
-        const dataToSave = JSON.stringify(formData, (key, value) => {
-          // Handle Date objects
-          if (key === 'startDate' || key === 'endDate') {
-            return value instanceof Date ? value.toISOString() : value;
-          }
-          // Skip file objects
-          if (key === 'images' || key === 'documents') {
-            return undefined;
-          }
-          return value;
-        });
-        
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          step: currentStep,
-          data: JSON.parse(dataToSave)
-        }));
-      } catch (error) {
-        console.error("Error saving form data:", error);
-      }
-    }, 50); // Very quick timeout for immediate feedback
+    if (savedStep) {
+      setCurrentStep(parseInt(savedStep, 10));
+    }
+  }, []);
+
+  // Save data on change
+  useEffect(() => {
+    if (Object.keys(formData).length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      console.log('Saved project form data', formData);
+    }
+    
+    localStorage.setItem('project_form_step', currentStep.toString());
   }, [formData, currentStep]);
 
-  // Save data when form data or step changes
-  useEffect(() => {
-    if (!initialLoadDone.current) {
-      initialLoadDone.current = true;
-      return;
-    }
-    
-    saveToStorage();
-    
-    // Clean up timeout on unmount
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, [formData, currentStep, saveToStorage]);
-
-  // Direct setters with console logging to track state changes
-  const wrappedSetFormData = useCallback((value: React.SetStateAction<Partial<ProjectFormData>>) => {
-    console.log("Setting form data:", typeof value === 'function' ? 'function' : value);
-    setFormData(value);
-  }, []);
-
-  const wrappedSetCurrentStep = useCallback((step: number) => {
-    console.log("Setting current step to:", step);
-    setCurrentStep(step);
-  }, []);
-
   const clearSavedData = useCallback(() => {
-    console.log("Clearing saved data from localStorage");
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('project_form_step');
+    setFormData({});
+    setCurrentStep(1);
+  }, []);
+
+  // Function to load project data for editing
+  const loadProjectData = useCallback(async (projectId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId)
+        .single();
+        
+      if (error) {
+        throw error;
+      }
+      
+      if (data) {
+        // Transform database model to form data model
+        const projectFormData: Partial<ProjectFormData> = {
+          title: data.title,
+          description: data.description,
+          tradeType: data.trade_type,
+          skillLevel: data.skill_level,
+          startDate: data.start_date,
+          endDate: data.end_date,
+          locationType: data.location_type,
+          address: data.address,
+          positions: data.positions,
+          learnerType: data.learner_type,
+          educationLevel: data.education_level,
+          requiredSkills: data.required_skills,
+          preferredSkills: data.preferred_skills,
+          mediaFiles: data.media_files || [],
+          additionalInfo: data.additional_info,
+          expectations: data.expectations,
+          status: data.status
+        };
+        
+        setFormData(projectFormData);
+        console.log('Loaded project data for editing', projectFormData);
+      }
+    } catch (error) {
+      console.error('Error loading project data:', error);
+      toast.error('Failed to load project data. Please try again.');
+    }
   }, []);
 
   return {
     currentStep,
-    setCurrentStep: wrappedSetCurrentStep,
+    setCurrentStep,
     formData,
-    setFormData: wrappedSetFormData,
-    clearSavedData
+    setFormData,
+    clearSavedData,
+    loadProjectData
   };
-}
+};
