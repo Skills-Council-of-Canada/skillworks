@@ -1,7 +1,19 @@
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { 
+  fetchEmployerId, 
+  fetchProjectsByEmployerId, 
+  fetchApplicationCounts,
+  fetchProjectStatus,
+  updateProjectStatusInDb
+} from "./api/projectApi";
+import { 
+  ProjectStatusUI, 
+  mapDbStatusToUiStatus, 
+  mapUiStatusToDbStatus,
+  filterProjectsByStatus
+} from "./utils/projectStatusUtils";
 
 export interface Project {
   id: string;
@@ -18,7 +30,7 @@ export interface Project {
   applications_count?: number;
 }
 
-export function useProjects(status: "active" | "draft" | "completed") {
+export function useProjects(status: ProjectStatusUI) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,114 +42,38 @@ export function useProjects(status: "active" | "draft" | "completed") {
   const fetchProjects = async () => {
     setIsLoading(true);
     try {
-      // Get the current user's ID
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      // Get the current employer ID
+      const employerId = await fetchEmployerId();
       
-      if (userError) {
-        throw userError;
+      if (!employerId) {
+        throw new Error("Could not determine employer ID");
       }
       
-      if (!userData.user) {
-        throw new Error("No authenticated user found");
-      }
-      
-      // Get the employer ID for the current user
-      const { data: employerData, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('user_id', userData.user.id)
-        .single();
-      
-      if (employerError) {
-        throw employerError;
-      }
-      
-      // Fetch projects based on employer ID and status
-      const { data: projectsData, error: projectsError } = await supabase
-        .from('projects')
-        .select(`
-          id,
-          title,
-          status,
-          trade_type,
-          description,
-          start_date,
-          end_date,
-          location_type,
-          site_address,
-          positions,
-          skill_level
-        `)
-        .eq('employer_id', employerData.id);
+      // Fetch projects for this employer
+      const { data: projectsData, error: projectsError } = 
+        await fetchProjectsByEmployerId(employerId);
       
       if (projectsError) {
-        throw projectsError;
+        throw new Error(projectsError);
+      }
+      
+      if (!projectsData) {
+        throw new Error("No projects data returned");
       }
 
       // Get the application counts for each project
       const projectIds = projectsData.map(project => project.id);
+      const applicationCounts = await fetchApplicationCounts(projectIds);
       
-      // If there are no projects, just return an empty array
-      if (projectIds.length === 0) {
-        setProjects([]);
-        setIsLoading(false);
-        return;
-      }
+      // Map database status to UI status and add application counts
+      const projectsWithStatus = projectsData.map(project => ({
+        ...project,
+        status: mapDbStatusToUiStatus(project.status),
+        applications_count: applicationCounts[project.id] || 0
+      }));
       
-      // Fix: Use a different approach to get application counts
-      const { data: applicationsData, error: applicationsError } = await supabase
-        .from('applications')
-        .select('project_id')
-        .in('project_id', projectIds)
-        .or('status.eq.pending,status.eq.approved');
-      
-      if (applicationsError) {
-        console.error('Error fetching applications:', applicationsError);
-      }
-      
-      // Manually count applications per project
-      const applicationCounts: { [key: string]: number } = {};
-      
-      if (applicationsData) {
-        applicationsData.forEach((app: any) => {
-          if (app.project_id) {
-            applicationCounts[app.project_id] = (applicationCounts[app.project_id] || 0) + 1;
-          }
-        });
-      }
-      
-      // Filter projects based on status and map database status to our expected status type
-      const filteredProjects = projectsData
-        .filter(project => {
-          if (status === 'draft') {
-            return project.status === 'draft';
-          } else if (status === 'active') {
-            return project.status === 'pending' || project.status === 'approved';
-          } else if (status === 'completed') {
-            return project.status === 'completed';
-          }
-          return false;
-        })
-        .map(project => {
-          // Map database status to our Project interface status
-          let mappedStatus: "active" | "draft" | "completed";
-          if (project.status === 'draft') {
-            mappedStatus = 'draft';
-          } else if (project.status === 'pending' || project.status === 'approved') {
-            mappedStatus = 'active';
-          } else if (project.status === 'completed') {
-            mappedStatus = 'completed';
-          } else {
-            // Fallback for any other statuses
-            mappedStatus = 'draft';
-          }
-          
-          return {
-            ...project,
-            status: mappedStatus,
-            applications_count: applicationCounts[project.id] || 0
-          } as Project;
-        });
+      // Filter projects based on requested status
+      const filteredProjects = filterProjectsByStatus(projectsWithStatus, status);
       
       setProjects(filteredProjects);
     } catch (err: any) {
@@ -149,59 +85,26 @@ export function useProjects(status: "active" | "draft" | "completed") {
     }
   };
 
-  const updateProjectStatus = async (projectId: string, newStatus: "active" | "draft" | "completed") => {
+  const updateProjectStatus = async (projectId: string, newStatus: ProjectStatusUI) => {
     try {
-      // First, get the current status of the project to understand what we're changing from
-      const { data: currentProject, error: fetchError } = await supabase
-        .from('projects')
-        .select('status')
-        .eq('id', projectId)
-        .single();
+      // Get the current status of the project
+      const { data: currentProject, error: fetchError } = await fetchProjectStatus(projectId);
       
-      if (fetchError) {
-        console.error('Error fetching current project status:', fetchError);
-        toast.error("Failed to update project status. Please try again.");
+      if (fetchError || !currentProject) {
+        toast.error("Failed to fetch current project status. Please try again.");
         return;
       }
       
-      // Map our interface status to database status
-      // In the database, the project status is likely an enum with values like:
-      // 'draft', 'pending', 'approved', 'completed', etc.
-      let dbStatus: string;
+      // Map to the appropriate database status
+      const dbStatus = mapUiStatusToDbStatus(newStatus, currentProject.status);
       
-      // If moving from draft to active, we need to use 'pending' or maybe 'approved'
-      // depending on your workflow
-      if (newStatus === 'active' && currentProject.status === 'draft') {
-        // When activating a draft project, set it to 'pending' first
-        dbStatus = 'pending';
-      } else if (newStatus === 'draft') {
-        dbStatus = 'draft';
-      } else if (newStatus === 'completed') {
-        dbStatus = 'completed'; 
-      } else if (newStatus === 'active' && currentProject.status === 'pending') {
-        // If it's already pending and we're trying to make it active, use 'approved'
-        dbStatus = 'approved';
-      } else {
-        // For other cases, use the newStatus (might need adjustments)
-        dbStatus = newStatus;
-      }
-
       console.log(`Attempting to update project ${projectId} from ${currentProject.status} to ${dbStatus}`);
-        
-      const { error } = await supabase
-        .from('projects')
-        .update({ status: dbStatus })
-        .eq('id', projectId);
-
+      
+      // Update the status in the database
+      const { error } = await updateProjectStatusInDb(projectId, dbStatus);
+      
       if (error) {
-        console.error('Error updating project status:', error);
-        // If there's an error with the status value, maybe there's a constraint
-        if (error.message.includes('check constraint')) {
-          toast.error("Unable to update to this status. The status might be restricted. Please contact support for assistance.");
-        } else {
-          toast.error("Failed to update project status. Please try again.");
-        }
-        throw error;
+        return; // Error handling is done in the API function
       }
 
       // Refresh the projects list
