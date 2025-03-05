@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
@@ -92,42 +91,19 @@ export async function fetchEmployerProjects() {
 /**
  * Updates a project's status in the database
  */
-export async function updateProjectStatusInDb(projectId: string, dbStatus: string) {
+export async function updateProjectStatusInDb(projectId: string, newStatus: string) {
   try {
-    console.log(`Updating project ${projectId} to status ${dbStatus}`);
+    console.log(`Updating project ${projectId} to status ${newStatus}`);
     
-    // Get the current project status to verify we're actually changing it
-    const currentStatus = await fetchProjectStatus(projectId);
-    if (currentStatus === dbStatus) {
-      console.log(`Project status is already set to ${dbStatus}. No update needed.`);
-      return true;
-    }
-    
-    // Try to fetch a sample project to see what statuses are currently in use
-    const { data: sampleProject, error: sampleError } = await supabase
-      .from('projects')
-      .select('status')
-      .limit(1);
-    
-    if (!sampleError && sampleProject) {
-      console.log('Sample project status:', sampleProject);
-    }
-    
-    // Make the update with proper error handling
+    // Make the update directly, trust the database to enforce constraints
     const { error } = await supabase
       .from('projects')
-      .update({ status: dbStatus })
+      .update({ status: newStatus })
       .eq('id', projectId);
 
     if (error) {
       console.error('Error updating project status:', error);
-      
-      // Handle specific error cases
-      if (error.message.includes('check constraint')) {
-        toast.error("Unable to update status. Please contact support for assistance.");
-      } else {
-        toast.error("Failed to update project status. Please try again.");
-      }
+      toast.error("Failed to update project status. Please try again.");
       throw error;
     }
     

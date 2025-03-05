@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
 import { fetchEmployerProjects, updateProjectStatusInDb } from "./projectApi";
-import { filterAndMapProjects, mapInterfaceStatusToDatabaseStatus } from "./projectStatusUtils";
+import { filterAndMapProjects } from "./projectStatusUtils";
 
 export type { Project } from "./projectTypes";
 
@@ -38,7 +38,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
     try {
       console.log(`Updating project status from ${status} to ${newStatus}`);
       
-      // Use the status directly without mapping
+      // Pass the status directly to the database update function
       await updateProjectStatusInDb(projectId, newStatus);
 
       // Refresh the projects list
