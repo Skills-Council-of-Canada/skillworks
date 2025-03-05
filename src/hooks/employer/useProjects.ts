@@ -50,7 +50,7 @@ export function useProjects(status: "active" | "draft" | "completed") {
         }
         
         // Fetch projects based on employer ID and status
-        let query = supabase
+        const query = supabase
           .from('projects')
           .select(`
             id,
@@ -64,17 +64,17 @@ export function useProjects(status: "active" | "draft" | "completed") {
             site_address,
             positions,
             skill_level,
-            (SELECT count(*) FROM applications WHERE project_id = projects.id) as applications_count
+            applications_count
           `)
           .eq('employer_id', employerData.id);
         
         // Filter by status
         if (status === 'draft') {
-          query = query.eq('status', 'draft');
+          query.eq('status', 'draft');
         } else if (status === 'active') {
-          query = query.eq('status', 'pending').or('status.eq.approved');
+          query.eq('status', 'pending').or('status.eq.approved');
         } else if (status === 'completed') {
-          query = query.eq('status', 'completed');
+          query.eq('status', 'completed');
         }
         
         const { data, error: projectsError } = await query;
@@ -83,7 +83,9 @@ export function useProjects(status: "active" | "draft" | "completed") {
           throw projectsError;
         }
         
-        setProjects(data || []);
+        // Type assertion to ensure the data conforms to Project[] type
+        const typedData = data as Project[];
+        setProjects(typedData || []);
       } catch (err: any) {
         console.error('Error fetching projects:', err);
         setError(err.message);
