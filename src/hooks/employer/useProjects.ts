@@ -80,13 +80,12 @@ export function useProjects(status: "active" | "draft" | "completed") {
           return;
         }
         
-        // Fix: Get application counts with proper GROUP BY
+        // Fix: Get application counts without using groupBy, which isn't available
         const { data: applicationCountsData, error: applicationCountsError } = await supabase
           .from('applications')
-          .select('project_id, count(*)', { count: 'exact' })
+          .select('project_id, count', { count: 'exact', head: false })
           .in('project_id', projectIds)
-          .or('status.eq.pending,status.eq.approved')
-          .groupBy('project_id');
+          .or('status.eq.pending,status.eq.approved');
         
         if (applicationCountsError) {
           console.error('Error fetching application counts:', applicationCountsError);
@@ -96,10 +95,19 @@ export function useProjects(status: "active" | "draft" | "completed") {
         const applicationCountsMap: Record<string, number> = {};
         
         if (applicationCountsData) {
+          // Process the raw count data
+          const counts: { [key: string]: number } = {};
+          
+          // Count occurrences of each project_id manually
           applicationCountsData.forEach((row: any) => {
             if (row.project_id) {
-              applicationCountsMap[row.project_id] = parseInt(row.count) || 0;
+              counts[row.project_id] = (counts[row.project_id] || 0) + 1;
             }
+          });
+          
+          // Convert to the map format
+          Object.keys(counts).forEach(projectId => {
+            applicationCountsMap[projectId] = counts[projectId];
           });
         }
         
