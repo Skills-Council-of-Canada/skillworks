@@ -104,25 +104,40 @@ export function useProjects(status: "active" | "draft" | "completed") {
           });
         }
         
-        // Filter projects based on status
-        const filteredProjects = projectsData.filter(project => {
-          if (status === 'draft') {
-            return project.status === 'draft';
-          } else if (status === 'active') {
-            return project.status === 'pending' || project.status === 'approved';
-          } else if (status === 'completed') {
-            return project.status === 'completed';
-          }
-          return false;
-        });
+        // Filter projects based on status and map database status to our expected status type
+        const filteredProjects = projectsData
+          .filter(project => {
+            if (status === 'draft') {
+              return project.status === 'draft';
+            } else if (status === 'active') {
+              return project.status === 'pending' || project.status === 'approved';
+            } else if (status === 'completed') {
+              return project.status === 'completed';
+            }
+            return false;
+          })
+          .map(project => {
+            // Map database status to our Project interface status
+            let mappedStatus: "active" | "draft" | "completed";
+            if (project.status === 'draft') {
+              mappedStatus = 'draft';
+            } else if (project.status === 'pending' || project.status === 'approved') {
+              mappedStatus = 'active';
+            } else if (project.status === 'completed') {
+              mappedStatus = 'completed';
+            } else {
+              // Fallback for any other statuses
+              mappedStatus = 'draft';
+            }
+            
+            return {
+              ...project,
+              status: mappedStatus,
+              applications_count: applicationCountsMap[project.id] || 0
+            } as Project;
+          });
         
-        // Add application count to each project
-        const projectsWithApplicationCount = filteredProjects.map(project => ({
-          ...project,
-          applications_count: applicationCountsMap[project.id] || 0
-        }));
-        
-        setProjects(projectsWithApplicationCount);
+        setProjects(filteredProjects);
       } catch (err: any) {
         console.error('Error fetching projects:', err);
         setError(err.message);
