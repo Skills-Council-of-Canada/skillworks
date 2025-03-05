@@ -12,13 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Eye, Edit2, Flag, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-
-interface Project {
-  id: string;
-  title: string;
-  status: "active" | "draft" | "completed";
-  applications: number;
-}
+import { useProjects } from "@/hooks/employer/useProjects";
+import { useState } from "react";
+import ProjectDetailsDialog from "./ProjectDetailsDialog";
+import { toast } from "sonner";
 
 interface ProjectListProps {
   status: "active" | "draft" | "completed";
@@ -26,39 +23,28 @@ interface ProjectListProps {
 
 export const ProjectList = ({ status }: ProjectListProps) => {
   const navigate = useNavigate();
+  const { projects, isLoading } = useProjects(status);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
-  // Mock data - replace with actual data fetching
-  const projects: Project[] = [
-    {
-      id: "1",
-      title: "Electrical Maintenance Training",
-      status: "active" as const,
-      applications: 5,
-    },
-    {
-      id: "2",
-      title: "Plumbing Apprenticeship",
-      status: "active" as const,
-      applications: 3,
-    },
-  ].filter((project) => project.status === status);
-
-  const handleView = (projectId: string) => {
-    navigate(`/employer/projects/${projectId}`);
+  const handleView = (project: any) => {
+    setSelectedProject(project);
+    setDetailsOpen(true);
   };
 
   const handleEdit = (projectId: string) => {
-    // Handle edit action
-    console.log("Edit project:", projectId);
+    navigate(`/employer/projects/edit/${projectId}`);
   };
 
   const handleClose = (projectId: string) => {
     // Handle close action
+    toast.info("This feature is coming soon!");
     console.log("Close project:", projectId);
   };
 
   const handleDelete = (projectId: string) => {
     // Handle delete action
+    toast.info("This feature is coming soon!");
     console.log("Delete project:", projectId);
   };
 
@@ -76,7 +62,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   };
 
   // Mobile card view
-  const MobileProjectCard = ({ project }: { project: Project }) => (
+  const MobileProjectCard = ({ project }: { project: any }) => (
     <Card className="p-4 mb-4">
       <div className="space-y-3">
         <div className="flex justify-between items-start">
@@ -89,13 +75,16 @@ export const ProjectList = ({ status }: ProjectListProps) => {
           </Badge>
         </div>
         <div className="text-sm text-gray-600">
-          Applications: {project.applications}
+          Trade Type: {project.trade_type}
+        </div>
+        <div className="text-sm text-gray-600">
+          Applications: {project.applications_count || 0}
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleView(project.id)}
+            onClick={() => handleView(project)}
           >
             <Eye className="h-4 w-4" />
           </Button>
@@ -130,12 +119,20 @@ export const ProjectList = ({ status }: ProjectListProps) => {
   if (typeof window !== 'undefined' && window.innerWidth < 640) {
     return (
       <div className="space-y-4">
-        {projects.map((project) => (
-          <MobileProjectCard key={project.id} project={project} />
-        ))}
-        {projects.length === 0 && (
+        {isLoading ? (
+          <p className="text-center text-gray-500 py-4">Loading projects...</p>
+        ) : projects.length === 0 ? (
           <p className="text-center text-gray-500 py-4">No projects found</p>
+        ) : (
+          projects.map((project) => (
+            <MobileProjectCard key={project.id} project={project} />
+          ))
         )}
+        <ProjectDetailsDialog 
+          project={selectedProject}
+          open={detailsOpen}
+          onOpenChange={setDetailsOpen}
+        />
       </div>
     );
   }
@@ -147,61 +144,82 @@ export const ProjectList = ({ status }: ProjectListProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Project Title</TableHead>
+            <TableHead>Trade Type</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Applications</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projects.map((project) => (
-            <TableRow key={project.id}>
-              <TableCell className="font-medium">{project.title}</TableCell>
-              <TableCell>
-                <Badge
-                  variant="secondary"
-                  className={`${getStatusColor(project.status)} text-white`}
-                >
-                  {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                </Badge>
-              </TableCell>
-              <TableCell>{project.applications}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleView(project.id)}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(project.id)}
-                    disabled={status === "completed"}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleClose(project.id)}
-                  >
-                    <Flag className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(project.id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                Loading projects...
               </TableCell>
             </TableRow>
-          ))}
+          ) : projects.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                No projects found
+              </TableCell>
+            </TableRow>
+          ) : (
+            projects.map((project) => (
+              <TableRow key={project.id}>
+                <TableCell className="font-medium">{project.title}</TableCell>
+                <TableCell>{project.trade_type}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant="secondary"
+                    className={`${getStatusColor(project.status)} text-white`}
+                  >
+                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                  </Badge>
+                </TableCell>
+                <TableCell>{project.applications_count || 0}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleView(project)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(project.id)}
+                      disabled={status === "completed"}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleClose(project.id)}
+                    >
+                      <Flag className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(project.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
+      <ProjectDetailsDialog 
+        project={selectedProject}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
     </div>
   );
 };
