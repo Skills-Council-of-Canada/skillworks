@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Project } from "./projectTypes";
@@ -95,28 +96,12 @@ export async function updateProjectStatusInDb(projectId: string, newStatus: stri
   try {
     console.log(`Updating project ${projectId} to status ${newStatus}`);
     
-    // Get the valid project statuses from the database schema
-    const { data: validStatusesData, error: validStatusesError } = await supabase.rpc(
-      'get_valid_status_values',
-      { table_name: 'projects', column_name: 'status' }
-    );
+    // Define valid statuses directly without querying the database schema
+    const validStatuses = ["draft", "published", "active", "paused", "completed", "cancelled"];
     
-    if (validStatusesError) {
-      console.error('Error fetching valid statuses:', validStatusesError);
-      // Fall back to hardcoded values if we can't fetch from DB
-      const validStatuses = ["draft", "published", "active", "paused", "completed", "cancelled"];
-      
-      if (!validStatuses.includes(newStatus)) {
-        toast.error(`Invalid status value: ${newStatus}. Valid values are: ${validStatuses.join(', ')}`);
-        throw new Error(`Invalid status value: ${newStatus}`);
-      }
-    } else {
-      console.log('Valid statuses from DB:', validStatusesData);
-      // If we got valid statuses from the DB, check against those
-      if (validStatusesData && Array.isArray(validStatusesData) && !validStatusesData.includes(newStatus)) {
-        toast.error(`Invalid status value: ${newStatus}. Valid values are: ${validStatusesData.join(', ')}`);
-        throw new Error(`Invalid status value: ${newStatus}`);
-      }
+    if (!validStatuses.includes(newStatus)) {
+      toast.error(`Invalid status value: ${newStatus}. Valid values are: ${validStatuses.join(', ')}`);
+      throw new Error(`Invalid status value: ${newStatus}`);
     }
     
     // Make the update
@@ -162,39 +147,13 @@ export async function fetchProjectStatus(projectId: string) {
 }
 
 /**
- * Creates a Supabase RPC function to get valid enum values for a column
- */
-export async function createGetValidStatusValuesFunction() {
-  try {
-    const { error } = await supabase.rpc('create_get_valid_status_values_function');
-    if (error) {
-      console.error('Error creating function:', error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error('Error creating function:', err);
-    return false;
-  }
-}
-
-/**
- * Fetches valid status values for projects from the database
+ * Fetches valid status values for projects
  */
 export async function fetchValidProjectStatuses(): Promise<string[]> {
   try {
-    const { data, error } = await supabase.rpc(
-      'get_valid_status_values',
-      { table_name: 'projects', column_name: 'status' }
-    );
-    
-    if (error) {
-      console.error('Error fetching valid project statuses:', error);
-      // Fall back to common status values if we can't get them from the DB
-      return ["draft", "published", "active", "paused", "completed", "cancelled"];
-    }
-    
-    return data || ["draft", "published", "active", "paused", "completed", "cancelled"];
+    // Instead of querying the database for valid statuses, return hardcoded valid values
+    // This avoids the RPC call that's causing issues
+    return ["draft", "published", "active", "paused", "completed", "cancelled"];
   } catch (err) {
     console.error('Error in fetchValidProjectStatuses:', err);
     return ["draft", "published", "active", "paused", "completed", "cancelled"];
