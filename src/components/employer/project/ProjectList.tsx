@@ -14,7 +14,7 @@ interface ProjectListProps {
 
 export const ProjectList = ({ status }: ProjectListProps) => {
   const navigate = useNavigate();
-  const { projects, isLoading } = useProjects(status);
+  const { projects, isLoading, updateProjectStatus } = useProjects(status);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -39,6 +39,10 @@ export const ProjectList = ({ status }: ProjectListProps) => {
     console.log("Delete project:", projectId);
   };
 
+  const handleApprove = async (projectId: string) => {
+    await updateProjectStatus(projectId, "active");
+  };
+
   // Mobile card view
   if (typeof window !== 'undefined' && window.innerWidth < 640) {
     return (
@@ -56,6 +60,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
               onEdit={handleEdit}
               onClose={handleClose}
               onDelete={handleDelete}
+              onApprove={handleApprove}
               getStatusColor={getStatusColor}
             />
           ))
@@ -80,6 +85,7 @@ export const ProjectList = ({ status }: ProjectListProps) => {
         onEdit={handleEdit}
         onClose={handleClose}
         onDelete={handleDelete}
+        onApprove={handleApprove}
         getStatusColor={getStatusColor}
       />
       <ProjectDetailsDialog 

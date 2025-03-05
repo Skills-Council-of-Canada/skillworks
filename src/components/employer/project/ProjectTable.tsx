@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit2, Flag, Trash } from "lucide-react";
+import { Eye, Edit2, Flag, Trash, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@/hooks/employer/useProjects";
 
@@ -20,6 +20,7 @@ interface ProjectTableProps {
   onEdit: (projectId: string) => void;
   onClose: (projectId: string) => void;
   onDelete: (projectId: string) => void;
+  onApprove: (projectId: string) => void;
   getStatusColor: (status: string) => string;
 }
 
@@ -31,6 +32,7 @@ export const ProjectTable = ({
   onEdit,
   onClose,
   onDelete,
+  onApprove,
   getStatusColor,
 }: ProjectTableProps) => {
   return (
@@ -89,6 +91,16 @@ export const ProjectTable = ({
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
+                    {project.status === "draft" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onApprove(project.id)}
+                        title="Approve Project"
+                      >
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"

@@ -24,138 +24,168 @@ export function useProjects(status: "active" | "draft" | "completed") {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      setIsLoading(true);
-      try {
-        // Get the current user's ID
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-        
-        if (userError) {
-          throw userError;
-        }
-        
-        if (!userData.user) {
-          throw new Error("No authenticated user found");
-        }
-        
-        // Get the employer ID for the current user
-        const { data: employerData, error: employerError } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('user_id', userData.user.id)
-          .single();
-        
-        if (employerError) {
-          throw employerError;
-        }
-        
-        // Fetch projects based on employer ID and status
-        const { data: projectsData, error: projectsError } = await supabase
-          .from('projects')
-          .select(`
-            id,
-            title,
-            status,
-            trade_type,
-            description,
-            start_date,
-            end_date,
-            location_type,
-            site_address,
-            positions,
-            skill_level
-          `)
-          .eq('employer_id', employerData.id);
-        
-        if (projectsError) {
-          throw projectsError;
-        }
-
-        // Get the application counts for each project
-        const projectIds = projectsData.map(project => project.id);
-        
-        // If there are no projects, just return an empty array
-        if (projectIds.length === 0) {
-          setProjects([]);
-          return;
-        }
-        
-        // Fix: Get application counts without using groupBy, which isn't available
-        const { data: applicationCountsData, error: applicationCountsError } = await supabase
-          .from('applications')
-          .select('project_id, count', { count: 'exact', head: false })
-          .in('project_id', projectIds)
-          .or('status.eq.pending,status.eq.approved');
-        
-        if (applicationCountsError) {
-          console.error('Error fetching application counts:', applicationCountsError);
-        }
-        
-        // Create a map of project_id to application count
-        const applicationCountsMap: Record<string, number> = {};
-        
-        if (applicationCountsData) {
-          // Process the raw count data
-          const counts: { [key: string]: number } = {};
-          
-          // Count occurrences of each project_id manually
-          applicationCountsData.forEach((row: any) => {
-            if (row.project_id) {
-              counts[row.project_id] = (counts[row.project_id] || 0) + 1;
-            }
-          });
-          
-          // Convert to the map format
-          Object.keys(counts).forEach(projectId => {
-            applicationCountsMap[projectId] = counts[projectId];
-          });
-        }
-        
-        // Filter projects based on status and map database status to our expected status type
-        const filteredProjects = projectsData
-          .filter(project => {
-            if (status === 'draft') {
-              return project.status === 'draft';
-            } else if (status === 'active') {
-              return project.status === 'pending' || project.status === 'approved';
-            } else if (status === 'completed') {
-              return project.status === 'completed';
-            }
-            return false;
-          })
-          .map(project => {
-            // Map database status to our Project interface status
-            let mappedStatus: "active" | "draft" | "completed";
-            if (project.status === 'draft') {
-              mappedStatus = 'draft';
-            } else if (project.status === 'pending' || project.status === 'approved') {
-              mappedStatus = 'active';
-            } else if (project.status === 'completed') {
-              mappedStatus = 'completed';
-            } else {
-              // Fallback for any other statuses
-              mappedStatus = 'draft';
-            }
-            
-            return {
-              ...project,
-              status: mappedStatus,
-              applications_count: applicationCountsMap[project.id] || 0
-            } as Project;
-          });
-        
-        setProjects(filteredProjects);
-      } catch (err: any) {
-        console.error('Error fetching projects:', err);
-        setError(err.message);
-        toast.error("Failed to load projects. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchProjects();
   }, [status]);
 
-  return { projects, isLoading, error };
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    try {
+      // Get the current user's ID
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        throw userError;
+      }
+      
+      if (!userData.user) {
+        throw new Error("No authenticated user found");
+      }
+      
+      // Get the employer ID for the current user
+      const { data: employerData, error: employerError } = await supabase
+        .from('employers')
+        .select('id')
+        .eq('user_id', userData.user.id)
+        .single();
+      
+      if (employerError) {
+        throw employerError;
+      }
+      
+      // Fetch projects based on employer ID and status
+      const { data: projectsData, error: projectsError } = await supabase
+        .from('projects')
+        .select(`
+          id,
+          title,
+          status,
+          trade_type,
+          description,
+          start_date,
+          end_date,
+          location_type,
+          site_address,
+          positions,
+          skill_level
+        `)
+        .eq('employer_id', employerData.id);
+      
+      if (projectsError) {
+        throw projectsError;
+      }
+
+      // Get the application counts for each project
+      const projectIds = projectsData.map(project => project.id);
+      
+      // If there are no projects, just return an empty array
+      if (projectIds.length === 0) {
+        setProjects([]);
+        return;
+      }
+      
+      // Fix: Get application counts without using groupBy, which isn't available
+      const { data: applicationCountsData, error: applicationCountsError } = await supabase
+        .from('applications')
+        .select('project_id, count', { count: 'exact', head: false })
+        .in('project_id', projectIds)
+        .or('status.eq.pending,status.eq.approved');
+      
+      if (applicationCountsError) {
+        console.error('Error fetching application counts:', applicationCountsError);
+      }
+      
+      // Create a map of project_id to application count
+      const applicationCountsMap: Record<string, number> = {};
+      
+      if (applicationCountsData) {
+        // Process the raw count data
+        const counts: { [key: string]: number } = {};
+        
+        // Count occurrences of each project_id manually
+        applicationCountsData.forEach((row: any) => {
+          if (row.project_id) {
+            counts[row.project_id] = (counts[row.project_id] || 0) + 1;
+          }
+        });
+        
+        // Convert to the map format
+        Object.keys(counts).forEach(projectId => {
+          applicationCountsMap[projectId] = counts[projectId];
+        });
+      }
+      
+      // Filter projects based on status and map database status to our expected status type
+      const filteredProjects = projectsData
+        .filter(project => {
+          if (status === 'draft') {
+            return project.status === 'draft';
+          } else if (status === 'active') {
+            return project.status === 'pending' || project.status === 'approved';
+          } else if (status === 'completed') {
+            return project.status === 'completed';
+          }
+          return false;
+        })
+        .map(project => {
+          // Map database status to our Project interface status
+          let mappedStatus: "active" | "draft" | "completed";
+          if (project.status === 'draft') {
+            mappedStatus = 'draft';
+          } else if (project.status === 'pending' || project.status === 'approved') {
+            mappedStatus = 'active';
+          } else if (project.status === 'completed') {
+            mappedStatus = 'completed';
+          } else {
+            // Fallback for any other statuses
+            mappedStatus = 'draft';
+          }
+          
+          return {
+            ...project,
+            status: mappedStatus,
+            applications_count: applicationCountsMap[project.id] || 0
+          } as Project;
+        });
+      
+      setProjects(filteredProjects);
+    } catch (err: any) {
+      console.error('Error fetching projects:', err);
+      setError(err.message);
+      toast.error("Failed to load projects. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateProjectStatus = async (projectId: string, newStatus: "active" | "draft" | "completed") => {
+    try {
+      // Map our interface status to database status
+      let dbStatus: string;
+      if (newStatus === 'active') {
+        dbStatus = 'pending'; // or 'approved' based on your business logic
+      } else if (newStatus === 'draft') {
+        dbStatus = 'draft';
+      } else if (newStatus === 'completed') {
+        dbStatus = 'completed';
+      } else {
+        throw new Error("Invalid status");
+      }
+
+      const { error } = await supabase
+        .from('projects')
+        .update({ status: dbStatus })
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      // Refresh the projects list
+      await fetchProjects();
+      toast.success(`Project status updated to ${newStatus}`);
+    } catch (err: any) {
+      console.error('Error updating project status:', err);
+      toast.error("Failed to update project status. Please try again.");
+    }
+  };
+
+  return { projects, isLoading, error, updateProjectStatus, fetchProjects };
 }

@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Edit2, Eye, Flag, Trash } from "lucide-react";
+import { Edit2, Eye, Flag, Trash, CheckCircle } from "lucide-react";
 import { Project } from "@/hooks/employer/useProjects";
 
 interface MobileProjectCardProps {
@@ -11,6 +11,7 @@ interface MobileProjectCardProps {
   onEdit: (projectId: string) => void;
   onClose: (projectId: string) => void;
   onDelete: (projectId: string) => void;
+  onApprove: (projectId: string) => void;
   getStatusColor: (status: string) => string;
 }
 
@@ -20,6 +21,7 @@ export const MobileProjectCard = ({
   onEdit,
   onClose,
   onDelete,
+  onApprove,
   getStatusColor,
 }: MobileProjectCardProps) => (
   <Card className="p-4 mb-4">
@@ -55,6 +57,16 @@ export const MobileProjectCard = ({
         >
           <Edit2 className="h-4 w-4" />
         </Button>
+        {project.status === "draft" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onApprove(project.id)}
+            title="Approve Project"
+          >
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="sm"
