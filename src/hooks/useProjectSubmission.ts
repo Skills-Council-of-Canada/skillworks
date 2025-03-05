@@ -23,14 +23,14 @@ export const useProjectSubmission = () => {
       start_date: startDateString,
       end_date: endDateString,
       location_type: formData.locationType || '',
-      location_address: formData.address || '',
+      site_address: formData.address || '', // Changed to site_address
       positions: formData.positions || 1,
       certifications_required: formData.certifications || [],
       safety_requirements: formData.safetyRequirements || [],
       tools_provided: formData.toolsProvided || false,
       required_tools: formData.requiredTools || [],
       subcategories: formData.subcategories || [],
-      additional_details: formData.additionalInfo || '',
+      additional_feedback: formData.additionalInfo || '', // Changed from additional_details
       expectations: formData.expectations || '',
       status: status,
       created_at: new Date().toISOString(),

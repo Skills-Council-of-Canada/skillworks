@@ -70,14 +70,14 @@ export const useProjectFormPersistence = () => {
           startDate: data.start_date ? new Date(data.start_date) : undefined,
           endDate: data.end_date ? new Date(data.end_date) : undefined,
           locationType: data.location_type as LocationType,
-          address: data.location_address,
+          address: data.site_address, // Changed from location_address to site_address
           positions: data.positions,
           certifications: data.certifications_required || [],
           safetyRequirements: data.safety_requirements || [],
-          toolsProvided: data.tools_provided || false,
+          toolsProvided: !!data.tools_provided, // Ensure boolean conversion
           requiredTools: data.required_tools || [],
           subcategories: data.subcategories || [],
-          additionalInfo: data.additional_details || "",
+          additionalInfo: data.additional_feedback || "", // Changed from additional_details
           expectations: data.expectations || "",
           status: data.status
         };

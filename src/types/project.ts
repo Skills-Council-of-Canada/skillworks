@@ -44,8 +44,15 @@ export interface ProjectFormData {
   images: File[];
   documents: File[];
 
+  // Additional fields
+  additionalInfo?: string;
+  expectations?: string;
+
   // Template
   templateId?: string;
+  
+  // Status
+  status?: string;
 }
 
 export const PROJECT_TEMPLATES: ProjectTemplate[] = [
