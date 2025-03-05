@@ -96,6 +96,21 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
   try {
     console.log(`Updating project ${projectId} to status ${dbStatus}`);
     
+    // First, check if this is a valid status for the projects table
+    const { data: validStatuses, error: validStatusesError } = await supabase
+      .from('pg_enum')
+      .select('enumlabel')
+      .eq('enumtypid', 'projects_status_enum'::regtype);
+      
+    if (validStatusesError) {
+      console.error('Error fetching valid statuses:', validStatusesError);
+    } else {
+      console.log('Valid project statuses:', validStatuses);
+      if (validStatuses && !validStatuses.some(s => s.enumlabel === dbStatus)) {
+        throw new Error(`Status '${dbStatus}' is not valid for projects. Valid statuses are: ${validStatuses.map(s => s.enumlabel).join(', ')}`);
+      }
+    }
+    
     const { error } = await supabase
       .from('projects')
       .update({ status: dbStatus })
@@ -106,7 +121,7 @@ export async function updateProjectStatusInDb(projectId: string, dbStatus: strin
       
       // Handle specific error cases
       if (error.message.includes('check constraint')) {
-        toast.error("Unable to update to this status. The status might be restricted. Please contact support for assistance.");
+        toast.error("Unable to update to this status. The status might be restricted. Please use one of: draft, active, or completed");
       } else {
         toast.error("Failed to update project status. Please try again.");
       }
@@ -140,5 +155,27 @@ export async function fetchProjectStatus(projectId: string) {
   } catch (err) {
     console.error('Error in fetchProjectStatus:', err);
     throw err;
+  }
+}
+
+/**
+ * Fetches valid status values for projects
+ */
+export async function fetchValidProjectStatuses() {
+  try {
+    // This query attempts to get the enum values from Postgres
+    const { data, error } = await supabase.rpc('get_valid_project_statuses');
+    
+    if (error) {
+      console.error('Error fetching valid project statuses:', error);
+      // Fallback to a hard-coded list of known statuses if the RPC fails
+      return ['draft', 'active', 'completed'];
+    }
+    
+    return data || ['draft', 'active', 'completed'];
+  } catch (err) {
+    console.error('Error in fetchValidProjectStatuses:', err);
+    // Fallback to a hard-coded list of known statuses
+    return ['draft', 'active', 'completed'];
   }
 }

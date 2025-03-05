@@ -7,12 +7,13 @@ import { Project } from "./projectTypes";
 export function mapDatabaseStatusToInterfaceStatus(dbStatus: string): "active" | "draft" | "completed" {
   if (dbStatus === 'draft') {
     return 'draft';
-  } else if (dbStatus === 'pending' || dbStatus === 'approved') {
+  } else if (dbStatus === 'active' || dbStatus === 'pending' || dbStatus === 'approved') {
     return 'active';
   } else if (dbStatus === 'completed') {
     return 'completed';
   } else {
     // Fallback for any other statuses
+    console.log(`Unknown database status: ${dbStatus}, mapping to draft`);
     return 'draft';
   }
 }
@@ -24,20 +25,15 @@ export function mapInterfaceStatusToDatabaseStatus(
   newStatus: "active" | "draft" | "completed", 
   currentStatus: string
 ): string {
-  // If moving from draft to active, we need to use 'pending' or maybe 'approved'
-  // depending on workflow
-  if (newStatus === 'active' && currentStatus === 'draft') {
-    // When activating a draft project, set it to 'pending' first
-    return 'pending';
+  // If moving from draft to active, use 'active' status directly
+  if (newStatus === 'active') {
+    return 'active';
   } else if (newStatus === 'draft') {
     return 'draft';
   } else if (newStatus === 'completed') {
     return 'completed'; 
-  } else if (newStatus === 'active' && currentStatus === 'pending') {
-    // If it's already pending and we're trying to make it active, use 'approved'
-    return 'approved';
   } else {
-    // For other cases, use the newStatus (might need adjustments)
+    // For other cases, use the newStatus directly
     return newStatus;
   }
 }
@@ -52,14 +48,8 @@ export function filterAndMapProjects(
 ): Project[] {
   return projectsData
     .filter(project => {
-      if (status === 'draft') {
-        return project.status === 'draft';
-      } else if (status === 'active') {
-        return project.status === 'pending' || project.status === 'approved';
-      } else if (status === 'completed') {
-        return project.status === 'completed';
-      }
-      return false;
+      const interfaceStatus = mapDatabaseStatusToInterfaceStatus(project.status);
+      return interfaceStatus === status;
     })
     .map(project => {
       return {

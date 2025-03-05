@@ -41,6 +41,8 @@ export function useProjects(status: "active" | "draft" | "completed") {
       
       // Map our interface status to database status
       const dbStatus = mapInterfaceStatusToDatabaseStatus(newStatus, currentStatus);
+      
+      console.log(`Updating project status from ${currentStatus} to ${dbStatus}`);
 
       // Update the project status in the database
       await updateProjectStatusInDb(projectId, dbStatus);
