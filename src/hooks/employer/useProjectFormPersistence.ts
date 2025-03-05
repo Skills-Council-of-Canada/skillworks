@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { ProjectFormData } from '@/types/project';
+import { ProjectFormData, TradeType, SkillLevel, LocationType } from '@/types/project';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -61,24 +61,24 @@ export const useProjectFormPersistence = () => {
       }
       
       if (data) {
-        // Transform database model to form data model
+        // Transform database model to form data model with proper type conversions
         const projectFormData: Partial<ProjectFormData> = {
           title: data.title,
           description: data.description,
-          tradeType: data.trade_type,
-          skillLevel: data.skill_level,
-          startDate: data.start_date,
-          endDate: data.end_date,
-          locationType: data.location_type,
-          address: data.address,
+          tradeType: data.trade_type as TradeType,
+          skillLevel: data.skill_level as SkillLevel,
+          startDate: data.start_date ? new Date(data.start_date) : undefined,
+          endDate: data.end_date ? new Date(data.end_date) : undefined,
+          locationType: data.location_type as LocationType,
+          address: data.location_address,
           positions: data.positions,
-          learnerType: data.learner_type,
-          educationLevel: data.education_level,
-          requiredSkills: data.required_skills,
-          preferredSkills: data.preferred_skills,
-          mediaFiles: data.media_files || [],
-          additionalInfo: data.additional_info,
-          expectations: data.expectations,
+          certifications: data.certifications_required || [],
+          safetyRequirements: data.safety_requirements || [],
+          toolsProvided: data.tools_provided || false,
+          requiredTools: data.required_tools || [],
+          subcategories: data.subcategories || [],
+          additionalInfo: data.additional_details || "",
+          expectations: data.expectations || "",
           status: data.status
         };
         

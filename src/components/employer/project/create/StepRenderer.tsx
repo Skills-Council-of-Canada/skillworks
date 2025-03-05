@@ -30,41 +30,36 @@ export const StepRenderer = ({
     case 1:
       return (
         <BasicInformationForm
-          formData={formData}
+          initialData={formData}
           onSubmit={onStepSubmit}
-          isEditMode={isEditMode}
         />
       );
     case 2:
       return (
         <TradeDetailsForm
-          formData={formData}
+          initialData={formData}
           onSubmit={onStepSubmit}
-          isEditMode={isEditMode}
         />
       );
     case 3:
       return (
         <ProjectSpecificationsForm
-          formData={formData}
+          initialData={formData}
           onSubmit={onStepSubmit}
-          isEditMode={isEditMode}
         />
       );
     case 4:
       return (
         <LearnerRequirementsForm
-          formData={formData}
+          initialData={formData}
           onSubmit={onStepSubmit}
-          isEditMode={isEditMode}
         />
       );
     case 5:
       return (
         <MediaUploadsForm
-          formData={formData}
+          initialData={formData}
           onSubmit={onStepSubmit}
-          isEditMode={isEditMode}
         />
       );
     case 6:

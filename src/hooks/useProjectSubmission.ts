@@ -10,23 +10,27 @@ export const useProjectSubmission = () => {
   const navigate = useNavigate();
 
   const transformFormToDbModel = (formData: Partial<ProjectFormData>, employerId: string, status: string) => {
+    // Format dates as ISO strings for the database
+    const startDateString = formData.startDate ? formData.startDate.toISOString() : null;
+    const endDateString = formData.endDate ? formData.endDate.toISOString() : null;
+
     return {
       employer_id: employerId,
       title: formData.title || '',
       description: formData.description || '',
       trade_type: formData.tradeType || '',
       skill_level: formData.skillLevel || '',
-      start_date: formData.startDate || null,
-      end_date: formData.endDate || null,
+      start_date: startDateString,
+      end_date: endDateString,
       location_type: formData.locationType || '',
-      address: formData.address || '',
+      location_address: formData.address || '',
       positions: formData.positions || 1,
-      learner_type: formData.learnerType || [],
-      education_level: formData.educationLevel || [],
-      required_skills: formData.requiredSkills || [],
-      preferred_skills: formData.preferredSkills || [],
-      media_files: formData.mediaFiles || [],
-      additional_info: formData.additionalInfo || '',
+      certifications_required: formData.certifications || [],
+      safety_requirements: formData.safetyRequirements || [],
+      tools_provided: formData.toolsProvided || false,
+      required_tools: formData.requiredTools || [],
+      subcategories: formData.subcategories || [],
+      additional_details: formData.additionalInfo || '',
       expectations: formData.expectations || '',
       status: status,
       created_at: new Date().toISOString(),
