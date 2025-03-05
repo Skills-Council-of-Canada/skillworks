@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit2, Flag, Trash, CheckCircle } from "lucide-react";
+import { Eye, Edit2, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@/hooks/employer/useProjects";
 
@@ -104,20 +104,6 @@ export const ProjectTable = ({
                         <CheckCircle className="h-4 w-4 text-green-500" />
                       </Button>
                     )}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onClose(project.id)}
-                    >
-                      <Flag className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(project.id)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
                   </div>
                 </TableCell>
               </TableRow>

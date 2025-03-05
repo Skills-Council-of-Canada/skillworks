@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Edit2, Eye, Flag, Trash, CheckCircle } from "lucide-react";
+import { Edit2, Eye, CheckCircle } from "lucide-react";
 import { Project } from "@/hooks/employer/useProjects";
 
 interface MobileProjectCardProps {
@@ -67,20 +67,6 @@ export const MobileProjectCard = ({
             <CheckCircle className="h-4 w-4 text-green-500" />
           </Button>
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onClose(project.id)}
-        >
-          <Flag className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onDelete(project.id)}
-        >
-          <Trash className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   </Card>
