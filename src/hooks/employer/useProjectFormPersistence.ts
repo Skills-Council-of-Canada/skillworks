@@ -62,6 +62,7 @@ export const useProjectFormPersistence = () => {
       
       if (data) {
         // Transform database model to form data model with proper type conversions
+        // Use type assertion to access project fields and set defaults when not available
         const projectFormData: Partial<ProjectFormData> = {
           title: data.title,
           description: data.description,
@@ -70,15 +71,15 @@ export const useProjectFormPersistence = () => {
           startDate: data.start_date ? new Date(data.start_date) : undefined,
           endDate: data.end_date ? new Date(data.end_date) : undefined,
           locationType: data.location_type as LocationType,
-          address: data.site_address, // Changed from location_address to site_address
+          address: data.site_address || '',
           positions: data.positions,
           certifications: data.certifications_required || [],
           safetyRequirements: data.safety_requirements || [],
-          toolsProvided: !!data.tools_provided, // Ensure boolean conversion
-          requiredTools: data.required_tools || [],
-          subcategories: data.subcategories || [],
-          additionalInfo: data.additional_feedback || "", // Changed from additional_details
-          expectations: data.expectations || "",
+          toolsProvided: Boolean(data?.tools_provided), // Use optional chaining and convert to boolean
+          requiredTools: (data as any).required_tools || [], // Use type assertion for fields not in the type
+          subcategories: (data as any).subcategories || [],
+          additionalInfo: (data as any).additional_feedback || data.admin_feedback || "", // Try to get from either field
+          expectations: (data as any).expectations || "",
           status: data.status
         };
         
