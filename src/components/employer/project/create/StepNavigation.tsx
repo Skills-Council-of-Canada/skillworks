@@ -40,23 +40,35 @@ const StepNavigation = ({
     
     setIsSubmitting(true);
     
+    // Call onNext directly if provided
     if (onNext) {
-      // Use the dedicated onNext handler if provided
+      console.log("Using provided onNext handler");
       onNext();
-    } else {
-      // Fall back to submitting the form directly
-      const formId = `step-${currentStep}-form`;
-      console.log(`Looking for form with id ${formId}`);
       
-      const form = document.getElementById(formId) as HTMLFormElement;
-      if (form) {
-        console.log(`Found form with id ${formId}, submitting it directly`);
-        // Create and dispatch the submit event
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      } else {
-        console.error(`Could not find form with id ${formId}`);
+      // Reset submitting state after a timeout as a safety measure
+      setTimeout(() => {
         setIsSubmitting(false);
-      }
+      }, 1000);
+      return;
+    }
+    
+    // Fall back to submitting the form directly
+    const formId = `step-${currentStep}-form`;
+    console.log(`Looking for form with id ${formId}`);
+    
+    const form = document.getElementById(formId) as HTMLFormElement;
+    if (form) {
+      console.log(`Found form with id ${formId}, submitting it directly`);
+      // Create and dispatch the submit event
+      const submitEvent = new Event('submit', { 
+        bubbles: true, 
+        cancelable: true 
+      });
+      
+      form.dispatchEvent(submitEvent);
+    } else {
+      console.error(`Could not find form with id ${formId}`);
+      setIsSubmitting(false);
     }
     
     // Reset submitting state after a timeout as a safety measure

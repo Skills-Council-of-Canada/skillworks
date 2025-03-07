@@ -9,6 +9,8 @@ import ExampleProjects from "./basic-information/ExampleProjects";
 import TitleField from "./basic-information/TitleField";
 import DescriptionField from "./basic-information/DescriptionField";
 import ActionButtons from "./basic-information/ActionButtons";
+import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   title: z.string()
@@ -42,6 +44,21 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
     console.log("Use template clicked");
   };
 
+  // Log form state for debugging
+  useEffect(() => {
+    console.log("Form state:", { 
+      isDirty: form.formState.isDirty,
+      isValid: form.formState.isValid, 
+      errors: form.formState.errors
+    });
+  }, [form.formState]);
+
+  // Handle form submission
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log("Form submitted", data);
+    onSubmit(data);
+  };
+
   return (
     <div className="space-y-6">
       <ExampleProjects />
@@ -49,10 +66,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
       <Form {...form}>
         <form
           id="step-1-form"
-          onSubmit={form.handleSubmit((data) => {
-            console.log("Form submitted", data);
-            onSubmit(data);
-          })}
+          onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-6"
         >
           <TitleField form={form} />
@@ -65,6 +79,11 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
             onUseTemplate={handleUseTemplate}
             isMobile={isMobile}
           />
+          
+          {/* Add a hidden submit button that can be triggered programmatically */}
+          <Button type="submit" className="hidden" id="form-submit-step-1">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>

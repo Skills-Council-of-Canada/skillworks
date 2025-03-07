@@ -1,8 +1,7 @@
-
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 interface UseProjectNavigationProps {
   currentStep: number;
@@ -29,39 +28,29 @@ export const useProjectNavigation = ({
   const handleStepSubmit = useCallback((stepData: Partial<ProjectFormData>) => {
     console.log("Step submission received:", stepData, "Current step:", currentStep);
     
-    // Prevent multiple step changes from happening at once
-    if (stepChangeInProgress.current) {
-      console.log("Step change already in progress, ignoring");
-      return;
+    // Update the form data with the new step data
+    setFormData(prev => {
+      const updated = { ...prev, ...stepData };
+      console.log("Updated form data:", updated);
+      return updated;
+    });
+    
+    // Move to next step
+    if (currentStep < totalSteps) {
+      console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
+      setCurrentStep(currentStep + 1);
+      toast({
+        title: "Progress Saved",
+        description: "Your changes have been saved successfully.",
+      });
+    } else {
+      console.log("Already at last step, not advancing");
     }
     
-    stepChangeInProgress.current = true;
-    if (setIsProcessing) setIsProcessing(true);
-    
-    try {
-      // Update the form data with the new step data
-      setFormData(prev => {
-        const updated = { ...prev, ...stepData };
-        console.log("Updated form data:", updated);
-        return updated;
-      });
-      
-      // Move to next step
-      if (currentStep < totalSteps) {
-        console.log(`Moving from step ${currentStep} to step ${currentStep + 1}`);
-        setCurrentStep(currentStep + 1);
-        toast({
-          title: "Progress Saved",
-          description: "Your changes have been saved successfully.",
-        });
-      } else {
-        console.log("Already at last step, not advancing");
-      }
-    } finally {
-      // Reset the lock after a short delay to ensure the state updates have time to process
+    // Reset processing state
+    if (setIsProcessing) {
       setTimeout(() => {
-        stepChangeInProgress.current = false;
-        if (setIsProcessing) setIsProcessing(false);
+        setIsProcessing(false);
       }, 300);
     }
   }, [currentStep, setCurrentStep, setFormData, toast, totalSteps, setIsProcessing]);
@@ -96,14 +85,20 @@ export const useProjectNavigation = ({
       if (form) {
         console.log(`Found form with id ${formId}, submitting it`);
         
-        // Create the submit event explicitly
-        const submitEvent = new Event('submit', { 
-          bubbles: true, 
-          cancelable: true 
-        });
-        
-        // Dispatch the event directly
-        form.dispatchEvent(submitEvent);
+        // Manually trigger the onSubmit handler for React Hook Form
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+          console.log("Found submit button, clicking it");
+          submitButton.click();
+        } else {
+          // Create and dispatch the submit event
+          const submitEvent = new Event('submit', { 
+            bubbles: true, 
+            cancelable: true 
+          });
+          
+          form.dispatchEvent(submitEvent);
+        }
         
         // For MediaUploadsForm (step 5), we need a longer timeout as file uploads may take time
         const timeoutDuration = currentStep === 5 ? 5000 : 1000;
@@ -126,6 +121,12 @@ export const useProjectNavigation = ({
       stepChangeInProgress.current = false;
       if (setIsProcessing) setIsProcessing(false);
     }
+  }, [currentStep, setIsProcessing]);
+
+  // Reset step change flag when the step changes
+  useEffect(() => {
+    stepChangeInProgress.current = false;
+    if (setIsProcessing) setIsProcessing(false);
   }, [currentStep, setIsProcessing]);
   
   // This function logs the current step for debugging
