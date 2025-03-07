@@ -80,7 +80,7 @@ const BasicInformationForm = ({ initialData, onSubmit }: Props) => {
             isMobile={isMobile}
           />
           
-          {/* Add a hidden submit button that can be triggered programmatically */}
+          {/* Hidden submit button that will be triggered by the Next button */}
           <Button type="submit" className="hidden" id="form-submit-step-1">
             Submit
           </Button>

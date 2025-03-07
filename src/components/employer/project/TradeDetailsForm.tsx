@@ -106,17 +106,6 @@ const TradeDetailsForm = ({ initialData, onSubmit }: Props) => {
 
         <TradeDetailsFields form={form} />
         
-        {/* Add a visible submit button for testing/debugging */}
-        <div className="flex justify-end">
-          <Button 
-            type="submit" 
-            className="hidden md:inline-flex" 
-            id="debug-submit-btn-step-2"
-          >
-            Submit Form
-          </Button>
-        </div>
-
         {/* Hidden submit button that will be triggered by the Next button */}
         <Button type="submit" className="hidden" id="submit-form-step-2">
           Submit
