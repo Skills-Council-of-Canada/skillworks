@@ -10,9 +10,20 @@ export const useProjectSubmission = () => {
   const navigate = useNavigate();
 
   const transformFormToDbModel = (formData: Partial<ProjectFormData>, employerId: string, status: string) => {
-    // Format dates as ISO strings for the database
-    const startDateString = formData.startDate ? formData.startDate.toISOString() : null;
-    const endDateString = formData.endDate ? formData.endDate.toISOString() : null;
+    // Handle dates properly - check if they're already strings or Date objects
+    let startDateString = null;
+    if (formData.startDate) {
+      startDateString = formData.startDate instanceof Date 
+        ? formData.startDate.toISOString() 
+        : formData.startDate;
+    }
+    
+    let endDateString = null;
+    if (formData.endDate) {
+      endDateString = formData.endDate instanceof Date 
+        ? formData.endDate.toISOString() 
+        : formData.endDate;
+    }
 
     return {
       employer_id: employerId,
