@@ -60,14 +60,26 @@ const CreateProject = () => {
     logCurrentStep();
   }, [currentStep, logCurrentStep]);
 
-  const handlePublishWithCleanup = () => {
-    handlePublish(formData, user?.id!, projectId);
-    clearSavedData();
+  const handlePublishWithCleanup = async () => {
+    try {
+      await handlePublish(formData, user?.id!, projectId);
+      // Only clear saved data after successful submission
+      clearSavedData();
+    } catch (error) {
+      console.error("Error publishing project:", error);
+      // Don't clear data on error
+    }
   };
 
-  const handleSaveDraftWithCleanup = () => {
-    handleSaveDraft(formData, user?.id!, projectId);
-    clearSavedData();
+  const handleSaveDraftWithCleanup = async () => {
+    try {
+      await handleSaveDraft(formData, user?.id!, projectId);
+      // Only clear saved data after successful submission
+      clearSavedData();
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      // Don't clear data on error
+    }
   };
 
   return (

@@ -65,6 +65,7 @@ export const useProjectSubmission = () => {
           
         if (result.error) throw result.error;
         toast.success('Project updated successfully!');
+        navigate('/employer/projects');
       } else {
         // Create new project
         result = await supabase
@@ -74,12 +75,12 @@ export const useProjectSubmission = () => {
           
         if (result.error) throw result.error;
         toast.success('Project published successfully!');
+        navigate('/employer/projects');
       }
-      
-      navigate('/employer/projects');
     } catch (error) {
       console.error('Error submitting project:', error);
       toast.error('Failed to submit project. Please try again.');
+      // We removed the navigation here so the form doesn't reset on error
     } finally {
       setIsSubmitting(false);
     }
@@ -101,6 +102,7 @@ export const useProjectSubmission = () => {
           
         if (result.error) throw result.error;
         toast.success('Draft updated successfully!');
+        navigate('/employer/projects');
       } else {
         // Create new draft
         result = await supabase
@@ -110,12 +112,12 @@ export const useProjectSubmission = () => {
           
         if (result.error) throw result.error;
         toast.success('Draft saved successfully!');
+        navigate('/employer/projects');
       }
-      
-      navigate('/employer/projects');
     } catch (error) {
       console.error('Error saving draft:', error);
       toast.error('Failed to save draft. Please try again.');
+      // We removed the navigation here so the form doesn't reset on error
     } finally {
       setIsSubmitting(false);
     }
