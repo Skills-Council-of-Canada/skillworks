@@ -136,7 +136,7 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
               disabled={isUploading || formSubmitted}
             >
               <Upload className="w-4 h-4 mr-2" />
-              {isUploading ? "Uploading..." : formSubmitted ? "Processing..." : "Continue"}
+              {isUploading ? "Uploading..." : formSubmitted ? "Processing..." : "Upload Attachments"}
             </Button>
           </div>
         </form>
