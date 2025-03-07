@@ -11,6 +11,15 @@ interface Props {
 }
 
 const ProjectSpecificationsSection = ({ data, onEdit }: Props) => {
+  // Check if all required fields are filled
+  const isComplete = Boolean(
+    data.startDate && 
+    data.endDate && 
+    data.locationType && 
+    data.positions && 
+    (data.locationType !== 'On-site' || data.address)
+  );
+
   // Helper function to safely format dates
   const formatDate = (date: Date | string | undefined) => {
     if (!date) return "Not specified";
@@ -31,7 +40,9 @@ const ProjectSpecificationsSection = ({ data, onEdit }: Props) => {
   return (
     <ReviewSectionCard
       title="Project Specifications"
+      description="Timeline, location, and positions"
       onEdit={onEdit}
+      isComplete={isComplete}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
