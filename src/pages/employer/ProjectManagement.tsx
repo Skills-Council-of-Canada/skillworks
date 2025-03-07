@@ -18,7 +18,7 @@ const ProjectManagement = () => {
   ]);
 
   const handleCreateProject = () => {
-    navigate("/employer/projects/create");
+    navigate("/employer/create-project");
   };
 
   // Handle tab change with proper type
