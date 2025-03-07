@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectFormData } from "@/types/project";
@@ -87,7 +88,7 @@ export const useProjectNavigation = ({
         
         // Manually trigger the onSubmit handler for React Hook Form
         const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
+        if (submitButton && submitButton instanceof HTMLButtonElement) {
           console.log("Found submit button, clicking it");
           submitButton.click();
         } else {
