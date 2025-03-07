@@ -1,9 +1,8 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PlusCircle, Users, Briefcase, Clock, AlertCircle, LucideIcon } from "lucide-react";
+import { Users, Briefcase, Clock, AlertCircle, LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,19 +86,11 @@ const EmployerDashboard = () => {
       )}
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="w-full sm:w-auto">
+        <div className="w-full">
           <p className="text-foreground text-sm sm:text-base">
             Here's what's happening with your projects today.
           </p>
         </div>
-        <Button 
-          onClick={() => navigate("/employer/create-project")}
-          disabled={!employerProfile}
-          className="w-full sm:w-auto flex items-center gap-2"
-        >
-          <PlusCircle className="h-4 w-4" />
-          Create New Project
-        </Button>
       </div>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
