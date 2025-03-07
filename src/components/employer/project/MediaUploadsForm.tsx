@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Upload } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useFileUploader } from "./media-uploads/FileUploadUtils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -33,6 +33,7 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
   // It's okay if projectId is undefined - we handle that case in useFileUploader
   const projectId = initialData.id;
   const { uploadProgress, isUploading, handleFilesUpload } = useFileUploader(projectId);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,26 +53,39 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
       documents: data.documents?.length || 0
     });
     
+    setFormSubmitted(true);
+    
     if (!data.images?.length && !data.documents?.length) {
       // No files to upload, just pass through
+      console.log("No files to upload, continuing to next step");
       onSubmit({});
       return;
     }
     
-    // Upload files and get the results
-    const result = await handleFilesUpload({
-      images: data.images,
-      documents: data.documents
-    });
-    
-    if (result.success) {
-      // Pass the form data to the parent component's onSubmit
-      onSubmit({
-        // Here we're just passing the files themselves
-        // The actual file paths are handled by the upload function
-        images: data.images || [],
-        documents: data.documents || []
+    try {
+      // Upload files and get the results
+      console.log("Uploading files before proceeding");
+      const result = await handleFilesUpload({
+        images: data.images,
+        documents: data.documents
       });
+      
+      if (result.success) {
+        // Pass the form data to the parent component's onSubmit
+        console.log("File upload successful, continuing to next step");
+        onSubmit({
+          // Here we're just passing the files themselves
+          // The actual file paths are handled by the upload function
+          images: data.images || [],
+          documents: data.documents || []
+        });
+      } else {
+        console.error("File upload failed");
+        setFormSubmitted(false);
+      }
+    } catch (error) {
+      console.error("Error during file upload:", error);
+      setFormSubmitted(false);
     }
   };
 
@@ -119,10 +133,10 @@ const MediaUploadsForm = ({ initialData, onSubmit }: Props) => {
             <Button 
               type="submit" 
               className="w-full sm:w-auto"
-              disabled={isUploading}
+              disabled={isUploading || formSubmitted}
             >
               <Upload className="w-4 h-4 mr-2" />
-              {isUploading ? "Uploading..." : "Continue"}
+              {isUploading ? "Uploading..." : formSubmitted ? "Processing..." : "Continue"}
             </Button>
           </div>
         </form>

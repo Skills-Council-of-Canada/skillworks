@@ -10,6 +10,7 @@ interface UseProjectNavigationProps {
   formData: Partial<ProjectFormData>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<ProjectFormData>>>;
   totalSteps: number;
+  setIsProcessing?: (isProcessing: boolean) => void;
 }
 
 export const useProjectNavigation = ({
@@ -17,7 +18,8 @@ export const useProjectNavigation = ({
   setCurrentStep,
   formData,
   setFormData,
-  totalSteps
+  totalSteps,
+  setIsProcessing
 }: UseProjectNavigationProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -34,6 +36,7 @@ export const useProjectNavigation = ({
     }
     
     stepChangeInProgress.current = true;
+    if (setIsProcessing) setIsProcessing(true);
     
     try {
       // Update the form data with the new step data
@@ -58,9 +61,10 @@ export const useProjectNavigation = ({
       // Reset the lock after a short delay to ensure the state updates have time to process
       setTimeout(() => {
         stepChangeInProgress.current = false;
-      }, 100);
+        if (setIsProcessing) setIsProcessing(false);
+      }, 300);
     }
-  }, [currentStep, setCurrentStep, setFormData, toast, totalSteps]);
+  }, [currentStep, setCurrentStep, setFormData, toast, totalSteps, setIsProcessing]);
 
   const handleBack = useCallback(() => {
     if (currentStep > 1) {
@@ -76,32 +80,53 @@ export const useProjectNavigation = ({
   const handleNext = useCallback(() => {
     console.log(`Attempting to move from step ${currentStep} to next step`);
     
-    // Find the form for the current step and submit it
-    const formId = `step-${currentStep}-form`;
-    const form = document.getElementById(formId) as HTMLFormElement;
-    
-    if (form) {
-      console.log(`Found form with id ${formId}, submitting it`);
-      
-      // Create the submit event explicitly
-      const submitEvent = new Event('submit', { 
-        bubbles: true, 
-        cancelable: true 
-      });
-      
-      // Dispatch the event directly
-      form.dispatchEvent(submitEvent);
-      
-      // Also try clicking the submit button as a fallback
-      const submitButton = document.getElementById(`submit-form-step-${currentStep}`);
-      if (submitButton) {
-        console.log("Also clicking submit button as fallback");
-        (submitButton as HTMLButtonElement).click();
-      }
-    } else {
-      console.error(`Could not find form with id ${formId}`);
+    if (stepChangeInProgress.current) {
+      console.log("Step change already in progress, ignoring next button click");
+      return;
     }
-  }, [currentStep]);
+    
+    stepChangeInProgress.current = true;
+    if (setIsProcessing) setIsProcessing(true);
+    
+    try {
+      // Find the form for the current step and submit it
+      const formId = `step-${currentStep}-form`;
+      const form = document.getElementById(formId) as HTMLFormElement;
+      
+      if (form) {
+        console.log(`Found form with id ${formId}, submitting it`);
+        
+        // Create the submit event explicitly
+        const submitEvent = new Event('submit', { 
+          bubbles: true, 
+          cancelable: true 
+        });
+        
+        // Dispatch the event directly
+        form.dispatchEvent(submitEvent);
+        
+        // For MediaUploadsForm (step 5), we need a longer timeout as file uploads may take time
+        const timeoutDuration = currentStep === 5 ? 5000 : 1000;
+        
+        // Reset the processing flag after a timeout if the form submission doesn't complete
+        setTimeout(() => {
+          if (stepChangeInProgress.current) {
+            console.log(`Form submission for step ${currentStep} taking too long, resetting flags`);
+            stepChangeInProgress.current = false;
+            if (setIsProcessing) setIsProcessing(false);
+          }
+        }, timeoutDuration);
+      } else {
+        console.error(`Could not find form with id ${formId}`);
+        stepChangeInProgress.current = false;
+        if (setIsProcessing) setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      stepChangeInProgress.current = false;
+      if (setIsProcessing) setIsProcessing(false);
+    }
+  }, [currentStep, setIsProcessing]);
   
   // This function logs the current step for debugging
   const logCurrentStep = useCallback(() => {

@@ -10,7 +10,7 @@ import { StepRenderer } from "@/components/employer/project/create/StepRenderer"
 import StepProgress from "@/components/employer/project/create/StepProgress";
 import StepNavigation from "@/components/employer/project/create/StepNavigation";
 import { Card } from "@/components/ui/card";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const TOTAL_STEPS = 6;
 
@@ -21,7 +21,8 @@ const CreateProject = () => {
   const isMobile = useIsMobile();
   const { projectId } = useParams(); // Get projectId from URL params
   const isEditMode = Boolean(projectId); // Check if we're in edit mode
-  const { handlePublish, handleSaveDraft } = useProjectSubmission();
+  const { handlePublish, handleSaveDraft, isSubmitting } = useProjectSubmission();
+  const [isProcessingStep, setIsProcessingStep] = useState(false);
   
   const {
     currentStep,
@@ -42,7 +43,8 @@ const CreateProject = () => {
     setCurrentStep,
     formData,
     setFormData,
-    totalSteps: TOTAL_STEPS
+    totalSteps: TOTAL_STEPS,
+    setIsProcessing: setIsProcessingStep
   });
 
   // Load project data if in edit mode
@@ -112,6 +114,7 @@ const CreateProject = () => {
           totalSteps={TOTAL_STEPS}
           onBack={handleBack}
           onNext={handleNext}
+          isProcessing={isProcessingStep || isSubmitting}
         />
       </div>
     </div>

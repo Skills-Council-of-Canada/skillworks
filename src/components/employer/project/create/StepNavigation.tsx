@@ -4,26 +4,41 @@ import {
   ChevronLeft, 
   ChevronRight
 } from "lucide-react";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 
 interface StepNavigationProps {
   currentStep: number;
   totalSteps: number;
   onBack: () => void;
   onNext?: () => void; // Add onNext prop
+  isProcessing?: boolean; // Add isProcessing prop
 }
 
 const StepNavigation = ({ 
   currentStep, 
   totalSteps, 
   onBack,
-  onNext 
+  onNext,
+  isProcessing = false
 }: StepNavigationProps) => {
   const isLastStep = currentStep === totalSteps;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset submitting state when step changes
+  useEffect(() => {
+    setIsSubmitting(false);
+  }, [currentStep]);
 
   // Create a stable function reference
   const handleNextClick = useCallback(() => {
     console.log("Next button clicked", { currentStep, hasOnNext: !!onNext });
+    
+    if (isSubmitting || isProcessing) {
+      console.log("Already submitting or processing, ignoring click");
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     if (onNext) {
       // Use the dedicated onNext handler if provided
@@ -40,17 +55,15 @@ const StepNavigation = ({
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
       } else {
         console.error(`Could not find form with id ${formId}`);
+        setIsSubmitting(false);
       }
     }
-  }, [currentStep, onNext]);
-
-  // Log on mount to help with debugging
-  useEffect(() => {
-    console.log(`StepNavigation mounted for step ${currentStep}/${totalSteps}`);
-    return () => {
-      console.log(`StepNavigation unmounting for step ${currentStep}`);
-    };
-  }, [currentStep, totalSteps]);
+    
+    // Reset submitting state after a timeout as a safety measure
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 1000);
+  }, [currentStep, onNext, isSubmitting, isProcessing]);
 
   return (
     <div className="flex justify-between mt-6">
@@ -60,6 +73,7 @@ const StepNavigation = ({
         size="sm"
         onClick={onBack}
         className="gap-1"
+        disabled={isSubmitting || isProcessing}
       >
         <ChevronLeft className="h-4 w-4" />
         Back
@@ -72,8 +86,9 @@ const StepNavigation = ({
           className="gap-1"
           onClick={handleNextClick}
           id={`next-button-step-${currentStep}`}
+          disabled={isSubmitting || isProcessing}
         >
-          Next
+          {isSubmitting || isProcessing ? "Processing..." : "Next"}
           <ChevronRight className="h-4 w-4" />
         </Button>
       )}
