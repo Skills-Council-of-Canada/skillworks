@@ -15,7 +15,7 @@ interface Props {
 const ProjectTemplateCard = ({ template, onClick }: Props) => {
   return (
     <Card 
-      className="cursor-pointer hover:bg-accent" 
+      className="cursor-pointer hover:bg-[#F1F1F1] transition-colors duration-200" 
       onClick={() => onClick(template)}
     >
       <CardHeader>
@@ -27,4 +27,3 @@ const ProjectTemplateCard = ({ template, onClick }: Props) => {
 };
 
 export default ProjectTemplateCard;
-
