@@ -1,46 +1,60 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, MapPin, School } from "lucide-react";
 import { Project } from "../types/project";
+import { useNavigate } from "react-router-dom";
 
 interface ProjectCardProps {
   project: Project;
-  onViewProject: (projectId: string) => void;
+  onViewProject?: (projectId: string) => void;
 }
 
 export const ProjectCard = ({ project, onViewProject }: ProjectCardProps) => {
+  const navigate = useNavigate();
+
+  const handleViewClick = () => {
+    if (onViewProject) {
+      onViewProject(project.id);
+    } else {
+      navigate(`/educator/projects/${project.id}`);
+    }
+  };
+
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{project.title}</CardTitle>
-          <div className="flex items-center space-x-1">
-            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-            <span className="text-sm">
-              {project.employer.rating?.toFixed(1) || "N/A"}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              ({project.employer.rating_count})
-            </span>
-          </div>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {project.employer.company_name}
+          <Badge variant="secondary">{project.tradeType || project.trade_type}</Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-sm mb-4 line-clamp-2">{project.description}</p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant="secondary">{project.trade_type}</Badge>
-          <Badge variant="outline">{project.location_type}</Badge>
-          <Badge variant="outline">{project.project_type}</Badge>
+      <CardContent className="flex-grow">
+        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+          {project.description}
+        </p>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm">
+            <School className="h-4 w-4 text-muted-foreground" />
+            <span>{project.skillLevel || project.skill_level}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span>
+              {new Date(project.startDate || project.start_date).toLocaleDateString()} - 
+              {new Date(project.endDate || project.end_date).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <span>{project.locationType || project.location_type}</span>
+          </div>
         </div>
-        <Button className="w-full" onClick={() => onViewProject(project.id)}>
-          View Details
-        </Button>
       </CardContent>
+      <CardFooter>
+        <Button onClick={handleViewClick} className="w-full">View Project</Button>
+      </CardFooter>
     </Card>
   );
 };
