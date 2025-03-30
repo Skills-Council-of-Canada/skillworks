@@ -34,7 +34,7 @@ export const LandingHeader = ({ signUpPath, buttonText = "Sign Up" }: LandingHea
               <img 
                 src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
                 alt="Skills Council of Canada Logo" 
-                className="h-8"
+                className="h-10"
               />
             </button>
             <Separator orientation="vertical" className="h-6" />
