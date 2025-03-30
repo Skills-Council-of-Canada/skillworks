@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
@@ -33,7 +32,7 @@ export const LandingHeader = ({ signUpPath, buttonText = "Sign Up" }: LandingHea
             <img 
               src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
               alt="Skills Council of Canada Logo" 
-              className="h-[11.52px] sm:h-[11.52px]"
+              className="h-8"
             />
           </button>
         </div>

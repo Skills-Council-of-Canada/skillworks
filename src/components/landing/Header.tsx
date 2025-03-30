@@ -19,7 +19,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
               alt="Skills Council of Canada Logo" 
-              className="h-[11.52px]"
+              className="h-8"
             />
           </Link>
           <Separator orientation="vertical" className="h-6" />
