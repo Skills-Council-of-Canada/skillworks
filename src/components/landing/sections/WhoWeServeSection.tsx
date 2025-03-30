@@ -37,7 +37,7 @@ export const WhoWeServeSection = () => {
           <img 
             src="/lovable-uploads/cf4d2cec-24d7-47c8-8c38-a58f18481c6e.png" 
             alt="Peel District School Board Logo" 
-            className="h-24 mb-8"
+            className="h-12 mb-8" // Changed from h-24 to h-12 to reduce size by half
           />
           <h2 className="text-4xl font-bold mb-4 text-center">Clear pathway to building employment success</h2>
           <p className="text-xl text-gray-600">Breaking down barriers for employers, educators and students</p>
