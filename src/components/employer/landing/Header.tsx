@@ -25,8 +25,8 @@ export const Header = () => {
           </Button>
           <button onClick={() => navigate("/")} className="hover:opacity-80 transition-opacity">
             <img 
-              src="/lovable-uploads/823dbdae-ac03-4c0c-81c9-64e6b55e20c3.png" 
-              alt="Skill Works Logo" 
+              src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
+              alt="Skills Council of Canada Logo" 
               className="h-8"
             />
           </button>
