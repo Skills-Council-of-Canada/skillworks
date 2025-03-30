@@ -78,7 +78,7 @@ const EducatorProjectDetails = () => {
                         <div>
                           <p className="text-sm font-medium">Timeline</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(project?.start_date).toLocaleDateString()} - {new Date(project?.end_date).toLocaleDateString()}
+                            {project?.start_date && new Date(project.start_date).toLocaleDateString()} - {project?.end_date && new Date(project.end_date).toLocaleDateString()}
                           </p>
                         </div>
                       </div>

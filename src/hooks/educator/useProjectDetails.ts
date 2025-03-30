@@ -21,7 +21,7 @@ export interface ProjectDetails {
 }
 
 export const useProjectDetails = (projectId?: string) => {
-  return useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['educator-project-details', projectId],
     queryFn: async (): Promise<ProjectDetails> => {
       if (!projectId) throw new Error("Project ID is required");
@@ -57,4 +57,6 @@ export const useProjectDetails = (projectId?: string) => {
     },
     enabled: !!projectId,
   });
+
+  return { project: data, isLoading, error };
 };

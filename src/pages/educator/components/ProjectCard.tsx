@@ -27,7 +27,7 @@ export const ProjectCard = ({ project, onViewProject }: ProjectCardProps) => {
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{project.title}</CardTitle>
-          <Badge variant="secondary">{project.tradeType || project.trade_type}</Badge>
+          <Badge variant="secondary">{project.trade_type}</Badge>
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
@@ -37,18 +37,18 @@ export const ProjectCard = ({ project, onViewProject }: ProjectCardProps) => {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm">
             <School className="h-4 w-4 text-muted-foreground" />
-            <span>{project.skillLevel || project.skill_level}</span>
+            <span>{project.skill_level}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span>
-              {new Date(project.startDate || project.start_date).toLocaleDateString()} - 
-              {new Date(project.endDate || project.end_date).toLocaleDateString()}
+              {new Date(project.start_date).toLocaleDateString()} - 
+              {new Date(project.end_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground" />
-            <span>{project.locationType || project.location_type}</span>
+            <span>{project.location_type}</span>
           </div>
         </div>
       </CardContent>

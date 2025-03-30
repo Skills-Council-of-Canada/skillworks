@@ -4,6 +4,9 @@ export interface Project {
   title: string;
   description: string;
   trade_type: string;
+  skill_level: string;
+  start_date: string;
+  end_date: string;
   location_type: string;
   project_type: string;
   industry: string;
