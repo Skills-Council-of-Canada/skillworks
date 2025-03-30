@@ -1,6 +1,4 @@
 
-import { Link2 } from "lucide-react";
-
 export const Footer = () => {
   return (
     <footer className="bg-white text-secondary py-12">
@@ -9,8 +7,8 @@ export const Footer = () => {
           <div>
             <div className="mb-4">
               <img 
-                src="/lovable-uploads/8803d62e-86da-4278-91b7-5992abfc4aa7.png" 
-                alt="Skill Works Logo" 
+                src="/lovable-uploads/8bbf2276-ce55-4852-8104-36d43f6e2082.png" 
+                alt="Skills Council of Canada Logo" 
                 className="h-8"
               />
             </div>
@@ -23,7 +21,7 @@ export const Footer = () => {
           </div>
           <div className="flex justify-end">
             <img 
-              src="/lovable-uploads/8bbf2276-ce55-4852-8104-36d43f6e2082.png" 
+              src="/lovable-uploads/8803d62e-86da-4278-91b7-5992abfc4aa7.png" 
               alt="Skills Council of Canada Logo" 
               className="h-20 object-contain"
             />
