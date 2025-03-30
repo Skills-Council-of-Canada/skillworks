@@ -33,13 +33,8 @@ export const WhoWeServeSection = () => {
   return (
     <section className="py-24 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center mb-16">
-          <img 
-            src="/lovable-uploads/cf4d2cec-24d7-47c8-8c38-a58f18481c6e.png" 
-            alt="Peel District School Board Logo" 
-            className="h-12 mb-8" // Changed from h-24 to h-12 to reduce size by half
-          />
-          <h2 className="text-4xl font-bold mb-4 text-center">Clear pathway to building employment success</h2>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">Clear pathway to building employment success</h2>
           <p className="text-xl text-gray-600">Breaking down barriers for employers, educators and students</p>
         </div>
 
