@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface LandingHeaderProps {
   signUpPath: string;
@@ -28,13 +29,21 @@ export const LandingHeader = ({ signUpPath, buttonText = "Sign Up" }: LandingHea
           >
             <Home className="h-5 w-5" />
           </Button>
-          <button onClick={() => navigate("/")} className="hover:opacity-80 transition-opacity">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate("/")} className="hover:opacity-80 transition-opacity">
+              <img 
+                src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
+                alt="Skills Council of Canada Logo" 
+                className="h-8"
+              />
+            </button>
+            <Separator orientation="vertical" className="h-6" />
             <img 
-              src="/lovable-uploads/04df2519-2be9-436b-b58c-2f34c0d1710e.png" 
-              alt="Skills Council of Canada Logo" 
+              src="/lovable-uploads/09ce0ccb-99ed-4905-a10b-116026b9384c.png" 
+              alt="Peel Logo" 
               className="h-8"
             />
-          </button>
+          </div>
         </div>
         <div className="flex gap-4">
           <Button

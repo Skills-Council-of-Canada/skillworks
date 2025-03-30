@@ -23,6 +23,11 @@ const Header = () => {
             />
           </Link>
           <Separator orientation="vertical" className="h-6" />
+          <img 
+            src="/lovable-uploads/09ce0ccb-99ed-4905-a10b-116026b9384c.png" 
+            alt="Peel Logo" 
+            className="h-8"
+          />
           <Link to="/">
             <Button
               variant="ghost"
