@@ -24,8 +24,8 @@ const Header = () => {
           </Link>
           <Separator orientation="vertical" className="h-6" />
           <img 
-            src="/lovable-uploads/09ce0ccb-99ed-4905-a10b-116026b9384c.png" 
-            alt="Peel Logo" 
+            src="/lovable-uploads/6e901ee2-903c-46fa-8815-47d08d59ae7a.png" 
+            alt="Peel District School Board Logo" 
             className="h-8"
           />
           <Link to="/">
